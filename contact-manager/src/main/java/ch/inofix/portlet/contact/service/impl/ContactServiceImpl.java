@@ -31,8 +31,8 @@ import ch.inofix.portlet.contact.service.base.ContactServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactServiceUtil
  * @created 2015-05-07 23:50
- * @modified 2015-05-07 23:50
- * @version 1.0.0
+ * @modified 2015-05-18 21:53
+ * @version 1.0.1
  */
 public class ContactServiceImpl extends ContactServiceBaseImpl {
 	/*
@@ -44,7 +44,7 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 */
 
 	// Enable logging for this class
-	private static Log _log = LogFactoryUtil.getLog(ContactServiceImpl.class
+	private static Log log = LogFactoryUtil.getLog(ContactServiceImpl.class
 			.getName());
 
 	/**
@@ -60,11 +60,12 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public Contact addContact(long userId, long groupId, String vCard,
-			String uid) throws PortalException, SystemException {
+	public Contact addContact(long userId, long groupId, String card, String uid)
+			throws PortalException, SystemException {
 
 		// TODO: Check ADD permission
-		return ContactLocalServiceUtil.addContact(userId, groupId, vCard, uid);
+		return ContactLocalServiceUtil.saveContact(userId, groupId, 0, card,
+				uid);
 
 	}
 
@@ -77,7 +78,7 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public Contact deletContact(long id) throws PortalException,
+	public Contact deleteContact(long id) throws PortalException,
 			SystemException {
 
 		// TODO: Check DELETE permission
@@ -92,8 +93,8 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws NoSuchContactException
 	 * 
 	 */
-	public Contact deleteContact(String contactId) throws SystemException,
-			NoSuchContactException {
+	public Contact deleteContact(String contactId) throws PortalException,
+			SystemException {
 
 		List<Contact> contacts = ContactLocalServiceUtil.getContacts(contactId);
 		Contact deleted = getContact(contactId);
@@ -116,12 +117,34 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws NoSuchContactException
 	 * @throws SystemException
 	 */
-	public Contact getContact(String contactId) throws NoSuchContactException,
+	public Contact getContact(String contactId) throws PortalException,
 			SystemException {
 
 		// TODO: Check VIEW permission
 		return ContactLocalServiceUtil.getContact(contactId);
 
 	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param groupId
+	 * @param id
+	 * @param card
+	 * @param uid
+	 * @return
+	 * @since 1.0.1
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public Contact saveContact(long userId, long groupId, long id, String card,
+			String uid) throws PortalException, SystemException {
+
+		// TODO: Check UPDATE permission
+		return ContactLocalServiceUtil.saveContact(userId, groupId, id, card,
+				uid);
+	}
+
+	// TODO: Add updateContact()
 
 }

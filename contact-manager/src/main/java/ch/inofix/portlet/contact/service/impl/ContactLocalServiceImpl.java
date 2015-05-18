@@ -32,8 +32,8 @@ import ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2015-05-07 18:36
- * @version 1.0.0
+ * @modified 2015-05-18 21:25
+ * @version 1.0.1
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -46,14 +46,14 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	 */
 
 	// Enable logging for this class
-	private static Log _log = LogFactoryUtil
+	private static Log log = LogFactoryUtil
 			.getLog(ContactLocalServiceImpl.class.getName());
 
 	/**
 	 * @since 1.0.0
 	 */
-	public Contact addContact(long userId, long groupId, String card,
-			String uid) throws PortalException, SystemException {
+	public Contact addContact(long userId, long groupId, String card, String uid)
+			throws PortalException, SystemException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 		Date now = new Date();
@@ -88,7 +88,7 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	 * @throws SystemException
 	 * @throws NoSuchContactException
 	 */
-	public Contact getContact(String contactId) throws NoSuchContactException,
+	public Contact getContact(String contactId) throws PortalException,
 			SystemException {
 
 		return contactPersistence.findByContactId_First(contactId, null);
@@ -100,7 +100,7 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	 * @since 1.0.0
 	 */
 	public Contact getContact(long groupId, String uid)
-			throws NoSuchContactException, SystemException {
+			throws PortalException, SystemException {
 
 		return contactPersistence.findByG_U(groupId, uid);
 
@@ -117,6 +117,51 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	public List<Contact> getContacts(String contactId) throws SystemException {
 
 		return contactPersistence.findByContactId(contactId);
+
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param groupId
+	 * @param id
+	 * @param card
+	 * @param uid
+	 * @return
+	 * @see 1.0.1
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public Contact saveContact(long userId, long groupId, long id, String card,
+			String uid) throws PortalException, SystemException {
+		
+		log.info("uid = " + uid);
+
+		User user = userPersistence.findByPrimaryKey(userId);
+		Date now = new Date();
+		Contact contact = null; 
+
+		if (id > 0) {
+			contact = contactLocalService.getContact(id); 
+			contact.setCompanyId(user.getCompanyId());
+			contact.setGroupId(groupId);
+			contact.setUserId(user.getUserId());
+			contact.setUserName(user.getFullName());
+			contact.setCreateDate(now);
+		} else {
+			id = counterLocalService.increment();
+			contact = contactPersistence.create(id);
+		}
+
+		contact.setModifiedDate(now);
+
+		// TODO: validate the vCard string
+		contact.setCard(card);
+		contact.setUid(uid);
+
+		contactPersistence.update(contact);
+
+		return contact;
 
 	}
 

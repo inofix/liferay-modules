@@ -92,13 +92,19 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		// TODO: use remote service
 		// TODO: use getContact(contactId)
-		Contact contact = ContactLocalServiceUtil.getContact(id);
+		Contact contact = null;
+
+		if (id > 0) {
+			contact = ContactLocalServiceUtil.getContact(id);
+		} else {
+			contact = ContactLocalServiceUtil.createContact(0);
+		}
 
 		actionRequest.setAttribute("CONTACT", contact);
-
+		
+		actionResponse.setRenderParameter("backURL", backURL);
 		actionResponse.setRenderParameter("id", String.valueOf(id));
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
-		actionResponse.setRenderParameter("redirect", backURL);
 	}
 
 	/**
@@ -113,19 +119,19 @@ public class ContactManagerPortlet extends MVCPortlet {
 	public void importVCardFile(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
-		UploadPortletRequest uploadPortletRequest = PortalUtil
-				.getUploadPortletRequest(actionRequest);
-
 		HttpServletRequest request = PortalUtil
 				.getHttpServletRequest(actionRequest);
 
 		ThemeDisplay themeDisplay = (ThemeDisplay) request
 				.getAttribute(WebKeys.THEME_DISPLAY);
 
-		File file = uploadPortletRequest.getFile("file");
-
 		long userId = themeDisplay.getUserId();
 		long groupId = themeDisplay.getScopeGroupId();
+
+		UploadPortletRequest uploadPortletRequest = PortalUtil
+				.getUploadPortletRequest(actionRequest);
+
+		File file = uploadPortletRequest.getFile("file");
 
 		Integer numVCards = 0;
 		Integer numImported = 0;
@@ -197,44 +203,55 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		log.info("Executing saveContact().");
 
+		HttpServletRequest request = PortalUtil
+				.getHttpServletRequest(actionRequest);
+
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+				.getAttribute(WebKeys.THEME_DISPLAY);
+
+		long userId = themeDisplay.getUserId();
+		long groupId = themeDisplay.getScopeGroupId();
+
 		String backURL = ParamUtil.getString(actionRequest, "backURL");
 		String contactId = ParamUtil.getString(actionRequest, "contactId");
-		String tab = ParamUtil.getString(actionRequest, "tab"); 
-		log.info("tab = " + tab);
 		long id = ParamUtil.getLong(actionRequest, "id");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
 
-		Contact contact = null;
 		VCard vCard = null;
+		String uid = null;
 
+		// TODO: use contactId
 		if (id > 0) {
 
 			// TODO: use remote service
-			// TODO: use getContact(contactId)
-			contact = ContactLocalServiceUtil.getContact(id);
+			Contact contact = ContactLocalServiceUtil.getContact(id);
+			uid = contact.getUid();
 			vCard = contact.getVCard();
 
 		} else {
 
-			// TODO: create an empty contact
 			vCard = new VCard();
+			vCard.setUid(Uid.random());
+			uid = vCard.getUid().getValue();
+
+			log.info("uid = " + uid);
+
 		}
 
-		// Update the vCard parameter
+		// Update the vCard with the request parameters
 
 		vCard = PortletUtil.getVCard(actionRequest, vCard);
 
 		// Store contact information in vCard format
 
-		String str = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
-
-		contact.setCard(str);
+		String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
+		
+		log.info("card = " + card);
 
 		// Save the contact
-		// TODO: use remote service
-
-		// TODO
-		ContactLocalServiceUtil.updateContact(contact);
+		// TODO: use contactId
+		Contact contact = ContactServiceUtil.saveContact(userId, groupId, id,
+				card, uid);
 
 		actionRequest.setAttribute("CONTACT", contact);
 

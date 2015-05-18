@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-05-07 15:18 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-18 21:57 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%-- Import required classes --%>
@@ -23,6 +23,11 @@
     portletURL.setParameter("backURL", backURL);	
 %>
 
+<portlet:actionURL var="addURL" name="editContact">
+    <portlet:param name="mvcPath" value="/html/edit_contact.jsp"/>
+    <portlet:param name="backURL" value="<%= currentURL %>"/>
+</portlet:actionURL>
+
 <div class="portlet-contact-manager">
 
 	<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
@@ -38,7 +43,15 @@
 	    </c:when>	    
 
 	    <c:otherwise>
-		    <liferay-ui:search-container emptyResultsMessage="no-contacts-found"
+	    
+	       <%
+	       // TODO: Check permissions
+	       %>
+	       <aui:button-row>
+	           <aui:button type="submit" value="add-contact" href="<%= addURL %>"/>
+	       </aui:button-row>
+	       
+		   <liferay-ui:search-container emptyResultsMessage="no-contacts-found"
 		      rowChecker="<%= new ContactChecker(renderResponse) %>">
 		    
 		        <liferay-ui:search-container-results
@@ -99,7 +112,7 @@
 		    
 		        <liferay-ui:search-iterator />
 		    
-		    </liferay-ui:search-container>
+			</liferay-ui:search-container>
 		    	    
 	    </c:otherwise>
 	</c:choose>
