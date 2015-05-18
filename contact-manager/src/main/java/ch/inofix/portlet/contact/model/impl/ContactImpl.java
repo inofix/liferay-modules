@@ -66,8 +66,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-07 22:17
- * @version 1.0.0
+ * @modified 2015-05-18 22:57
+ * @version 1.0.1
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -977,7 +977,7 @@ public class ContactImpl extends ContactBaseImpl {
 		if (Validator.isNotNull(str)) {
 			vCard = Ezvcard.parse(str).first();
 		} else {
-			new VCard();
+			vCard = new VCard();
 		}
 
 		return vCard;
