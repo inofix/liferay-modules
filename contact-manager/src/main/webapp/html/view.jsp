@@ -23,8 +23,6 @@
     portletURL.setParameter("backURL", backURL);	
 %>
 
-<portlet:renderURL var="browseURL"/>
-
 <div class="portlet-contact-manager">
 
 	<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
