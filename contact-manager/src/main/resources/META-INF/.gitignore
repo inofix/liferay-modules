@@ -1,0 +1,9 @@
+/base-spring.xml
+/cluster-spring.xml
+/hibernate-spring.xml
+/infrastructure-spring.xml
+/portlet-hbm.xml
+/portlet-model-hints.xml
+/portlet-orm.xml
+/portlet-spring.xml
+/shard-data-source-spring.xml
