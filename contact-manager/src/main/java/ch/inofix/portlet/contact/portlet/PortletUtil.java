@@ -67,15 +67,14 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-05-16 15:31
- * @version 1.0.0
+ * @modified 2015-05-18 22:19
+ * @version 1.0.1
  *
  */
 public class PortletUtil {
 
 	// Enable logging for this class
-	private static Log log = LogFactoryUtil.getLog(ContactManagerPortlet.class
-			.getName());
+	private static Log log = LogFactoryUtil.getLog(PortletUtil.class.getName());
 
 	@SuppressWarnings("unchecked")
 	public static VCard getVCard(HttpServletRequest request, VCard vCard) {
@@ -203,13 +202,10 @@ public class PortletUtil {
 				|| parameters.containsKey("birthday.year")) {
 
 			int birthdayDay = ParamUtil.getInteger(request, "birthday.day", 1);
-			log.info(birthdayDay);
 			int birthdayMonth = ParamUtil.getInteger(request, "birthday.month",
 					Calendar.JANUARY);
-			log.info(birthdayMonth);
 			int birthdayYear = ParamUtil.getInteger(request, "birthday.year",
 					1970);
-			log.info(birthdayYear);
 			Date birthDate = PortalUtil.getDate(birthdayMonth, birthdayDay,
 					birthdayYear);
 			Birthday birthday = new Birthday(birthDate);
@@ -742,8 +738,10 @@ public class PortletUtil {
 
 		if (parameters.containsKey("uid")) {
 			String uidStr = ParamUtil.getString(request, "uid");
-			Uid uid = new Uid(uidStr);
-			vCard.setUid(uid);
+			if (Validator.isNotNull(uidStr)) {
+				Uid uid = new Uid(uidStr);
+				vCard.setUid(uid);
+			}
 		}
 
 		if (parameters.containsKey("url.address")) {
