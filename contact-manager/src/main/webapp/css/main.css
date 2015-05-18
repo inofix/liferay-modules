@@ -1,0 +1,48 @@
+/**
+ * main.css: The contact-manager portlet's css configuration
+ *
+ * Created:     2015-05-08 15:51 by Christian Berndt
+ * Modified:    2015-05-08 15:51 by Christian Berndt
+ * Version:     1.0.0
+ *
+ */
+
+.portlet-contact-manager fieldset .container-fluid {
+	padding-right: 0; 
+	padding-left: 0;
+}
+ 
+.portlet-contact-manager .note {
+	   min-height: 100px;
+} 
+.portlet-contact-manager .note,
+.portlet-contact-manager .v-card {
+    min-width: 500px;
+}
+
+.portlet-contact-manager .v-card {
+	min-height: 300px;
+}
+
+.portlet-contact-manager .url-address {
+    min-width: 500px;
+}
+
+@media (max-width: 979px) {
+    .portlet-contact-manager .note,
+    .portlet-contact-manager .v-card,
+    .portlet-contact-manager .url-address
+    {
+       min-width: 500px;
+    }
+}   
+   
+@media (max-width: 767px) {
+    .portlet-contact-manager .note,
+    .portlet-contact-manager .v-card,
+    .portlet-contact-manager .url-address 
+    {
+       min-width: 290px;
+    }
+} 
+ 

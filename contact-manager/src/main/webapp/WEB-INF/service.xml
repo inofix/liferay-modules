@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+<!-- 
+    service.xml: Configuration of Liferay's Service-Builder 
+
+    Created: 2015-05-07 14:48 by Christian Berndt 
+    Modified: 2015-05-07 14:48 by Christian Berndt 
+    Version: 1.0.0 
+-->
+
+<service-builder package-path="ch.inofix.portlet.contact">
+    <namespace>Inofix</namespace>
+    <entity name="Contact" uuid="true" local-service="true"
+        remote-service="true">
+
+        <!-- PK fields -->
+
+        <column name="id" type="long" primary="true" />
+        
+        <!-- Group instance -->
+
+        <column name="groupId" type="long" />
+
+        <!-- Audit fields -->
+
+        <column name="companyId" type="long" />
+        <column name="userId" type="long" />
+        <column name="userName" type="String" />
+        <column name="createDate" type="Date" />
+        <column name="modifiedDate" type="Date" />
+
+        <!-- Other fields -->
+
+        <!-- accessor attribute after the model of JournalArticle.articleId -->
+        <column name="contactId" type="String" accessor="true" />
+        <column name="parentContactId" type="String" />
+        <column name="version" type="double" />
+
+        <column name="card" type="String" />
+        <column name="uid" type="String" />
+        <column name="status" type="int" />
+
+        <!-- Order -->
+
+        <order>
+            <order-column name="contactId" order-by="asc" />
+            <order-column name="version" order-by="desc" />
+        </order>
+
+        <!-- Finder methods -->
+
+        <finder name="ContactId" return-type="Collection">
+            <finder-column name="contactId" />
+        </finder>
+
+        <finder return-type="Contact" name="G_U" unique="true">
+            <finder-column name="groupId" />
+            <finder-column name="uid" />
+        </finder>
+
+    </entity>
+</service-builder>

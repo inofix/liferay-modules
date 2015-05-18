@@ -1,0 +1,50 @@
+<%--
+    import_vcards.jsp: Import vCards from an uploaded file. 
+    
+    Created:    2015-05-08 18:11 by Christian Berndt
+    Modified:   2015-05-08 18:11 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<portlet:actionURL var="importVCardFileURL" name="importVCardFile"/>
+
+<portlet:renderURL var="browseURL"/>
+
+<aui:form action="<%=importVCardFileURL%>" enctype="multipart/form-data"
+	method="post" name="fm">
+
+	<%
+		// TODO: Add error handling
+	%>
+	<%-- 
+       <liferay-ui:error exception="<%= FileExtensionException.class %>">
+   
+       </liferay-ui:error>
+       --%>
+
+	<aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
+
+	<aui:input name="file" type="file" inlineField="true" label="" />
+
+	<aui:button name="import" type="submit" value="import" disabled="true" />
+	<aui:button href="<%=browseURL%>" type="cancel" />
+</aui:form>
+
+<aui:script use="aui-base">
+	var input = A.one('#<portlet:namespace />file');
+	var button = A.one('#<portlet:namespace />import');
+
+	input.on('change', function(e) {
+
+		if (input.get('value')) {
+			button.removeClass('disabled');
+			button.removeAttribute('disabled');
+		} else {
+			button.addClass('disabled');
+			button.setAttrs({
+				disabled : 'disabled'
+			});
+		}
+
+	});
+</aui:script>

@@ -1,0 +1,68 @@
+<%--
+    search_columns.jspf: A configurable set of result columns.
+    
+    Created:    2015-05-11 19:14 by Christian Berndt
+    Modified:   2015-05-11 19:14 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<%
+	// TODO: Make the columns configurable
+	String[] columns = new String[] {
+			// id,
+			// contactId,
+			"fullName",
+			//"emailHome", 
+			"emailWork", "phoneWork", "phoneHome",
+			//"fax", 
+			"phoneMobile", "modifiedDate" };
+%>
+
+<%
+	for (String column : columns) {
+%>
+
+<c:if test='<%="id".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="id" name="id"
+		orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="contactId".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="contactId"
+		name="contact-id" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="fullName".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="fullName"
+		name="full-name" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="emailHome".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="emailHome"
+		name="email-home" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="emailWork".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="emailWork"
+		name="email-work" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="phoneWork".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="phoneWork"
+		name="phone-work" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="phoneHome".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="phoneHome"
+		name="phone-home" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="fax".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="fax" name="fax"
+		orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="phoneMobile".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="phoneMobile"
+		name="phone-mobile" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="modifiedDate".equals(column)%>'>
+	<liferay-ui:search-container-column-date property="modifiedDate"
+		name="modified-date" orderable="true" href="<%=detailURL%>" />
+</c:if>
+
+<%
+	}
+%>
