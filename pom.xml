@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    pom.xml: Parent pom to Inofix' Liferay Modules
+    
+    Created:    2015-05-06 19:32 by Christian Berndt
+    Modified:   2015-05-06 19:32 by Christian Berndt
+    Version:    1.0.0
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ch.inofix</groupId>
+    <artifactId>liferay-modules</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Liferay Modules by Inofix GmbH, Luzern</name>
+    <url>http://www.inofix.ch</url>
+
+    <properties>
+
+        <liferay.base.dir>
+            /home/berndt/Applications/liferay-portal-6.2-ce-ga4
+        </liferay.base.dir>
+
+        <liferay.app.server.deploy.dir>
+            ${liferay.base.dir}/tomcat-7.0.42/webapps
+        </liferay.app.server.deploy.dir>
+
+        <liferay.app.server.lib.global.dir>
+            ${liferay.base.dir}/tomcat-7.0.42/lib/ext
+        </liferay.app.server.lib.global.dir>
+
+        <liferay.app.server.portal.dir>
+            ${liferay.app.server.deploy.dir}/ROOT
+        </liferay.app.server.portal.dir>
+
+        <liferay.auto.deploy.dir>
+            ${liferay.base.dir}/deploy
+        </liferay.auto.deploy.dir>
+
+        <liferay.version>6.2.3</liferay.version>
+        <!-- <liferay.version>6.2-ce-ga-4</liferay.version> -->
+
+        <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version>
+
+    </properties>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>portal-client</artifactId>
+            <version>${liferay.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>portal-impl</artifactId>
+            <version>${liferay.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>portal-pacl</artifactId>
+            <version>${liferay.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>portal-service</artifactId>
+            <version>${liferay.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>portal-web</artifactId>
+            <version>${liferay.version}</version>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>util-bridges</artifactId>
+            <version>${liferay.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>util-java</artifactId>
+            <version>${liferay.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>util-slf4j</artifactId>
+            <version>${liferay.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>util-taglib</artifactId>
+            <version>${liferay.version}</version>
+        </dependency>
+    </dependencies>
+
+
+    <modules>
+        <module>contact-manager</module>
+    </modules>
+</project>
