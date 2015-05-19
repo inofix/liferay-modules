@@ -1,22 +1,18 @@
 package ch.inofix.portlet.contact.portlet;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import ch.inofix.portlet.contact.NoSuchContactException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -67,7 +63,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionRequest.setAttribute("CONTACT", contact);
 
 		SessionMessages.add(actionRequest, "request_processed",
-				translate("successfully-deleted-the-contact"));
+				PortletUtil.translate("successfully-deleted-the-contact"));
 
 	}
 
@@ -101,7 +97,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		}
 
 		actionRequest.setAttribute("CONTACT", contact);
-		
+
 		actionResponse.setRenderParameter("backURL", backURL);
 		actionResponse.setRenderParameter("id", String.valueOf(id));
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
@@ -119,75 +115,24 @@ public class ContactManagerPortlet extends MVCPortlet {
 	public void importVCardFile(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
-		HttpServletRequest request = PortalUtil
-				.getHttpServletRequest(actionRequest);
-
-		ThemeDisplay themeDisplay = (ThemeDisplay) request
-				.getAttribute(WebKeys.THEME_DISPLAY);
-
-		long userId = themeDisplay.getUserId();
-		long groupId = themeDisplay.getScopeGroupId();
-
 		UploadPortletRequest uploadPortletRequest = PortalUtil
 				.getUploadPortletRequest(actionRequest);
 
 		File file = uploadPortletRequest.getFile("file");
 
-		Integer numVCards = 0;
-		Integer numImported = 0;
-		Integer numIgnored = 0;
-
 		if (Validator.isNotNull(file)) {
 
-			List<VCard> vcards = Ezvcard.parse(file).all();
+			List<VCard> vCards = Ezvcard.parse(file).all();
 
-			// TODO: move this code to a remote service method and add
-			// permission checks
+			String message = PortletUtil.importVCards(vCards, actionRequest);
 
-			numVCards = vcards.size();
+			SessionMessages.add(actionRequest, "request_processed", message);
 
-			for (VCard vcard : vcards) {
+		} else {
 
-				Uid uidObj = vcard.getUid();
-				String uid = null;
-
-				if (Validator.isNotNull(uidObj)) {
-					uid = uidObj.getValue();
-				}
-
-				String str = Ezvcard.write(vcard).version(VCardVersion.V4_0)
-						.go();
-
-				// Only add the contact, if the vCard's uid does not yet exist
-				// in this scope
-				Contact contact = null;
-
-				try {
-					contact = ContactLocalServiceUtil.getContact(groupId, uid);
-				} catch (NoSuchContactException ignore) {
-					// ignore
-				}
-
-				if (contact == null) {
-					ContactServiceUtil.addContact(userId, groupId, str, uid);
-					numImported++;
-				} else {
-					numIgnored++;
-				}
-
-			}
+			SessionErrors.add(actionRequest, "file-not-found");
 
 		}
-
-		StringBuffer sb = new StringBuffer();
-
-		sb.append(translate("found-x-vcards", numVCards));
-		sb.append(" ");
-		sb.append(translate("imported-x-vcards", numImported));
-		sb.append(" ");
-		sb.append(translate("ignored-x-vcards", numIgnored));
-
-		SessionMessages.add(actionRequest, "request_processed", sb.toString());
 
 	}
 
@@ -245,7 +190,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		// Store contact information in vCard format
 
 		String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
-		
+
 		log.info("card = " + card);
 
 		// Save the contact
@@ -256,7 +201,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionRequest.setAttribute("CONTACT", contact);
 
 		SessionMessages.add(actionRequest, "request_processed",
-				translate("successfully-updated-the-contact"));
+				PortletUtil.translate("successfully-updated-the-contact"));
 
 		actionResponse.setRenderParameter("id", String.valueOf(id));
 		actionResponse.setRenderParameter("backURL", backURL);
@@ -264,41 +209,4 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 	}
 
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 * @since 1.0.0
-	 */
-	private String translate(String key) {
-		return translate(key, null);
-	}
-
-	/**
-	 * 
-	 * @param key
-	 * @param object
-	 * @return
-	 * @since 1.0.0
-	 */
-	private String translate(String key, Object object) {
-		return translate(key, new Object[] { object });
-	}
-
-	/**
-	 * 
-	 * @param key
-	 * @param objects
-	 * @return
-	 * @since 1.0.0
-	 */
-	private String translate(String key, Object[] objects) {
-		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("Language");
-			return MessageFormat.format(bundle.getString(key), objects);
-		} catch (MissingResourceException mre) {
-			log.warn(mre.getMessage());
-			return key;
-		}
-	}
 }

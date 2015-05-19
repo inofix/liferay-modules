@@ -1,18 +1,32 @@
 package ch.inofix.portlet.contact.portlet;
 
+import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import ch.inofix.portlet.contact.NoSuchContactException;
+import ch.inofix.portlet.contact.model.Contact;
+import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
+import ch.inofix.portlet.contact.service.ContactServiceUtil;
+
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.util.WebKeys;
 
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.AddressType;
@@ -67,8 +81,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-05-18 22:19
- * @version 1.0.1
+ * @modified 2015-05-19 14:37
+ * @version 1.0.2
  *
  */
 public class PortletUtil {
@@ -785,6 +799,128 @@ public class PortletUtil {
 				.getHttpServletRequest(portletRequest);
 
 		return getVCard(request, vCard);
+	}
+
+	/**
+	 * 
+	 * @param vCards
+	 * @param request
+	 * @return
+	 * @since 1.0.2
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public static String importVcards(List<VCard> vCards,
+			HttpServletRequest request) throws PortalException, SystemException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+				.getAttribute(WebKeys.THEME_DISPLAY);
+
+		long userId = themeDisplay.getUserId();
+		long groupId = themeDisplay.getScopeGroupId();
+
+		StringBuilder sb = new StringBuilder();
+
+		Integer numVCards = 0;
+		Integer numImported = 0;
+		Integer numIgnored = 0;
+
+		numVCards = vCards.size();
+
+		for (VCard vcard : vCards) {
+
+			Uid uidObj = vcard.getUid();
+			String uid = null;
+
+			if (Validator.isNotNull(uidObj)) {
+				uid = uidObj.getValue();
+			}
+
+			String card = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
+
+			// Only add the contact, if the vCard's uid does not yet exist
+			// in this scope
+			Contact contact = null;
+
+			try {
+				contact = ContactLocalServiceUtil.getContact(groupId, uid);
+			} catch (NoSuchContactException ignore) {
+				// ignore
+			}
+
+			if (contact == null) {
+				ContactServiceUtil.addContact(userId, groupId, card, uid);
+				numImported++;
+			} else {
+				numIgnored++;
+			}
+
+		}
+
+		sb.append(translate("found-x-vcards", numVCards));
+		sb.append(" ");
+		sb.append(translate("imported-x-vcards", numImported));
+		sb.append(" ");
+		sb.append(translate("ignored-x-vcards", numIgnored));
+
+		return sb.toString();
+	}
+
+	/**
+	 * 
+	 * @param vCards
+	 * @param portletRequest
+	 * @return
+	 * @since 1.0.2
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public static String importVCards(List<VCard> vCards,
+			PortletRequest portletRequest) throws PortalException, SystemException {
+
+		HttpServletRequest request = PortalUtil
+				.getHttpServletRequest(portletRequest);
+
+		return importVcards(vCards, request);
+
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 * @since 1.0.2
+	 */
+	public static String translate(String key) {
+		return translate(key, null);
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @param object
+	 * @return
+	 * @since 1.0.2
+	 */
+	public static String translate(String key, Object object) {
+		return translate(key, new Object[] { object });
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @param objects
+	 * @return
+	 * @since 1.0.2
+	 */
+	public static String translate(String key, Object[] objects) {
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("Language");
+			return MessageFormat.format(bundle.getString(key), objects);
+		} catch (MissingResourceException mre) {
+			log.warn(mre.getMessage());
+			return key;
+		}
 	}
 
 }

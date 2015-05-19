@@ -32,8 +32,8 @@ import ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2015-05-18 21:25
- * @version 1.0.1
+ * @modified 2015-05-19 14:35
+ * @version 1.0.2
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -55,27 +55,7 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	public Contact addContact(long userId, long groupId, String card, String uid)
 			throws PortalException, SystemException {
 
-		User user = userPersistence.findByPrimaryKey(userId);
-		Date now = new Date();
-
-		long contactId = counterLocalService.increment();
-
-		Contact contact = contactPersistence.create(contactId);
-
-		contact.setCompanyId(user.getCompanyId());
-		contact.setGroupId(groupId);
-		contact.setUserId(user.getUserId());
-		contact.setUserName(user.getFullName());
-		contact.setCreateDate(now);
-		contact.setModifiedDate(now);
-
-		// TODO: validate the vCard string
-		contact.setCard(card);
-		contact.setUid(uid);
-
-		contactPersistence.update(contact);
-
-		return contact;
+		return saveContact(userId, groupId, 0, card, uid); 
 	}
 
 	/**
@@ -99,8 +79,8 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	 * 
 	 * @since 1.0.0
 	 */
-	public Contact getContact(long groupId, String uid)
-			throws PortalException, SystemException {
+	public Contact getContact(long groupId, String uid) throws PortalException,
+			SystemException {
 
 		return contactPersistence.findByG_U(groupId, uid);
 
@@ -134,23 +114,21 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	 */
 	public Contact saveContact(long userId, long groupId, long id, String card,
 			String uid) throws PortalException, SystemException {
-		
-		log.info("uid = " + uid);
 
 		User user = userPersistence.findByPrimaryKey(userId);
 		Date now = new Date();
-		Contact contact = null; 
-
+		Contact contact = null;
+		
 		if (id > 0) {
-			contact = contactLocalService.getContact(id); 
+			contact = contactLocalService.getContact(id);
+		} else {
+			id = counterLocalService.increment();
+			contact = contactPersistence.create(id);
 			contact.setCompanyId(user.getCompanyId());
 			contact.setGroupId(groupId);
 			contact.setUserId(user.getUserId());
 			contact.setUserName(user.getFullName());
 			contact.setCreateDate(now);
-		} else {
-			id = counterLocalService.increment();
-			contact = contactPersistence.create(id);
 		}
 
 		contact.setModifiedDate(now);
