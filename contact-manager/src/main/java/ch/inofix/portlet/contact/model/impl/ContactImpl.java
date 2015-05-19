@@ -66,8 +66,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-18 22:57
- * @version 1.0.1
+ * @modified 2015-05-19 15:21
+ * @version 1.0.2
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -479,25 +479,6 @@ public class ContactImpl extends ContactBaseImpl {
 	 * @return
 	 * @since 1.0.0
 	 */
-	public String getFamily() {
-
-		String family = "";
-
-		StructuredName sn = getVCard().getStructuredName();
-
-		if (sn != null) {
-			family = sn.getFamily();
-		}
-
-		return family;
-
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
 	public String getFormattedName() {
 
 		String formattedName = "";
@@ -546,25 +527,6 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return sb.toString();
-
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getGiven() {
-
-		String given = "";
-
-		StructuredName sn = getVCard().getStructuredName();
-
-		if (sn != null) {
-			given = sn.getGiven();
-		}
-
-		return given;
 
 	}
 
@@ -938,7 +900,7 @@ public class ContactImpl extends ContactBaseImpl {
 
 		StringBuilder sb = new StringBuilder();
 
-		// TODO: How must we handle multiple titles?
+		// TODO: How do we handle multiple titles?
 		List<Title> titles = getVCard().getTitles();
 		if (titles != null) {
 			for (Title title : titles) {
