@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-05-20 15:29 by Christian Berndt
- * Version:     1.0.1
+ * Modified:    2015-05-20 18:52 by Christian Berndt
+ * Version:     1.0.2
  *
  */
 
@@ -19,6 +19,10 @@
 .portlet-contact-manager .contact-search .control-group,
 .portlet-contact-manager .row-fluid form {
 	margin-bottom: 0; 
+}
+
+.portlet-contact-manager a.remove-value {
+	margin-left: 10px;
 }
  
 .portlet-contact-manager .note {

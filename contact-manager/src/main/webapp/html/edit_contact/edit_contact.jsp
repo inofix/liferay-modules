@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-08 18:02 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-20 17:54 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -17,7 +17,6 @@
 <%@page import="ezvcard.parameter.ImppType"%>
 <%@page import="ezvcard.parameter.TelephoneType"%>
 <%@page import="ezvcard.property.Kind"%>
-
 
 <%
 	// TODO: Make the emailTypes configurable
@@ -63,7 +62,7 @@
 <%
 	for (String snField : snFields) {
 %>
-<aui:input name="<%=snField%>" bean="<%=contact%>"
+<aui:input name="<%=snField%>" bean="<%=contact_%>"
 	cssClass='<%=snField.replace(".", "-") + "-twin"%>' type="hidden" />
 <%
 	}
@@ -73,26 +72,22 @@
 	<aui:container>
 		<aui:row>
 			<aui:col width="50">
-				<aui:input name="formattedName" bean="<%=contact%>"
+				<aui:input name="formattedName" bean="<%=contact_%>"
 					inlineField="true" />
 				<aui:button name="structuredNameBtn" value="structured-name"
 					cssClass="btn" />
 			</aui:col>
 			<aui:col width="50">
-				<aui:input name="nickname" bean="<%=contact%>" />
+				<aui:input name="nickname" bean="<%=contact_%>" />
 			</aui:col>
 		</aui:row>
-		<%-- 		<aui:row> --%>
-		<%-- 			<aui:input classPK="<%=contact.getId()%>" name="categories" --%>
-		<%-- 				type="assetCategories" /> --%>
-		<%-- 		</aui:row> --%>
 	</aui:container>
 </aui:fieldset>
 
 <aui:fieldset label="email">
 	<aui:container>
 		<%
-			List<EmailDTO> emails = contact.getEmails();
+			List<EmailDTO> emails = contact_.getEmails();
 
 			for (EmailDTO email : emails) {
 		%>
@@ -110,6 +105,11 @@
 				</aui:select>
 				<aui:input name="email.address" inlineField="true"
 					value="<%=email.getAddress()%>" label="" />
+					
+                <a class="remove-value" href="javascript:;">
+                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
+                </a>
+
 			</aui:col>
 		</aui:row>
 		<%
@@ -135,7 +135,7 @@
 <aui:fieldset label="phone">
 	<aui:container>
 		<%
-			List<PhoneDTO> phones = contact.getPhones(); 
+			List<PhoneDTO> phones = contact_.getPhones(); 
 				        
             for (PhoneDTO phone : phones) {
 		%>
@@ -153,6 +153,11 @@
 				</aui:select>
 				<aui:input name="phone.number" inlineField="true"
 					value="<%=phone.getNumber()%>" label="" />
+					
+                <a class="remove-value" href="javascript:;">
+                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
+                </a>
+                
 			</aui:col>
 		</aui:row>
 		<%
@@ -178,7 +183,7 @@
 <aui:fieldset label="instant-messaging">
 	<aui:container>
 		<%
-			List<ImppDTO> impps = contact.getImpps();
+			List<ImppDTO> impps = contact_.getImpps();
 				                        
             for (ImppDTO impp : impps) {
 		%>
@@ -206,6 +211,9 @@
 				</aui:select>
 				<aui:input name="impp.uri" inlineField="true"
 					value="<%=impp.getUri()%>" label="" />
+                <a class="remove-value" href="javascript:;">
+                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
+                </a>
 			</aui:col>
 		</aui:row>
 		<%
@@ -243,7 +251,7 @@
             for (String kind : kinds) {
         %>
         <aui:option value="<%=kind%>" label="<%=kind%>"
-            selected="<%=kind.equalsIgnoreCase(contact.getKind())%>" />
+            selected="<%=kind.equalsIgnoreCase(contact_.getKind())%>" />
         <%
             }
         %>
@@ -256,7 +264,7 @@
 	<%
 		for (String snField : snFields) {
 	%>
-	<aui:input name="<%=snField%>" bean="<%=contact%>"
+	<aui:input name="<%=snField%>" bean="<%=contact_%>"
 		cssClass='<%=snField.replace(".", "-")%>' useNamespace="false" />
 	<%
 		}

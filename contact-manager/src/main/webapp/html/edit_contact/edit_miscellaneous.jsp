@@ -2,15 +2,15 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 Christian Berndt
-    Modified:   2015-05-16 20:06 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-20 18:11 by Christian Berndt
+    Version:    1.0.1
 --%>
 
-
-<%@page import="java.util.TimeZone"%>
 <%@ include file="/html/edit_contact/init.jsp"%>
 
 <%-- Import required classes --%>
+<%@page import="java.util.TimeZone"%>
+
 <%@page import="ch.inofix.portlet.contact.dto.ExpertiseDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.HobbyDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.InterestDTO"%>
@@ -37,7 +37,7 @@
 <aui:fieldset label="expertise">
 	<aui:container>
 		<%
-			List<ExpertiseDTO> expertises = contact.getExpertises();
+			List<ExpertiseDTO> expertises = contact_.getExpertises();
 
 					for (ExpertiseDTO expertise : expertises) {
 		%>
@@ -57,6 +57,9 @@
 						}
 					%>
 				</aui:select>
+				<a class="remove-value" href="javascript:;">
+                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
+                </a>
 			</aui:col>
 		</aui:row>
 		<%
@@ -73,7 +76,7 @@
 					<%
 						}
 					%>
-				</aui:select>
+				</aui:select>				
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -82,7 +85,7 @@
 <aui:fieldset label="hobbies">
 	<aui:container>
 		<%
-			List<HobbyDTO> hobbies = contact.getHobbies();
+			List<HobbyDTO> hobbies = contact_.getHobbies();
 
 					for (HobbyDTO hobby : hobbies) {
 		%>
@@ -102,6 +105,9 @@
 						}
 					%>
 				</aui:select>
+                <a class="remove-value" href="javascript:;">
+                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
+                </a>
 			</aui:col>
 		</aui:row>
 		<%
@@ -128,7 +134,7 @@
 <aui:fieldset label="interests">
 	<aui:container>
 		<%
-			List<InterestDTO> interests = contact.getInterests();
+			List<InterestDTO> interests = contact_.getInterests();
 
 					for (InterestDTO interest : interests) {
 		%>
@@ -148,6 +154,9 @@
 						}
 					%>
 				</aui:select>
+                <a class="remove-value" href="javascript:;">
+                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
+                </a>
 			</aui:col>
 		</aui:row>
 		<%
@@ -180,7 +189,7 @@
 						for (String timezone : timezones) {
 					%>
 					<aui:option value="<%=timezone%>" label="<%=timezone%>"
-						selected="<%=timezone.equalsIgnoreCase(contact.getTimezone())%>" />
+						selected="<%=timezone.equalsIgnoreCase(contact_.getTimezone())%>" />
 					<%
 						}
 					%>
@@ -193,14 +202,14 @@
 <aui:fieldset label="related-assets">
 	<liferay-ui:input-asset-links
 		className="<%= Contact.class.getName() %>"
-		classPK="<%= contact.getContactId() %>" />
+		classPK="<%= contact_.getContactId() %>" />
 </aui:fieldset>
 
 <aui:model-context model="<%= Contact.class %>"/>
 
 <aui:fieldset label="categorization">
-	<aui:input classPK="<%=contact.getContactId()%>" name="categories"
+	<aui:input classPK="<%=contact_.getContactId()%>" name="categories"
 		type="assetCategories" />
-	<aui:input classPK="<%=contact.getContactId()%>" name="tags"
+	<aui:input classPK="<%=contact_.getContactId()%>" name="tags"
 		type="assetTags" />
 </aui:fieldset>
