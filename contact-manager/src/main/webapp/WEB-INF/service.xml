@@ -4,8 +4,8 @@
     service.xml: Configuration of Liferay's Service-Builder 
 
     Created: 2015-05-07 14:48 by Christian Berndt 
-    Modified: 2015-05-07 14:48 by Christian Berndt 
-    Version: 1.0.0 
+    Modified: 2015-05-19 16:26 by Christian Berndt 
+    Version: 1.0.1
 -->
 
 <service-builder package-path="ch.inofix.portlet.contact">
@@ -15,7 +15,7 @@
 
         <!-- PK fields -->
 
-        <column name="id" type="long" primary="true" />
+        <column name="contactId" type="long" primary="true" />
         
         <!-- Group instance -->
 
@@ -31,10 +31,7 @@
 
         <!-- Other fields -->
 
-        <!-- accessor attribute after the model of JournalArticle.articleId -->
-        <column name="contactId" type="String" accessor="true" />
-        <column name="parentContactId" type="String" />
-        <column name="version" type="double" />
+        <column name="parentContactId" type="long" />
 
         <column name="card" type="String" />
         <column name="uid" type="String" />
@@ -44,19 +41,19 @@
 
         <order>
             <order-column name="contactId" order-by="asc" />
-            <order-column name="version" order-by="desc" />
         </order>
 
         <!-- Finder methods -->
-
-        <finder name="ContactId" return-type="Collection">
-            <finder-column name="contactId" />
-        </finder>
-
+        
         <finder return-type="Contact" name="G_U" unique="true">
             <finder-column name="groupId" />
             <finder-column name="uid" />
         </finder>
+
+        <!-- Assets -->
+        
+        <reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
 
     </entity>
 </service-builder>

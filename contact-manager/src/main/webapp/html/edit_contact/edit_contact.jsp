@@ -69,19 +69,6 @@
 	}
 %>
 
-<aui:fieldset label="kind">
-	<aui:select name="kind" title="kind-help" label="" >
-		<%
-			for (String kind : kinds) {
-		%>
-		<aui:option value="<%=kind%>" label="<%=kind%>"
-			selected="<%=kind.equalsIgnoreCase(contact.getKind())%>" />
-		<%
-			}
-		%>
-	</aui:select>
-</aui:fieldset>
-
 <aui:fieldset label="name">
 	<aui:container>
 		<aui:row>
@@ -248,6 +235,19 @@
 			</aui:col>
 		</aui:row>
 	</aui:container>
+</aui:fieldset>
+
+<aui:fieldset label="kind">
+    <aui:select name="kind" title="kind-help" label="" >
+        <%
+            for (String kind : kinds) {
+        %>
+        <aui:option value="<%=kind%>" label="<%=kind%>"
+            selected="<%=kind.equalsIgnoreCase(contact.getKind())%>" />
+        <%
+            }
+        %>
+    </aui:select>
 </aui:fieldset>
 
 <div id='<portlet:namespace/>structuredNamePopover'

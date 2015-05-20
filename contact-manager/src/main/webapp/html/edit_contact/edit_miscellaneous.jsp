@@ -189,3 +189,18 @@
 		</aui:row>
 	</aui:container>
 </aui:fieldset>
+
+<aui:fieldset label="related-assets">
+	<liferay-ui:input-asset-links
+		className="<%= Contact.class.getName() %>"
+		classPK="<%= contact.getContactId() %>" />
+</aui:fieldset>
+
+<aui:model-context model="<%= Contact.class %>"/>
+
+<aui:fieldset label="categorization">
+	<aui:input classPK="<%=contact.getContactId()%>" name="categories"
+		type="assetCategories" />
+	<aui:input classPK="<%=contact.getContactId()%>" name="tags"
+		type="assetTags" />
+</aui:fieldset>

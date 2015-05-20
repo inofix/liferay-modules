@@ -2,12 +2,12 @@ package ch.inofix.portlet.contact.portlet;
 
 import java.io.File;
 import java.util.List;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.model.Contact;
-import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
 
 import com.liferay.portal.kernel.log.Log;
@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
@@ -32,8 +34,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-07 15:38
- * @version 1.0.0
+ * @modified 2015-05-19 23:01
+ * @version 1.0.1
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -54,11 +56,9 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		log.info("Executing deleteContact().");
 
-		// TODO: use contactId instead of id
-		String contactId = ParamUtil.getString(actionRequest, "contactId");
-		long id = ParamUtil.getLong(actionRequest, "id");
+		long contactId = ParamUtil.getLong(actionRequest, "contactId");
 
-		Contact contact = ContactLocalServiceUtil.deleteContact(id);
+		Contact contact = ContactServiceUtil.deleteContact(contactId);
 
 		actionRequest.setAttribute("CONTACT", contact);
 
@@ -79,27 +79,23 @@ public class ContactManagerPortlet extends MVCPortlet {
 	public void editContact(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
-		log.info("Executing editContact().");
-
 		String backURL = ParamUtil.getString(actionRequest, "backURL");
-		String contactId = ParamUtil.getString(actionRequest, "contactId");
-		long id = ParamUtil.getLong(actionRequest, "id");
+		long contactId = ParamUtil.getLong(actionRequest, "contactId");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
 
-		// TODO: use remote service
-		// TODO: use getContact(contactId)
 		Contact contact = null;
 
-		if (id > 0) {
-			contact = ContactLocalServiceUtil.getContact(id);
+		if (contactId > 0) {
+			contact = ContactServiceUtil.getContact(contactId);
 		} else {
-			contact = ContactLocalServiceUtil.createContact(0);
+			contact = ContactServiceUtil.createContact();
 		}
 
 		actionRequest.setAttribute("CONTACT", contact);
 
 		actionResponse.setRenderParameter("backURL", backURL);
-		actionResponse.setRenderParameter("id", String.valueOf(id));
+		actionResponse.setRenderParameter("contactId",
+				String.valueOf(contactId));
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 	}
 
@@ -146,8 +142,6 @@ public class ContactManagerPortlet extends MVCPortlet {
 	public void saveContact(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
-		log.info("Executing saveContact().");
-
 		HttpServletRequest request = PortalUtil
 				.getHttpServletRequest(actionRequest);
 
@@ -158,18 +152,15 @@ public class ContactManagerPortlet extends MVCPortlet {
 		long groupId = themeDisplay.getScopeGroupId();
 
 		String backURL = ParamUtil.getString(actionRequest, "backURL");
-		String contactId = ParamUtil.getString(actionRequest, "contactId");
-		long id = ParamUtil.getLong(actionRequest, "id");
+		long contactId = ParamUtil.getLong(actionRequest, "contactId");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
 
 		VCard vCard = null;
 		String uid = null;
 
-		// TODO: use contactId
-		if (id > 0) {
+		if (contactId > 0) {
 
-			// TODO: use remote service
-			Contact contact = ContactLocalServiceUtil.getContact(id);
+			Contact contact = ContactServiceUtil.getContact(contactId);
 			uid = contact.getUid();
 			vCard = contact.getVCard();
 
@@ -178,8 +169,6 @@ public class ContactManagerPortlet extends MVCPortlet {
 			vCard = new VCard();
 			vCard.setUid(Uid.random());
 			uid = vCard.getUid().getValue();
-
-			log.info("uid = " + uid);
 
 		}
 
@@ -191,19 +180,28 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
 
-		log.info("card = " + card);
-
 		// Save the contact
-		// TODO: use contactId
-		Contact contact = ContactServiceUtil.saveContact(userId, groupId, id,
-				card, uid);
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				Contact.class.getName(), actionRequest);
+
+		Contact contact = null;
+
+		if (contactId > 0) {
+			contact = ContactServiceUtil.updateContact(userId, groupId,
+					contactId, card, uid, serviceContext);
+		} else {
+			contact = ContactServiceUtil.addContact(userId, groupId, card, uid,
+					serviceContext);
+		}
 
 		actionRequest.setAttribute("CONTACT", contact);
 
 		SessionMessages.add(actionRequest, "request_processed",
 				PortletUtil.translate("successfully-updated-the-contact"));
 
-		actionResponse.setRenderParameter("id", String.valueOf(id));
+		actionResponse.setRenderParameter("contactId",
+				String.valueOf(contactId));
 		actionResponse.setRenderParameter("backURL", backURL);
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 

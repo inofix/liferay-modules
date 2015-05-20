@@ -1,10 +1,23 @@
 <?xml version="1.0"?>
-<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
 
+<!-- 
+    liferay-portlet.xml: Main configuration file of the 
+    contact-manager portlet.
+    
+    Created:    2015-05-19 17:17 by Christian Berndt
+    Modified:   2015-05-19 17:17 by Christian Berndt
+    Version:    1.0.0
+ -->
 <liferay-portlet-app>
 	<portlet>
 		<portlet-name>contact-manager</portlet-name>
 		<icon>/icon.png</icon>
+        <indexer-class>ch.inofix.portlet.contact.search.ContactIndexer</indexer-class>
+        <control-panel-entry-category>site_administration.content</control-panel-entry-category>
+        <control-panel-entry-weight>100</control-panel-entry-weight>
+        <asset-renderer-factory>ch.inofix.portlet.contact.asset.ContactAssetRendererFactory</asset-renderer-factory>
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
 	</portlet>

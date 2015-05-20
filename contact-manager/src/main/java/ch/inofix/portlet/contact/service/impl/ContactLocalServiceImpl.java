@@ -1,15 +1,20 @@
 package ch.inofix.portlet.contact.service.impl;
 
 import java.util.Date;
-import java.util.List;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
-
-import ch.inofix.portlet.contact.NoSuchContactException;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portlet.asset.model.AssetEntry;
+import com.liferay.portlet.asset.model.AssetLinkConstants;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl;
 
@@ -32,8 +37,8 @@ import ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2015-05-19 14:35
- * @version 1.0.2
+ * @modified 2015-05-19 16:09
+ * @version 1.0.3
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -52,27 +57,49 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	/**
 	 * @since 1.0.0
 	 */
-	public Contact addContact(long userId, long groupId, String card, String uid)
-			throws PortalException, SystemException {
+	public Contact addContact(long userId, long groupId, String card,
+			String uid, ServiceContext serviceContext) throws PortalException,
+			SystemException {
 
-		return saveContact(userId, groupId, 0, card, uid); 
+		Contact contact = saveContact(userId, groupId, 0, card, uid,
+				serviceContext);
+
+		// Asset
+
+		resourceLocalService.addResources(contact.getCompanyId(), groupId,
+				userId, Contact.class.getName(), contact.getContactId(), false,
+				true, true);
+
+		updateAsset(userId, contact, serviceContext.getAssetCategoryIds(),
+				serviceContext.getAssetTagNames(),
+				serviceContext.getAssetLinkEntryIds());
+
+		return contact;
 	}
 
 	/**
-	 * Return the contact's latest version.
-	 * 
-	 * @param groupId
-	 * @param contactId
-	 * @since 1.0.0
-	 * @return the contact's latest version.
-	 * @throws SystemException
-	 * @throws NoSuchContactException
+	 * @since 1.0.3
 	 */
-	public Contact getContact(String contactId) throws PortalException,
+	public Contact deleteContact(long contactId) throws PortalException,
 			SystemException {
 
-		return contactPersistence.findByContactId_First(contactId, null);
+		Contact contact = contactPersistence.remove(contactId);
 
+		resourceLocalService.deleteResource(contact.getCompanyId(),
+				Contact.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+				contactId);
+
+		AssetEntry assetEntry = assetEntryLocalService.fetchEntry(
+				Contact.class.getName(), contactId);
+
+		assetLinkLocalService.deleteLinks(assetEntry.getEntryId());
+
+		assetEntryLocalService.deleteEntry(assetEntry);
+
+		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Contact.class);
+		indexer.delete(contact);
+
+		return contact;
 	}
 
 	/**
@@ -87,24 +114,10 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Return all versions of a contact.
-	 * 
-	 * @param contactId
-	 * @return all versions of a contact.
-	 * @since 1.0.0
-	 * @throws SystemException
-	 */
-	public List<Contact> getContacts(String contactId) throws SystemException {
-
-		return contactPersistence.findByContactId(contactId);
-
-	}
-
-	/**
 	 * 
 	 * @param userId
 	 * @param groupId
-	 * @param id
+	 * @param contactId
 	 * @param card
 	 * @param uid
 	 * @return
@@ -112,23 +125,25 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public Contact saveContact(long userId, long groupId, long id, String card,
-			String uid) throws PortalException, SystemException {
+	private Contact saveContact(long userId, long groupId, long contactId,
+			String card, String uid, ServiceContext serviceContext)
+			throws PortalException, SystemException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 		Date now = new Date();
 		Contact contact = null;
-		
-		if (id > 0) {
-			contact = contactLocalService.getContact(id);
+
+		if (contactId > 0) {
+			contact = contactLocalService.getContact(contactId);
 		} else {
-			id = counterLocalService.increment();
-			contact = contactPersistence.create(id);
+			contactId = counterLocalService.increment();
+			contact = contactPersistence.create(contactId);
 			contact.setCompanyId(user.getCompanyId());
 			contact.setGroupId(groupId);
 			contact.setUserId(user.getUserId());
 			contact.setUserName(user.getFullName());
 			contact.setCreateDate(now);
+
 		}
 
 		contact.setModifiedDate(now);
@@ -136,6 +151,7 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 		// TODO: validate the vCard string
 		contact.setCard(card);
 		contact.setUid(uid);
+		contact.setExpandoBridgeAttributes(serviceContext);
 
 		contactPersistence.update(contact);
 
@@ -143,4 +159,76 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
 	}
 
+	/**
+	 * @since 1.0.3
+	 */
+	public void updateAsset(long userId, Contact contact,
+			long[] assetCategoryIds, String[] assetTagNames,
+			long[] assetLinkEntryIds) throws PortalException, SystemException {
+
+		boolean visible = true;
+		// boolean visible = false;
+
+		// if (contact.isApproved()) {
+		// visible = true;
+		// }
+
+		// TODO: What's the classTypeId?
+		long classTypeId = 0;
+		Date startDate = null;
+		Date endDate = null;
+		Date expirationDate = null;
+		// TODO: Is vcard the correct mime-type?
+		String mimeType = "text/vcard";
+		String title = contact.getFullName(true);
+		String description = contact.getFormattedName();
+		String summary = HtmlUtil.extractText(StringUtil.shorten(
+				contact.getFormattedName(), 500));
+		// TODO: What does url mean in this context?
+		String url = null;
+		// TODO: What does layoutUuid mean in this context?
+		String layoutUuid = null;
+		int height = 0;
+		int width = 0;
+		Integer priority = null;
+		boolean sync = false;
+
+		AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId,
+				contact.getGroupId(), contact.getCreateDate(),
+				contact.getModifiedDate(), Contact.class.getName(),
+				contact.getContactId(), contact.getUuid(), classTypeId,
+				assetCategoryIds, assetTagNames, visible, startDate, endDate,
+				expirationDate, mimeType, title, description, summary, url,
+				layoutUuid, height, width, priority, sync);
+
+		assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(),
+				assetLinkEntryIds, AssetLinkConstants.TYPE_RELATED);
+
+		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Contact.class);
+		indexer.reindex(contact);
+	}
+
+	/**
+	 * @since 1.0.0
+	 */
+	public Contact updateContact(long userId, long groupId, long contactId,
+			String card, String uid, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
+		Contact contact = saveContact(userId, groupId, contactId, card, uid,
+				serviceContext);
+
+		// Asset
+
+		resourceLocalService.updateResources(serviceContext.getCompanyId(),
+				serviceContext.getScopeGroupId(), contact.getFullName(),
+				contactId, serviceContext.getGroupPermissions(),
+				serviceContext.getGuestPermissions());
+
+		updateAsset(userId, contact, serviceContext.getAssetCategoryIds(),
+				serviceContext.getAssetTagNames(),
+				serviceContext.getAssetLinkEntryIds());
+
+		return contact;
+	}
 }

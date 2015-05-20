@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
@@ -791,9 +793,12 @@ public class PortletUtil {
 	 * @param portletRequest
 	 * @param vCard
 	 * @return
+	 * @throws SystemException
+	 * @throws PortalException
 	 * @since 1.0.0
 	 */
-	public static VCard getVCard(PortletRequest portletRequest, VCard vCard) {
+	public static VCard getVCard(PortletRequest portletRequest, VCard vCard)
+			throws PortalException, SystemException {
 
 		HttpServletRequest request = PortalUtil
 				.getHttpServletRequest(portletRequest);
@@ -811,7 +816,8 @@ public class PortletUtil {
 	 * @throws SystemException
 	 */
 	public static String importVcards(List<VCard> vCards,
-			HttpServletRequest request) throws PortalException, SystemException {
+			HttpServletRequest request, ServiceContext serviceContext)
+			throws PortalException, SystemException {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay) request
 				.getAttribute(WebKeys.THEME_DISPLAY);
@@ -849,7 +855,8 @@ public class PortletUtil {
 			}
 
 			if (contact == null) {
-				ContactServiceUtil.addContact(userId, groupId, card, uid);
+				ContactServiceUtil.addContact(userId, groupId, card, uid,
+						serviceContext);
 				numImported++;
 			} else {
 				numIgnored++;
@@ -876,12 +883,16 @@ public class PortletUtil {
 	 * @throws SystemException
 	 */
 	public static String importVCards(List<VCard> vCards,
-			PortletRequest portletRequest) throws PortalException, SystemException {
+			PortletRequest portletRequest) throws PortalException,
+			SystemException {
 
 		HttpServletRequest request = PortalUtil
 				.getHttpServletRequest(portletRequest);
 
-		return importVcards(vCards, request);
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				Contact.class.getName(), portletRequest);
+
+		return importVcards(vCards, request, serviceContext);
 
 	}
 

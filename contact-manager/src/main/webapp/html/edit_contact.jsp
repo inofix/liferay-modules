@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-05-18 22:52 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-19 17:01 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -37,8 +37,7 @@
 		<aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
 		<aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
 		<aui:input name="contactId" type="hidden"
-			value="<%=contact.getContactId()%>" />
-        <aui:input name="id" type="hidden" value="<%=contact.getId()%>" />
+			value="<%=String.valueOf(contact.getContactId())%>" />
         <aui:input name="uid" type="hidden" value="<%=contact.getUid() %>" />
 
 		<liferay-ui:form-navigator categorySections="<%=categorySections%>"

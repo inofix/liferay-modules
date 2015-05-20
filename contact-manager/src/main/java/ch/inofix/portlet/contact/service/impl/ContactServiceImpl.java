@@ -1,11 +1,10 @@
 package ch.inofix.portlet.contact.service.impl;
 
-import java.util.List;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.service.ServiceContext;
 
 import ch.inofix.portlet.contact.NoSuchContactException;
 import ch.inofix.portlet.contact.model.Contact;
@@ -31,8 +30,8 @@ import ch.inofix.portlet.contact.service.base.ContactServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactServiceUtil
  * @created 2015-05-07 23:50
- * @modified 2015-05-18 21:53
- * @version 1.0.1
+ * @modified 2015-05-19 16:10
+ * @version 1.0.2
  */
 public class ContactServiceImpl extends ContactServiceBaseImpl {
 	/*
@@ -60,52 +59,47 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public Contact addContact(long userId, long groupId, String card, String uid)
-			throws PortalException, SystemException {
+	public Contact addContact(long userId, long groupId, String card,
+			String uid, ServiceContext serviceContext) throws PortalException,
+			SystemException {
 
 		// TODO: Check ADD permission
-		return ContactLocalServiceUtil.saveContact(userId, groupId, 0, card,
-				uid);
+		return ContactLocalServiceUtil.addContact(userId, groupId, card, uid,
+				serviceContext);
+
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @since 1.0.2
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public Contact createContact() throws PortalException, SystemException {
+
+		// No permission check required
+		return ContactLocalServiceUtil.createContact(0);
 
 	}
 
 	/**
 	 * Delete a specific contact version and return the deleted contact.
 	 * 
-	 * @param id
+	 * @param contactId
 	 * @return the deleted contact
 	 * @since 1.0.0
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public Contact deleteContact(long id) throws PortalException,
-			SystemException {
+	public Contact deleteContact(long contactId)
+			throws PortalException, SystemException {
 
 		// TODO: Check DELETE permission
-		Contact contact = ContactLocalServiceUtil.deleteContact(id);
+		Contact contact = ContactLocalServiceUtil.deleteContact(contactId);
 
 		return contact;
 
-	}
-
-	/**
-	 * @throws SystemException
-	 * @throws NoSuchContactException
-	 * 
-	 */
-	public Contact deleteContact(String contactId) throws PortalException,
-			SystemException {
-
-		List<Contact> contacts = ContactLocalServiceUtil.getContacts(contactId);
-		Contact deleted = getContact(contactId);
-
-		// TODO: Check DELETE permission
-
-		for (Contact contact : contacts) {
-			ContactLocalServiceUtil.deleteContact(contact);
-		}
-
-		return deleted;
 	}
 
 	/**
@@ -117,7 +111,7 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws NoSuchContactException
 	 * @throws SystemException
 	 */
-	public Contact getContact(String contactId) throws PortalException,
+	public Contact getContact(long contactId) throws PortalException,
 			SystemException {
 
 		// TODO: Check VIEW permission
@@ -129,22 +123,23 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * 
 	 * @param userId
 	 * @param groupId
-	 * @param id
+	 * @param contactId
 	 * @param card
 	 * @param uid
+	 * @param serviceContext
 	 * @return
-	 * @since 1.0.1
+	 * @since 1.0.2
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public Contact saveContact(long userId, long groupId, long id, String card,
-			String uid) throws PortalException, SystemException {
+	public Contact updateContact(long userId, long groupId, long contactId,
+			String card, String uid, ServiceContext serviceContext)
+			throws PortalException, SystemException {
 
 		// TODO: Check UPDATE permission
-		return ContactLocalServiceUtil.saveContact(userId, groupId, id, card,
-				uid);
-	}
+		return ContactLocalServiceUtil.updateContact(userId, groupId,
+				contactId, card, uid, serviceContext);
 
-	// TODO: Add updateContact()
+	}
 
 }

@@ -9,7 +9,6 @@
 <%
 	// TODO: Make the columns configurable
 	String[] columns = new String[] {
-			// id,
 			// contactId,
 			"fullName",
 			//"emailHome", 
@@ -22,10 +21,6 @@
 	for (String column : columns) {
 %>
 
-<c:if test='<%="id".equals(column)%>'>
-	<liferay-ui:search-container-column-text property="id" name="id"
-		orderable="true" href="<%=detailURL%>" />
-</c:if>
 <c:if test='<%="contactId".equals(column)%>'>
 	<liferay-ui:search-container-column-text property="contactId"
 		name="contact-id" orderable="true" href="<%=detailURL%>" />
