@@ -6,7 +6,7 @@
  * Version:     1.0.2
  *
  */
-
+ 
 .portlet-contact-manager .alert {
 	margin-top: 1.5em;
 }
@@ -28,6 +28,7 @@
 .portlet-contact-manager .note {
 	   min-height: 100px;
 } 
+
 .portlet-contact-manager .note,
 .portlet-contact-manager .v-card {
     min-width: 500px;

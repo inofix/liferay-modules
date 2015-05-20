@@ -8,6 +8,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import ch.inofix.portlet.contact.model.Contact;
+import ch.inofix.portlet.contact.service.permission.ContactPermission;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portlet.asset.model.BaseAssetRenderer;
 
@@ -23,19 +25,19 @@ import com.liferay.portlet.asset.model.BaseAssetRenderer;
  * 
  * @author Christian Berndt
  * @created 2015-05-19 17:25
- * @modified 2015-05-19 17:25
- * @version 1.0.0
+ * @modified 2015-05-20 21:16
+ * @version 1.0.1
  *
  */
 public class ContactAssetRenderer extends BaseAssetRenderer {
-	
-	private static Log log = LogFactoryUtil
-			.getLog(ContactAssetRenderer.class.getName());
+
+	private static Log log = LogFactoryUtil.getLog(ContactAssetRenderer.class
+			.getName());
 
 	private Contact contact;
 
 	public ContactAssetRenderer(Contact contact) {
-		
+
 		log.info("Init ContactAssetRenderer.");
 		this.contact = contact;
 	}
@@ -102,21 +104,17 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 	@Override
 	public boolean hasEditPermission(PermissionChecker permissionChecker)
 			throws PortalException, SystemException {
-		
-		return true; 
-		// TODO. Check permission
-//		return ContactPermission.contains(permissionChecker,
-//				contact.getContactId(), ActionKeys.UPDATE);
+
+		return ContactPermission.contains(permissionChecker,
+				contact.getContactId(), ActionKeys.UPDATE);
 	}
 
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker)
 			throws PortalException, SystemException {
 
-		return true; 
-		// TODO. Check permission
-//		return ContactPermission.contains(permissionChecker, contact.getContactId(),
-//				ActionKeys.VIEW);
+		return ContactPermission.contains(permissionChecker,
+				contact.getContactId(), ActionKeys.VIEW);
 	}
 
 	@Override
@@ -128,8 +126,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 	public String render(RenderRequest renderRequest,
 			RenderResponse renderResponse, String template) throws Exception {
 
-		if (template.equals(TEMPLATE_ABSTRACT)
-				|| template.equals(TEMPLATE_FULL_CONTENT)) {
+		if (template.equals(TEMPLATE_FULL_CONTENT)) {
 
 			renderRequest.setAttribute("CONTACT", contact);
 
