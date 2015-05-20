@@ -16,3 +16,12 @@ please use the upcoming releases of the modules from the liferay marketplace.
 1. (if necessary) run the service-builder goal (mvn liferay:build-service install)
 1. install or auto-deploy the module to your liferay-installation (mvn package liferay:deploy)
 
+## Module Description
+
+### Contact Manager ###
+
+The Contact Manager Portlet is a vCard 4.0 compliant contact-manager with the following features: 
+
+* Import- and export of vCards from file
+* Editing of all standard fields and the extensions defined in <a href="https://tools.ietf.org/html/rfc6715" target="_blank">RFC 6715</a>
+* Integration into Liferay's asset-framework
