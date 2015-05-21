@@ -3,7 +3,7 @@
     
     Created:    2015-05-08 18:02 by Christian Berndt
     Modified:   2015-05-21 12:39 by Christian Berndt
-    Version:    1.0.2
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -63,7 +63,7 @@
 	for (String snField : snFields) {
 %>
 <aui:input name="<%=snField%>" bean="<%=contact_%>"
-	cssClass='<%=snField.replace(".", "-") + "-twin"%>' type="hidden" />
+	cssClass='<%=snField.replace(".", "-") %>' type="hidden" />
 <%
 	}
 %>
@@ -266,7 +266,7 @@
 		for (String snField : snFields) {
 	%>
 	<aui:input name="<%=snField%>" bean="<%=contact_%>"
-		cssClass='<%=snField.replace(".", "-")%>' useNamespace="false" />
+		cssClass='<%=snField.replace(".", "-") + "-twin"%>' useNamespace="false" />
 	<%
 		}
 	%>
@@ -275,11 +275,11 @@
 
 <script>
 	YUI().use('aui-popover', 'widget-anim', function(A) {
-		var triggerAnim = A.one('#<portlet:namespace/>structuredNameBtn');
+		var triggerBtn = A.one('#<portlet:namespace/>structuredNameBtn');
 
-		var popoverAnim = new A.Popover({
+		var popover = new A.Popover({
 			align : {
-				node : triggerAnim,
+				node : triggerBtn,
 				points : [ A.WidgetPositionAlign.RC, A.WidgetPositionAlign.LC ]
 			},
 			headerContent : '<liferay-ui:message key="structured-name"/>',
@@ -292,11 +292,17 @@
 
 		var sn = A.one('#<portlet:namespace/>structuredNamePopover');
 
-		popoverAnim.set("bodyContent", sn);
+		popover.set("bodyContent", sn);
+		
+        popover.get('boundingBox').on('clickoutside', function() {
+	       	popover.set('visible', false); 
+        });
+        
+        triggerBtn.on('click', function(e) {
+            popover.set('visible', !popover.get('visible'));
+            e.stopPropagation();
+        });
 
-		triggerAnim.on('click', function() {
-			popoverAnim.set('visible', !popoverAnim.get('visible'));
-		});
 	});
 </script>
 
@@ -308,11 +314,50 @@
 		inputs.each(function(input) {
 			input.on('change', function(e) {
 				var selector = 'input.'
-						+ input.get('name').replace('.', '-')
-						+ '-twin';
+						+ input.get('name').replace('.', '-');
 				var twin = Y.one(selector);
 				twin.set('value', input.get('value'));
 			});
 		});
 	});
+</script>
+
+<%-- Pass the family- and given name from the  --%>
+<%-- formatted name field to the respective    --%>
+<%-- fields of the structuredName popup.       --%>
+<script>
+    YUI().use('event',function(Y) {
+    	
+        var sn = Y.one('#<portlet:namespace/>formattedName');
+        var family = Y.one('.structuredName-family');
+        var familyTwin = Y.one('.structuredName-family-twin');
+        var given = Y.one('.structuredName-given');
+        var givenTwin = Y.one('.structuredName-given-twin');
+        
+        sn.on('change', function(e) {
+        	var str = sn.get('value');
+        	var idx = str.indexOf(','); 
+        	var firstname = ''; 
+        	var lastname = ''; 
+        	if (idx > 0) {
+	        	var tokens = str.split(',');
+	        	firstname = tokens[1].trim(); 
+	        	lastname = tokens[0].trim();
+        	} else {
+                var tokens = str.split(' ');
+                firstname = tokens[0].trim(); 
+                if (tokens.length > 1) {
+                    lastname = tokens[1].trim(); 
+                }
+        	}
+            if (family.get('value') == '') {
+                family.set('value', lastname);
+                familyTwin.set('value', lastname);
+            }
+            if (given.get('value') == '') {
+                given.set('value', firstname);
+                givenTwin.set('value', firstname); 
+            }
+        });
+    });
 </script>
