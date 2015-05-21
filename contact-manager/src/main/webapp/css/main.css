@@ -2,13 +2,13 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-05-20 18:52 by Christian Berndt
- * Version:     1.0.2
+ * Modified:    2015-05-21 12:38 by Christian Berndt
+ * Version:     1.0.3
  *
  */
  
 .portlet-contact-manager .alert {
-	margin-top: 1.5em;
+	margin-top: 1.5em; /* The same as lfr-search-container */
 }
 
 .portlet-contact-manager fieldset .container-fluid {
@@ -21,8 +21,16 @@
 	margin-bottom: 0; 
 }
 
-.portlet-contact-manager a.remove-value {
-	margin-left: 10px;
+.portlet-contact-manager form .btn {
+	margin-top: -6px;
+}
+
+.portlet-contact-manager .form-navigator .btn {
+	margin-top: 0; 
+}
+
+.portlet-contact-manager .btn-add {
+    font-size: 16px;
 }
  
 .portlet-contact-manager .note {
@@ -31,7 +39,7 @@
 
 .portlet-contact-manager .note,
 .portlet-contact-manager .v-card {
-    min-width: 500px;
+    min-width: 490px;
 }
 
 .portlet-contact-manager .v-card {
@@ -39,7 +47,7 @@
 }
 
 .portlet-contact-manager .url-address {
-    min-width: 500px;
+    min-width: 490px;
 }
 
 @media (max-width: 979px) {
@@ -47,7 +55,7 @@
     .portlet-contact-manager .v-card,
     .portlet-contact-manager .url-address
     {
-       min-width: 500px;
+       min-width: 490px;
     }
 }   
    

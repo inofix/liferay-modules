@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-20 17:54 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-21 12:39 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -106,9 +106,7 @@
 				<aui:input name="email.address" inlineField="true"
 					value="<%=email.getAddress()%>" label="" />
 					
-                <a class="remove-value" href="javascript:;">
-                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
-                </a>
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
 			</aui:col>
 		</aui:row>
@@ -127,6 +125,9 @@
 					%>
 				</aui:select>
 				<aui:input name="email.address" inlineField="true" label="" />
+				
+				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+				
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -154,9 +155,7 @@
 				<aui:input name="phone.number" inlineField="true"
 					value="<%=phone.getNumber()%>" label="" />
 					
-                <a class="remove-value" href="javascript:;">
-                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
-                </a>
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
                 
 			</aui:col>
 		</aui:row>
@@ -175,6 +174,7 @@
 					%>
 				</aui:select>
 				<aui:input name="phoneNumber" inlineField="true" label="" />
+				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />				
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -211,9 +211,9 @@
 				</aui:select>
 				<aui:input name="impp.uri" inlineField="true"
 					value="<%=impp.getUri()%>" label="" />
-                <a class="remove-value" href="javascript:;">
-                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
-                </a>
+					
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
 			</aui:col>
 		</aui:row>
 		<%
@@ -240,6 +240,7 @@
 					%>
 				</aui:select>
 				<aui:input name="impp.uri" inlineField="true" label="" />
+                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
 	</aui:container>

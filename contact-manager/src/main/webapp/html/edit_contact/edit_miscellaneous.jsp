@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 Christian Berndt
-    Modified:   2015-05-20 18:11 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-21 12:40 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -57,9 +57,9 @@
 						}
 					%>
 				</aui:select>
-				<a class="remove-value" href="javascript:;">
-                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
-                </a>
+				
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
 			</aui:col>
 		</aui:row>
 		<%
@@ -77,6 +77,7 @@
 						}
 					%>
 				</aui:select>				
+                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -105,9 +106,9 @@
 						}
 					%>
 				</aui:select>
-                <a class="remove-value" href="javascript:;">
-                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
-                </a>
+
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
 			</aui:col>
 		</aui:row>
 		<%
@@ -125,6 +126,7 @@
 						}
 					%>
 				</aui:select>
+                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -154,9 +156,9 @@
 						}
 					%>
 				</aui:select>
-                <a class="remove-value" href="javascript:;">
-                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
-                </a>
+				
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
 			</aui:col>
 		</aui:row>
 		<%
@@ -174,6 +176,7 @@
 						}
 					%>
 				</aui:select>
+                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
 	</aui:container>

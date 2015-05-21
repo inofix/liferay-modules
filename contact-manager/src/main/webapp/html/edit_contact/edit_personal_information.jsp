@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-20 18:15 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-21 12:41 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -68,9 +68,8 @@
 				<aui:input name="url.address" inlineField="true" label=""
 					cssClass="url-address" value="<%=url.getAddress()%>" />
 					
-				<a class="remove-value" href="javascript:;"> 
-				    <img src='<%=themeDisplay.getPathThemeImages()+ "/common/close.png"%>' title="remove" />
-				</a>
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
 			</aui:col>
 		</aui:row>
 		<%
@@ -89,6 +88,7 @@
                 </aui:select>
 				<aui:input name="url.address" inlineField="true" label=""
 					cssClass="url-address" />
+		        <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -105,9 +105,9 @@
             <aui:col width="100">
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" value="<%= calendarRequestUri.getUri() %>" />
-                <a class="remove-value" href="javascript:;"> 
-                    <img src='<%=themeDisplay.getPathThemeImages()+ "/common/close.png"%>' title="remove" />
-                </a>
+                    
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
             </aui:col>           
         </aui:row>
         <%
@@ -117,6 +117,7 @@
             <aui:col width="100">
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" />
+                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
             </aui:col>
         </aui:row>
     </aui:container>
@@ -133,9 +134,9 @@
             <aui:col width="100">
                 <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" value="<%= calendarUri.getUri() %>" />
-	            <a class="remove-value" href="javascript:;"> 
-	                <img src='<%=themeDisplay.getPathThemeImages()+ "/common/close.png"%>' title="remove" />
-	            </a>
+                    
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
             </aui:col>            
         </aui:row>
 
@@ -146,6 +147,7 @@
             <aui:col width="100">
                 <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" />
+                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
             </aui:col>
         </aui:row>
     </aui:container>

@@ -2,8 +2,8 @@
     edit_mailing_address.jsp: Edit the contact's mailing addresses. 
     
     Created:    2015-05-11 18:30 by Christian Berndt
-    Modified:   2015-05-20 18:04 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-21 12:40 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -56,9 +56,7 @@
 					value="<%=address.getCountry()%>" />
 			</aui:col>
 			<aui:col span="1">
-	            <a class="remove-value pull-right" href="javascript:;">
-                    <img src='<%= themeDisplay.getPathThemeImages() + "/common/close.png" %>' title="remove" />
-                </a>
+                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 			</aui:col>
 		</aui:row>
 
@@ -72,7 +70,7 @@
 	<aui:container>
 
 		<aui:row>
-			<aui:col width="50">
+			<aui:col span="5">
 				<aui:input name="address.streetAddress" type="textarea"
 					cssClass="address" label="street" />
 				<aui:input name="address.poBox" label="po-box" />
@@ -86,11 +84,14 @@
 					%>
 				</aui:select>
 			</aui:col>
-			<aui:col width="50">
+			<aui:col span="6">
 				<aui:input name="address.locality" label="city" />
 				<aui:input name="address.postalCode" label="postal-code" />
 				<aui:input name="address.region" label="region" />
 				<aui:input name="address.country" label="country"/>
+			</aui:col>
+			<aui:col span="1">
+                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
 
