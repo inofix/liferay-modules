@@ -83,8 +83,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-05-19 14:37
- * @version 1.0.2
+ * @modified 2015-05-21 18:00
+ * @version 1.0.3
  *
  */
 public class PortletUtil {
@@ -715,14 +715,11 @@ public class PortletUtil {
 			String snSuffix = ParamUtil.getString(request,
 					"structuredName.suffix");
 
-			structuredName.removeParameter("additional");
 			structuredName.addAdditional(snAdditional);
 			structuredName.setFamily(snFamily);
 			structuredName.setGiven(snGiven);
-			structuredName.removeParameter("prefix");
 			structuredName.addPrefix(snPrefix);
-			structuredName.removeParameter("suffix");
-			structuredName.addPrefix(snSuffix);
+			structuredName.addSuffix(snSuffix);
 			structuredName.setSortAs(snFamily, snGiven);
 
 			vCard.setStructuredName(structuredName);

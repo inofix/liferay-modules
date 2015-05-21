@@ -66,8 +66,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-19 15:21
- * @version 1.0.2
+ * @modified 2015-05-21 18:00
+ * @version 1.0.3
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -862,13 +862,13 @@ public class ContactImpl extends ContactBaseImpl {
 
 			sb = new StringBuilder();
 
-			List<String> prefixes = sn.getSuffixes();
+			List<String> prefixes = sn.getPrefixes();
 			for (String prefix : prefixes) {
 				sb.append(prefix);
 			}
 
 			String prefix = sb.toString();
-
+			
 			sb = new StringBuilder();
 
 			List<String> suffixes = sn.getSuffixes();
@@ -881,7 +881,6 @@ public class ContactImpl extends ContactBaseImpl {
 			structuredNameDTO.setAdditional(additional);
 			structuredNameDTO.setFamily(sn.getFamily());
 			structuredNameDTO.setGiven(sn.getGiven());
-			// structuredNameDTO.setGroup(sn.getGroup());
 			structuredNameDTO.setPrefix(prefix);
 			structuredNameDTO.setSuffix(suffix);
 
