@@ -33,8 +33,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-22 09:49
- * @version 1.0.2
+ * @modified 2015-05-22 14:47
+ * @version 1.0.3
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -53,8 +53,6 @@ public class ContactManagerPortlet extends MVCPortlet {
 	public void deleteContact(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
-		log.info("Executing deleteContact().");
-
 		long contactId = ParamUtil.getLong(actionRequest, "contactId");
 
 		Contact contact = ContactServiceUtil.deleteContact(contactId);
@@ -71,7 +69,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 	 * 
 	 * @param actionRequest
 	 * @param actionResponse
-	 * @since
+	 * @since 1.0.1
 	 * @throws Exception
 	 * 
 	 */
@@ -81,6 +79,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		String backURL = ParamUtil.getString(actionRequest, "backURL");
 		long contactId = ParamUtil.getLong(actionRequest, "contactId");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
 		Contact contact = null;
 
@@ -96,8 +95,19 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionResponse.setRenderParameter("contactId",
 				String.valueOf(contactId));
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
+		actionResponse.setRenderParameter("redirect", redirect);
 
+	}
 
+	/**
+	 * Disable the get- / sendRedirect feature of LiferayPortlet.
+	 * 
+	 */
+	@Override
+	protected String getRedirect(ActionRequest actionRequest,
+			ActionResponse actionResponse) {
+
+		return null;
 	}
 
 	/**
@@ -131,17 +141,6 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		}
 
-	}
-
-	/**
-	 * Disable the get- / sendRedirect feature of LiferayPortlet.
-	 * 
-	 */
-	@Override
-	protected String getRedirect(ActionRequest actionRequest,
-			ActionResponse actionResponse) {
-
-		return null;
 	}
 
 	/**
@@ -216,6 +215,20 @@ public class ContactManagerPortlet extends MVCPortlet {
 				String.valueOf(contactId));
 		actionResponse.setRenderParameter("backURL", backURL);
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
+
+	}
+
+	/**
+	 * 
+	 * @param actionRequest
+	 * @param actionResponse
+	 * @since 1.0.2
+	 * @throws Exception
+	 */
+	public void viewContact(ActionRequest actionRequest,
+			ActionResponse actionResponse) throws Exception {
+
+		editContact(actionRequest, actionResponse);
 
 	}
 
