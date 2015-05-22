@@ -31,8 +31,6 @@ public class ContactAssetRendererFactory extends BaseAssetRendererFactory {
 	public AssetRenderer getAssetRenderer(long classPK, int type)
 			throws PortalException, SystemException {
 		
-		log.info("getAssetRenderer()"); 
-
 		Contact contact = ContactLocalServiceUtil.getContact(classPK);
 
 		ContactAssetRenderer contactAssetRenderer = new ContactAssetRenderer(

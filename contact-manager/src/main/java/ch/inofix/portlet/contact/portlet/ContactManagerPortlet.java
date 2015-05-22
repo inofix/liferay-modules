@@ -2,7 +2,6 @@ package ch.inofix.portlet.contact.portlet;
 
 import java.io.File;
 import java.util.List;
-
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +33,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-19 23:01
- * @version 1.0.1
+ * @modified 2015-05-22 09:49
+ * @version 1.0.2
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -97,6 +96,8 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionResponse.setRenderParameter("contactId",
 				String.valueOf(contactId));
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
+
+
 	}
 
 	/**
@@ -130,6 +131,17 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		}
 
+	}
+
+	/**
+	 * Disable the get- / sendRedirect feature of LiferayPortlet.
+	 * 
+	 */
+	@Override
+	protected String getRedirect(ActionRequest actionRequest,
+			ActionResponse actionResponse) {
+
+		return null;
 	}
 
 	/**

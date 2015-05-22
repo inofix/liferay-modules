@@ -6,7 +6,6 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.permission.ContactPermission;
 
@@ -19,14 +18,15 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.model.BaseAssetRenderer;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2015-05-19 17:25
- * @modified 2015-05-20 21:16
- * @version 1.0.1
+ * @modified 2015-05-22 09:43
+ * @version 1.0.2
  *
  */
 public class ContactAssetRenderer extends BaseAssetRenderer {
@@ -38,7 +38,6 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 
 	public ContactAssetRenderer(Contact contact) {
 
-		log.info("Init ContactAssetRenderer.");
 		this.contact = contact;
 	}
 
@@ -78,9 +77,12 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 
 		portletURL.setWindowState(LiferayWindowState.POP_UP);
 
+		String backURL = PortalUtil.getCurrentURL(liferayPortletRequest);
+
 		portletURL.setParameter("contactId",
 				String.valueOf(contact.getContactId()));
 		portletURL.setParameter("mvcPath", "/html/edit_contact.jsp");
+		portletURL.setParameter("backURL", backURL);
 		portletURL.setParameter("javax.portlet.action", "editContact");
 
 		return portletURL;
