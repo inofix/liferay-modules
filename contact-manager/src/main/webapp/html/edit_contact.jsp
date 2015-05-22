@@ -2,18 +2,20 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-05-20 17:58 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-22 14:49 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@include file="/html/init.jsp"%>
 
 <%
-	String backURL = ParamUtil.getString(request, "backURL");
+	String redirect = ParamUtil.getString(request, "redirect");
+
+	String backURL = ParamUtil.getString(request, "backURL", redirect);
+	
+    Contact contact_ = (Contact) request.getAttribute("CONTACT");
 
 	String mvcPath = ParamUtil.getString(request, "mvcPath");
-
-	Contact contact_ = (Contact) request.getAttribute("CONTACT");
 
 	String tabs1 = ParamUtil.getString(request, "tabs1", "contact");
 
