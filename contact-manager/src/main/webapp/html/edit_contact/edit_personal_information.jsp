@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-21 12:41 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-05-22 16:31 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -21,27 +21,27 @@
 <aui:fieldset label="job">
     <aui:row>
         <aui:col width="50">
-            <aui:input name="title" bean="<%=contact_%>" />
+            <aui:input name="title" bean="<%=contact_%>" helpMessage="title-help" />
         </aui:col>
         <aui:col width="50">
-            <aui:input name="role" bean="<%=contact_%>" />
+            <aui:input name="role" bean="<%=contact_%>" helpMessage="role-help" />
         </aui:col>
     </aui:row>
     <aui:row>
         <aui:col width="50">
             <aui:input name="organization" value="<%=contact_.getCompany()%>"
-                label="company" />
+                label="company" helpMessage="company-help" />
         </aui:col>
         <aui:col width="50">
             <aui:input name="organization" value="<%=contact_.getDepartment()%>"
-                label="department" />
+                label="department" helpMessage="department-help"/>
         </aui:col>
     </aui:row>
     <aui:row>
         <aui:col width="50">
-            <aui:input name="organization" value="<%=contact_.getOffice()%>"
-                label="office" />
-        </aui:col>
+			<aui:input name="organization" value="<%=contact_.getOffice()%>"
+				label="office" helpMessage="office-help"/>
+		</aui:col>
     </aui:row>
 </aui:fieldset>
 
@@ -68,6 +68,8 @@
 				<aui:input name="url.address" inlineField="true" label=""
 					cssClass="url-address" value="<%=url.getAddress()%>" />
 					
+				<liferay-ui:icon-help message="url.address-help"/>
+					
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
 			</aui:col>
@@ -88,6 +90,9 @@
                 </aui:select>
 				<aui:input name="url.address" inlineField="true" label=""
 					cssClass="url-address" />
+					
+                <liferay-ui:icon-help message="url.address-help"/>
+				
 		        <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
@@ -104,7 +109,8 @@
         <aui:row>
             <aui:col width="100">
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" value="<%= calendarRequestUri.getUri() %>" />
+                    cssClass="url-address" value="<%= calendarRequestUri.getUri() %>"
+                    helpMessage="calendar-request-uri-help" />
                     
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
@@ -116,7 +122,7 @@
         <aui:row>
             <aui:col width="100">
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" />
+                    cssClass="url-address" helpMessage="calendar-request-uri-help" />
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
             </aui:col>
         </aui:row>
@@ -133,7 +139,8 @@
         <aui:row>
             <aui:col width="100">
                 <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" value="<%= calendarUri.getUri() %>" />
+                    cssClass="url-address" value="<%= calendarUri.getUri() %>"
+                    helpMessage="calendar-uri-help" />
                     
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
@@ -146,7 +153,7 @@
         <aui:row>
             <aui:col width="100">
                 <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" />
+                    cssClass="url-address" helpMessage="calendar-uri-help" />
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
             </aui:col>
         </aui:row>
@@ -156,22 +163,24 @@
 <aui:fieldset label="miscellaneous">
 	<aui:row>
 		<aui:col width="50">
-			<label><liferay-ui:message key="birthday" /></label>
+            <aui:field-wrapper name="birthday" helpMessage="birthday-help">
 			<liferay-ui:input-date name="birthday" dayParam="birthday.day"
 				dayValue="<%= contact_.getBirthdayDay() %>"
 				monthParam="birthday.month"
 				monthValue="<%= contact_.getBirthdayMonth() %>"
 				yearParam="birthday.year"
 				yearValue="<%= contact_.getBirthdayYear() %>" />
+			</aui:field-wrapper>
 		</aui:col>
 		<aui:col width="50">
-			<label><liferay-ui:message key="anniversary" /></label>
-			<liferay-ui:input-date name="anniversary" dayParam="anniversary.day"
-				dayValue="<%= contact_.getAnniversaryDay() %>"
-				monthParam="anniversary.month"
-				monthValue="<%= contact_.getAnniversaryMonth() %>"
-				yearParam="anniversary.year"
-				yearValue="<%= contact_.getAnniversaryYear() %>" />
+            <aui:field-wrapper name="anniversary" helpMessage="anniversary-help">		
+				<liferay-ui:input-date name="anniversary" dayParam="anniversary.day"
+					dayValue="<%= contact_.getAnniversaryDay() %>"
+					monthParam="anniversary.month"
+					monthValue="<%= contact_.getAnniversaryMonth() %>"
+					yearParam="anniversary.year"
+					yearValue="<%= contact_.getAnniversaryYear() %>" />
+			</aui:field-wrapper>
 		</aui:col>
 	</aui:row>
 </aui:fieldset>

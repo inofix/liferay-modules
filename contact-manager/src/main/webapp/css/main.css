@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-05-22 09:25 by Christian Berndt
- * Version:     1.0.4
+ * Modified:    2015-05-22 15:25 by Christian Berndt
+ * Version:     1.0.5
  *
  */
  
@@ -38,8 +38,16 @@
 }
  
 .portlet-contact-manager .note {
-	   min-height: 100px;
+	min-height: 100px;
 } 
+
+.portlet-contact-manager select {
+	width: 150px;
+}
+
+.portlet-contact-manager .taglib-icon-help {
+	margin-right: 10px;
+}
 
 .portlet-contact-manager .note,
 .portlet-contact-manager .v-card {

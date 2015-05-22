@@ -1,9 +1,9 @@
 <%--
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
-    Created:    2015-05-16 20:06 Christian Berndt
-    Modified:   2015-05-21 12:40 by Christian Berndt
-    Version:    1.0.2
+    Created:    2015-05-16 20:06 by Christian Berndt
+    Modified:   2015-05-22 16:18 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -58,6 +58,8 @@
 					%>
 				</aui:select>
 				
+				<liferay-ui:icon-help message="expertise-help"/>
+				
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
 			</aui:col>
@@ -76,7 +78,8 @@
 					<%
 						}
 					%>
-				</aui:select>				
+				</aui:select>	
+                <liferay-ui:icon-help message="expertise-help"/>			
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
@@ -106,6 +109,8 @@
 						}
 					%>
 				</aui:select>
+				
+                <liferay-ui:icon-help message="hobby-help"/>
 
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
@@ -126,6 +131,7 @@
 						}
 					%>
 				</aui:select>
+                <liferay-ui:icon-help message="hobby-help"/>
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
@@ -157,6 +163,8 @@
 					%>
 				</aui:select>
 				
+                <liferay-ui:icon-help message="interest-help"/>
+
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
 			</aui:col>
@@ -176,6 +184,7 @@
 						}
 					%>
 				</aui:select>
+                <liferay-ui:icon-help message="interest-help"/>
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
@@ -186,7 +195,7 @@
 	<aui:container>
 		<aui:row>
 			<aui:col width="100">
-				<aui:select name="timezone" label="">
+				<aui:select name="timezone" label="" inlineField="true">
 					<%
 						String[] timezones = TimeZone.getAvailableIDs();
 						for (String timezone : timezones) {
@@ -197,22 +206,25 @@
 						}
 					%>
 				</aui:select>
+                <liferay-ui:icon-help message="timezone-help"/>
 			</aui:col>
 		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="related-assets">
+<aui:fieldset label="related-assets" helpMessage="related-assets-help">
 	<liferay-ui:input-asset-links
 		className="<%= Contact.class.getName() %>"
 		classPK="<%= contact_.getContactId() %>" />
+
 </aui:fieldset>
 
 <aui:model-context model="<%= Contact.class %>"/>
 
 <aui:fieldset label="categorization">
 	<aui:input classPK="<%=contact_.getContactId()%>" name="categories"
-		type="assetCategories" />
+		type="assetCategories" inlineField="true"/>
+	
 	<aui:input classPK="<%=contact_.getContactId()%>" name="tags"
-		type="assetTags" />
+		type="assetTags" helpMessage="asset-tags-help" />
 </aui:fieldset>

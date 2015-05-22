@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-21 12:39 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-22 16:43 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -73,12 +73,13 @@
 		<aui:row>
 			<aui:col width="50">
 				<aui:input name="formattedName" bean="<%=contact_%>"
-					inlineField="true" />
+					inlineField="true" helpMessage="formatted-name-help" />
 				<aui:button name="structuredNameBtn" value="structured-name"
 					cssClass="btn" />
 			</aui:col>
 			<aui:col width="50">
-				<aui:input name="nickname" bean="<%=contact_%>" />
+				<aui:input name="nickname" bean="<%=contact_%>"
+				    helpMessage="nickname-help" />
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -105,7 +106,9 @@
 				</aui:select>
 				<aui:input name="email.address" inlineField="true"
 					value="<%=email.getAddress()%>" label="" />
-					
+				
+				<liferay-ui:icon-help message="email.address-help"/>
+				
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
 			</aui:col>
@@ -115,6 +118,7 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
+			
 				<aui:select name="email.type" label="" inlineField="true">
 					<%
 						for (String emailType : emailTypes) {
@@ -124,7 +128,10 @@
 						}
 					%>
 				</aui:select>
+				
 				<aui:input name="email.address" inlineField="true" label="" />
+				
+                <liferay-ui:icon-help message="email.address-help"/>
 				
 				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
 				
@@ -155,6 +162,8 @@
 				<aui:input name="phone.number" inlineField="true"
 					value="<%=phone.getNumber()%>" label="" />
 					
+                <liferay-ui:icon-help message="phone.number-help"/>
+					
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
                 
 			</aui:col>
@@ -173,7 +182,11 @@
 						}
 					%>
 				</aui:select>
+				
 				<aui:input name="phoneNumber" inlineField="true" label="" />
+				
+                <liferay-ui:icon-help message="phone.number-help"/>
+                
 				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />				
 			</aui:col>
 		</aui:row>
@@ -209,8 +222,11 @@
 						}
 					%>
 				</aui:select>
+				
 				<aui:input name="impp.uri" inlineField="true"
 					value="<%=impp.getUri()%>" label="" />
+					
+                <liferay-ui:icon-help message="impp.uri-help"/>
 					
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
@@ -240,6 +256,9 @@
 					%>
 				</aui:select>
 				<aui:input name="impp.uri" inlineField="true" label="" />
+				
+                <liferay-ui:icon-help message="impp.uri-help"/>
+                
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
 			</aui:col>
 		</aui:row>
@@ -247,7 +266,7 @@
 </aui:fieldset>
 
 <aui:fieldset label="kind">
-    <aui:select name="kind" title="kind-help" label="" >
+    <aui:select name="kind" title="kind-help" label="" inlineField="true">
         <%
             for (String kind : kinds) {
         %>
@@ -257,6 +276,9 @@
             }
         %>
     </aui:select>
+    
+    <liferay-ui:icon-help message="kind-help"/>
+
 </aui:fieldset>
 
 <div id='<portlet:namespace/>structuredNamePopover'
@@ -266,7 +288,8 @@
 		for (String snField : snFields) {
 	%>
 	<aui:input name="<%=snField%>" bean="<%=contact_%>"
-		cssClass='<%=snField.replace(".", "-") + "-twin"%>' useNamespace="false" />
+		cssClass='<%=snField.replace(".", "-") + "-twin"%>' 
+		useNamespace="false" helpMessage='<%= snField + "-help" %>' />
 	<%
 		}
 	%>
