@@ -33,8 +33,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-22 14:47
- * @version 1.0.3
+ * @modified 2015-05-23 17:07
+ * @version 1.0.4
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -61,6 +61,39 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		SessionMessages.add(actionRequest, "request_processed",
 				PortletUtil.translate("successfully-deleted-the-contact"));
+
+	}
+
+	/**
+	 * 
+	 * @param actionRequest
+	 * @param actionResponse
+	 * @since 1.0.0
+	 * @throws Exception
+	 */
+	public void deleteContacts(ActionRequest actionRequest,
+			ActionResponse actionResponse) throws Exception {
+
+		long[] contactIds = ParamUtil.getLongValues(actionRequest, "rowIds");
+
+		log.info("contactIds.length = " + contactIds.length);
+
+		if (contactIds.length > 0) {
+
+			for (long contactId : contactIds) {
+
+				// TODO: Add try-catch and count failed deletions
+				Contact contact = ContactServiceUtil.deleteContact(contactId);
+
+			}
+
+			SessionMessages.add(actionRequest, "request_processed",
+					PortletUtil.translate("successfully-deleted-x-contacts"));
+
+		} else {
+			SessionMessages.add(actionRequest, "request_processed",
+					PortletUtil.translate("no-contact-selected"));
+		}
 
 	}
 
@@ -165,6 +198,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		String backURL = ParamUtil.getString(actionRequest, "backURL");
 		long contactId = ParamUtil.getLong(actionRequest, "contactId");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
 		VCard vCard = null;
 		String uid = null;
@@ -201,20 +235,22 @@ public class ContactManagerPortlet extends MVCPortlet {
 		if (contactId > 0) {
 			contact = ContactServiceUtil.updateContact(userId, groupId,
 					contactId, card, uid, serviceContext);
+			SessionMessages.add(actionRequest, "request_processed",
+					PortletUtil.translate("successfully-updated-the-contact"));
 		} else {
 			contact = ContactServiceUtil.addContact(userId, groupId, card, uid,
 					serviceContext);
+			SessionMessages.add(actionRequest, "request_processed",
+					PortletUtil.translate("successfully-added-the-contact"));
 		}
 
 		actionRequest.setAttribute("CONTACT", contact);
-
-		SessionMessages.add(actionRequest, "request_processed",
-				PortletUtil.translate("successfully-updated-the-contact"));
 
 		actionResponse.setRenderParameter("contactId",
 				String.valueOf(contactId));
 		actionResponse.setRenderParameter("backURL", backURL);
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
+		actionResponse.setRenderParameter("redirect", redirect);
 
 	}
 

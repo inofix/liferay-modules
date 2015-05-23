@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-05-20 16:16 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-22 11:12 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -22,8 +22,10 @@
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%@page import="ch.inofix.portlet.contact.search.ContactChecker"%>
+<%@page import="ch.inofix.portlet.contact.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactLocalServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.permission.ContactPortletPermission"%>
@@ -32,21 +34,20 @@
 
 <%
 	String backURL = ParamUtil.getString(request, "backURL");
+    int delta = ParamUtil.getInteger(request, "delta", 20); 
+    int idx = ParamUtil.getInteger(request, "cur");
     String keywords = ParamUtil.getString(request, "keywords"); 
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("mvcPath", "/html/view.jsp");
-    portletURL.setParameter("backURL", backURL);
-    
+    portletURL.setParameter("backURL", backURL);  
 %>
 
 <%
     Log log = LogFactoryUtil.getLog("docroot.html.view.jsp"); 
 
-    int delta = 20; 
-    int idx = ParamUtil.getInteger(request, "cur");
     if (idx > 0) idx = idx -1;
     int start = delta * idx; 
     int end = delta * idx + delta;
@@ -83,12 +84,13 @@
 
 		contacts.add(contact_);
 	}
-
 %>
 
 <div class="portlet-contact-manager">
 
 	<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
+	
+	<liferay-ui:error exception="<%= PrincipalException.class %>" message="you-dont-have-the-required-permissions"/>
 	
 	<liferay-ui:tabs
 	    names="browse,import-export"
@@ -112,7 +114,7 @@
 
             <aui:row>
                 <c:if test='<%=ContactPortletPermission.contains(permissionChecker, 
-                    scopeGroupId,"ADD_CONTACT")%>'>
+                    scopeGroupId,ActionKeys.ADD_CONTACT)%>'>
                     <aui:button type="submit" value="add-contact" href="<%=addURL%>" cssClass="pull-left" />
                 </c:if>
 
@@ -134,60 +136,104 @@
                     </div>
                 </aui:form>
             </aui:row>
+            
+            <%
+               // TODO: implement set operations: deleteContacts, exportContacts, ....
+            %>
 
-            <liferay-ui:search-container emptyResultsMessage="no-contacts-found"
-                rowChecker="<%= new ContactChecker(renderResponse) %>">
+			<liferay-ui:search-container emptyResultsMessage="no-contacts-found">
             
                 <liferay-ui:search-container-results
                     results="<%= contacts %>"
                     total="<%= hits.getLength() %>" />
-            
-                <liferay-ui:search-container-row
-                    className="ch.inofix.portlet.contact.model.Contact" modelVar="contact_">
-                    
+
+				<liferay-ui:search-container-row
+					className="ch.inofix.portlet.contact.model.Contact"
+					modelVar="contact_" keyProperty="contactId">
+
+                    <portlet:actionURL var="deleteURL" name="deleteContact">
+                        <portlet:param name="contactId" value="<%= String.valueOf(contact_.getContactId()) %>"/>
+                        <portlet:param name="backURL" value="<%= currentURL %>"/>
+                        <portlet:param name="mvcPath" value="/html/view.jsp"/>
+                    </portlet:actionURL> 
+                                       
                     <portlet:actionURL var="editURL" name="editContact">
                         <portlet:param name="contactId" value="<%= String.valueOf(contact_.getContactId()) %>"/>
                         <portlet:param name="backURL" value="<%= currentURL %>"/>
                         <portlet:param name="mvcPath" value="/html/edit_contact.jsp"/>
                     </portlet:actionURL>
                     
-                    <portlet:actionURL var="deleteURL" name="deleteContact">
+                    <%
+                        StringBuilder sb = new StringBuilder(); 
+                    
+                        sb.append(LanguageUtil.get(pageContext, "permissions-of-contact")); 
+                        sb.append(" "); 
+                        sb.append(contact_.getFullName(true)); 
+                    
+                        String modelResourceDescription = sb.toString(); 
+                    %>
+                    
+                    <liferay-security:permissionsURL
+                        modelResource="<%= Contact.class.getName() %>"
+                        modelResourceDescription="<%= modelResourceDescription %>"
+                        resourcePrimKey="<%= String.valueOf(contact_.getContactId()) %>"
+                        var="permissionsURL" /> 
+                    
+                    <portlet:actionURL var="viewURL" name="viewContact">
                         <portlet:param name="contactId" value="<%= String.valueOf(contact_.getContactId()) %>"/>
                         <portlet:param name="backURL" value="<%= currentURL %>"/>
-                        <portlet:param name="mvcPath" value="/html/view.jsp"/>
-                    </portlet:actionURL> 
-                    
-                    <%
-                         String detailURL = null; 
-                    
-                         // TODO: Check permission
-                         detailURL = editURL.toString();      
-                    %>
-                                                                                                    
-                    <%@ include file="/html/search_columns.jspf" %>
+                        <portlet:param name="mvcPath" value="/html/view_contact.jsp"/>
+                    </portlet:actionURL>
+
+					<%
+	                    boolean hasDeletePermission = ContactPermission.contains(permissionChecker,
+	                            contact_.getContactId(), ActionKeys.DELETE);   
+	                    boolean hasPermissionsPermission = ContactPermission.contains(permissionChecker,
+	                            contact_.getContactId(), ActionKeys.PERMISSIONS);  
+	                    boolean hasUpdatePermission = ContactPermission.contains(permissionChecker,
+	                            contact_.getContactId(), ActionKeys.UPDATE);
+	                    boolean hasViewPermission = ContactPermission.contains(permissionChecker,
+	                            contact_.getContactId(), ActionKeys.VIEW);
+
+						String detailURL = viewURL;
+
+						if (hasUpdatePermission) {
+							detailURL = editURL.toString();
+						} else if (hasViewPermission) {
+							detailURL = viewURL.toString(); 
+						}
+					%>
+
+					<%@ include file="/html/search_columns.jspf" %>
                         
                     <liferay-ui:search-container-column-text align="right">
 
                         <liferay-ui:icon-menu>
 
-                            <%
-                                // TODO: Check permissions
-                            %>
-
-                            <liferay-ui:icon image="edit" url="<%=editURL%>" />
-                            <liferay-ui:icon image="view" url="<%=editURL%>" />
-                            <liferay-ui:icon-delete url="<%=deleteURL%>" />
+                            <c:if test="<%= hasUpdatePermission %>">
+	                            <liferay-ui:icon image="edit" url="<%=editURL%>" />
+                            </c:if>
+                            <c:if test="<%= hasPermissionsPermission %>">
+	                            <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
+                            </c:if>
+                            <c:if test="<%= hasViewPermission %>">
+	                            <liferay-ui:icon image="view" url="<%=viewURL%>" />
+                            </c:if>
+                            <c:if test="<%= hasDeletePermission %>">
+	                            <liferay-ui:icon-delete url="<%=deleteURL%>" />
+                            </c:if>
 
                         </liferay-ui:icon-menu>
                     
                     </liferay-ui:search-container-column-text>
-                    
-                </liferay-ui:search-container-row>
-            
-                <liferay-ui:search-iterator />
+
+
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator />
             
             </liferay-ui:search-container>
- 		    	    
+             		    	    
 	    </c:otherwise>
 	    
 	</c:choose>

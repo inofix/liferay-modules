@@ -6,10 +6,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.service.ServiceContext;
 
-import ch.inofix.portlet.contact.NoSuchContactException;
 import ch.inofix.portlet.contact.model.Contact;
+import ch.inofix.portlet.contact.security.permission.ActionKeys;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.base.ContactServiceBaseImpl;
+import ch.inofix.portlet.contact.service.permission.ContactPermission;
+import ch.inofix.portlet.contact.service.permission.ContactPortletPermission;
 
 /**
  * The implementation of the contact remote service.
@@ -30,8 +32,8 @@ import ch.inofix.portlet.contact.service.base.ContactServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactServiceUtil
  * @created 2015-05-07 23:50
- * @modified 2015-05-19 16:10
- * @version 1.0.2
+ * @modified 2015-05-22 11:08
+ * @version 1.0.3
  */
 public class ContactServiceImpl extends ContactServiceBaseImpl {
 	/*
@@ -47,14 +49,15 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 			.getName());
 
 	/**
+	 * Return the added contact.
 	 * 
 	 * @param userId
 	 * @param groupId
-	 * @param vCard
+	 * @param card
 	 *            the vCard string
 	 * @param uid
 	 *            the vCard's uid
-	 * @return
+	 * @return the added contact
 	 * @since 1.0.0
 	 * @throws PortalException
 	 * @throws SystemException
@@ -62,8 +65,10 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	public Contact addContact(long userId, long groupId, String card,
 			String uid, ServiceContext serviceContext) throws PortalException,
 			SystemException {
+		
+		ContactPortletPermission.check(getPermissionChecker(), groupId,
+				ActionKeys.ADD_CONTACT);
 
-		// TODO: Check ADD permission
 		return ContactLocalServiceUtil.addContact(userId, groupId, card, uid,
 				serviceContext);
 
@@ -77,8 +82,8 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws SystemException
 	 */
 	public Contact createContact() throws PortalException, SystemException {
-
-		// No permission check required
+		
+		// Create an empty contact - no permission check required
 		return ContactLocalServiceUtil.createContact(0);
 
 	}
@@ -92,10 +97,12 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public Contact deleteContact(long contactId)
-			throws PortalException, SystemException {
+	public Contact deleteContact(long contactId) throws PortalException,
+			SystemException {
 
-		// TODO: Check DELETE permission
+		ContactPermission.check(getPermissionChecker(), contactId,
+				ActionKeys.DELETE);
+
 		Contact contact = ContactLocalServiceUtil.deleteContact(contactId);
 
 		return contact;
@@ -103,18 +110,20 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	}
 
 	/**
-	 * Return the latest version of a contact.
+	 * Return the contact.
 	 * 
 	 * @param contactId
 	 * @return the latest version of a contact.
 	 * @since 1.0.0
-	 * @throws NoSuchContactException
+	 * @throws PortalException
 	 * @throws SystemException
 	 */
 	public Contact getContact(long contactId) throws PortalException,
 			SystemException {
 
-		// TODO: Check VIEW permission
+		ContactPermission.check(getPermissionChecker(), contactId,
+				ActionKeys.VIEW);
+
 		return ContactLocalServiceUtil.getContact(contactId);
 
 	}
@@ -135,8 +144,10 @@ public class ContactServiceImpl extends ContactServiceBaseImpl {
 	public Contact updateContact(long userId, long groupId, long contactId,
 			String card, String uid, ServiceContext serviceContext)
 			throws PortalException, SystemException {
+		
+		ContactPermission.check(getPermissionChecker(), contactId,
+				ActionKeys.UPDATE);
 
-		// TODO: Check UPDATE permission
 		return ContactLocalServiceUtil.updateContact(userId, groupId,
 				contactId, card, uid, serviceContext);
 

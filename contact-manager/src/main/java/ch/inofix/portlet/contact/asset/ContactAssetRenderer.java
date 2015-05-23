@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.util.PortalUtil;
@@ -26,8 +25,8 @@ import com.liferay.portlet.asset.model.BaseAssetRenderer;
  * 
  * @author Christian Berndt
  * @created 2015-05-19 17:25
- * @modified 2015-05-22 14:46
- * @version 1.0.3
+ * @modified 2015-05-23 16:30
+ * @version 1.0.4
  *
  */
 public class ContactAssetRenderer extends BaseAssetRenderer {
@@ -74,9 +73,8 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 		PortletURL portletURL = liferayPortletResponse.createLiferayPortletURL(
 				getControlPanelPlid(liferayPortletRequest),
 				"contactmanager_WAR_contactmanager",
-				PortletRequest.ACTION_PHASE);
-
-		portletURL.setWindowState(LiferayWindowState.POP_UP);
+				PortletRequest.ACTION_PHASE
+				);
 
 		String redirect = PortalUtil.getCurrentURL(liferayPortletRequest);
 
@@ -87,7 +85,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 		portletURL.setParameter("redirect", redirect);
 
 		return portletURL;
-
+		
 	}
 
 	@Override
@@ -120,7 +118,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 	@Override
 	public boolean hasEditPermission(PermissionChecker permissionChecker)
 			throws PortalException, SystemException {
-
+	
 		return ContactPermission.contains(permissionChecker,
 				contact.getContactId(), ActionKeys.UPDATE);
 	}
@@ -128,7 +126,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker)
 			throws PortalException, SystemException {
-
+		
 		return ContactPermission.contains(permissionChecker,
 				contact.getContactId(), ActionKeys.VIEW);
 	}

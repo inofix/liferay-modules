@@ -2,19 +2,24 @@
     search_columns.jspf: A configurable set of result columns.
     
     Created:    2015-05-11 19:14 by Christian Berndt
-    Modified:   2015-05-11 19:14 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-23 18:02 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%
 	// TODO: Make the columns configurable
 	String[] columns = new String[] {
-			// contactId,
+			// 			"contactId",
 			"fullName",
 			//"emailHome", 
-			"emailWork", "phoneWork", "phoneHome",
+			// "emailWork", 
+			//"phoneWork",
+			// "phoneHome",
 			//"fax", 
-			"phoneMobile", "modifiedDate" };
+			// "phoneMobile",
+			"userName",
+			"createDate",
+			"modifiedDate" };
 %>
 
 <%
@@ -53,9 +58,17 @@
 	<liferay-ui:search-container-column-text property="phoneMobile"
 		name="phone-mobile" orderable="true" href="<%=detailURL%>" />
 </c:if>
+<c:if test='<%="userName".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="userName"
+        name="user-name" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="createDate".equals(column)%>'>
+	<liferay-ui:search-container-column-date property="createDate"
+		name="create-date" orderable="true" href="<%=detailURL%>" />
+</c:if>
 <c:if test='<%="modifiedDate".equals(column)%>'>
-	<liferay-ui:search-container-column-date property="modifiedDate"
-		name="modified-date" orderable="true" href="<%=detailURL%>" />
+    <liferay-ui:search-container-column-date property="modifiedDate"
+        name="modified-date" orderable="true" href="<%=detailURL%>" />
 </c:if>
 
 <%

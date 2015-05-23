@@ -12,8 +12,8 @@ import com.liferay.portal.security.permission.PermissionChecker;
  * 
  * @author Christian Berndt
  * @created 2015-05-19 19:19
- * @modified 2015-05-19 19:19
- * @version 1.0.0
+ * @modified 2015-05-23 17:50
+ * @version 1.0.1
  *
  */
 public class ContactPermission {
@@ -51,6 +51,13 @@ public class ContactPermission {
 			SystemException {
 
 		Contact contact = ContactLocalServiceUtil.getContact(contactId);
+
+		if (permissionChecker.hasOwnerPermission(contact.getCompanyId(),
+				Contact.class.getName(), contact.getContactId(),
+				contact.getUserId(), actionId)) {
+
+			return true;
+		}
 
 		return permissionChecker.hasPermission(contact.getGroupId(),
 				Contact.class.getName(), contact.getContactId(), actionId);
