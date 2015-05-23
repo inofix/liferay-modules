@@ -37,8 +37,8 @@ import ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2015-05-19 16:09
- * @version 1.0.3
+ * @modified 2015-05-23 18:37
+ * @version 1.0.4
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -88,6 +88,9 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 		resourceLocalService.deleteResource(contact.getCompanyId(),
 				Contact.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
 				contactId);
+		
+		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Contact.class);
+		indexer.delete(contact);
 
 		AssetEntry assetEntry = assetEntryLocalService.fetchEntry(
 				Contact.class.getName(), contactId);
@@ -95,9 +98,6 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 		assetLinkLocalService.deleteLinks(assetEntry.getEntryId());
 
 		assetEntryLocalService.deleteEntry(assetEntry);
-
-		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Contact.class);
-		indexer.delete(contact);
 
 		return contact;
 	}
