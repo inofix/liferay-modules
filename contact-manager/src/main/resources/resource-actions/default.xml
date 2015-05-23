@@ -5,8 +5,8 @@
     default.xml: The contact-manager portlet's permission configuration.
     
     Created:    2015-05-19 18:32 by Christian Berndt
-    Modified:   2015-05-22 22:24 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-23 19:06 by Christian Berndt
+    Version:    1.0.2
 -->
 <resource-action-mapping>
 
@@ -80,16 +80,6 @@
                 <action-key>PERMISSIONS</action-key>
                 <action-key>UPDATE</action-key>
             </guest-unsupported>
-            <!-- Owner permissions are required -->
-            <!-- if the owner has more          -->
-            <!-- privileges than a regular      -->
-            <!-- site-member.                   -->
-            <owner-defaults>
-                <action-key>DELETE</action-key>
-                <action-key>PERMISSIONS</action-key>
-                <action-key>UPDATE</action-key>
-                <action-key>VIEW</action-key>            
-            </owner-defaults>
         </permissions>
     </model-resource>
 
