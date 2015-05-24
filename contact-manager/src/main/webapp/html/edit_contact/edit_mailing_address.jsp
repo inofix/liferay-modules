@@ -2,8 +2,8 @@
     edit_mailing_address.jsp: Edit the contact's mailing addresses. 
     
     Created:    2015-05-11 18:30 by Christian Berndt
-    Modified:   2015-05-24 19:35 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-24 21:23 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -68,7 +68,9 @@
 					disabled="<%= !hasUpdatePermission %>" />
 			</aui:col>
 			<aui:col span="1">
-                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            <c:if test="<%= hasUpdatePermission %>">
+	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            </c:if>
 			</aui:col>
 		</aui:row>
 
@@ -117,8 +119,9 @@
 					disabled="<%= !hasUpdatePermission %>" />
 			</aui:col>
 			<aui:col span="1">
-				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;"
-					cssClass="btn btn-add" />
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
 			</aui:col>
 		</aui:row>
 

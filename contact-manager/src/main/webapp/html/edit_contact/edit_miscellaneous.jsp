@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-05-24 19:41 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-05-24 21:24 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -62,7 +62,9 @@
 
 				<liferay-ui:icon-help message="expertise-help" />
 
-				<liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            <c:if test="<%= hasUpdatePermission %>">
+	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            </c:if>
 
 			</aui:col>
 		</aui:row>
@@ -84,8 +86,9 @@
 					%>
 				</aui:select>
 				<liferay-ui:icon-help message="expertise-help" />
-				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;"
-					cssClass="btn btn-add" />
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -118,7 +121,9 @@
 
 				<liferay-ui:icon-help message="hobby-help" />
 
-				<liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            <c:if test="<%= hasUpdatePermission %>">
+	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            </c:if>
 
 			</aui:col>
 		</aui:row>
@@ -140,7 +145,9 @@
 					%>
 				</aui:select>
                 <liferay-ui:icon-help message="hobby-help"/>
-                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -175,7 +182,9 @@
 				
                 <liferay-ui:icon-help message="interest-help"/>
 
-                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            <c:if test="<%= hasUpdatePermission %>">
+	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            </c:if>
 
 			</aui:col>
 		</aui:row>
@@ -197,7 +206,9 @@
 					%>
 				</aui:select>
                 <liferay-ui:icon-help message="interest-help"/>
-                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
 			</aui:col>
 		</aui:row>
 	</aui:container>

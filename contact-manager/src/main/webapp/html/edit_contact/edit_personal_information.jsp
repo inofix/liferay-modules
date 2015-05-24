@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-24 19:24 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-05-24 21:24 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -77,7 +77,9 @@
 					
 				<liferay-ui:icon-help message="url.address-help"/>
 					
-                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            <c:if test="<%= hasUpdatePermission %>">
+	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            </c:if>
 
 			</aui:col>
 		</aui:row>
@@ -102,7 +104,9 @@
 					
                 <liferay-ui:icon-help message="url.address-help"/>
 				
-		        <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -122,7 +126,9 @@
                     helpMessage="calendar-request-uri-help"
                     disabled="<%= !hasUpdatePermission %>" />
                     
-                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            <c:if test="<%= hasUpdatePermission %>">
+	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            </c:if>
 
             </aui:col>           
         </aui:row>
@@ -134,7 +140,9 @@
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" helpMessage="calendar-request-uri-help"
                     disabled="<%= !hasUpdatePermission %>" />
-                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
             </aui:col>
         </aui:row>
     </aui:container>
@@ -154,7 +162,9 @@
                     helpMessage="calendar-uri-help" 
                     disabled="<%= !hasUpdatePermission %>" />
                     
-                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            <c:if test="<%= hasUpdatePermission %>">
+	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+	            </c:if>
 
             </aui:col>            
         </aui:row>
@@ -167,7 +177,9 @@
                 <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" helpMessage="calendar-uri-help"
                     disabled="<%= !hasUpdatePermission %>" />
-                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
             </aui:col>
         </aui:row>
     </aui:container>
