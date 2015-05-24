@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-05-22 11:12 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-05-24 23:06 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -21,10 +21,13 @@
 <%@page import="com.liferay.portal.kernel.search.Indexer"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
+<%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%@page import="ch.inofix.portlet.contact.search.ContactChecker"%>
+<%@page import="ch.inofix.portlet.contact.search.ContactSearch"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactLocalServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.permission.ContactPortletPermission"%>
@@ -36,6 +39,8 @@
     int delta = ParamUtil.getInteger(request, "delta", 20); 
     int idx = ParamUtil.getInteger(request, "cur");
     String keywords = ParamUtil.getString(request, "keywords"); 
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified"); 
+    String orderByType = ParamUtil.getString(request, "orderByType", "desc"); 
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
     PortletURL portletURL = renderResponse.createRenderURL();
@@ -45,19 +50,26 @@
 %>
 
 <%
-    Log log = LogFactoryUtil.getLog("docroot.html.view.jsp"); 
+	Log log = LogFactoryUtil.getLog("docroot.html.view.jsp");
 
-    if (idx > 0) idx = idx -1;
-    int start = delta * idx; 
-    int end = delta * idx + delta;
-    
+	if (idx > 0) {
+		idx = idx - 1;
+	}
+	int start = delta * idx;
+	int end = delta * idx + delta;
+
 	SearchContext searchContext = SearchContextFactory
 			.getInstance(request);
+	
+	boolean reverse = "desc".equals(orderByType); 
+
+	Sort sort = new Sort(orderByCol, reverse);
 
 	searchContext.setKeywords(keywords);
 	searchContext.setAttribute("paginationType", "more");
 	searchContext.setStart(start);
 	searchContext.setEnd(end);
+	searchContext.setSorts(sort);
 
 	Indexer indexer = IndexerRegistryUtil.getIndexer(Contact.class);
 
@@ -68,8 +80,8 @@
 	for (int i = 0; i < hits.getDocs().length; i++) {
 		Document doc = hits.doc(i);
 
-		long contactId = GetterUtil
-				.getLong(doc.get(Field.ENTRY_CLASS_PK));
+		long contactId = GetterUtil.getLong(doc
+				.get(Field.ENTRY_CLASS_PK));
 
 		Contact contact_ = null;
 
@@ -89,7 +101,8 @@
 
 	<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
 	
-	<liferay-ui:error exception="<%= PrincipalException.class %>" message="you-dont-have-the-required-permissions"/>
+	<liferay-ui:error exception="<%= PrincipalException.class %>" 
+	   message="you-dont-have-the-required-permissions"/>
 	
 	<liferay-ui:tabs
 	    names="browse,import-export"
@@ -140,7 +153,9 @@
                // TODO: implement set operations: deleteContacts, exportContacts, ....
             %>
 
-			<liferay-ui:search-container emptyResultsMessage="no-contacts-found">
+			<liferay-ui:search-container 
+			     searchContainer="<%= new ContactSearch(renderRequest, portletURL) %>"
+			     var="contactSearchContainer">
             
                 <liferay-ui:search-container-results
                     results="<%= contacts %>"
@@ -204,8 +219,8 @@
 					%>
 
 					<%@ include file="/html/search_columns.jspf" %>
-                        
-                    <liferay-ui:search-container-column-text align="right">
+
+					<liferay-ui:search-container-column-text align="right">
 
                         <liferay-ui:icon-menu>
 
