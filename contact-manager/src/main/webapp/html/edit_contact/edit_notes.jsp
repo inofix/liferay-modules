@@ -2,8 +2,8 @@
     edit_contact/edit_notes.jsp: Edit the vCard's notes of the contact.
     
     Created:    2015-05-11 18:48 by Christian Berndt
-    Modified:   2015-05-22 16:19 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-24 19:49 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -20,7 +20,8 @@
     <aui:row>
         <aui:col span="11">
 			<aui:input name="note" type="textarea" cssClass="note"
-				value="<%=note.getValue()%>" inlineField="true" label="" />
+				value="<%=note.getValue()%>" inlineField="true" label=""
+				disabled="<%= !hasUpdatePermission %>" />
             <liferay-ui:icon-help message="note-help"/>				
 	    </aui:col>
 	    <aui:col span="1">
@@ -33,7 +34,8 @@
     <aui:row>
         <aui:col span="11">
             <aui:input name="note" type="textarea" cssClass="note" label="new" 
-                inlineField="true" helpMessage="note-help"/>
+                inlineField="true" helpMessage="note-help"
+                disabled="<%= !hasUpdatePermission %>"/>
         </aui:col>
         <aui:col span="1">
 		    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />

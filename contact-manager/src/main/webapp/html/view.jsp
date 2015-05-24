@@ -25,7 +25,6 @@
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%@page import="ch.inofix.portlet.contact.search.ContactChecker"%>
-<%@page import="ch.inofix.portlet.contact.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactLocalServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.permission.ContactPortletPermission"%>

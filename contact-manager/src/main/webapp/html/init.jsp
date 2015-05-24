@@ -12,6 +12,7 @@
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="ch.inofix.portlet.contact.model.Contact"%>
+<%@page import="ch.inofix.portlet.contact.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.contact.service.permission.ContactPermission"%>
 
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>

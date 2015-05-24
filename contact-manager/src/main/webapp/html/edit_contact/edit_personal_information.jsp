@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-22 16:31 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-24 19:24 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -21,26 +21,31 @@
 <aui:fieldset label="job">
     <aui:row>
         <aui:col width="50">
-            <aui:input name="title" bean="<%=contact_%>" helpMessage="title-help" />
+            <aui:input name="title" bean="<%=contact_%>" helpMessage="title-help"
+                disabled="<%= !hasUpdatePermission %>" />
         </aui:col>
         <aui:col width="50">
-            <aui:input name="role" bean="<%=contact_%>" helpMessage="role-help" />
+            <aui:input name="role" bean="<%=contact_%>" helpMessage="role-help"
+                disabled="<%= !hasUpdatePermission %>" />
         </aui:col>
     </aui:row>
     <aui:row>
         <aui:col width="50">
             <aui:input name="organization" value="<%=contact_.getCompany()%>"
-                label="company" helpMessage="company-help" />
+                label="company" helpMessage="company-help"
+                disabled="<%= !hasUpdatePermission %>" />
         </aui:col>
         <aui:col width="50">
             <aui:input name="organization" value="<%=contact_.getDepartment()%>"
-                label="department" helpMessage="department-help"/>
+                label="department" helpMessage="department-help"
+                disabled="<%= !hasUpdatePermission %>"/>
         </aui:col>
     </aui:row>
     <aui:row>
         <aui:col width="50">
 			<aui:input name="organization" value="<%=contact_.getOffice()%>"
-				label="office" helpMessage="office-help"/>
+				label="office" helpMessage="office-help"
+				disabled="<%= !hasUpdatePermission %>"/>
 		</aui:col>
     </aui:row>
 </aui:fieldset>
@@ -54,7 +59,8 @@
 		%>
 		<aui:row>
 			<aui:col width="100">
-				<aui:select name="url.type" inlineField="true" label="">
+				<aui:select name="url.type" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String urlType : urlTypes) {
 					%>
@@ -66,7 +72,8 @@
 				</aui:select>
 				
 				<aui:input name="url.address" inlineField="true" label=""
-					cssClass="url-address" value="<%=url.getAddress()%>" />
+					cssClass="url-address" value="<%=url.getAddress()%>"
+					disabled="<%= !hasUpdatePermission %>" />
 					
 				<liferay-ui:icon-help message="url.address-help"/>
 					
@@ -79,7 +86,8 @@
 		%>
 		<aui:row>
 			<aui:col width="100">
-                <aui:select name="url.type" inlineField="true" label="">
+                <aui:select name="url.type" inlineField="true" label=""
+                    disabled="<%= !hasUpdatePermission %>">
                     <%
                         for (String urlType : urlTypes) {
                     %>
@@ -89,7 +97,8 @@
                     %>
                 </aui:select>
 				<aui:input name="url.address" inlineField="true" label=""
-					cssClass="url-address" />
+					cssClass="url-address"
+					disabled="<%= !hasUpdatePermission %>" />
 					
                 <liferay-ui:icon-help message="url.address-help"/>
 				
@@ -110,7 +119,8 @@
             <aui:col width="100">
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" value="<%= calendarRequestUri.getUri() %>"
-                    helpMessage="calendar-request-uri-help" />
+                    helpMessage="calendar-request-uri-help"
+                    disabled="<%= !hasUpdatePermission %>" />
                     
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
@@ -122,7 +132,8 @@
         <aui:row>
             <aui:col width="100">
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" helpMessage="calendar-request-uri-help" />
+                    cssClass="url-address" helpMessage="calendar-request-uri-help"
+                    disabled="<%= !hasUpdatePermission %>" />
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
             </aui:col>
         </aui:row>
@@ -140,7 +151,8 @@
             <aui:col width="100">
                 <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" value="<%= calendarUri.getUri() %>"
-                    helpMessage="calendar-uri-help" />
+                    helpMessage="calendar-uri-help" 
+                    disabled="<%= !hasUpdatePermission %>" />
                     
                 <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
@@ -153,7 +165,8 @@
         <aui:row>
             <aui:col width="100">
                 <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" helpMessage="calendar-uri-help" />
+                    cssClass="url-address" helpMessage="calendar-uri-help"
+                    disabled="<%= !hasUpdatePermission %>" />
                 <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
             </aui:col>
         </aui:row>
@@ -169,7 +182,8 @@
 				monthParam="birthday.month"
 				monthValue="<%= contact_.getBirthdayMonth() %>"
 				yearParam="birthday.year"
-				yearValue="<%= contact_.getBirthdayYear() %>" />
+				yearValue="<%= contact_.getBirthdayYear() %>"
+				disabled="<%= !hasUpdatePermission %>" />
 			</aui:field-wrapper>
 		</aui:col>
 		<aui:col width="50">
@@ -179,7 +193,8 @@
 					monthParam="anniversary.month"
 					monthValue="<%= contact_.getAnniversaryMonth() %>"
 					yearParam="anniversary.year"
-					yearValue="<%= contact_.getAnniversaryYear() %>" />
+					yearValue="<%= contact_.getAnniversaryYear() %>"
+					disabled="<%= !hasUpdatePermission %>" />
 			</aui:field-wrapper>
 		</aui:col>
 	</aui:row>

@@ -2,19 +2,17 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-05-23 18:01 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-05-24 19:13 by Christian Berndt
+    Version:    1.0.6
 --%>
 
-<%@include file="/html/init.jsp"%>
+<%@include file="/html/edit_contact/init.jsp"%>
 
 <%
 	String redirect = ParamUtil.getString(request, "redirect");
 
 	String backURL = ParamUtil.getString(request, "backURL", redirect);
 	
-    Contact contact_ = (Contact) request.getAttribute("CONTACT");
-
 	String mvcPath = ParamUtil.getString(request, "mvcPath");
 
 	String tabs1 = ParamUtil.getString(request, "tabs1", "contact");
@@ -45,7 +43,8 @@
         <aui:input name="uid" type="hidden" value="<%=contact_.getUid() %>" />
 
 		<liferay-ui:form-navigator categorySections="<%=categorySections%>"
-			categoryNames="<%=categoryNames%>" jspPath="/html/edit_contact/" />
+			categoryNames="<%=categoryNames%>" jspPath="/html/edit_contact/" 
+			showButtons="<%= hasUpdatePermission %>" />
 
 	</aui:form>
 	

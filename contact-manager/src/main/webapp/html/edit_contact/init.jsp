@@ -6,10 +6,14 @@
     Version:    1.0.1
 --%>
 
-<%@ include file="/html/init.jsp" %>
+<%@ include file="/html/init.jsp"%>
+
+<theme:defineObjects />
 
 <%
 	Contact contact_ = (Contact) request.getAttribute("CONTACT");
+	boolean hasUpdatePermission = ContactPermission.contains(
+			permissionChecker, contact_.getContactId(),
+			ActionKeys.UPDATE);
 %>
 
-<theme:defineObjects/>

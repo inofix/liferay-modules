@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-05-22 16:18 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-24 19:41 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -44,8 +44,10 @@
 		<aui:row>
 			<aui:col width="100">
 				<aui:input name="expertise" inlineField="true" label=""
-					value="<%=expertise.getValue()%>" />
-				<aui:select name="expertise.level" inlineField="true" label="">
+					value="<%=expertise.getValue()%>"
+					disabled="<%= !hasUpdatePermission %>" />
+				<aui:select name="expertise.level" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String expertiseLevel : expertiseLevels) {
 					%>
@@ -57,10 +59,10 @@
 						}
 					%>
 				</aui:select>
-				
-				<liferay-ui:icon-help message="expertise-help"/>
-				
-                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+
+				<liferay-ui:icon-help message="expertise-help" />
+
+				<liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
 			</aui:col>
 		</aui:row>
@@ -69,8 +71,10 @@
 		%>
 		<aui:row>
 			<aui:col width="100">
-				<aui:input name="expertise" inlineField="true" label="" />
-				<aui:select name="expertise.level" inlineField="true" label="">
+				<aui:input name="expertise" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>" />
+				<aui:select name="expertise.level" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String expertiseLevel : expertiseLevels) {
 					%>
@@ -78,9 +82,10 @@
 					<%
 						}
 					%>
-				</aui:select>	
-                <liferay-ui:icon-help message="expertise-help"/>			
-                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />              
+				</aui:select>
+				<liferay-ui:icon-help message="expertise-help" />
+				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;"
+					cssClass="btn btn-add" />
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -96,23 +101,24 @@
 		<aui:row>
 			<aui:col width="100">
 				<aui:input name="hobby" inlineField="true" label=""
-					value="<%=hobby.getValue()%>" />
-				<aui:select name="hobby.level" inlineField="true" label="">
+					value="<%=hobby.getValue()%>"
+					disabled="<%= !hasUpdatePermission %>" />
+				<aui:select name="hobby.level" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String hobbyLevel : hobbyLevels) {
 					%>
 					<aui:option value="<%=hobbyLevel%>" label="<%=hobbyLevel%>"
-						selected="<%=hobbyLevel
-												.equalsIgnoreCase(hobby
+						selected="<%=hobbyLevel.equalsIgnoreCase(hobby
 														.getLevel())%>" />
 					<%
 						}
 					%>
 				</aui:select>
-				
-                <liferay-ui:icon-help message="hobby-help"/>
 
-                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+				<liferay-ui:icon-help message="hobby-help" />
+
+				<liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
 
 			</aui:col>
 		</aui:row>
@@ -121,8 +127,10 @@
 		%>
 		<aui:row>
 			<aui:col width="100">
-				<aui:input name="hobby" inlineField="true" label="" />
-				<aui:select name="hobby.level" inlineField="true" label="">
+				<aui:input name="hobby" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>" />
+				<aui:select name="hobby.level" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String hobbyLevel : hobbyLevels) {
 					%>
@@ -149,8 +157,10 @@
 		<aui:row>
 			<aui:col width="100">
 				<aui:input name="interest" inlineField="true" label=""
-					value="<%=interest.getValue()%>" />
-				<aui:select name="interest.level" inlineField="true" label="">
+					value="<%=interest.getValue()%>"
+					disabled="<%= !hasUpdatePermission %>" />
+				<aui:select name="interest.level" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String interestLevel : interestLevels) {
 					%>
@@ -174,8 +184,10 @@
 		%>
 		<aui:row>
 			<aui:col width="100">
-				<aui:input name="interest" inlineField="true" label="" />
-				<aui:select name="interest.level" inlineField="true" label="">
+				<aui:input name="interest" inlineField="true" label=""
+                    disabled="<%= !hasUpdatePermission %>"/>
+				<aui:select name="interest.level" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String interestLevel : interestLevels) {
 					%>
@@ -195,7 +207,8 @@
 	<aui:container>
 		<aui:row>
 			<aui:col width="100">
-				<aui:select name="timezone" label="" inlineField="true">
+				<aui:select name="timezone" label="" inlineField="true"
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						String[] timezones = TimeZone.getAvailableIDs();
 						for (String timezone : timezones) {
@@ -213,6 +226,7 @@
 </aui:fieldset>
 
 <aui:fieldset label="related-assets" helpMessage="related-assets-help">
+
 	<liferay-ui:input-asset-links
 		className="<%= Contact.class.getName() %>"
 		classPK="<%= contact_.getContactId() %>" />
@@ -222,9 +236,12 @@
 <aui:model-context model="<%= Contact.class %>"/>
 
 <aui:fieldset label="categorization">
+
 	<aui:input classPK="<%=contact_.getContactId()%>" name="categories"
-		type="assetCategories" inlineField="true"/>
+		type="assetCategories" inlineField="true"
+		disabled="<%= !hasUpdatePermission %>"/>
 	
 	<aui:input classPK="<%=contact_.getContactId()%>" name="tags"
-		type="assetTags" helpMessage="asset-tags-help" />
+		type="assetTags" helpMessage="asset-tags-help" 
+		disabled="<%= !hasUpdatePermission %>"/>
 </aui:fieldset>

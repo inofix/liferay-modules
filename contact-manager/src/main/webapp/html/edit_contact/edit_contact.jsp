@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-22 16:43 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-05-24 19:14 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -63,7 +63,8 @@
 	for (String snField : snFields) {
 %>
 <aui:input name="<%=snField%>" bean="<%=contact_%>"
-	cssClass='<%=snField.replace(".", "-") %>' type="hidden" />
+	cssClass='<%=snField.replace(".", "-") %>' type="hidden" 
+	disabled="<%= !hasUpdatePermission %>"/>
 <%
 	}
 %>
@@ -73,13 +74,14 @@
 		<aui:row>
 			<aui:col width="50">
 				<aui:input name="formattedName" bean="<%=contact_%>"
-					inlineField="true" helpMessage="formatted-name-help" />
+					inlineField="true" helpMessage="formatted-name-help" 
+					disabled="<%= !hasUpdatePermission %>" />
 				<aui:button name="structuredNameBtn" value="structured-name"
 					cssClass="btn" />
 			</aui:col>
 			<aui:col width="50">
 				<aui:input name="nickname" bean="<%=contact_%>"
-				    helpMessage="nickname-help" />
+				    helpMessage="nickname-help" disabled="<%= !hasUpdatePermission %>" />
 			</aui:col>
 		</aui:row>
 	</aui:container>
@@ -94,7 +96,7 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="email.type" label="" inlineField="true">
+				<aui:select name="email.type" label="" inlineField="true" disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String emailType : emailTypes) {
 					%>
@@ -105,7 +107,8 @@
 					%>
 				</aui:select>
 				<aui:input name="email.address" inlineField="true"
-					value="<%=email.getAddress()%>" label="" />
+					value="<%=email.getAddress()%>" label=""
+					disabled="<%= !hasUpdatePermission %>" />
 				
 				<liferay-ui:icon-help message="email.address-help"/>
 				
@@ -119,7 +122,8 @@
 		<aui:row>
 			<aui:col span="12">
 			
-				<aui:select name="email.type" label="" inlineField="true">
+				<aui:select name="email.type" label="" inlineField="true"
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String emailType : emailTypes) {
 					%>
@@ -129,11 +133,13 @@
 					%>
 				</aui:select>
 				
-				<aui:input name="email.address" inlineField="true" label="" />
+				<aui:input name="email.address" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>" />
 				
                 <liferay-ui:icon-help message="email.address-help"/>
 				
-				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+				<liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" 
+				    cssClass="btn btn-add" />
 				
 			</aui:col>
 		</aui:row>
@@ -149,7 +155,8 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="phone.type" label="" inlineField="true">
+				<aui:select name="phone.type" label="" inlineField="true"
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String phoneType : phoneTypes) {
 					%>
@@ -160,7 +167,8 @@
 					%>
 				</aui:select>
 				<aui:input name="phone.number" inlineField="true"
-					value="<%=phone.getNumber()%>" label="" />
+					value="<%=phone.getNumber()%>" label=""
+					disabled="<%= !hasUpdatePermission %>" />
 					
                 <liferay-ui:icon-help message="phone.number-help"/>
 					
@@ -173,7 +181,8 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="phoneType" label="" inlineField="true">
+				<aui:select name="phoneType" label="" inlineField="true"
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String phoneType : phoneTypes) {
 					%>
@@ -183,7 +192,8 @@
 					%>
 				</aui:select>
 				
-				<aui:input name="phoneNumber" inlineField="true" label="" />
+				<aui:input name="phoneNumber" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>" />
 				
                 <liferay-ui:icon-help message="phone.number-help"/>
                 
@@ -202,7 +212,8 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="impp.type" label="" inlineField="true">
+				<aui:select name="impp.type" label="" inlineField="true"
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String imppType : imppTypes) {
 					%>
@@ -212,7 +223,8 @@
 						}
 					%>
 				</aui:select>
-				<aui:select name="impp.protocol" label="" inlineField="true">
+				<aui:select name="impp.protocol" label="" inlineField="true"
+				 disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String imppProtocol : imppProtocols) {
 					%>
@@ -224,7 +236,8 @@
 				</aui:select>
 				
 				<aui:input name="impp.uri" inlineField="true"
-					value="<%=impp.getUri()%>" label="" />
+					value="<%=impp.getUri()%>" label=""
+					disabled="<%= !hasUpdatePermission %>" />
 					
                 <liferay-ui:icon-help message="impp.uri-help"/>
 					
@@ -237,7 +250,8 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="impp.type" label="" inlineField="true">
+				<aui:select name="impp.type" label="" inlineField="true"
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String imppType : imppTypes) {
 					%>
@@ -246,7 +260,8 @@
 						}
 					%>
 				</aui:select>
-				<aui:select name="impp.protocol" label="" inlineField="true">
+				<aui:select name="impp.protocol" label="" inlineField="true"
+				    disabled="<%= !hasUpdatePermission %>">
 					<%
 						for (String imppProtocol : imppProtocols) {
 					%>
@@ -255,7 +270,8 @@
 						}
 					%>
 				</aui:select>
-				<aui:input name="impp.uri" inlineField="true" label="" />
+				<aui:input name="impp.uri" inlineField="true" label=""
+				    disabled="<%= !hasUpdatePermission %>" />
 				
                 <liferay-ui:icon-help message="impp.uri-help"/>
                 
@@ -266,7 +282,8 @@
 </aui:fieldset>
 
 <aui:fieldset label="kind">
-    <aui:select name="kind" title="kind-help" label="" inlineField="true">
+    <aui:select name="kind" title="kind-help" label="" inlineField="true"
+        disabled="<%= !hasUpdatePermission %>">
         <%
             for (String kind : kinds) {
         %>
@@ -289,7 +306,8 @@
 	%>
 	<aui:input name="<%=snField%>" bean="<%=contact_%>"
 		cssClass='<%=snField.replace(".", "-") + "-twin"%>' 
-		useNamespace="false" helpMessage='<%= snField + "-help" %>' />
+		useNamespace="false" helpMessage='<%= snField + "-help" %>'
+		disabled="<%= !hasUpdatePermission %>" />
 	<%
 		}
 	%>
