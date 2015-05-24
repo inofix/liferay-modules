@@ -4,8 +4,8 @@
     service.xml: Configuration of Liferay's Service-Builder 
 
     Created: 2015-05-07 14:48 by Christian Berndt 
-    Modified: 2015-05-19 16:26 by Christian Berndt 
-    Version: 1.0.1
+    Modified: 2015-05-23 22:19 by Christian Berndt 
+    Version: 1.0.2
 -->
 
 <service-builder package-path="ch.inofix.portlet.contact">
@@ -50,10 +50,11 @@
             <finder-column name="uid" />
         </finder>
 
-        <!-- Assets -->
+        <!-- References -->
         
         <reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
         <reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+        <reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
 
     </entity>
 </service-builder>

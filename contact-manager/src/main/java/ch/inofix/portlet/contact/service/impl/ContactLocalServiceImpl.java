@@ -4,6 +4,8 @@ import java.util.Date;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
@@ -15,8 +17,10 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetLinkConstants;
+
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl;
+import ch.inofix.portlet.contact.social.ContactActivityKeys;
 
 /**
  * The implementation of the contact local service.
@@ -37,8 +41,8 @@ import ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2015-05-23 18:37
- * @version 1.0.4
+ * @modified 2015-05-24 12:58
+ * @version 1.0.5
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -74,6 +78,17 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 				serviceContext.getAssetTagNames(),
 				serviceContext.getAssetLinkEntryIds());
 
+		// Social
+
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		extraDataJSONObject.put("title", contact.getFullName(true));
+
+		socialActivityLocalService.addActivity(userId, groupId,
+				Contact.class.getName(), contact.getContactId(),
+				ContactActivityKeys.ADD_CONTACT,
+				extraDataJSONObject.toString(), 0);
+
 		return contact;
 	}
 
@@ -88,7 +103,9 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 		resourceLocalService.deleteResource(contact.getCompanyId(),
 				Contact.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
 				contactId);
-		
+
+		// Asset
+
 		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Contact.class);
 		indexer.delete(contact);
 
@@ -228,6 +245,17 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 		updateAsset(userId, contact, serviceContext.getAssetCategoryIds(),
 				serviceContext.getAssetTagNames(),
 				serviceContext.getAssetLinkEntryIds());
+
+		// Social
+
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		extraDataJSONObject.put("title", contact.getFullName(true));
+
+		socialActivityLocalService.addActivity(userId, groupId,
+				Contact.class.getName(), contact.getContactId(),
+				ContactActivityKeys.UPDATE_CONTACT,
+				extraDataJSONObject.toString(), 0);
 
 		return contact;
 	}
