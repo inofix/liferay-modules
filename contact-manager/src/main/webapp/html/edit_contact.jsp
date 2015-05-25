@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-05-24 19:13 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-05-25 19:02 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -13,7 +13,9 @@
 
 	String backURL = ParamUtil.getString(request, "backURL", redirect);
 	
-	String mvcPath = ParamUtil.getString(request, "mvcPath");
+    String historyKey = ParamUtil.getString(request, "historyKey");
+    
+    String mvcPath = ParamUtil.getString(request, "mvcPath");
 
 	String tabs1 = ParamUtil.getString(request, "tabs1", "contact");
 
@@ -32,11 +34,13 @@
 
 	<portlet:actionURL var="saveContactURL" name="saveContact" />
 
-	<aui:form action="<%=saveContactURL%>" method="post" name="fm">
+	<aui:form action="<%=saveContactURL%>" method="post" name="fm"
+	   onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveForm();" %>'>	
 
 		<aui:input name="backURL" type="hidden" value="<%=backURL%>" />
         <aui:input name="contactId" type="hidden"
             value="<%=String.valueOf(contact_.getContactId())%>" />
+        <aui:input name="historyKey" type="hidden" value="<%= historyKey %>"/>
         <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
         <aui:input name="redirect" type="hidden" value="<%=redirect%>" />
 		<aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
@@ -49,3 +53,26 @@
 	</aui:form>
 	
 </div>
+
+<aui:script>
+	Liferay.provide(window, '<portlet:namespace />saveForm', function() {
+		
+        var hash = location.hash;
+
+		var prefix = '#<portlet:namespace />tab=';
+		var historyKey = '';
+
+		if (hash.indexOf(prefix) != -1) {
+			historyKey = hash.replace(prefix, '');
+		}
+		
+		var input = document.<portlet:namespace />fm.<portlet:namespace />historyKey; 
+		
+        if (historyKey != '') {
+        	input.value = historyKey;
+		}
+
+        submitForm(document.<portlet:namespace />fm);
+
+	});
+</aui:script>

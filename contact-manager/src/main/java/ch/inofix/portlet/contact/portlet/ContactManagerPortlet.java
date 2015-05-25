@@ -33,8 +33,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-23 17:07
- * @version 1.0.4
+ * @modified 2015-05-25 19:15
+ * @version 1.0.5
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -197,6 +197,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		String backURL = ParamUtil.getString(actionRequest, "backURL");
 		long contactId = ParamUtil.getLong(actionRequest, "contactId");
+		String historyKey = ParamUtil.getString(actionRequest, "historyKey");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
@@ -249,6 +250,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionResponse.setRenderParameter("contactId",
 				String.valueOf(contactId));
 		actionResponse.setRenderParameter("backURL", backURL);
+		actionResponse.setRenderParameter("historyKey", historyKey);
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 		actionResponse.setRenderParameter("redirect", redirect);
 
