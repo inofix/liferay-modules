@@ -2,10 +2,24 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-05-22 15:25 by Christian Berndt
- * Version:     1.0.5
+ * Modified:    2015-05-25 20:03 by Christian Berndt
+ * Version:     1.0.6
  *
  */
+ 
+.aui .structured-name .control-group {
+    margin-bottom: 10px; 
+}
+
+.aui .portlet-contact-manager label {
+	color: #8D8D8D; 
+}
+
+.aui .portlet-contact-manager input[type="text"],
+.aui .portlet-contact-manager textarea
+{
+	color: black;
+}
  
 .portlet-contact-manager .alert {
 	margin-top: 1.5em; /* The same as lfr-search-container */
@@ -18,10 +32,6 @@
 .portlet-contact-manager .contact-search .control-group,
 .portlet-contact-manager .row-fluid form {
     margin-bottom: 0; 
-}
-
-.aui .structured-name .control-group {
-	margin-bottom: 10px; 
 }
 
 .portlet-contact-manager fieldset .container-fluid {
