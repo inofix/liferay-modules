@@ -22,8 +22,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
  * 
  * @author Christian Berndt
  * @created 2015-05-24 22:01
- * @modified 2015-05-25 15:46
- * @version 1.0.1
+ * @modified 2015-05-25 17:11
+ * @version 1.0.2
  *
  */
 public class ContactSearch extends SearchContainer<Contact> {
@@ -42,6 +42,7 @@ public class ContactSearch extends SearchContainer<Contact> {
 //		headerNames.add("fax");
 		headerNames.add("full-name");
 		headerNames.add("modified-date");
+		headerNames.add("name");
 		headerNames.add("phone-home");
 		headerNames.add("phone-mobile");
 		headerNames.add("phone-work");
@@ -51,9 +52,10 @@ public class ContactSearch extends SearchContainer<Contact> {
 		orderableHeaders.put("create-date", "create-date");
 		orderableHeaders.put("email-home", "email-home");
 		orderableHeaders.put("email-work", "email-work");
-		orderableHeaders.put("fax", "fax");
+//		orderableHeaders.put("fax", "fax");
 		orderableHeaders.put("full-name", "full-name");
 		orderableHeaders.put("modified-date", "modified-date");
+		orderableHeaders.put("name", "name");
 		orderableHeaders.put("phone-home", "phone-home");
 		orderableHeaders.put("phone-mobile", "phone-mobile");
 		orderableHeaders.put("phone-work", "phone-work");
@@ -89,6 +91,8 @@ public class ContactSearch extends SearchContainer<Contact> {
 				String.valueOf(displayTerms.getFullName()));
 		iteratorURL.setParameter(ContactDisplayTerms.MODIFIED_DATE,
 				String.valueOf(displayTerms.getModifiedDate()));
+		iteratorURL.setParameter(ContactDisplayTerms.NAME,
+				String.valueOf(displayTerms.getName()));
 		iteratorURL.setParameter(ContactDisplayTerms.PHONE_HOME,
 				String.valueOf(displayTerms.getPhoneHome()));
 		iteratorURL.setParameter(ContactDisplayTerms.PHONE_MOBILE,
@@ -123,14 +127,9 @@ public class ContactSearch extends SearchContainer<Contact> {
 						"contacts-order-by-type", "asc");
 			}
 
-			// OrderByComparator orderByComparator =
-			// UsersAdminUtil.getUserOrderByComparator(
-			// orderByCol, orderByType);
-
-			// setOrderableHeaders(orderableHeaders);
+			setOrderableHeaders(orderableHeaders);
 			setOrderByCol(orderByCol);
 			setOrderByType(orderByType);
-			// setOrderByComparator(orderByComparator);
 
 		} catch (Exception e) {
 			log.error(e);

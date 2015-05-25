@@ -9,8 +9,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
  * 
  * @author Christian Berndt
  * @created 2015-05-24 22:12
- * @modified 2015-05-25 16:10
- * @version 1.0.1
+ * @modified 2015-05-26 17:09
+ * @version 1.0.2
  *
  */
 public class ContactDisplayTerms extends DisplayTerms {
@@ -22,6 +22,7 @@ public class ContactDisplayTerms extends DisplayTerms {
 	public static final String FAX = "fax";
 	public static final String FULL_NAME = "fullName";
 	public static final String MODIFIED_DATE = "modifiedDate";
+	public static final String NAME = "name";
 	public static final String PHONE_HOME = "phoneHome";
 	public static final String PHONE_MOBILE = "phoneMobile";
 	public static final String PHONE_WORK = "phoneWork";
@@ -36,6 +37,7 @@ public class ContactDisplayTerms extends DisplayTerms {
 		emailWork = ParamUtil.getString(portletRequest, EMAIL_WORK);
 		fax = ParamUtil.getString(portletRequest, FAX);
 		fullName = ParamUtil.getString(portletRequest, FULL_NAME);
+		name = ParamUtil.getString(portletRequest, NAME);
 		modifiedDate = ParamUtil.getString(portletRequest, MODIFIED_DATE);
 		phoneHome = ParamUtil.getString(portletRequest, PHONE_HOME);
 		phoneMobile = ParamUtil.getString(portletRequest, PHONE_MOBILE);
@@ -99,6 +101,14 @@ public class ContactDisplayTerms extends DisplayTerms {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getPhoneHome() {
 		return phoneHome;
 	}
@@ -138,6 +148,7 @@ public class ContactDisplayTerms extends DisplayTerms {
 	protected String fax;
 	protected String fullName;
 	protected String modifiedDate;
+	protected String name;
 	protected String phoneHome;
 	protected String phoneMobile;
 	protected String phoneWork;

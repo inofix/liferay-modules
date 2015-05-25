@@ -3,6 +3,7 @@ package ch.inofix.portlet.contact.model.impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -66,8 +67,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-21 18:00
- * @version 1.0.3
+ * @modified 2015-05-25 17:03
+ * @version 1.0.4
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -526,7 +527,28 @@ public class ContactImpl extends ContactBaseImpl {
 			}
 		}
 
-		return sb.toString();
+		String fullName = sb.toString();
+
+		if (Validator.isNull(fullName)) {
+
+			Organization organization = getVCard().getOrganization();
+			
+			List<String> values = organization.getValues(); 
+			
+			Iterator<String> iterator = values.iterator(); 
+			
+			while (iterator.hasNext()) {
+				
+				sb.append(iterator.next()); 
+				if (iterator.hasNext()) {
+					sb.append(", "); 
+				}
+				
+			}
+
+		}
+
+		return fullName;
 
 	}
 
@@ -640,6 +662,45 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return interestDTOs;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @since 1.0.4
+	 */
+	public String getName() {
+
+		String firstLast = getFullName(true); 
+		String lastFirst = getFullName(false); 
+		
+		String name = lastFirst; 
+
+		if (Validator.isNull(firstLast)) {
+
+			Organization organization = getVCard().getOrganization();
+			
+			List<String> values = organization.getValues(); 
+			
+			Iterator<String> iterator = values.iterator(); 
+			
+			StringBuilder sb = new StringBuilder(); 
+			
+			while (iterator.hasNext()) {
+				
+				sb.append(iterator.next()); 
+				if (iterator.hasNext()) {
+					sb.append(", "); 
+				}
+				
+			}
+			
+			name = sb.toString(); 
+
+		}
+
+		return name;
+
 	}
 
 	/**
@@ -868,7 +929,7 @@ public class ContactImpl extends ContactBaseImpl {
 			}
 
 			String prefix = sb.toString();
-			
+
 			sb = new StringBuilder();
 
 			List<String> suffixes = sn.getSuffixes();

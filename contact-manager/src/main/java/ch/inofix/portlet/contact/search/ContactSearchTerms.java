@@ -8,8 +8,8 @@ import com.liferay.portal.kernel.dao.search.DAOParamUtil;
  * 
  * @author Christian Berndt
  * @created 2015-05-24 22:14
- * @modified 2015-05-25 16:11
- * @version 1.0.1
+ * @modified 2015-05-25 17:10
+ * @version 1.0.2
  *
  */
 public class ContactSearchTerms extends ContactDisplayTerms {
@@ -24,6 +24,7 @@ public class ContactSearchTerms extends ContactDisplayTerms {
 		fax = DAOParamUtil.getString(portletRequest, FAX);
 		fullName = DAOParamUtil.getString(portletRequest, FULL_NAME);
 		modifiedDate = DAOParamUtil.getString(portletRequest, MODIFIED_DATE);
+		name = DAOParamUtil.getString(portletRequest, NAME);
 		phoneHome = DAOParamUtil.getString(portletRequest, PHONE_HOME);
 		phoneMobile = DAOParamUtil.getString(portletRequest, PHONE_MOBILE);
 		phoneWork = DAOParamUtil.getString(portletRequest, PHONE_WORK);

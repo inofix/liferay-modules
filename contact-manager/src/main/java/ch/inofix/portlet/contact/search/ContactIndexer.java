@@ -29,8 +29,8 @@ import com.liferay.portal.security.permission.PermissionChecker;
  * 
  * @author Christian Berndt
  * @created 2015-05-20 13:28
- * @modified 2015-05-25 16:18
- * @version 1.0.1
+ * @modified 2015-05-25 17:15
+ * @version 1.0.2
  *
  */
 public class ContactIndexer extends BaseIndexer {
@@ -75,6 +75,8 @@ public class ContactIndexer extends BaseIndexer {
 
 		Document document = getBaseModelDocument(PORTLET_ID, contact);
 
+		// Set document field values (in alphabetical order)
+
 		document.addKeyword(ContactSearchTerms.CONTACT_ID,
 				contact.getContactId());
 		document.addText(Field.CONTENT, contact.getCard());
@@ -87,6 +89,7 @@ public class ContactIndexer extends BaseIndexer {
 		document.addKeyword(Field.GROUP_ID,
 				getSiteGroupId(contact.getGroupId()));
 		document.addDate(Field.MODIFIED_DATE, contact.getModifiedDate());
+		document.addKeyword(ContactSearchTerms.NAME, contact.getName());
 		document.addKeyword(ContactSearchTerms.PHONE_HOME,
 				contact.getPhoneHome());
 		document.addKeyword(ContactSearchTerms.PHONE_MOBILE,

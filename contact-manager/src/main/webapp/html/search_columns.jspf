@@ -2,18 +2,22 @@
     search_columns.jspf: A configurable set of result columns.
     
     Created:    2015-05-11 19:14 by Christian Berndt
-    Modified:   2015-05-25 15:44 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-25 17:08 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%
 	for (String column : columns) {
 %>
-
 <c:if test='<%="contactId".equals(column)%>'>
 	<liferay-ui:search-container-column-text property="contactId"
 		name="contact-id" orderable="true" href="<%=detailURL%>"
 		orderableProperty="contactId" />
+</c:if>
+<c:if test='<%="create-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="createDate"
+        name="create-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="createDate" />
 </c:if>
 <c:if test='<%="email-home".equals(column)%>'>
 	<liferay-ui:search-container-column-text property="emailHome"
@@ -35,6 +39,16 @@
         name="full-name" orderable="true" href="<%=detailURL%>"
         orderableProperty="fullName" />
 </c:if>
+<c:if test='<%="modified-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="modifiedDate"
+        name="modified-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="modified"  />
+</c:if>
+<c:if test='<%="name".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="name"
+        name="name" orderable="true" href="<%=detailURL%>"
+        orderableProperty="name" />
+</c:if>
 <c:if test='<%="phone-work".equals(column)%>'>
 	<liferay-ui:search-container-column-text property="phoneWork"
 		name="phone-work" orderable="true" href="<%=detailURL%>"
@@ -45,7 +59,6 @@
 		name="phone-home" orderable="true" href="<%=detailURL%>"
 		orderableProperty="phoneHome" />
 </c:if>
-
 <c:if test='<%="phone-mobile".equals(column)%>'>
 	<liferay-ui:search-container-column-text property="phoneMobile"
 		name="phone-mobile" orderable="true" href="<%=detailURL%>"
@@ -56,17 +69,6 @@
         name="user-name" orderable="true" href="<%=detailURL%>"
         orderableProperty="userName" />
 </c:if>
-<c:if test='<%="create-date".equals(column)%>'>
-	<liferay-ui:search-container-column-date property="createDate"
-		name="create-date" orderable="true" href="<%=detailURL%>"
-		orderableProperty="createDate" />
-</c:if>
-<c:if test='<%="modified-date".equals(column)%>'>
-	<liferay-ui:search-container-column-date property="modifiedDate"
-	    name="modified-date" orderable="true" href="<%=detailURL%>"
-	    orderableProperty="modified"  />
-</c:if>
-
 <%
 	}
 %>
