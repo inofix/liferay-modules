@@ -2,11 +2,12 @@
     init.jsp: Common imports and setup code of the contact-manager
     
     Created:    2015-05-07 15:16 by Christian Berndt
-    Modified:   2015-05-25 11:38 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-05-25 20:14 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%-- Import required classes --%>
+
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 
@@ -22,6 +23,7 @@
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
@@ -47,7 +49,11 @@
 			new String[0]);
 
 	String currentURL = PortalUtil.getCurrentURL(request);
-	 
-    boolean showDeathdate = GetterUtil.getBoolean(portletPreferences
-            .getValue("show-death-date", "false"));
+
+	// Remove any actionParameters from the currentURL
+	currentURL = HttpUtil.removeParameter(currentURL,
+			renderResponse.getNamespace() + "javax.portlet.action");
+
+	boolean showDeathdate = GetterUtil.getBoolean(portletPreferences
+			.getValue("show-death-date", "false"));
 %>
