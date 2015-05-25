@@ -2,8 +2,8 @@
     configuration.jsp: Configure the contact-manager's preferences.
     
     Created:    2015-05-25 11:36 by Christian Berndt
-    Modified:   2015-05-25 11:36 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-25 16:51 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -19,9 +19,6 @@
 	ContactSearch searchContainer = new ContactSearch(renderRequest,
 			portletURL);
 	List<String> headerNames = searchContainer.getHeaderNames();
-
-	String[] columns = portletPreferences.getValues("columns",
-			new String[0]);
 
 	List<KeyValuePair> selectedColumns = new ArrayList<KeyValuePair>();
 	for (String column : columns) {

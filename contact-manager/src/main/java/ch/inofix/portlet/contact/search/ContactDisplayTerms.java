@@ -9,24 +9,46 @@ import com.liferay.portal.kernel.util.ParamUtil;
  * 
  * @author Christian Berndt
  * @created 2015-05-24 22:12
- * @modified 2015-05-24 22:17
- * @version 1.0.0
+ * @modified 2015-05-25 16:10
+ * @version 1.0.1
  *
  */
 public class ContactDisplayTerms extends DisplayTerms {
 
+	public static final String CONTACT_ID = "contactId";
 	public static final String CREATE_DATE = "createDate";
+	public static final String EMAIL_HOME = "emailHome";
+	public static final String EMAIL_WORK = "emailWork";
+	public static final String FAX = "fax";
 	public static final String FULL_NAME = "fullName";
 	public static final String MODIFIED_DATE = "modifiedDate";
+	public static final String PHONE_HOME = "phoneHome";
+	public static final String PHONE_MOBILE = "phoneMobile";
+	public static final String PHONE_WORK = "phoneWork";
 	public static final String USER_NAME = "userName";
 
 	public ContactDisplayTerms(PortletRequest portletRequest) {
 		super(portletRequest);
 
+		contactId = ParamUtil.getString(portletRequest, CONTACT_ID);
 		createDate = ParamUtil.getString(portletRequest, CREATE_DATE);
+		emailHome = ParamUtil.getString(portletRequest, EMAIL_HOME);
+		emailWork = ParamUtil.getString(portletRequest, EMAIL_WORK);
+		fax = ParamUtil.getString(portletRequest, FAX);
 		fullName = ParamUtil.getString(portletRequest, FULL_NAME);
 		modifiedDate = ParamUtil.getString(portletRequest, MODIFIED_DATE);
+		phoneHome = ParamUtil.getString(portletRequest, PHONE_HOME);
+		phoneMobile = ParamUtil.getString(portletRequest, PHONE_MOBILE);
+		phoneWork = ParamUtil.getString(portletRequest, PHONE_WORK);
 		userName = ParamUtil.getString(portletRequest, USER_NAME);
+	}
+
+	public String getContactId() {
+		return contactId;
+	}
+
+	public void setContactId(String contactId) {
+		this.contactId = contactId;
 	}
 
 	public String getCreateDate() {
@@ -35,6 +57,30 @@ public class ContactDisplayTerms extends DisplayTerms {
 
 	public void setCreateDate(String createDate) {
 		this.createDate = createDate;
+	}
+
+	public String getEmailHome() {
+		return emailHome;
+	}
+
+	public void setEmailHome(String emailHome) {
+		this.emailHome = emailHome;
+	}
+
+	public String getEmailWork() {
+		return emailWork;
+	}
+
+	public void setEmailWork(String emailWork) {
+		this.emailWork = emailWork;
+	}
+
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
 	}
 
 	public String getFullName() {
@@ -53,6 +99,30 @@ public class ContactDisplayTerms extends DisplayTerms {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public String getPhoneHome() {
+		return phoneHome;
+	}
+
+	public void setPhoneHome(String phoneHome) {
+		this.phoneHome = phoneHome;
+	}
+
+	public String getPhoneMobile() {
+		return phoneMobile;
+	}
+
+	public void setPhoneMobile(String phoneMobile) {
+		this.phoneMobile = phoneMobile;
+	}
+
+	public String getPhoneWork() {
+		return phoneWork;
+	}
+
+	public void setPhoneWork(String phoneWork) {
+		this.phoneWork = phoneWork;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -61,9 +131,16 @@ public class ContactDisplayTerms extends DisplayTerms {
 		this.userName = userName;
 	}
 
+	protected String contactId;
 	protected String createDate;
+	protected String emailHome;
+	protected String emailWork;
+	protected String fax;
 	protected String fullName;
 	protected String modifiedDate;
+	protected String phoneHome;
+	protected String phoneMobile;
+	protected String phoneWork;
 	protected String userName;
 
 }

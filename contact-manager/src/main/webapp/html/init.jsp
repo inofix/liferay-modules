@@ -42,5 +42,8 @@
 <portlet:defineObjects />
 
 <%
+	String[] columns = portletPreferences.getValues("columns",
+			new String[0]);
+
 	String currentURL = PortalUtil.getCurrentURL(request);
 %>
