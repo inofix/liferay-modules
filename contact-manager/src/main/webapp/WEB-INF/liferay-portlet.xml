@@ -7,13 +7,14 @@
     contact-manager portlet.
     
     Created:    2015-05-19 17:17 by Christian Berndt
-    Modified:   2015-05-24 12:59 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-25 11:42 by Christian Berndt
+    Version:    1.0.2
  -->
 <liferay-portlet-app>
 	<portlet>
 		<portlet-name>contact-manager</portlet-name>
 		<icon>/icon.png</icon>
+        <configuration-action-class>ch.inofix.portlet.contact.action.ConfigurationActionImpl</configuration-action-class>
         <indexer-class>ch.inofix.portlet.contact.search.ContactIndexer</indexer-class>
         <social-activity-interpreter-class>ch.inofix.portlet.contact.social.ContactActivityInterpreter</social-activity-interpreter-class>      
         <control-panel-entry-category>site_administration.content</control-panel-entry-category>

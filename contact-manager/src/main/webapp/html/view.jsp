@@ -10,8 +10,6 @@
 
 <%-- Import required classes --%>
 
-<%@page import="java.util.ArrayList"%>
-
 <%@page import="com.liferay.portal.kernel.exception.SystemException"%>
 <%@page import="com.liferay.portal.kernel.exception.PortalException"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
@@ -27,7 +25,6 @@
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%@page import="ch.inofix.portlet.contact.search.ContactChecker"%>
-<%@page import="ch.inofix.portlet.contact.search.ContactSearch"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactLocalServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.permission.ContactPortletPermission"%>
