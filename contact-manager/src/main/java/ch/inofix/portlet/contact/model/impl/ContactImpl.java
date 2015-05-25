@@ -33,9 +33,11 @@ import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
+import ezvcard.property.Birthplace;
 import ezvcard.property.CalendarRequestUri;
 import ezvcard.property.CalendarUri;
 import ezvcard.property.Deathdate;
+import ezvcard.property.Deathplace;
 import ezvcard.property.Email;
 import ezvcard.property.Expertise;
 import ezvcard.property.FormattedName;
@@ -67,8 +69,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-25 17:03
- * @version 1.0.4
+ * @modified 2015-05-25 17:35
+ * @version 1.0.5
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -234,6 +236,25 @@ public class ContactImpl extends ContactBaseImpl {
 	}
 
 	/**
+	 * 
+	 * @return
+	 * @since 1.0.5
+	 */
+	public String getBirthplace() {
+
+		String str = "";
+
+		Birthplace birthplace = getVCard().getBirthplace();
+
+		if (birthplace != null) {
+			str = birthplace.getText();
+		}
+
+		return str;
+
+	}
+
+	/**
 	 * @since 1.0.0
 	 */
 	public List<UriDTO> getCalendarRequestUris() {
@@ -372,6 +393,25 @@ public class ContactImpl extends ContactBaseImpl {
 			if (values.size() > 1) {
 				str = values.get(1);
 			}
+		}
+
+		return str;
+
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @since 1.0.5
+	 */
+	public String getDeathplace() {
+
+		String str = "";
+
+		Deathplace deathplace = getVCard().getDeathplace();
+
+		if (deathplace != null) {
+			str = deathplace.getText();
 		}
 
 		return str;
@@ -532,18 +572,18 @@ public class ContactImpl extends ContactBaseImpl {
 		if (Validator.isNull(fullName)) {
 
 			Organization organization = getVCard().getOrganization();
-			
-			List<String> values = organization.getValues(); 
-			
-			Iterator<String> iterator = values.iterator(); 
-			
+
+			List<String> values = organization.getValues();
+
+			Iterator<String> iterator = values.iterator();
+
 			while (iterator.hasNext()) {
-				
-				sb.append(iterator.next()); 
+
+				sb.append(iterator.next());
 				if (iterator.hasNext()) {
-					sb.append(", "); 
+					sb.append(", ");
 				}
-				
+
 			}
 
 		}
@@ -663,7 +703,7 @@ public class ContactImpl extends ContactBaseImpl {
 
 		return interestDTOs;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -671,31 +711,31 @@ public class ContactImpl extends ContactBaseImpl {
 	 */
 	public String getName() {
 
-		String firstLast = getFullName(true); 
-		String lastFirst = getFullName(false); 
-		
-		String name = lastFirst; 
+		String firstLast = getFullName(true);
+		String lastFirst = getFullName(false);
+
+		String name = lastFirst;
 
 		if (Validator.isNull(firstLast)) {
 
 			Organization organization = getVCard().getOrganization();
-			
-			List<String> values = organization.getValues(); 
-			
-			Iterator<String> iterator = values.iterator(); 
-			
-			StringBuilder sb = new StringBuilder(); 
-			
+
+			List<String> values = organization.getValues();
+
+			Iterator<String> iterator = values.iterator();
+
+			StringBuilder sb = new StringBuilder();
+
 			while (iterator.hasNext()) {
-				
-				sb.append(iterator.next()); 
+
+				sb.append(iterator.next());
 				if (iterator.hasNext()) {
-					sb.append(", "); 
+					sb.append(", ");
 				}
-				
+
 			}
-			
-			name = sb.toString(); 
+
+			name = sb.toString();
 
 		}
 

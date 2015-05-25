@@ -20,7 +20,6 @@
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
-<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 

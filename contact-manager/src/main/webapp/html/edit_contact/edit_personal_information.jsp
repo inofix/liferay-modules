@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-24 21:24 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-05-25 17:33 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -188,15 +188,17 @@
 <aui:fieldset label="miscellaneous">
 	<aui:row>
 		<aui:col width="50">
-            <aui:field-wrapper name="birthday" helpMessage="birthday-help">
-			<liferay-ui:input-date name="birthday" dayParam="birthday.day"
-				dayValue="<%= contact_.getBirthdayDay() %>"
-				monthParam="birthday.month"
-				monthValue="<%= contact_.getBirthdayMonth() %>"
-				yearParam="birthday.year"
-				yearValue="<%= contact_.getBirthdayYear() %>"
-				disabled="<%= !hasUpdatePermission %>" />
+			<aui:field-wrapper name="birthday" helpMessage="birthday-help">
+				<liferay-ui:input-date name="birthday" dayParam="birthday.day"
+					dayValue="<%=contact_.getBirthdayDay()%>"
+					monthParam="birthday.month"
+					monthValue="<%=contact_.getBirthdayMonth()%>"
+					yearParam="birthday.year"
+					yearValue="<%=contact_.getBirthdayYear()%>"
+					disabled="<%=!hasUpdatePermission%>" />
 			</aui:field-wrapper>
+			<aui:input name="birthplace" helpMessage="birthplace-help"
+				value="<%=contact_.getBirthplace()%>" />
 		</aui:col>
 		<aui:col width="50">
             <aui:field-wrapper name="anniversary" helpMessage="anniversary-help">		
@@ -210,4 +212,21 @@
 			</aui:field-wrapper>
 		</aui:col>
 	</aui:row>
+	<c:if test="<%= showDeathdate %>">
+	    <aui:row>
+	        <aui:col width="50">
+	            <aui:field-wrapper name="deathdate" helpMessage="deathdate-help">
+	                <liferay-ui:input-date name="deathdate" dayParam="deathdate.day"
+	                    dayValue="<%=contact_.getDeathdateDay()%>"
+	                    monthParam="deathdate.month"
+	                    monthValue="<%=contact_.getDeathdateMonth()%>"
+	                    yearParam="deathdate.year"
+	                    yearValue="<%=contact_.getDeathdateYear()%>"
+	                    disabled="<%=!hasUpdatePermission%>" />
+	            </aui:field-wrapper>
+	            <aui:input name="deathplace" helpMessage="deathplace-help"
+	                value="<%=contact_.getDeathplace()%>" />
+	        </aui:col>
+	    </aui:row>
+    </c:if>
 </aui:fieldset>

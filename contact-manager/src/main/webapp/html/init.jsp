@@ -21,6 +21,7 @@
 <%@page import="com.liferay.portal.kernel.log.Log"%>
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
@@ -46,4 +47,7 @@
 			new String[0]);
 
 	String currentURL = PortalUtil.getCurrentURL(request);
+	 
+    boolean showDeathdate = GetterUtil.getBoolean(portletPreferences
+            .getValue("show-death-date", "false"));
 %>

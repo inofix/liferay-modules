@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.util.ParamUtil;
 /**
  * 
  * @author Christian Berndt
- * @created 2015-05-15 11:33
- * @modified 2015-05-15 11:33
- * @version 1.0.0
+ * @created 2015-05-25 11:33
+ * @modified 2015-05-25 17:57
+ * @version 1.0.1
  *
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
@@ -29,17 +29,16 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 			throws Exception {
 
-		log.info("Executing processAction().");
-
-		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+		// String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		String[] columns = ParamUtil.getParameterValues(actionRequest,
 				"columns");
-
-		log.info("columns.length = " + columns.length);
+		String showDeathDate = ParamUtil.getString(actionRequest,
+				"showDeathDate");
 		
 		setPreference(actionRequest, "columns", columns);
-		
+		setPreference(actionRequest, "show-death-date", showDeathDate);
+
 		super.processAction(portletConfig, actionRequest, actionResponse);
 
 	}

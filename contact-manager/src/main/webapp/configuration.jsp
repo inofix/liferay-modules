@@ -2,8 +2,8 @@
     configuration.jsp: Configure the contact-manager's preferences.
     
     Created:    2015-05-25 11:36 by Christian Berndt
-    Modified:   2015-05-25 16:51 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-25 17:51 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -49,6 +49,7 @@
 		value="<%=Constants.UPDATE%>" />
 	<aui:input name="redirect" type="hidden"
 		value="<%=configurationRenderURL%>" />
+		
     <aui:input name="columns" type="hidden" value="" />
 
 
@@ -57,6 +58,16 @@
 			rightTitle="available" leftBoxName="selectedColumns"
 			leftList="<%=selectedColumns%>" rightBoxName="availableColumns"
 			leftTitle="current" leftReorder="true" />
+	</aui:fieldset>
+
+	<aui:fieldset label="miscellaneous">
+		<aui:field-wrapper inlineLabel="true" label="show-death-date"
+			helpMessage="show-death-date-help">
+			<aui:input name="showDeathDate" type="radio"
+				value="true" checked="<%= showDeathdate %>" label="yes"/>
+			<aui:input name="showDeathDate" type="radio"
+				value="false" checked="<%= !showDeathdate %>" label="no" />
+		</aui:field-wrapper>
 	</aui:fieldset>
 
 	<aui:button-row>
