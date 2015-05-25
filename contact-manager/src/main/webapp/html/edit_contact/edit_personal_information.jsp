@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-25 17:33 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-05-25 19:30 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -139,6 +139,43 @@
             <aui:col width="100">
                 <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
                     cssClass="url-address" helpMessage="calendar-request-uri-help"
+                    disabled="<%= !hasUpdatePermission %>" />
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
+                </c:if>
+            </aui:col>
+        </aui:row>
+    </aui:container>
+</aui:fieldset>
+
+<aui:fieldset label="free-busy-url">
+    <aui:container>
+        <%
+            List<UrlDTO> freeBusyUrls = contact_.getFreeBusyUrls();
+
+            for (UrlDTO freeBusyUrl : freeBusyUrls) {
+        %>
+        <aui:row>
+            <aui:col width="100">
+                <aui:input name="freeBusyUrl" inlineField="true" inlineLabel="true"
+                    cssClass="url-address" value="<%= freeBusyUrl.getAddress() %>"
+                    helpMessage="free-busy-url-help" 
+                    disabled="<%= !hasUpdatePermission %>" />
+                    
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
+                </c:if>
+
+            </aui:col>            
+        </aui:row>
+
+        <%
+            }
+        %>
+        <aui:row>
+            <aui:col width="100">
+                <aui:input name="freeBusyUrl" inlineField="true" inlineLabel="true"
+                    cssClass="url-address" helpMessage="free-busy-url-help"
                     disabled="<%= !hasUpdatePermission %>" />
                 <c:if test="<%= hasUpdatePermission %>">
                     <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />

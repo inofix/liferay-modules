@@ -41,6 +41,7 @@ import ezvcard.property.Deathplace;
 import ezvcard.property.Email;
 import ezvcard.property.Expertise;
 import ezvcard.property.FormattedName;
+import ezvcard.property.FreeBusyUrl;
 import ezvcard.property.Hobby;
 import ezvcard.property.Impp;
 import ezvcard.property.Interest;
@@ -69,8 +70,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-25 17:35
- * @version 1.0.5
+ * @modified 2015-05-25 19:24
+ * @version 1.0.6
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -531,6 +532,31 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return formattedName;
+
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @since 1.0.6
+	 */
+	public List<UrlDTO> getFreeBusyUrls() {
+
+		List<UrlDTO> urlDTOs = new ArrayList<UrlDTO>();
+
+		List<FreeBusyUrl> urls = getVCard().getFbUrls();
+
+		for (FreeBusyUrl url : urls) {
+
+			UrlDTO urlDTO = new UrlDTO();
+
+			urlDTO.setAddress(url.getValue());
+			urlDTO.setType(url.getType());
+
+			urlDTOs.add(urlDTO);
+		}
+
+		return urlDTOs;
 
 	}
 
