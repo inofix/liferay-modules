@@ -15,7 +15,7 @@
         </init-param>
 		<init-param>
 			<name>view-template</name>
-			<value>/html/view.jsp</value>
+            <value>/html/view.jsp</value>
 		</init-param>
 		<expiration-cache>0</expiration-cache>
 		<supports>

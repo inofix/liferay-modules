@@ -2,8 +2,8 @@
     edit_mailing_address.jsp: Edit the contact's mailing addresses. 
     
     Created:    2015-05-11 18:30 by Christian Berndt
-    Modified:   2015-05-24 21:23 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-05-26 17:01 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -22,108 +22,104 @@
 			AddressType.POSTAL.getValue(), AddressType.WORK.getValue() };
 %>
 
-<%
-	for (AddressDTO address : contact_.getAddresses()) {
-%>
-<aui:fieldset label="<%=address.getType()%>">
-	<aui:container>
 
-		<aui:row>
-			<aui:col span="5">
-				<aui:input name="address.streetAddress" type="textarea" label="street"
-					cssClass="address" value="<%=address.getStreetAddress()%>" 
-					helpMessage="address.street-address-help"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:input name="address.poBox" value="<%=address.getPoBox()%>" 
-				    label="po-box" helpMessage="address.po-box-help" 
-				    disabled="<%= !hasUpdatePermission %>"   />
-				<aui:select name="address.type" label="type" 
-				    helpMessage="address.type-help" disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String type : addressTypes) {
-					%>
-					<aui:option value="<%=type%>" label="<%=type%>"
-						selected="<%=type.equalsIgnoreCase(address.getType())%>" />
-					<%
-						}
-					%>
-				</aui:select>
-			</aui:col>
-			<aui:col span="6">
-				<aui:input name="address.locality" label="city"
-					value="<%=address.getLocality()%>"
-					helpMessage="address.locality-help"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:input name="address.postalCode" label="postal-code"
-					value="<%=address.getPostalCode()%>"
-					helpMessage="address.postal-code-help"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:input name="address.region" label="region"
-					value="<%=address.getRegion()%>" 
-					helpMessage="address.region-help"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:input name="address.country" label="country"
-					value="<%=address.getCountry()%>"
-					helpMessage="address.country-help"
-					disabled="<%= !hasUpdatePermission %>" />
-			</aui:col>
-			<aui:col span="1">
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
-			</aui:col>
-		</aui:row>
-
-	</aui:container>
-</aui:fieldset>
+<aui:fieldset id="address" cssClass="address">
 <%
-	}
+    for (AddressDTO address : contact_.getAddresses()) {
 %>
 
-<aui:fieldset label="new">
-	<aui:container>
 
-		<aui:row>
-			<aui:col span="5">
-				<aui:input name="address.streetAddress" type="textarea"
-					cssClass="address" label="street"
-					helpMessage="address.street-address-help" 
-					disabled="<%= !hasUpdatePermission %>"/>
-				<aui:input name="address.poBox" label="po-box"
-					helpMessage="address.po-box-help" 
-					disabled="<%= !hasUpdatePermission %>"/>
-				<aui:select name="address.type" label="type"
-					helpMessage="address.type-help"
-					disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String type : addressTypes) {
-					%>
-					<aui:option value="<%=type%>" label="<%=type%>" />
-					<%
-						}
-					%>
-				</aui:select>
-			</aui:col>
-			<aui:col span="6">
-				<aui:input name="address.locality" label="city"
-					helpMessage="address.locality-help"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:input name="address.postalCode" label="postal-code"
-					helpMessage="address.postal-code-help"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:input name="address.region" label="region"
-					helpMessage="address.region-help"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:input name="address.country" label="country"
-					helpMessage="address.country-help"
-					disabled="<%= !hasUpdatePermission %>" />
-			</aui:col>
-			<aui:col span="1">
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-			</aui:col>
-		</aui:row>
+    <aui:container>
 
-	</aui:container>
+        <aui:row>
+            <div class="lfr-form-row">
+ 
+			    <legend class="fieldset-legend">
+			        <span class="legend"><liferay-ui:message
+			                key="<%=address.getType()%>" /></span>
+			    </legend>           
+            
+                <div class="row-fields">
+                    <aui:col span="6">
+                        <aui:input name="address.streetAddress" type="textarea"
+                            label="street" cssClass="address"
+                            value="<%=address.getStreetAddress()%>"
+                            helpMessage="address.street-address-help"
+                            disabled="<%=!hasUpdatePermission%>" />
+                        <aui:input name="address.poBox" value="<%=address.getPoBox()%>"
+                            label="po-box" helpMessage="address.po-box-help"
+                            disabled="<%=!hasUpdatePermission%>" />
+                        <aui:select name="address.type" label="type"
+                            helpMessage="address.type-help"
+                            disabled="<%=!hasUpdatePermission%>">
+                            <%
+                                for (String type : addressTypes) {
+                            %>
+                            <aui:option value="<%=type%>" label="<%=type%>"
+                                selected="<%=type.equalsIgnoreCase(address
+                                                .getType())%>" />
+                            <%
+                                }
+                            %>
+                        </aui:select>
+                    </aui:col>
+                    <aui:col span="6">
+                        <aui:input name="address.locality" label="city"
+                            value="<%=address.getLocality()%>"
+                            helpMessage="address.locality-help"
+                            disabled="<%=!hasUpdatePermission%>" />
+                        <aui:input name="address.postalCode" label="postal-code"
+                            value="<%=address.getPostalCode()%>"
+                            helpMessage="address.postal-code-help"
+                            disabled="<%=!hasUpdatePermission%>" />
+                        <aui:input name="address.region" label="region"
+                            value="<%=address.getRegion()%>"
+                            helpMessage="address.region-help"
+                            disabled="<%=!hasUpdatePermission%>" />
+                        <aui:input name="address.country" label="country"
+                            value="<%=address.getCountry()%>"
+                            helpMessage="address.country-help"
+                            disabled="<%=!hasUpdatePermission%>" />
+                    </aui:col>
+                </div>
+            </div>
+        </aui:row>
+
+    </aui:container>
+<%
+    }
+%>
 </aui:fieldset>
+
+
+<%-- Configure auto-fields --%>
+<aui:script use="liferay-auto-fields">
+
+    var addressAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />address',
+        namespace : '<portlet:namespace />',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+
+    function restoreOriginalNames(event) {
+
+        // liferay-auto-fields by default adds index numbers
+        // to the cloned row's inputs which is here undone.
+        var row = event.row;
+        var guid = event.guid;
+
+        var inputs = row.all('input, select, textarea');
+
+        inputs.each(function(item) {
+            var name = item.attr('name') || item.attr('id');
+            var original = name.replace(guid, '');
+            item.set('name', original);
+            item.set('id', original);
+        });
+
+    }
+</aui:script>

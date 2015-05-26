@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-25 19:30 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-05-26 17:42 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -50,7 +50,7 @@
     </aui:row>
 </aui:fieldset>
 
-<aui:fieldset label="web-addresses">
+<aui:fieldset label="web-addresses" id="url">
 	<aui:container>
 		<%
 			List<UrlDTO> urls = contact_.getUrls();
@@ -58,168 +58,120 @@
 			for (UrlDTO url : urls) {
 		%>
 		<aui:row>
-			<aui:col width="100">
-				<aui:select name="url.type" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String urlType : urlTypes) {
-					%>
-					<aui:option value="<%=urlType%>" label="<%=urlType%>"
-						selected="<%=urlType.equalsIgnoreCase(url.getType())%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				
-				<aui:input name="url.address" inlineField="true" label=""
-					cssClass="url-address" value="<%=url.getAddress()%>"
-					disabled="<%= !hasUpdatePermission %>" />
-					
-				<liferay-ui:icon-help message="url.address-help"/>
-					
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
+			<aui:col span="12">
+				<div class="lfr-form-row">
+					<div class="row-fields">
+						<aui:select name="url.type" inlineField="true" label=""
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String urlType : urlTypes) {
+							%>
+							<aui:option value="<%=urlType%>" label="<%=urlType%>"
+								selected="<%=urlType.equalsIgnoreCase(url
+												.getType())%>" />
+							<%
+								}
+							%>
+						</aui:select>
 
+						<aui:input name="url.address" inlineField="true" label=""
+							cssClass="url-address" value="<%=url.getAddress()%>"
+							disabled="<%=!hasUpdatePermission%>" />
+
+						<liferay-ui:icon-help message="url.address-help" />
+
+					</div>
+				</div>
 			</aui:col>
 		</aui:row>
 		<%
 			}
 		%>
-		<aui:row>
-			<aui:col width="100">
-                <aui:select name="url.type" inlineField="true" label=""
-                    disabled="<%= !hasUpdatePermission %>">
-                    <%
-                        for (String urlType : urlTypes) {
-                    %>
-                    <aui:option value="<%=urlType%>" label="<%=urlType%>" />
-                    <%
-                        }
-                    %>
-                </aui:select>
-				<aui:input name="url.address" inlineField="true" label=""
-					cssClass="url-address"
-					disabled="<%= !hasUpdatePermission %>" />
-					
-                <liferay-ui:icon-help message="url.address-help"/>
-				
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-			</aui:col>
-		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="calendar-requests">
-    <aui:container>
-        <%
-            List<UriDTO> calendarRequestUris = contact_.getCalendarRequestUris();
+<aui:fieldset label="calendar-requests" id="calendar-request">
+	<aui:container>
+		<%
+			List<UriDTO> calendarRequestUris = contact_
+							.getCalendarRequestUris();
 
-            for (UriDTO calendarRequestUri : calendarRequestUris) {
-        %>
-        <aui:row>
-            <aui:col width="100">
-                <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" value="<%= calendarRequestUri.getUri() %>"
-                    helpMessage="calendar-request-uri-help"
-                    disabled="<%= !hasUpdatePermission %>" />
-                    
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
-
-            </aui:col>           
-        </aui:row>
-        <%
-            }
-        %>
-        <aui:row>
-            <aui:col width="100">
-                <aui:input name="calendarRequestUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" helpMessage="calendar-request-uri-help"
-                    disabled="<%= !hasUpdatePermission %>" />
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-            </aui:col>
-        </aui:row>
-    </aui:container>
+			for (UriDTO calendarRequestUri : calendarRequestUris) {
+		%>
+		<aui:row>
+			<aui:col span="12">
+				<div class="lfr-form-row">
+					<div class="row-fields">
+						<aui:input name="calendarRequestUri" inlineField="true"
+							inlineLabel="true" cssClass="url-address"
+							value="<%=calendarRequestUri.getUri()%>"
+							helpMessage="calendar-request-uri-help"
+							disabled="<%=!hasUpdatePermission%>" />
+					</div>
+				</div>
+			</aui:col>
+		</aui:row>
+		<%
+			}
+		%>
+	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="free-busy-url">
-    <aui:container>
-        <%
-            List<UrlDTO> freeBusyUrls = contact_.getFreeBusyUrls();
+<aui:fieldset label="free-busy-url" id="free-busy-url">
+	<aui:container>
+		<%
+			List<UrlDTO> freeBusyUrls = contact_.getFreeBusyUrls();
 
-            for (UrlDTO freeBusyUrl : freeBusyUrls) {
-        %>
-        <aui:row>
-            <aui:col width="100">
-                <aui:input name="freeBusyUrl" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" value="<%= freeBusyUrl.getAddress() %>"
-                    helpMessage="free-busy-url-help" 
-                    disabled="<%= !hasUpdatePermission %>" />
-                    
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-                </c:if>
+			for (UrlDTO freeBusyUrl : freeBusyUrls) {
+		%>
+		<aui:row>
+			<aui:col span="12">
+				<div class="lfr-form-row">
+					<div class="row-fields">
+						<aui:input name="freeBusyUrl" inlineField="true"
+							inlineLabel="true" cssClass="url-address"
+							value="<%=freeBusyUrl.getAddress()%>"
+							helpMessage="free-busy-url-help"
+							disabled="<%=!hasUpdatePermission%>" />
+					</div>
+				</div>
+			</aui:col>
+		</aui:row>
 
-            </aui:col>            
-        </aui:row>
+		<%
+			}
+		%>
 
-        <%
-            }
-        %>
-        <aui:row>
-            <aui:col width="100">
-                <aui:input name="freeBusyUrl" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" helpMessage="free-busy-url-help"
-                    disabled="<%= !hasUpdatePermission %>" />
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-            </aui:col>
-        </aui:row>
-    </aui:container>
+	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="calendars">
-    <aui:container>
-        <%
-            List<UriDTO> calendarUris = contact_.getCalendarRequestUris();
+<aui:fieldset label="calendars" id="calendar">
+	<aui:container>
+		<%
+			List<UriDTO> calendarUris = contact_
+							.getCalendarRequestUris();
 
-            for (UriDTO calendarUri : calendarUris) {
-        %>
-        <aui:row>
-            <aui:col width="100">
-                <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" value="<%= calendarUri.getUri() %>"
-                    helpMessage="calendar-uri-help" 
-                    disabled="<%= !hasUpdatePermission %>" />
-                    
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
+			for (UriDTO calendarUri : calendarUris) {
+		%>
+		<aui:row>
+			<aui:col span="12">
+				<div class="lfr-form-row">
+					<div class="row-fields">
+						<aui:input name="calendarUri" inlineField="true"
+							inlineLabel="true" cssClass="url-address"
+							value="<%=calendarUri.getUri()%>"
+							helpMessage="calendar-uri-help"
+							disabled="<%=!hasUpdatePermission%>" />
 
-            </aui:col>            
-        </aui:row>
+					</div>
+				</div>
+			</aui:col>
+		</aui:row>
 
-        <%
-            }
-        %>
-        <aui:row>
-            <aui:col width="100">
-                <aui:input name="calendarUri" inlineField="true" inlineLabel="true"
-                    cssClass="url-address" helpMessage="calendar-uri-help"
-                    disabled="<%= !hasUpdatePermission %>" />
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-            </aui:col>
-        </aui:row>
-    </aui:container>
+		<%
+			}
+		%>
+	</aui:container>
 </aui:fieldset>
 
 <aui:fieldset label="miscellaneous">
@@ -267,3 +219,65 @@
 	    </aui:row>
     </c:if>
 </aui:fieldset>
+
+<%-- Configure auto-fields --%>
+<aui:script use="liferay-auto-fields">
+	var urlAutoFields = new Liferay.AutoFields({
+		contentBox : 'fieldset#<portlet:namespace />url',
+		namespace : '<portlet:namespace />',
+		on : {
+			'clone' : function(event) {
+				restoreOriginalNames(event);
+			}
+		}
+	}).render();
+
+	var calendarRequestAutoFields = new Liferay.AutoFields({
+		contentBox : 'fieldset#<portlet:namespace />calendar-request',
+		namespace : '<portlet:namespace />',
+		on : {
+			'clone' : function(event) {
+				restoreOriginalNames(event);
+			}
+		}
+	}).render();
+
+	var freeBusyUrlAutoFields = new Liferay.AutoFields({
+		contentBox : 'fieldset#<portlet:namespace />free-busy-url',
+		namespace : '<portlet:namespace />',
+		on : {
+			'clone' : function(event) {
+				restoreOriginalNames(event);
+			}
+		}
+	}).render();
+
+	var calendarAutoFields = new Liferay.AutoFields({
+		contentBox : 'fieldset#<portlet:namespace />calendar',
+		namespace : '<portlet:namespace />',
+		on : {
+			'clone' : function(event) {
+				restoreOriginalNames(event);
+			}
+		}
+	}).render();
+
+	function restoreOriginalNames(event) {
+
+		// liferay-auto-fields by default adds index numbers
+		// to the cloned row's inputs which is here undone.
+		var row = event.row;
+		var guid = event.guid;
+
+		var inputs = row.all('input, select, textarea');
+
+		inputs.each(function(item) {
+			var name = item.attr('name') || item.attr('id');
+			var original = name.replace(guid, '');
+			item.set('name', original);
+			item.set('id', original);
+		});
+
+	}
+
+</aui:script>

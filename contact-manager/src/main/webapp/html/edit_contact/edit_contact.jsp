@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-24 21:23 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-05-26 16:20 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -87,7 +87,7 @@
 	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="email">
+<aui:fieldset label="email" id="email">
 	<aui:container>
 		<%
 			List<EmailDTO> emails = contact_.getEmails();
@@ -96,60 +96,37 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="email.type" label="" inlineField="true" disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String emailType : emailTypes) {
-					%>
-					<aui:option value="<%=emailType%>" label="<%=emailType%>"
-						selected="<%=emailType.equalsIgnoreCase(email.getType())%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				<aui:input name="email.address" inlineField="true"
-					value="<%=email.getAddress()%>" label=""
-					disabled="<%= !hasUpdatePermission %>" />
-				
-				<liferay-ui:icon-help message="email.address-help"/>
-				
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
+				<div class="lfr-form-row">
+					<div class="row-fields">
+						<aui:select name="email.type" label="" inlineField="true"
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String emailType : emailTypes) {
+							%>
+							<aui:option value="<%=emailType%>" label="<%=emailType%>"
+								selected="<%=emailType
+												.equalsIgnoreCase(email
+														.getType())%>" />
+							<%
+								}
+							%>
+						</aui:select>
+						<aui:input name="email.address" inlineField="true"
+							value="<%=email.getAddress()%>" label=""
+							disabled="<%=!hasUpdatePermission%>" />
 
+						<liferay-ui:icon-help message="email.address-help" />
+					</div>
+				</div>
 			</aui:col>
 		</aui:row>
 		<%
 			}
 		%>
-		<aui:row>
-			<aui:col span="12">
-			
-				<aui:select name="email.type" label="" inlineField="true"
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String emailType : emailTypes) {
-					%>
-					<aui:option value="<%=emailType%>" label="<%=emailType%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				
-				<aui:input name="email.address" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>" />
-				
-                <liferay-ui:icon-help message="email.address-help"/>
-				
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-	            </c:if>
-				
-			</aui:col>
-		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="phone">
+<aui:fieldset label="phone" id="phone">
 	<aui:container>
 		<%
 			List<PhoneDTO> phones = contact_.getPhones(); 
@@ -158,59 +135,39 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="phone.type" label="" inlineField="true"
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String phoneType : phoneTypes) {
-					%>
-					<aui:option value="<%=phoneType%>" label="<%=phoneType%>"
-						selected="<%=phoneType.equalsIgnoreCase(phone.getType())%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				<aui:input name="phone.number" inlineField="true"
-					value="<%=phone.getNumber()%>" label=""
-					disabled="<%= !hasUpdatePermission %>" />
-					
-                <liferay-ui:icon-help message="phone.number-help"/>
-					
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
-                
+				<div class="lfr-form-row">
+					<div class="row-fields">
+						<aui:select name="phone.type" label="" inlineField="true"
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String phoneType : phoneTypes) {
+							%>
+							<aui:option value="<%=phoneType%>" label="<%=phoneType%>"
+								selected="<%=phoneType
+												.equalsIgnoreCase(phone
+														.getType())%>" />
+							<%
+								}
+							%>
+						</aui:select>
+						<aui:input name="phone.number" inlineField="true"
+							value="<%=phone.getNumber()%>" label=""
+							disabled="<%=!hasUpdatePermission%>" />
+
+						<liferay-ui:icon-help message="phone.number-help" />
+
+					</div>
+				</div>
+
 			</aui:col>
 		</aui:row>
 		<%
 			}
 		%>
-		<aui:row>
-			<aui:col span="12">
-				<aui:select name="phoneType" label="" inlineField="true"
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String phoneType : phoneTypes) {
-					%>
-					<aui:option value="<%=phoneType%>" label="<%=phoneType%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				
-				<aui:input name="phoneNumber" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>" />
-				
-                <liferay-ui:icon-help message="phone.number-help"/>
-                
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-	            </c:if>
-			</aui:col>
-		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="instant-messaging">
+<aui:fieldset label="instant-messaging" id="impp">
 	<aui:container>
 		<%
 			List<ImppDTO> impps = contact_.getImpps();
@@ -219,76 +176,47 @@
 		%>
 		<aui:row>
 			<aui:col span="12">
-				<aui:select name="impp.type" label="" inlineField="true"
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String imppType : imppTypes) {
-					%>
-					<aui:option value="<%=imppType%>" label="<%=imppType%>"
-						selected="<%=imppType.equalsIgnoreCase(impp.getType())%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				<aui:select name="impp.protocol" label="" inlineField="true"
-				 disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String imppProtocol : imppProtocols) {
-					%>
-					<aui:option value="<%=imppProtocol%>" label="<%=imppProtocol%>"
-						selected="<%=imppProtocol.equalsIgnoreCase(impp.getProtocol())%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				
-				<aui:input name="impp.uri" inlineField="true"
-					value="<%=impp.getUri()%>" label=""
-					disabled="<%= !hasUpdatePermission %>" />
-					
-                <liferay-ui:icon-help message="impp.uri-help"/>
-					
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
+				<div class="lfr-form-row">
+					<div class="row-fields">
+						<aui:select name="impp.type" label="" inlineField="true"
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String imppType : imppTypes) {
+							%>
+							<aui:option value="<%=imppType%>" label="<%=imppType%>"
+								selected="<%=imppType
+												.equalsIgnoreCase(impp
+														.getType())%>" />
+							<%
+								}
+							%>
+						</aui:select>
+						<aui:select name="impp.protocol" label="" inlineField="true"
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String imppProtocol : imppProtocols) {
+							%>
+							<aui:option value="<%=imppProtocol%>" label="<%=imppProtocol%>"
+								selected="<%=imppProtocol
+												.equalsIgnoreCase(impp
+														.getProtocol())%>" />
+							<%
+								}
+							%>
+						</aui:select>
 
+						<aui:input name="impp.uri" inlineField="true"
+							value="<%=impp.getUri()%>" label=""
+							disabled="<%=!hasUpdatePermission%>" />
+
+						<liferay-ui:icon-help message="impp.uri-help" />
+					</div>
+				</div>
 			</aui:col>
 		</aui:row>
 		<%
 			}
 		%>
-		<aui:row>
-			<aui:col span="12">
-				<aui:select name="impp.type" label="" inlineField="true"
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String imppType : imppTypes) {
-					%>
-					<aui:option value="<%=imppType%>" label="<%=imppType%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				<aui:select name="impp.protocol" label="" inlineField="true"
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String imppProtocol : imppProtocols) {
-					%>
-					<aui:option value="<%=imppProtocol%>" label="<%=imppProtocol%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				<aui:input name="impp.uri" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>" />
-				
-                <liferay-ui:icon-help message="impp.uri-help"/>
-                
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-			</aui:col>
-		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
@@ -413,3 +341,55 @@
         });
     });
 </script>
+
+<%-- Configure auto-fields --%>
+<aui:script use="liferay-auto-fields">
+
+	var emailAutoFields = new Liferay.AutoFields({
+		contentBox : 'fieldset#<portlet:namespace />email',
+		namespace : '<portlet:namespace />',
+		on : {
+			'clone' : function(event) {
+				restoreOriginalNames(event);
+			}
+		}
+	}).render();
+
+	var phoneAutoFields = new Liferay.AutoFields({
+		contentBox : 'fieldset#<portlet:namespace />phone',
+		namespace : '<portlet:namespace />',
+		on : {
+			'clone' : function(event) {
+				restoreOriginalNames(event);
+			}
+		}
+	}).render();
+	
+	var imppAutoFields = new Liferay.AutoFields({
+		contentBox : 'fieldset#<portlet:namespace />impp',
+		namespace : '<portlet:namespace />',
+		on : {
+			'clone' : function(event) {
+				restoreOriginalNames(event);
+			}
+		}
+	}).render();
+
+	function restoreOriginalNames(event) {
+
+		// liferay-auto-fields by default adds index numbers
+		// to the cloned row's inputs which is here undone.
+		var row = event.row;
+		var guid = event.guid;
+
+		var inputs = row.all('input, select, textarea');
+
+		inputs.each(function(item) {
+			var name = item.attr('name') || item.attr('id');
+			var original = name.replace(guid, '');
+			item.set('name', original);
+			item.set('id', original);
+		});
+
+	}
+</aui:script>

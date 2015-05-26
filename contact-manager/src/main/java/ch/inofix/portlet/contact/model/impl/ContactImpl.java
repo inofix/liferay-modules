@@ -70,8 +70,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-25 19:24
- * @version 1.0.6
+ * @modified 2015-05-26 16:19
+ * @version 1.0.7
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -126,6 +126,11 @@ public class ContactImpl extends ContactBaseImpl {
 
 			addressDTOs.add(addressDTO);
 
+		}
+
+		// an empty default address
+		if (addressDTOs.size() == 0) {
+			addressDTOs.add(new AddressDTO());
 		}
 
 		return addressDTOs;
@@ -275,6 +280,11 @@ public class ContactImpl extends ContactBaseImpl {
 			uriDTOs.add(uriDTO);
 		}
 
+		// an empty default calendarRequestUri
+		if (uriDTOs.size() == 0) {
+			uriDTOs.add(new UriDTO());
+		}
+
 		return uriDTOs;
 
 	}
@@ -298,6 +308,11 @@ public class ContactImpl extends ContactBaseImpl {
 			uriDTO.setType(calendarUri.getType());
 
 			uriDTOs.add(uriDTO);
+		}
+
+		// an empty default calendarUri
+		if (uriDTOs.size() == 0) {
+			uriDTOs.add(new UriDTO());
 		}
 
 		return uriDTOs;
@@ -399,7 +414,7 @@ public class ContactImpl extends ContactBaseImpl {
 		return str;
 
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -489,6 +504,11 @@ public class ContactImpl extends ContactBaseImpl {
 			emailDTOs.add(emailDTO);
 		}
 
+		// an empty default email
+		if (emailDTOs.size() == 0) {
+			emailDTOs.add(new EmailDTO());
+		}
+
 		return emailDTOs;
 
 	}
@@ -513,6 +533,11 @@ public class ContactImpl extends ContactBaseImpl {
 			expertiseDTOs.add(expertiseDTO);
 		}
 
+		// an empty default expertise
+		if (expertiseDTOs.size() == 0) {
+			expertiseDTOs.add(new ExpertiseDTO());
+		}
+
 		return expertiseDTOs;
 	}
 
@@ -534,7 +559,7 @@ public class ContactImpl extends ContactBaseImpl {
 		return formattedName;
 
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -554,6 +579,11 @@ public class ContactImpl extends ContactBaseImpl {
 			urlDTO.setType(url.getType());
 
 			urlDTOs.add(urlDTO);
+		}
+
+		// an empty default freeBusyURL
+		if (urlDTOs.size() == 0) {
+			urlDTOs.add(new UrlDTO());
 		}
 
 		return urlDTOs;
@@ -638,6 +668,11 @@ public class ContactImpl extends ContactBaseImpl {
 			hobbyDTOs.add(hobbyDTO);
 		}
 
+		// an empty default hobby
+		if (hobbyDTOs.size() == 0) {
+			hobbyDTOs.add(new HobbyDTO());
+		}
+
 		return hobbyDTOs;
 	}
 
@@ -684,6 +719,11 @@ public class ContactImpl extends ContactBaseImpl {
 			imppDTOs.add(imppDTO);
 		}
 
+		// an empty default impp
+		if (imppDTOs.size() == 0) {
+			imppDTOs.add(new ImppDTO());
+		}
+
 		return imppDTOs;
 
 	}
@@ -725,6 +765,11 @@ public class ContactImpl extends ContactBaseImpl {
 				interestDTO.setLevel(level.getValue());
 			}
 			interestDTOs.add(interestDTO);
+		}
+
+		// an empty default interest
+		if (interestDTOs.size() == 0) {
+			interestDTOs.add(new InterestDTO());
 		}
 
 		return interestDTOs;
@@ -805,6 +850,11 @@ public class ContactImpl extends ContactBaseImpl {
 			NoteDTO noteDTO = new NoteDTO();
 			noteDTO.setValue(note.getValue());
 			noteDTOs.add(noteDTO);
+		}
+
+		// an empty default note
+		if (noteDTOs.size() == 0) {
+			noteDTOs.add(new NoteDTO());
 		}
 
 		return noteDTOs;
@@ -918,6 +968,11 @@ public class ContactImpl extends ContactBaseImpl {
 			phoneDTO.setType(sb.toString());
 
 			phoneDTOs.add(phoneDTO);
+		}
+
+		// an empty default phone
+		if (phoneDTOs.size() == 0) {
+			phoneDTOs.add(new PhoneDTO());
 		}
 
 		return phoneDTOs;
@@ -1101,6 +1156,11 @@ public class ContactImpl extends ContactBaseImpl {
 			urlDTO.setType(url.getType());
 
 			urlDTOs.add(urlDTO);
+		}
+
+		// an empty default url
+		if (urlDTOs.size() == 0) {
+			urlDTOs.add(new UrlDTO());
 		}
 
 		return urlDTOs;

@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-05-24 21:24 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-05-26 17:25 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -34,67 +34,49 @@
 			InterestLevel.LOW.getValue(), };
 %>
 
-<aui:fieldset label="expertise">
+<aui:fieldset label="expertise" id="expertise">
 	<aui:container>
 		<%
 			List<ExpertiseDTO> expertises = contact_.getExpertises();
 
-					for (ExpertiseDTO expertise : expertises) {
+			for (ExpertiseDTO expertise : expertises) {
 		%>
 		<aui:row>
-			<aui:col width="100">
-				<aui:input name="expertise" inlineField="true" label=""
-					value="<%=expertise.getValue()%>"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:select name="expertise.level" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String expertiseLevel : expertiseLevels) {
-					%>
-					<aui:option value="<%=expertiseLevel%>" label="<%=expertiseLevel%>"
-						selected="<%=expertiseLevel
+			<aui:col span="12">
+				<div class="lfr-form-row">
+					<div class="row-fields">
+					
+						<aui:input name="expertise" inlineField="true" label=""
+							value="<%=expertise.getValue()%>"
+							disabled="<%=!hasUpdatePermission%>" />
+							
+						<aui:select name="expertise.level" inlineField="true" label=""
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String expertiseLevel : expertiseLevels) {
+							%>
+							<aui:option value="<%=expertiseLevel%>"
+								label="<%=expertiseLevel%>"
+								selected="<%=expertiseLevel
 												.equalsIgnoreCase(expertise
 														.getLevel())%>" />
-					<%
-						}
-					%>
-				</aui:select>
+							<%
+								}
+							%>
+						</aui:select>
 
-				<liferay-ui:icon-help message="expertise-help" />
-
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
-
+						<liferay-ui:icon-help message="expertise-help" />
+					</div>
+				</div>
 			</aui:col>
 		</aui:row>
 		<%
 			}
 		%>
-		<aui:row>
-			<aui:col width="100">
-				<aui:input name="expertise" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>" />
-				<aui:select name="expertise.level" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String expertiseLevel : expertiseLevels) {
-					%>
-					<aui:option value="<%=expertiseLevel%>" label="<%=expertiseLevel%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				<liferay-ui:icon-help message="expertise-help" />
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-			</aui:col>
-		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
-<aui:fieldset label="hobbies">
+<aui:fieldset label="hobbies" id="hobby">
 	<aui:container>
 		<%
 			List<HobbyDTO> hobbies = contact_.getHobbies();
@@ -102,115 +84,80 @@
 					for (HobbyDTO hobby : hobbies) {
 		%>
 		<aui:row>
-			<aui:col width="100">
-				<aui:input name="hobby" inlineField="true" label=""
-					value="<%=hobby.getValue()%>"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:select name="hobby.level" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String hobbyLevel : hobbyLevels) {
-					%>
-					<aui:option value="<%=hobbyLevel%>" label="<%=hobbyLevel%>"
-						selected="<%=hobbyLevel.equalsIgnoreCase(hobby
+			<aui:col span="12">
+				<div class="lfr-form-row">
+					<div class="row-fields">
+					
+						<aui:input name="hobby" inlineField="true" label=""
+							value="<%=hobby.getValue()%>"
+							disabled="<%=!hasUpdatePermission%>" />
+							
+						<aui:select name="hobby.level" inlineField="true" label=""
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String hobbyLevel : hobbyLevels) {
+							%>
+							<aui:option value="<%=hobbyLevel%>" label="<%=hobbyLevel%>"
+								selected="<%=hobbyLevel
+												.equalsIgnoreCase(hobby
 														.getLevel())%>" />
-					<%
-						}
-					%>
-				</aui:select>
+							<%
+								}
+							%>
+						</aui:select>
 
-				<liferay-ui:icon-help message="hobby-help" />
+						<liferay-ui:icon-help message="hobby-help" />
 
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
-
+					</div>
+				</div>
 			</aui:col>
 		</aui:row>
 		<%
 			}
 		%>
-		<aui:row>
-			<aui:col width="100">
-				<aui:input name="hobby" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>" />
-				<aui:select name="hobby.level" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String hobbyLevel : hobbyLevels) {
-					%>
-					<aui:option value="<%=hobbyLevel%>" label="<%=hobbyLevel%>" />
-					<%
-						}
-					%>
-				</aui:select>
-                <liferay-ui:icon-help message="hobby-help"/>
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-			</aui:col>
-		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
 
-<aui:fieldset label="interests">
+<aui:fieldset label="interests" id="interest">
 	<aui:container>
 		<%
 			List<InterestDTO> interests = contact_.getInterests();
 
-					for (InterestDTO interest : interests) {
+			for (InterestDTO interest : interests) {
 		%>
 		<aui:row>
-			<aui:col width="100">
-				<aui:input name="interest" inlineField="true" label=""
-					value="<%=interest.getValue()%>"
-					disabled="<%= !hasUpdatePermission %>" />
-				<aui:select name="interest.level" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String interestLevel : interestLevels) {
-					%>
-					<aui:option value="<%=interestLevel%>" label="<%=interestLevel%>"
-						selected="<%=interestLevel
+			<aui:col span="12">
+				<div class="lfr-form-row">
+					<div class="row-fields">
+					
+						<aui:input name="interest" inlineField="true" label=""
+							value="<%=interest.getValue()%>"
+							disabled="<%=!hasUpdatePermission%>" />
+							
+						<aui:select name="interest.level" inlineField="true" label=""
+							disabled="<%=!hasUpdatePermission%>">
+							<%
+								for (String interestLevel : interestLevels) {
+							%>
+							<aui:option value="<%=interestLevel%>" label="<%=interestLevel%>"
+								selected="<%=interestLevel
 												.equalsIgnoreCase(interest
 														.getLevel())%>" />
-					<%
-						}
-					%>
-				</aui:select>
-				
-                <liferay-ui:icon-help message="interest-help"/>
+							<%
+								}
+							%>
+						</aui:select>
 
-	            <c:if test="<%= hasUpdatePermission %>">
-	                <liferay-ui:icon-delete url="javascript:;" cssClass="btn" />
-	            </c:if>
+						<liferay-ui:icon-help message="interest-help" />
 
+					</div>
+				</div>
 			</aui:col>
 		</aui:row>
 		<%
 			}
 		%>
-		<aui:row>
-			<aui:col width="100">
-				<aui:input name="interest" inlineField="true" label=""
-                    disabled="<%= !hasUpdatePermission %>"/>
-				<aui:select name="interest.level" inlineField="true" label=""
-				    disabled="<%= !hasUpdatePermission %>">
-					<%
-						for (String interestLevel : interestLevels) {
-					%>
-					<aui:option value="<%=interestLevel%>" label="<%=interestLevel%>" />
-					<%
-						}
-					%>
-				</aui:select>
-                <liferay-ui:icon-help message="interest-help"/>
-                <c:if test="<%= hasUpdatePermission %>">
-                    <liferay-ui:icon iconCssClass="icon-plus" url="javascript:;" cssClass="btn btn-add" />
-                </c:if>
-			</aui:col>
-		</aui:row>
 	</aui:container>
 </aui:fieldset>
 
@@ -256,3 +203,56 @@
 		type="assetTags" helpMessage="asset-tags-help" 
 		disabled="<%= !hasUpdatePermission %>"/>
 </aui:fieldset>
+
+
+<%-- Configure autofields --%>
+<aui:script use="liferay-auto-fields">
+
+    var expertiseAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />expertise',
+        namespace : '<portlet:namespace />',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+
+    var hobbyAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />hobby',
+        namespace : '<portlet:namespace />',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+    
+    var interestAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />interest',
+        namespace : '<portlet:namespace />',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+
+    function restoreOriginalNames(event) {
+
+        // liferay-auto-fields by default adds index numbers
+        // to the cloned row's inputs which is here undone.
+        var row = event.row;
+        var guid = event.guid;
+
+        var inputs = row.all('input, select, textarea');
+
+        inputs.each(function(item) {
+            var name = item.attr('name') || item.attr('id');
+            var original = name.replace(guid, '');
+            item.set('name', original);
+            item.set('id', original);
+        });
+
+    }
+</aui:script>
