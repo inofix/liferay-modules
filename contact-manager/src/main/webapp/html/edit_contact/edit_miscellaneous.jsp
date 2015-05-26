@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-05-26 17:25 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-05-26 18:23 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -46,6 +46,8 @@
 				<div class="lfr-form-row">
 					<div class="row-fields">
 					
+                       <div class="sort-handle"></div>
+					
 						<aui:input name="expertise" inlineField="true" label=""
 							value="<%=expertise.getValue()%>"
 							disabled="<%=!hasUpdatePermission%>" />
@@ -87,6 +89,8 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+                        <div class="sort-handle"></div>
 					
 						<aui:input name="hobby" inlineField="true" label=""
 							value="<%=hobby.getValue()%>"
@@ -131,6 +135,8 @@
 				<div class="lfr-form-row">
 					<div class="row-fields">
 					
+                        <div class="sort-handle"></div>
+                        
 						<aui:input name="interest" inlineField="true" label=""
 							value="<%=interest.getValue()%>"
 							disabled="<%=!hasUpdatePermission%>" />
@@ -164,7 +170,7 @@
 <aui:fieldset label="time-zone">
 	<aui:container>
 		<aui:row>
-			<aui:col width="100">
+			<aui:col span="12">
 				<aui:select name="timezone" label="" inlineField="true"
 				    disabled="<%= !hasUpdatePermission %>">
 					<%
@@ -211,6 +217,8 @@
     var expertiseAutoFields = new Liferay.AutoFields({
         contentBox : 'fieldset#<portlet:namespace />expertise',
         namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
         on : {
             'clone' : function(event) {
                 restoreOriginalNames(event);
@@ -221,6 +229,8 @@
     var hobbyAutoFields = new Liferay.AutoFields({
         contentBox : 'fieldset#<portlet:namespace />hobby',
         namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
         on : {
             'clone' : function(event) {
                 restoreOriginalNames(event);
@@ -231,6 +241,8 @@
     var interestAutoFields = new Liferay.AutoFields({
         contentBox : 'fieldset#<portlet:namespace />interest',
         namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
         on : {
             'clone' : function(event) {
                 restoreOriginalNames(event);

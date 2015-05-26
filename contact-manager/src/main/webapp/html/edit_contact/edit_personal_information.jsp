@@ -2,8 +2,8 @@
     edit_personal_information.jsp: Edit the contact's personal information. 
     
     Created:    2015-05-11 17:34 by Christian Berndt
-    Modified:   2015-05-26 17:42 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2015-05-26 18:50 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -61,6 +61,9 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+	                    <div class="sort-handle"></div>
+	                    
 						<aui:select name="url.type" inlineField="true" label=""
 							disabled="<%=!hasUpdatePermission%>">
 							<%
@@ -102,6 +105,9 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+                        <div class="sort-handle"></div>
+                        
 						<aui:input name="calendarRequestUri" inlineField="true"
 							inlineLabel="true" cssClass="url-address"
 							value="<%=calendarRequestUri.getUri()%>"
@@ -128,6 +134,9 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+                        <div class="sort-handle"></div>
+                        
 						<aui:input name="freeBusyUrl" inlineField="true"
 							inlineLabel="true" cssClass="url-address"
 							value="<%=freeBusyUrl.getAddress()%>"
@@ -149,7 +158,7 @@
 	<aui:container>
 		<%
 			List<UriDTO> calendarUris = contact_
-							.getCalendarRequestUris();
+							.getCalendarUris();
 
 			for (UriDTO calendarUri : calendarUris) {
 		%>
@@ -157,6 +166,9 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+                        <div class="sort-handle"></div>
+                        
 						<aui:input name="calendarUri" inlineField="true"
 							inlineLabel="true" cssClass="url-address"
 							value="<%=calendarUri.getUri()%>"
@@ -225,6 +237,8 @@
 	var urlAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />url',
 		namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
 		on : {
 			'clone' : function(event) {
 				restoreOriginalNames(event);
@@ -235,6 +249,8 @@
 	var calendarRequestAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />calendar-request',
 		namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
 		on : {
 			'clone' : function(event) {
 				restoreOriginalNames(event);
@@ -245,6 +261,8 @@
 	var freeBusyUrlAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />free-busy-url',
 		namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
 		on : {
 			'clone' : function(event) {
 				restoreOriginalNames(event);
@@ -255,6 +273,8 @@
 	var calendarAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />calendar',
 		namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
 		on : {
 			'clone' : function(event) {
 				restoreOriginalNames(event);

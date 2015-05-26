@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-26 16:20 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-05-26 18:45 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -98,6 +98,9 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+                       <div class="sort-handle"></div>
+					
 						<aui:select name="email.type" label="" inlineField="true"
 							disabled="<%=!hasUpdatePermission%>">
 							<%
@@ -137,6 +140,9 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+                        <div class="sort-handle"></div>
+                       
 						<aui:select name="phone.type" label="" inlineField="true"
 							disabled="<%=!hasUpdatePermission%>">
 							<%
@@ -178,6 +184,9 @@
 			<aui:col span="12">
 				<div class="lfr-form-row">
 					<div class="row-fields">
+					
+                        <div class="sort-handle"></div>
+                        
 						<aui:select name="impp.type" label="" inlineField="true"
 							disabled="<%=!hasUpdatePermission%>">
 							<%
@@ -191,6 +200,7 @@
 								}
 							%>
 						</aui:select>
+						
 						<aui:select name="impp.protocol" label="" inlineField="true"
 							disabled="<%=!hasUpdatePermission%>">
 							<%
@@ -348,6 +358,8 @@
 	var emailAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />email',
 		namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
 		on : {
 			'clone' : function(event) {
 				restoreOriginalNames(event);
@@ -358,6 +370,8 @@
 	var phoneAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />phone',
 		namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
 		on : {
 			'clone' : function(event) {
 				restoreOriginalNames(event);
@@ -368,6 +382,8 @@
 	var imppAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />impp',
 		namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
 		on : {
 			'clone' : function(event) {
 				restoreOriginalNames(event);

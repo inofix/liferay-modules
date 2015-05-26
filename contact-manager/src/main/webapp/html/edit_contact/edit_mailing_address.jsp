@@ -2,8 +2,8 @@
     edit_mailing_address.jsp: Edit the contact's mailing addresses. 
     
     Created:    2015-05-11 18:30 by Christian Berndt
-    Modified:   2015-05-26 17:01 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-05-26 18:48 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -27,19 +27,22 @@
 <%
     for (AddressDTO address : contact_.getAddresses()) {
 %>
-
-
     <aui:container>
 
         <aui:row>
             <div class="lfr-form-row">
  
+ 
 			    <legend class="fieldset-legend">
+			    
+                    <span class="sort-handle"></span>
+			    
 			        <span class="legend"><liferay-ui:message
 			                key="<%=address.getType()%>" /></span>
 			    </legend>           
             
                 <div class="row-fields">
+                                                    
                     <aui:col span="6">
                         <aui:input name="address.streetAddress" type="textarea"
                             label="street" cssClass="address"
@@ -98,6 +101,8 @@
     var addressAutoFields = new Liferay.AutoFields({
         contentBox : 'fieldset#<portlet:namespace />address',
         namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
         on : {
             'clone' : function(event) {
                 restoreOriginalNames(event);

@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-05-26 14:30 by Christian Berndt
- * Version:     1.0.7
+ * Modified:    2015-05-26 18:43 by Christian Berndt
+ * Version:     1.0.8
  *
  */
 .aui .row-fields .control-group {
@@ -32,10 +32,6 @@
 	margin-top: 1.5em; /* The same as lfr-search-container */
 }
 
-/* .portlet-contact-manager .btn-add { */
-/*     font-size: 16px; */
-/* } */
-
 .portlet-contact-manager .contact-search .control-group,
 .portlet-contact-manager .row-fluid form {
     margin-bottom: 0; 
@@ -54,6 +50,10 @@
 	margin-top: 0; 
 }
 
+.portlet-contact-manager .lfr-form-row .handle-sort-vertical {
+	background-size: cover; 
+}
+
 .portlet-contact-manager .lfr-form-row {
 	border-bottom: 1px solid #e5e5e5; 
 }
@@ -68,6 +68,13 @@
 
 .portlet-contact-manager select {
 	width: 150px;
+}
+
+.portlet-contact-manager .sort-handle {
+	height: 20px;
+    float: left; 
+    margin-top: 5px;
+    margin-right: 10px;
 }
 
 .portlet-contact-manager .taglib-icon-help {

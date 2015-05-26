@@ -2,8 +2,8 @@
     edit_contact/edit_notes.jsp: Edit the vCard's notes of the contact.
     
     Created:    2015-05-11 18:48 by Christian Berndt
-    Modified:   2015-05-26 17:36 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-05-26 18:49 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -23,6 +23,9 @@
 		<aui:col span="12">
 			<div class="lfr-form-row">
 				<div class="row-fields">
+				
+                    <div class="sort-handle"></div>
+				
 					<aui:input name="note" type="textarea" cssClass="note"
 						value="<%=note.getValue()%>" inlineField="true" label=""
 						disabled="<%=!hasUpdatePermission%>" />
@@ -42,6 +45,8 @@
     var noteAutoFields = new Liferay.AutoFields({
         contentBox : 'fieldset#<portlet:namespace />note',
         namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
         on : {
             'clone' : function(event) {
                 restoreOriginalNames(event);
