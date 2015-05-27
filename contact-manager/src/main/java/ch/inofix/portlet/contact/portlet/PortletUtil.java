@@ -83,14 +83,35 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-05-21 18:00
- * @version 1.0.3
+ * @modified 2015-05-25 21:08
+ * @version 1.0.4
  *
  */
 public class PortletUtil {
 
 	// Enable logging for this class
 	private static Log log = LogFactoryUtil.getLog(PortletUtil.class.getName());
+
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 * @since 1.0.4
+	 */
+	public static Integer getPref(int i) {
+
+		// Preference value must be between 1 and 100 inclusive.
+		Integer pref = 0;
+
+		if (i < 100) {
+			pref = i + 1;
+		} else {
+			pref = 100;
+		}
+
+		return pref;
+
+	}
 
 	@SuppressWarnings("unchecked")
 	public static VCard getVCard(HttpServletRequest request, VCard vCard) {
@@ -151,6 +172,10 @@ public class PortletUtil {
 						|| Validator.isNotNull(addressStreetAddresses[i])) {
 
 					Address address = new Address();
+
+					Integer pref = getPref(i);
+
+					address.setPref(pref);
 
 					if (parameters.containsKey("address.country")) {
 						address.setCountry(addressCountries[i]);
@@ -247,6 +272,10 @@ public class PortletUtil {
 					CalendarRequestUri calendarRequestUri = new CalendarRequestUri(
 							calendarRequestUris[i]);
 
+					Integer pref = getPref(i);
+
+					calendarRequestUri.setPref(pref);
+
 					vCard.addCalendarRequestUri(calendarRequestUri);
 				}
 			}
@@ -263,6 +292,10 @@ public class PortletUtil {
 
 				if (Validator.isNotNull(calendarUris[i])) {
 					CalendarUri calendarUri = new CalendarUri(calendarUris[i]);
+
+					Integer pref = getPref(i);
+
+					calendarUri.setPref(pref);
 
 					vCard.addCalendarUri(calendarUri);
 				}
@@ -318,6 +351,10 @@ public class PortletUtil {
 
 					Email email = new Email(emailAddresses[i]);
 
+					Integer pref = getPref(i);
+
+					email.setPref(pref);
+
 					if (type != null) {
 						email.addType(type);
 					}
@@ -343,12 +380,16 @@ public class PortletUtil {
 					ExpertiseLevel level = ExpertiseLevel
 							.find(expertiseLevels[i]);
 					expertise.setLevel(level);
+
+					Integer pref = getPref(i);
+
+					expertise.setPref(pref);
+
 					vCard.addExpertise(expertise);
 				}
 			}
 		}
 
-		// TODO: add or setFormattedName?
 		if (parameters.containsKey("formattedName")) {
 			String formattedName = ParamUtil
 					.getString(request, "formattedName");
@@ -365,7 +406,13 @@ public class PortletUtil {
 			for (int i = 0; i < freeBusyUrls.length; i++) {
 
 				if (Validator.isNotNull(freeBusyUrls[i])) {
+
 					FreeBusyUrl freeBusyUrl = new FreeBusyUrl(freeBusyUrls[i]);
+
+					Integer pref = getPref(i);
+
+					freeBusyUrl.setPref(pref);
+
 					vCard.addFbUrl(freeBusyUrl);
 				}
 			}
@@ -397,6 +444,10 @@ public class PortletUtil {
 					HobbyLevel level = HobbyLevel.find(hobbyLevels[i]);
 					hobby.setLevel(level);
 
+					Integer pref = getPref(i);
+
+					hobby.setPref(pref);
+
 					vCard.addHobby(hobby);
 				}
 			}
@@ -427,6 +478,11 @@ public class PortletUtil {
 					if (type != null) {
 						impp.addType(type);
 					}
+
+					Integer pref = getPref(i);
+
+					impp.setPref(pref);
+
 					vCard.addImpp(impp);
 				}
 			}
@@ -448,6 +504,11 @@ public class PortletUtil {
 					Interest interest = new Interest(interests[i]);
 					InterestLevel level = InterestLevel.find(interestLevels[i]);
 					interest.setLevel(level);
+
+					Integer pref = getPref(i);
+
+					interest.setPref(pref);
+
 					vCard.addInterest(interest);
 
 				}
@@ -485,6 +546,11 @@ public class PortletUtil {
 					ImageType type = ImageType.find(logoTypes[i], mediaType,
 							extension);
 					Logo logo = new Logo(logoUrls[i], type);
+
+					Integer pref = getPref(i);
+
+					logo.setPref(pref);
+
 					vCard.addLogo(logo);
 				}
 			}
@@ -501,6 +567,11 @@ public class PortletUtil {
 				if (Validator.isNotNull(members[i])) {
 
 					Member member = new Member(members[i]);
+
+					Integer pref = getPref(i);
+
+					member.setPref(pref);
+
 					vCard.addMember(member);
 
 				}
@@ -526,6 +597,11 @@ public class PortletUtil {
 				Note note = new Note(notes[i]);
 
 				if (Validator.isNotNull(notes[i])) {
+
+					Integer pref = getPref(i);
+
+					note.setPref(pref);
+
 					vCard.addNote(note);
 				}
 			}
@@ -571,10 +647,17 @@ public class PortletUtil {
 				TelephoneType type = TelephoneType.find(phoneTypes[i]);
 
 				if (Validator.isNotNull(phoneNumbers[i])) {
+					
 					Telephone phone = new Telephone(phoneNumbers[i]);
+					
 					if (type != null) {
 						phone.addType(type);
 					}
+
+					Integer pref = getPref(i);
+
+					phone.setPref(pref);
+					
 					vCard.addTelephoneNumber(phone);
 				}
 			}
@@ -599,6 +682,11 @@ public class PortletUtil {
 					ImageType type = ImageType.find(photoTypes[i], mediaType,
 							extension);
 					Photo photo = new Photo(photoUrls[i], type);
+					
+					Integer pref = getPref(i);
+
+					photo.setPref(pref);
+					
 					vCard.addPhoto(photo);
 				}
 			}
@@ -610,6 +698,7 @@ public class PortletUtil {
 			vCard.setProductId(productId);
 		}
 
+		// probably obsolete since 4.0
 		if (parameters.containsKey("profile")) {
 			Profile profile = new Profile();
 			String profileStr = ParamUtil.getString(request, "profile");
@@ -633,6 +722,10 @@ public class PortletUtil {
 
 				if (Validator.isNotNull(roles[i])) {
 					Role role = new Role(roles[i]);
+					
+					Integer pref = getPref(i);
+
+					role.setPref(pref);
 
 					vCard.addRole(role);
 				}
@@ -665,6 +758,10 @@ public class PortletUtil {
 							extension);
 
 					Sound sound = new Sound(soundUrls[i], type);
+					
+					Integer pref = getPref(i);
+
+					sound.setPref(pref);
 
 					vCard.addSound(sound);
 				}
@@ -682,6 +779,10 @@ public class PortletUtil {
 
 				if (Validator.isNotNull(sourceUris[i])) {
 					Source sourceUri = new Source(sourceUris[i]);
+					
+					Integer pref = getPref(i);
+
+					sourceUri.setPref(pref);
 
 					vCard.addSource(sourceUri);
 				}
@@ -743,6 +844,10 @@ public class PortletUtil {
 
 				if (Validator.isNotNull(titles[i])) {
 					Title title = new Title(titles[i]);
+					
+					Integer pref = getPref(i);
+
+					title.setPref(pref);
 
 					vCard.addTitle(title);
 				}
@@ -771,6 +876,10 @@ public class PortletUtil {
 				if (Validator.isNotNull(urlAddresses[i])) {
 					Url url = new Url(urlAddresses[i]);
 					url.setType(urlTypes[i]);
+					
+					Integer pref = getPref(i);
+
+					url.setPref(pref);
 
 					vCard.addUrl(url);
 				}

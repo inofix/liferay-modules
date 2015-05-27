@@ -29,8 +29,8 @@ import com.liferay.portal.security.permission.PermissionChecker;
  * 
  * @author Christian Berndt
  * @created 2015-05-20 13:28
- * @modified 2015-05-25 17:15
- * @version 1.0.2
+ * @modified 2015-05-27 11:45
+ * @version 1.0.3
  *
  */
 public class ContactIndexer extends BaseIndexer {
@@ -77,25 +77,23 @@ public class ContactIndexer extends BaseIndexer {
 
 		// Set document field values (in alphabetical order)
 
+		document.addKeyword(ContactSearchTerms.COMPANY,
+				contact.getCompany());
 		document.addKeyword(ContactSearchTerms.CONTACT_ID,
 				contact.getContactId());
 		document.addText(Field.CONTENT, contact.getCard());
-		document.addKeyword(ContactSearchTerms.EMAIL_HOME,
-				contact.getEmailHome());
-		document.addKeyword(ContactSearchTerms.EMAIL_WORK,
-				contact.getEmailWork());
+		document.addKeyword(ContactSearchTerms.EMAIL,
+				contact.getEmail().getAddress());
+		// TODO: add default fax
 		document.addKeyword(ContactSearchTerms.FULL_NAME,
 				contact.getFullName(false));
 		document.addKeyword(Field.GROUP_ID,
 				getSiteGroupId(contact.getGroupId()));
+		// TODO add default impp
 		document.addDate(Field.MODIFIED_DATE, contact.getModifiedDate());
 		document.addKeyword(ContactSearchTerms.NAME, contact.getName());
-		document.addKeyword(ContactSearchTerms.PHONE_HOME,
-				contact.getPhoneHome());
-		document.addKeyword(ContactSearchTerms.PHONE_MOBILE,
-				contact.getPhoneMobile());
-		document.addKeyword(ContactSearchTerms.PHONE_WORK,
-				contact.getPhoneWork());
+		document.addKeyword(ContactSearchTerms.PHONE,
+				contact.getPhone().getNumber());
 		document.addKeyword(Field.SCOPE_GROUP_ID, contact.getGroupId());
 		document.addText(Field.TITLE, contact.getFullName(true));
 

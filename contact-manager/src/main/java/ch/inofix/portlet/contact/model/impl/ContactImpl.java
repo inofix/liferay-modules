@@ -70,8 +70,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-26 16:19
- * @version 1.0.7
+ * @modified 2015-05-27 12:10
+ * @version 1.0.8
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -88,18 +88,15 @@ public class ContactImpl extends ContactBaseImpl {
 
 	/**
 	 * 
+	 * @param address
 	 * @return
-	 * @since 1.0.0
+	 * @since 1.0.8
 	 */
-	public List<AddressDTO> getAddresses() {
+	private AddressDTO getAddress(Address address) {
 
-		List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();
+		AddressDTO addressDTO = new AddressDTO();
 
-		List<Address> addresses = getVCard().getAddresses();
-
-		for (Address address : addresses) {
-
-			AddressDTO addressDTO = new AddressDTO();
+		if (address != null) {
 
 			addressDTO.setCountry(address.getCountry());
 			addressDTO.setLabel(address.getLabel());
@@ -123,6 +120,38 @@ public class ContactImpl extends ContactBaseImpl {
 			}
 
 			addressDTO.setType(sb.toString());
+		}
+
+		return addressDTO;
+	}
+
+	/**
+	 * 
+	 * @return the preferred address.
+	 * @since 1.0.8
+	 */
+	public AddressDTO getAddress() {
+
+		Address address = getVCard().getProperty(Address.class);
+
+		return getAddress(address);
+
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @since 1.0.0
+	 */
+	public List<AddressDTO> getAddresses() {
+
+		List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();
+
+		List<Address> addresses = getVCard().getAddresses();
+
+		for (Address address : addresses) {
+
+			AddressDTO addressDTO = getAddress(address);
 
 			addressDTOs.add(addressDTO);
 
@@ -435,56 +464,30 @@ public class ContactImpl extends ContactBaseImpl {
 	}
 
 	/**
-	 * @param type
-	 * @since 1.0.0
+	 * 
+	 * @return the preferred email.
+	 * @since 1.0.8
 	 */
-	public String getEmail(EmailType type) {
+	public EmailDTO getEmail() {
 
-		String str = "";
+		Email email = getVCard().getProperty(Email.class);
 
-		List<Email> emails = getVCard().getEmails();
+		return getEmail(email);
 
-		for (Email email : emails) {
-			Set<EmailType> types = email.getTypes();
-			for (EmailType emailType : types) {
-				if (emailType.equals(type)) {
-					str = email.getValue();
-				}
-			}
-		}
-
-		return str;
-
-	}
-
-	/**
-	 * @since 1.0.0
-	 */
-	public String getEmailHome() {
-		return getEmail(EmailType.HOME);
-	}
-
-	/**
-	 * @since 1.0.0
-	 */
-	public String getEmailWork() {
-		return getEmail(EmailType.WORK);
 	}
 
 	/**
 	 * 
+	 * @param email
 	 * @return
-	 * @since 1.0.0
+	 * @since 1.0.8
 	 */
-	public List<EmailDTO> getEmails() {
+	private EmailDTO getEmail(Email email) {
 
-		List<EmailDTO> emailDTOs = new ArrayList<EmailDTO>();
+		EmailDTO emailDTO = new EmailDTO();
 
-		List<Email> emails = getVCard().getEmails();
-
-		for (Email email : emails) {
-
-			EmailDTO emailDTO = new EmailDTO();
+		if (email != null) {
+			emailDTO.setAddress(email.getValue());
 
 			emailDTO.setAddress(email.getValue());
 
@@ -500,6 +503,25 @@ public class ContactImpl extends ContactBaseImpl {
 			}
 
 			emailDTO.setType(sb.toString());
+		}
+
+		return emailDTO;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @since 1.0.0
+	 */
+	public List<EmailDTO> getEmails() {
+
+		List<EmailDTO> emailDTOs = new ArrayList<EmailDTO>();
+
+		List<Email> emails = getVCard().getEmails();
+
+		for (Email email : emails) {
+
+			EmailDTO emailDTO = getEmail(email);
 
 			emailDTOs.add(emailDTO);
 		}
@@ -884,71 +906,28 @@ public class ContactImpl extends ContactBaseImpl {
 
 	/**
 	 * 
-	 * @param type
-	 * @return
-	 * @since 1.0.0
+	 * @return the preferred phone.
+	 * @since 1.0.8
 	 */
-	public String getPhone(TelephoneType type) {
+	public PhoneDTO getPhone() {
 
-		String str = "";
+		Telephone phone = getVCard().getProperty(Telephone.class);
 
-		List<Telephone> telephones = getVCard().getTelephoneNumbers();
-
-		for (Telephone telephone : telephones) {
-			Set<TelephoneType> types = telephone.getTypes();
-			for (TelephoneType telephoneType : types) {
-				if (telephoneType.equals(type)) {
-					str = telephone.getText();
-				}
-			}
-		}
-
-		return str;
+		return getPhone(phone);
 
 	}
 
 	/**
 	 * 
+	 * @param phone
 	 * @return
-	 * @since 1.0.0
+	 * @since 1.0.8
 	 */
-	public String getPhoneHome() {
-		return getPhone(TelephoneType.HOME);
-	}
+	private PhoneDTO getPhone(Telephone phone) {
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getPhoneMobile() {
-		return getPhone(TelephoneType.CELL);
-	}
+		PhoneDTO phoneDTO = new PhoneDTO();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getPhoneWork() {
-		return getPhone(TelephoneType.WORK);
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<PhoneDTO> getPhones() {
-
-		List<PhoneDTO> phoneDTOs = new ArrayList<PhoneDTO>();
-
-		List<Telephone> phones = getVCard().getTelephoneNumbers();
-
-		for (Telephone phone : phones) {
-
-			PhoneDTO phoneDTO = new PhoneDTO();
-
+		if (phone != null) {
 			phoneDTO.setNumber(phone.getText());
 
 			StringBuilder sb = new StringBuilder();
@@ -966,6 +945,25 @@ public class ContactImpl extends ContactBaseImpl {
 			}
 
 			phoneDTO.setType(sb.toString());
+		}
+
+		return phoneDTO;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @since 1.0.0
+	 */
+	public List<PhoneDTO> getPhones() {
+
+		List<PhoneDTO> phoneDTOs = new ArrayList<PhoneDTO>();
+
+		List<Telephone> phones = getVCard().getTelephoneNumbers();
+
+		for (Telephone phone : phones) {
+
+			PhoneDTO phoneDTO = getPhone(phone);
 
 			phoneDTOs.add(phoneDTO);
 		}
