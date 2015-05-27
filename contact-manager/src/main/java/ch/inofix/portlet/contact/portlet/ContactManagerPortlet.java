@@ -1,19 +1,29 @@
 package ch.inofix.portlet.contact.portlet;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.model.Contact;
+import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
@@ -33,8 +43,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-25 19:15
- * @version 1.0.5
+ * @modified 2015-05-27 18:06
+ * @version 1.0.6
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -253,6 +263,91 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionResponse.setRenderParameter("historyKey", historyKey);
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 		actionResponse.setRenderParameter("redirect", redirect);
+
+	}
+
+	/**
+	 * 
+	 * @param resourceRequest
+	 * @param resourceResponse
+	 * @since 1.0.6
+	 * @throws PortletException
+	 */
+	@Override
+	public void serveResource(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws PortletException {
+
+		try {
+			String resourceID = resourceRequest.getResourceID();
+
+			if (resourceID.equals("serveVCard")) {
+				serveVCard(resourceRequest, resourceResponse);
+			} else if (resourceID.equals("serveVCards")) {
+				serveVCards(resourceRequest, resourceResponse);
+			} else {
+				super.serveResource(resourceRequest, resourceResponse);
+			}
+		} catch (Exception e) {
+			log.error(e);
+			throw new PortletException(e);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @param resourceRequest
+	 * @param resourceResponse
+	 * @since 1.0.6
+	 * @throws PortalException
+	 * @throws SystemException
+	 * @throws IOException
+	 */
+	protected void serveVCard(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws PortalException,
+			SystemException, IOException {
+
+		long contactId = ParamUtil.getLong(resourceRequest, "contactId");
+
+		Contact contact = ContactServiceUtil.getContact(contactId);
+
+		String card = contact.getCard();
+		String name = contact.getFullName(true);
+
+		PortletResponseUtil.sendFile(resourceRequest, resourceResponse, name
+				+ ".vcf", card.getBytes(), ContentTypes.TEXT_PLAIN_UTF8);
+
+	}
+
+	/**
+	 * 
+	 * @param resourceRequest
+	 * @param resourceResponse
+	 * @since 1.0.6
+	 * @throws PortalException
+	 * @throws SystemException
+	 * @throws IOException
+	 */
+	protected void serveVCards(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws PortalException,
+			SystemException, IOException {
+
+		// TODO: Move this to an exportContacts() method in
+		// ContactServiceImpl and check for the export permission
+		List<Contact> contacts = ContactLocalServiceUtil.getContacts(0,
+				Integer.MAX_VALUE);
+
+		StringBuilder sb = new StringBuilder();
+
+		for (Contact contact : contacts) {
+			sb.append(contact.getCard());
+			sb.append("\n");
+		}
+
+		String cards = sb.toString();
+
+		PortletResponseUtil.sendFile(resourceRequest, resourceResponse,
+				"list.vcf", cards.getBytes(), ContentTypes.TEXT_PLAIN_UTF8);
 
 	}
 

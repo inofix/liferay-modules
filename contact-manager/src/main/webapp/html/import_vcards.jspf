@@ -2,8 +2,8 @@
     import_vcards.jsp: Import vCards from an uploaded file. 
     
     Created:    2015-05-08 18:11 by Christian Berndt
-    Modified:   2015-05-08 18:11 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-27 18:45 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <portlet:actionURL var="importVCardFileURL" name="importVCardFile"/>
@@ -24,10 +24,14 @@
 
 	<aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
 
-	<aui:input name="file" type="file" inlineField="true" label="" />
+    <aui:fieldset label="import">
 
-	<aui:button name="import" type="submit" value="import" disabled="true" />
-	<aui:button href="<%=browseURL%>" type="cancel" />
+		<aui:input name="file" type="file" inlineField="true" label="" />
+	
+		<aui:button name="import" type="submit" value="import" disabled="true" />
+		<aui:button href="<%=browseURL%>" type="cancel" />
+	
+	</aui:fieldset>
 </aui:form>
 
 <aui:script use="aui-base">
