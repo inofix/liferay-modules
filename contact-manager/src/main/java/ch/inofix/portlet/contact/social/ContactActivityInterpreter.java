@@ -7,16 +7,19 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 
 import ch.inofix.portlet.contact.model.Contact;
+import ch.inofix.portlet.contact.security.permission.ActionKeys;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.permission.ContactPermission;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.PortletURLFactoryUtil;
 import com.liferay.portlet.social.model.BaseSocialActivityInterpreter;
@@ -28,8 +31,8 @@ import com.liferay.portlet.social.model.SocialActivityConstants;
  * 
  * @author Christian Berndt
  * @created 2015-05-23 21:58
- * @modified 2015-05-23 21:58
- * @version 1.0.0
+ * @modified 2015-05-28 16:41
+ * @version 1.0.1
  *
  */
 public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
@@ -47,30 +50,52 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 	protected String getPath(SocialActivity activity,
 			ServiceContext serviceContext) throws Exception {
 
-		log.info("Executing getPath().");
-
 		long plid = PortalUtil.getPlidFromPortletId(
 				serviceContext.getScopeGroupId(),
 				"contactmanager_WAR_contactmanager");
-		
+
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		PermissionChecker permissionChecker = themeDisplay
+				.getPermissionChecker();
+
 		PortletURL portletURL = PortletURLFactoryUtil.create(
 				serviceContext.getRequest(),
 				"contactmanager_WAR_contactmanager", plid,
 				PortletRequest.ACTION_PHASE);
 
-		portletURL.setWindowState(LiferayWindowState.NORMAL);
+		portletURL.setWindowState(LiferayWindowState.POP_UP);
 
-		portletURL.setParameter("backURL", serviceContext.getCurrentURL());
+		portletURL.setParameter("redirect", serviceContext.getCurrentURL());
 		portletURL.setParameter("contactId",
 				String.valueOf(activity.getClassPK()));
 		portletURL.setParameter("javax.portlet.action", "editContact");
-		// TODO: Check the user's permissions and set the path accordingly: 
-		// no permissions: return StringPool.BLANK, 
-		// view permission: mvcPath = /html/view_contact.jsp
-		// update permission: mvcPath = /html/edit_contact.jsp
-		portletURL.setParameter("mvcPath", "/html/edit_contact.jsp");
+		String title = "";
 
-		return portletURL.toString();
+		if (ContactPermission.contains(permissionChecker,
+				activity.getClassPK(), ActionKeys.UPDATE)) {
+
+			portletURL.setParameter("mvcPath", "/html/edit_contact.jsp");
+			// TODO: Format the popup title
+			title = "edit";
+
+		} else if (ContactPermission.contains(permissionChecker,
+				activity.getClassPK(), ActionKeys.VIEW)) {
+
+			portletURL.setParameter("mvcPath", "/html/view_contact.jsp");
+			// TODO: Format the popup title
+			title = "view";
+
+		} else {
+			return StringPool.BLANK;
+		}
+
+		String taglibURL = "javascript:Liferay.Util.openWindow({id: '"
+				+ "_contactmanager_WAR_contactmanager_"
+				+ "editAsset', title: '" + title + "', uri:'"
+				+ HtmlUtil.escapeJS(portletURL.toString()) + "'});";
+
+		return taglibURL;
 	}
 
 	/**
@@ -80,8 +105,6 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 	@Override
 	protected String getTitle(SocialActivity activity,
 			ServiceContext serviceContext) throws Exception {
-
-		log.info("Executing getTitle().");
 
 		String groupName = StringPool.BLANK;
 
