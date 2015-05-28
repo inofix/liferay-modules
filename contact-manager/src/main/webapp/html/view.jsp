@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-05-28 12:45 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-28 15:51 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -164,9 +164,14 @@
                         <portlet:param name="contactId" value="<%= String.valueOf(contact_.getContactId()) %>"/>
                         <portlet:param name="backURL" value="<%= currentURL %>"/>
                         <portlet:param name="mvcPath" value="/html/view.jsp"/>
-                    </portlet:actionURL> 
-                                       
-                    <portlet:actionURL var="editURL" name="editContact" 
+                    </portlet:actionURL>
+
+					<portlet:resourceURL var="downloadVCardURL" id="serveVCard">
+						<portlet:param name="contactId" 
+						  value="<%= String.valueOf(contact_.getContactId()) %>" />
+					</portlet:resourceURL>
+
+					<portlet:actionURL var="editURL" name="editContact" 
                         windowState="<%= LiferayWindowState.POP_UP.toString() %>">
                         <portlet:param name="redirect" value="<%= currentURL %>"/>
                         <portlet:param name="contactId" value="<%= String.valueOf(contact_.getContactId()) %>"/>
@@ -235,6 +240,9 @@
                             </c:if>
                             <c:if test="<%= hasViewPermission %>">
 	                            <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
+                            </c:if>
+                            <c:if test="<%= hasViewPermission %>">
+                                <liferay-ui:icon image="download" url="<%= downloadVCardURL %>" />
                             </c:if>
                             <c:if test="<%= hasDeletePermission %>">
 	                            <liferay-ui:icon-delete url="<%=deleteURL%>" />

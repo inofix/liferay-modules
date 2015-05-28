@@ -2,8 +2,8 @@
     edit_contact/edit_vcard.jsp: Edit the vCard String of the contact.
     
     Created:    2015-05-08 15:42 by Christian Berndt
-    Modified:   2015-05-27 19:01 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-28 15:53 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -21,6 +21,8 @@
 		<aui:col span="2">
 
 			<portlet:resourceURL var="serveVCardURL" id="serveVCard">
+				<portlet:param name="contactId"
+					value="<%= String.valueOf(contact_.getContactId()) %>" />
 			</portlet:resourceURL>
 
 			<aui:button href="<%=serveVCardURL%>" value="download" />
