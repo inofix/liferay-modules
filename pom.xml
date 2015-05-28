@@ -43,7 +43,6 @@
         </liferay.auto.deploy.dir>
 
         <liferay.version>6.2.3</liferay.version>
-        <!-- <liferay.version>6.2-ce-ga-4</liferay.version> -->
 
         <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version>
 
@@ -102,7 +101,7 @@
             <version>${liferay.version}</version>
         </dependency>
     </dependencies>
-
+    
 
     <modules>
         <module>contact-manager</module>
