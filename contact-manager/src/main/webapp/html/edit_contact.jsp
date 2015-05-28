@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-05-25 19:02 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-05-28 14:51 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -13,9 +13,21 @@
 
 	String backURL = ParamUtil.getString(request, "backURL", redirect);
 	
-    String historyKey = ParamUtil.getString(request, "historyKey");
-    
-    String mvcPath = ParamUtil.getString(request, "mvcPath");
+	String windowId = ""; 
+	windowId = ParamUtil.getString(request, "windowId"); 
+	
+	// Close the popup, if we are in popup mode and a redirect was provided.
+	
+	if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp()) {
+		PortletURL portletURL = renderResponse.createRenderURL();
+        portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
+        portletURL.setParameter("windowId", windowId);
+		backURL = portletURL.toString();
+	}
+
+	String historyKey = ParamUtil.getString(request, "historyKey");
+
+	String mvcPath = ParamUtil.getString(request, "mvcPath");
 
 	String tabs1 = ParamUtil.getString(request, "tabs1", "contact");
 
@@ -45,6 +57,7 @@
         <aui:input name="redirect" type="hidden" value="<%=redirect%>" />
 		<aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
         <aui:input name="uid" type="hidden" value="<%=contact_.getUid() %>" />
+        <aui:input name="windowId" type="hidden" value="<%=windowId%>" />
 
 		<liferay-ui:form-navigator categorySections="<%=categorySections%>"
 			categoryNames="<%=categoryNames%>" jspPath="/html/edit_contact/" 

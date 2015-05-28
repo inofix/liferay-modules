@@ -43,8 +43,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-27 18:06
- * @version 1.0.6
+ * @modified 2015-05-28 15:09
+ * @version 1.0.7
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -123,6 +123,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		long contactId = ParamUtil.getLong(actionRequest, "contactId");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
+		String windowId = ParamUtil.getString(actionRequest, "windowId");
 
 		Contact contact = null;
 
@@ -139,6 +140,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 				String.valueOf(contactId));
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 		actionResponse.setRenderParameter("redirect", redirect);
+		actionResponse.setRenderParameter("windowId", windowId);
 
 	}
 
@@ -210,6 +212,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		String historyKey = ParamUtil.getString(actionRequest, "historyKey");
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
+		String windowId = ParamUtil.getString(actionRequest, "windowId");
 
 		VCard vCard = null;
 		String uid = null;
@@ -263,6 +266,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionResponse.setRenderParameter("historyKey", historyKey);
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 		actionResponse.setRenderParameter("redirect", redirect);
+		actionResponse.setRenderParameter("windowId", windowId);
 
 	}
 

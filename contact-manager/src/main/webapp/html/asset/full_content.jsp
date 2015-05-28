@@ -2,14 +2,14 @@
     full_content.jsp: The full_content template for contact assets. 
     
     Created:    2015-05-19 17:41 by Christian Berndt
-    Modified:   2015-05-20 21:45 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-05-28 13:15 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@include file="/html/init.jsp" %>
 
 <%
-	Contact contact = (Contact)request.getAttribute("CONTACT");
+	Contact contact_ = (Contact)request.getAttribute("CONTACT");
 %>
 
 <style>
@@ -43,13 +43,13 @@
 </style>
 
 <div>
-    <%= contact.getVCardHTML() %>
+    <%= contact_.getVCardHTML() %>
 </div>
 
 <liferay-ui:custom-attributes-available className="<%= Contact.class.getName() %>">
     <liferay-ui:custom-attribute-list
         className="<%= Contact.class.getName() %>"
-        classPK="<%= (contact != null) ? contact.getPrimaryKey() : 0 %>"
+        classPK="<%= (contact_ != null) ? contact_.getPrimaryKey() : 0 %>"
         editable="<%= false %>"
         label="<%= true %>"
     />

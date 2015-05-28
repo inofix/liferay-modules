@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the contact-manager
     
     Created:    2015-05-07 15:16 by Christian Berndt
-    Modified:   2015-05-25 20:14 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-05-28 11:37 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%-- Import required classes --%>
@@ -21,10 +21,13 @@
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.log.Log"%>
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
 <%@page import="ezvcard.VCard"%>
@@ -43,6 +46,7 @@
 <%-- Common setup code, required by any jsp --%>
 
 <portlet:defineObjects />
+<theme:defineObjects />
 
 <%
 	String[] columns = portletPreferences.getValues("columns",

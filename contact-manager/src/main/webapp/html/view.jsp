@@ -2,7 +2,7 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-05-24 23:06 by Christian Berndt
+    Modified:   2015-05-28 12:45 by Christian Berndt
     Version:    1.0.3
 --%>
 
@@ -27,8 +27,6 @@
 <%@page import="ch.inofix.portlet.contact.service.ContactLocalServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.ContactServiceUtil"%>
 <%@page import="ch.inofix.portlet.contact.service.permission.ContactPortletPermission"%>
-
-<theme:defineObjects />
 
 <%
 	String backURL = ParamUtil.getString(request, "backURL");
@@ -168,10 +166,12 @@
                         <portlet:param name="mvcPath" value="/html/view.jsp"/>
                     </portlet:actionURL> 
                                        
-                    <portlet:actionURL var="editURL" name="editContact">
+                    <portlet:actionURL var="editURL" name="editContact" 
+                        windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+                        <portlet:param name="redirect" value="<%= currentURL %>"/>
                         <portlet:param name="contactId" value="<%= String.valueOf(contact_.getContactId()) %>"/>
-                        <portlet:param name="backURL" value="<%= currentURL %>"/>
                         <portlet:param name="mvcPath" value="/html/edit_contact.jsp"/>
+                        <portlet:param name="windowId" value="editContact"/>
                     </portlet:actionURL>
                     
                     <%
@@ -190,13 +190,19 @@
                         resourcePrimKey="<%= String.valueOf(contact_.getContactId()) %>"
                         var="permissionsURL" /> 
                     
-                    <portlet:actionURL var="viewURL" name="viewContact">
+                    <portlet:actionURL var="viewURL" name="viewContact" 
+                        windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+                        <portlet:param name="redirect" value="<%= currentURL %>"/>
                         <portlet:param name="contactId" value="<%= String.valueOf(contact_.getContactId()) %>"/>
-                        <portlet:param name="backURL" value="<%= currentURL %>"/>
                         <portlet:param name="mvcPath" value="/html/view_contact.jsp"/>
+                        <portlet:param name="windowId" value="viewContact"/>
                     </portlet:actionURL>
 
 					<%
+					
+	                    String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editContact', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", HtmlUtil.escape(contact_.getFullName(true)))) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+	                    String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewContact', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "view-x", HtmlUtil.escape(contact_.getFullName(true)))) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
+					
 	                    boolean hasDeletePermission = ContactPermission.contains(permissionChecker,
 	                            contact_.getContactId(), ActionKeys.DELETE);   
 	                    boolean hasPermissionsPermission = ContactPermission.contains(permissionChecker,
@@ -206,12 +212,12 @@
 	                    boolean hasViewPermission = ContactPermission.contains(permissionChecker,
 	                            contact_.getContactId(), ActionKeys.VIEW);
 
-						String detailURL = viewURL;
+						String detailURL = null;
 
 						if (hasUpdatePermission) {
-							detailURL = editURL.toString();
+							detailURL = taglibEditURL; 
 						} else if (hasViewPermission) {
-							detailURL = viewURL.toString(); 
+							detailURL = taglibViewURL;  
 						}
 					%>
 
@@ -222,13 +228,13 @@
                         <liferay-ui:icon-menu>
 
                             <c:if test="<%= hasUpdatePermission %>">
-	                            <liferay-ui:icon image="edit" url="<%=editURL%>" />
+	                            <liferay-ui:icon image="edit" url="<%=taglibViewURL%>" />
                             </c:if>
                             <c:if test="<%= hasPermissionsPermission %>">
 	                            <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
                             </c:if>
                             <c:if test="<%= hasViewPermission %>">
-	                            <liferay-ui:icon image="view" url="<%=viewURL%>" />
+	                            <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
                             </c:if>
                             <c:if test="<%= hasDeletePermission %>">
 	                            <liferay-ui:icon-delete url="<%=deleteURL%>" />

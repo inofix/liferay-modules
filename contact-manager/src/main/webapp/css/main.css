@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-05-26 18:43 by Christian Berndt
- * Version:     1.0.8
+ * Modified:    2015-05-28 11:59 by Christian Berndt
+ * Version:     1.0.9
  *
  */
 .aui .row-fields .control-group {
@@ -23,7 +23,15 @@
 {
 	color: black;
 }
- 
+
+.portlet-contact-manager .asset-actions {
+	float: right;
+	font-size: 11px;
+	font-weight: normal;
+	margin-bottom: 3px;
+	margin-top: 0;
+}
+
 .portlet-contact-manager .address .lfr-form-row {
 	border-bottom: none;
 }
