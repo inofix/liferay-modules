@@ -2,8 +2,8 @@
     close_popup.jsp: Close the popup window 
     
     Created:    2015-05-28 13:12 by Christian Berndt
-    Modified:   2015-05-28 13:12 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-05-28 16:14 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 
@@ -14,7 +14,11 @@
 
 <%
 	String redirect = request.getParameter("redirect");
-	String windowId = request.getParameter("windowId");
+	String windowId = ParamUtil.getString(request, "windowId", "editAsset");
+	
+	if (Validator.isNull(windowId)) {
+		windowId = "editAsset"; 
+	}
 
 	redirect = PortalUtil.escapeRedirect(redirect);
 
