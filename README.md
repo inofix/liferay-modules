@@ -25,3 +25,8 @@ The Contact Manager Portlet is a vCard 4.0 compliant contact-manager with the fo
 * Import- and export of vCards from file
 * Editing of all standard fields and the extensions defined in <a href="https://tools.ietf.org/html/rfc6715" target="_blank">RFC 6715</a>
 * Integration into Liferay's asset-framework
+
+## Third Party Libraries
+
+* <a href="https://github.com/mangstadt/ez-vcard" target="_blank">ez-vcard</a>
+* <a href="https://github.com/Kerio/cdav-connector" target="_blank">cdav-connector</a>
