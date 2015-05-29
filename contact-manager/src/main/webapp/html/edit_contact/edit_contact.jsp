@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-26 18:45 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2015-05-29 13:36 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -37,20 +37,22 @@
 
 	// TODO: Make the phoneTypes configurable
 	String[] phoneTypes = new String[] { "other",
-			TelephoneType.BBS.getValue(), TelephoneType.CAR.getValue(),
+// 			TelephoneType.BBS.getValue(), 
+// 			TelephoneType.CAR.getValue(),
 			TelephoneType.CELL.getValue(),
 			TelephoneType.FAX.getValue(),
-			TelephoneType.HOME.getValue(),
-			TelephoneType.ISDN.getValue(),
-			TelephoneType.MODEM.getValue(),
-			TelephoneType.MSG.getValue(),
+// 			TelephoneType.HOME.getValue(),
+// 			TelephoneType.ISDN.getValue(),
+// 			TelephoneType.MODEM.getValue(),
+// 			TelephoneType.MSG.getValue(),
 			TelephoneType.PAGER.getValue(),
-			TelephoneType.PCS.getValue(),
+// 			TelephoneType.PCS.getValue(),
 			TelephoneType.TEXT.getValue(),
 			TelephoneType.TEXTPHONE.getValue(),
 			TelephoneType.VIDEO.getValue(),
 			TelephoneType.VOICE.getValue(),
-			TelephoneType.WORK.getValue() };
+// 			TelephoneType.WORK.getValue() 
+			};
 
 	String[] snFields = new String[] { "structuredName.prefix",
 			"structuredName.given", "structuredName.additional",
@@ -75,7 +77,7 @@
 			<aui:col width="50">
 				<aui:input name="formattedName" bean="<%=contact_%>"
 					inlineField="true" helpMessage="formatted-name-help" 
-					disabled="<%= !hasUpdatePermission %>" />
+					disabled="<%= !hasUpdatePermission %>" required="true"/>
 				<aui:button name="structuredNameBtn" value="structured-name"
 					cssClass="btn" />
 			</aui:col>
