@@ -468,8 +468,6 @@ public class PortletUtil {
 
 				ImppType type = ImppType.find(imppTypes[i]);
 
-				log.info("imppTypes[i] = " + imppTypes[i]);
-
 				if (Validator.isNotNull(imppUris[i])) {
 
 					// TODO: check uri format
