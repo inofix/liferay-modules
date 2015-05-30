@@ -20,8 +20,27 @@ please use the upcoming releases of the modules from the liferay marketplace.
 
 ### Contact Manager ###
 
-The Contact Manager Portlet is a vCard 4.0 compliant contact-manager with the following features: 
+The Contact Manager Portlet is a contact-manager based on the vCard 4.0 standard with the following features: 
 
 * Import- and export of vCards from file
 * Editing of all standard fields and the extensions defined in <a href="https://tools.ietf.org/html/rfc6715" target="_blank">RFC 6715</a>
-* Integration into Liferay's asset-framework
+* Integration into Liferay's Asset-Framework
+* Integration into Liferay's Activity-Framework
+
+#### Third Party Libraries
+
+* <a href="https://github.com/mangstadt/ez-vcard" target="_blank">ez-vcard</a>
+
+### cDAV Manager ###
+
+The CDav Manager allows you to connect your Liferay Calendar to and synchronize with CalDAV-Servers like Kerio, Google Calendar, etc.
+
+#### Compile from source ####
+
+1. clone cdav-connector from <a href="https://github.com/Kerio/cdav-connector" target="_blank">https://github.com/Kerio/cdav-connector</a> and 
+2. install it to your local maven repo (mvn package install)
+3. when the cdav-manager's dependency is fulfilled (see steps 1 & 2) you build the cdav-manager with mvn package
+
+#### Third Party Libraries
+
+* <a href="https://github.com/Kerio/cdav-connector" target="_blank">cdav-connector</a>
