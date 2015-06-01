@@ -2,8 +2,8 @@
     configuration.jsp: Configure the cdav-manager's preferences.
     
     Created:    2015-05-30 12:14 by Christian Berndt
-    Modified:   2015-05-31 23:25 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-06-01 15:57 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -26,7 +26,7 @@
 	long groupId = scopeGroupId;
 
 	CalendarResource userResource = CalendarResourceUtil
-			.getUserCalendarResource(renderRequest, user.getUserId()); 
+			.getUserCalendarResource(renderRequest, user.getUserId());
 
 	CalendarResource groupResource = CalendarResourceUtil
 			.getGroupCalendarResource(renderRequest, groupId);
@@ -44,20 +44,27 @@
 	availableCalendars.addAll(userCalendars);
 	availableCalendars.addAll(groupCalendars);
 
-	// Do not create a keystore in the user's home directory
-	// but use the truststore of the JRE installation. cdav-connect expects
-	// it secured with the default keystore password "changeit".
-	boolean installCert = false;
+	List<ServerCalendar> serverCalendars = new ArrayList<ServerCalendar>();
 
-	HTTPSConnection conn = null;
+	try {
+		// Do not create a keystore in the user's home directory
+		// but use the truststore of the JRE installation. cdav-connect expects
+		// it secured with the default keystore password "changeit".
+		boolean installCert = false;
 
-	conn = new HTTPSConnection(servername, domain, username, password,
-			443, installCert);
+		HTTPSConnection conn = null;
 
-	// Retrieve the calendars for the given connection parameters
-	List<ServerCalendar> serverCalendars = conn.getCalendars();
+		conn = new HTTPSConnection(servername, domain, username,
+				password, 443, installCert);
 
-	conn.shutdown();
+		// Retrieve the calendars for the given connection parameters
+		serverCalendars = conn.getCalendars();
+
+		conn.shutdown();
+	} catch (Exception e) {
+		// TODO: log exception
+		System.out.println(e);
+	}
 %>
 
 <liferay-portlet:actionURL portletConfiguration="true"
@@ -73,24 +80,42 @@
 	<aui:input name="redirect" type="hidden"
 		value="<%=configurationRenderURL%>" />
 
-	<aui:fieldset label="connection-settings">
+	<aui:fieldset label="target">
 
 		<aui:select name="calendarId" inlineField="true"
 			helpMessage="calendar-id-help">
 			<%
 				for (Calendar availableCalendar : availableCalendars) {
-
 					String availableCalendarId = String
 							.valueOf(availableCalendar.getCalendarId());
 			%>
 			<aui:option value="<%=availableCalendarId%>"
 				label="<%=availableCalendar.getName(locale)%>"
 				selected="<%=availableCalendarId.equals(calendarId)%>" />
-
 			<%
 				}
 			%>
 		</aui:select>
+
+		<aui:field-wrapper label="restore-from-trash"
+			helpMessage="restore-from-trash-help" inlineField="true">
+			<aui:input name="restoreFromTrash" value="true"
+				checked='<%=restoreFromTrash.equals("true")%>' label="yes"
+				inlineLabel="true" inlineField="true" type="radio" />
+			<aui:input name="restoreFromTrash" value="false"
+				checked='<%=!restoreFromTrash.equals("true")%>' label="no"
+				inlineLabel="true" inlineField="true" type="radio" />
+		</aui:field-wrapper>
+
+	</aui:fieldset>
+
+	<aui:fieldset label="source">
+	
+       <c:if test="<%=serverCalendars.size() == 0%>">
+            <div class="alert alter-info">
+                <liferay-ui:message key="please-enter-your-connection-parameters" />
+            </div>
+        </c:if>
 
 		<aui:input name="servername" value="<%=servername%>"
 			inlineField="true" helpMessage="servername-help" />
@@ -104,20 +129,22 @@
 		<aui:input name="password" value="<%=password%>" inlineField="true"
 			helpMessage="password-help" type="password" />
 
-		<aui:select name="calendar" value="<%=calendar%>" inlineField="true"
-			helpMessage="calendar-help">
+		<c:if test="<%=serverCalendars.size() > 0%>">
+			<aui:select name="calendar" value="<%=calendar%>" inlineField="true"
+				helpMessage="calendar-help">
 
-			<%
-				for (ServerCalendar serverCalendar : serverCalendars) {
-			%>
-			<aui:option value="<%=serverCalendar.getDisplayName()%>"
-				label="<%=serverCalendar.getDisplayName()%>"
-				selected="<%= calendar.equals(serverCalendar.getDisplayName()) %>" />
-			<%
-				}
-			%>
-
-		</aui:select>
+				<%
+					for (ServerCalendar serverCalendar : serverCalendars) {
+				%>
+				<aui:option value="<%=serverCalendar.getDisplayName()%>"
+					label="<%=serverCalendar.getDisplayName()%>"
+					selected="<%=calendar.equals(serverCalendar
+										.getDisplayName())%>" />
+				<%
+					}
+				%>
+			</aui:select>
+		</c:if>
 
 	</aui:fieldset>
 

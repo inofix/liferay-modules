@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the cdav-manager portlet.
     
     Created:    2015-05-30 12:19 by Christian Berndt
-    Modified:   2015-05-31 23:28 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-06-01 16:12 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%-- Import required classes --%>
@@ -31,7 +31,8 @@
 	String calendar = portletPreferences.getValue("calendar", "");
 	String calendarId = portletPreferences.getValue("calendarId", "");
 	String domain = portletPreferences.getValue("domain", "");
-	String password = portletPreferences.getValue("password", "");
+    String password = portletPreferences.getValue("password", "");
+    String restoreFromTrash = portletPreferences.getValue("restoreFromTrash", "true");
 	String servername = portletPreferences.getValue("servername", "");
 	String username = portletPreferences.getValue("username", "");
 %>
