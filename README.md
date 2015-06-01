@@ -31,15 +31,15 @@ The Contact Manager Portlet is a contact-manager based on the vCard 4.0 standard
 
 * <a href="https://github.com/mangstadt/ez-vcard" target="_blank">ez-vcard</a>
 
-### cDAV Manager ###
+### CDAV Manager ###
 
 The CDav Manager allows you to connect your Liferay Calendar to and synchronize with CalDAV-Servers like Kerio, Google Calendar, etc.
 
 #### Compile from source ####
 
-1. clone cdav-connector from <a href="https://github.com/Kerio/cdav-connector" target="_blank">https://github.com/Kerio/cdav-connector</a> and 
+1. clone cdav-connector from <a href="https://github.com/chrberndt/cdav-connector" target="_blank">https://github.com/chrberndt/cdav-connector</a> and 
 2. install it to your local maven repo (mvn package install)
-3. when the cdav-manager's dependency is fulfilled (see steps 1 & 2) you build the cdav-manager with mvn package
+3. when the cdav-manager's dependency is fulfilled (see steps 1 & 2) build the cdav-manager with mvn package
 
 #### Third Party Libraries
 
