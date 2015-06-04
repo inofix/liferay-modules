@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-05-26 18:23 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-06-04 22:36 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -20,6 +20,12 @@
 <%@page import="ezvcard.parameter.InterestLevel"%>
 
 <%
+    String currentTimeZone = themeDisplay.getTimeZone().getID(); 
+
+    if (Validator.isNotNull(contact_.getTimezone())) {
+    	currentTimeZone = contact_.getTimezone(); 
+    }
+
 	String[] expertiseLevels = new String[] {
 			ExpertiseLevel.BEGINNER.getValue(),
 			ExpertiseLevel.AVERAGE.getValue(),
@@ -178,7 +184,7 @@
 						for (String timezone : timezones) {
 					%>
 					<aui:option value="<%=timezone%>" label="<%=timezone%>"
-						selected="<%=timezone.equalsIgnoreCase(contact_.getTimezone())%>" />
+						selected="<%=timezone.equalsIgnoreCase(currentTimeZone)%>" />
 					<%
 						}
 					%>
