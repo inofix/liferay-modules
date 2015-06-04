@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.util.PortalUtil;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -81,8 +80,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-04 18:25
- * @version 1.0.5
+ * @modified 2015-06-04 22:14
+ * @version 1.0.6
  *
  */
 public class PortletUtil {
@@ -973,25 +972,6 @@ public class PortletUtil {
 
 		return sb.toString();
 	}
-
-	/**
-	 * 
-	 * @param vCards
-	 * @param portletRequest
-	 * @return
-	 * @since 1.0.2
-	 * @throws PortalException
-	 * @throws SystemException
-	 */
-//	public static String importVCards(List<VCard> vCards,
-//			PortletRequest portletRequest) throws PortalException,
-//			SystemException {
-//
-//
-//
-//		return importVcards(vCards, serviceContext);
-//
-//	}
 
 	/**
 	 * 
