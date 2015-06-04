@@ -43,8 +43,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-05-28 15:09
- * @version 1.0.7
+ * @modified 2015-06-04 18:24
+ * @version 1.0.8
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -176,7 +176,12 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 			List<VCard> vCards = Ezvcard.parse(file).all();
 
-			String message = PortletUtil.importVCards(vCards, actionRequest);
+			String message = PortletUtil.translate("no-vcards-found");
+
+			if (vCards.size() > 0) {
+
+				message = PortletUtil.importVCards(vCards, actionRequest);
+			}
 
 			SessionMessages.add(actionRequest, "request_processed", message);
 

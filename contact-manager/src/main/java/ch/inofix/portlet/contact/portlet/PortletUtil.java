@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -83,8 +84,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-05-25 21:08
- * @version 1.0.4
+ * @modified 2015-06-04 18:25
+ * @version 1.0.5
  *
  */
 public class PortletUtil {
@@ -645,9 +646,9 @@ public class PortletUtil {
 				TelephoneType type = TelephoneType.find(phoneTypes[i]);
 
 				if (Validator.isNotNull(phoneNumbers[i])) {
-					
+
 					Telephone phone = new Telephone(phoneNumbers[i]);
-					
+
 					if (type != null) {
 						phone.addType(type);
 					}
@@ -655,7 +656,7 @@ public class PortletUtil {
 					Integer pref = getPref(i);
 
 					phone.setPref(pref);
-					
+
 					vCard.addTelephoneNumber(phone);
 				}
 			}
@@ -680,11 +681,11 @@ public class PortletUtil {
 					ImageType type = ImageType.find(photoTypes[i], mediaType,
 							extension);
 					Photo photo = new Photo(photoUrls[i], type);
-					
+
 					Integer pref = getPref(i);
 
 					photo.setPref(pref);
-					
+
 					vCard.addPhoto(photo);
 				}
 			}
@@ -720,7 +721,7 @@ public class PortletUtil {
 
 				if (Validator.isNotNull(roles[i])) {
 					Role role = new Role(roles[i]);
-					
+
 					Integer pref = getPref(i);
 
 					role.setPref(pref);
@@ -756,7 +757,7 @@ public class PortletUtil {
 							extension);
 
 					Sound sound = new Sound(soundUrls[i], type);
-					
+
 					Integer pref = getPref(i);
 
 					sound.setPref(pref);
@@ -777,7 +778,7 @@ public class PortletUtil {
 
 				if (Validator.isNotNull(sourceUris[i])) {
 					Source sourceUri = new Source(sourceUris[i]);
-					
+
 					Integer pref = getPref(i);
 
 					sourceUri.setPref(pref);
@@ -842,7 +843,7 @@ public class PortletUtil {
 
 				if (Validator.isNotNull(titles[i])) {
 					Title title = new Title(titles[i]);
-					
+
 					Integer pref = getPref(i);
 
 					title.setPref(pref);
@@ -874,7 +875,7 @@ public class PortletUtil {
 				if (Validator.isNotNull(urlAddresses[i])) {
 					Url url = new Url(urlAddresses[i]);
 					url.setType(urlTypes[i]);
-					
+
 					Integer pref = getPref(i);
 
 					url.setPref(pref);
@@ -944,6 +945,8 @@ public class PortletUtil {
 
 			if (Validator.isNotNull(uidObj)) {
 				uid = uidObj.getValue();
+			} else {
+				uid = UUID.randomUUID().toString();
 			}
 
 			String card = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();

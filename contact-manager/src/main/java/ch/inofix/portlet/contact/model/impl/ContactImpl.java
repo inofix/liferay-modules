@@ -70,8 +70,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-05-27 12:10
- * @version 1.0.8
+ * @modified 2015-06-04 18:23
+ * @version 1.0.9
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -651,17 +651,20 @@ public class ContactImpl extends ContactBaseImpl {
 
 			Organization organization = getVCard().getOrganization();
 
-			List<String> values = organization.getValues();
+			if (organization != null) {
 
-			Iterator<String> iterator = values.iterator();
+				List<String> values = organization.getValues();
 
-			while (iterator.hasNext()) {
+				Iterator<String> iterator = values.iterator();
 
-				sb.append(iterator.next());
-				if (iterator.hasNext()) {
-					sb.append(", ");
+				while (iterator.hasNext()) {
+
+					sb.append(iterator.next());
+					if (iterator.hasNext()) {
+						sb.append(", ");
+					}
+
 				}
-
 			}
 
 		}
@@ -813,22 +816,26 @@ public class ContactImpl extends ContactBaseImpl {
 
 			Organization organization = getVCard().getOrganization();
 
-			List<String> values = organization.getValues();
+			if (organization != null) {
 
-			Iterator<String> iterator = values.iterator();
+				List<String> values = organization.getValues();
 
-			StringBuilder sb = new StringBuilder();
+				Iterator<String> iterator = values.iterator();
 
-			while (iterator.hasNext()) {
+				StringBuilder sb = new StringBuilder();
 
-				sb.append(iterator.next());
-				if (iterator.hasNext()) {
-					sb.append(", ");
+				while (iterator.hasNext()) {
+
+					sb.append(iterator.next());
+					if (iterator.hasNext()) {
+						sb.append(", ");
+					}
+
 				}
 
-			}
+				name = sb.toString();
 
-			name = sb.toString();
+			}
 
 		}
 
