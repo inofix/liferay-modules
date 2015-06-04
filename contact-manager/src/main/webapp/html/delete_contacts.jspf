@@ -1,0 +1,17 @@
+<%--
+    delete_contacts.jspf: Delete all contacts of this group
+    
+    Created:    2015-06-04 21:26 by Christian Berndt
+    Modified:   2015-06-04 21:26 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<portlet:actionURL var="deleteAllContactsURL" name="deleteAllContacts">
+</portlet:actionURL>
+
+<aui:fieldset label="delete">
+	<aui:button-row>
+		<aui:button href="<%=deleteAllContactsURL.toString()%>"
+			value="delete-all-contacts" cssClass="btn-primary" />
+	</aui:button-row>
+</aui:fieldset>

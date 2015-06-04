@@ -25,10 +25,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
-import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.WebKeys;
-
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -921,14 +918,11 @@ public class PortletUtil {
 	 * @throws SystemException
 	 */
 	public static String importVcards(List<VCard> vCards,
-			HttpServletRequest request, ServiceContext serviceContext)
-			throws PortalException, SystemException {
+			ServiceContext serviceContext) throws PortalException,
+			SystemException {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay) request
-				.getAttribute(WebKeys.THEME_DISPLAY);
-
-		long userId = themeDisplay.getUserId();
-		long groupId = themeDisplay.getScopeGroupId();
+		long userId = serviceContext.getUserId();
+		long groupId = serviceContext.getScopeGroupId();
 
 		StringBuilder sb = new StringBuilder();
 
@@ -989,19 +983,15 @@ public class PortletUtil {
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	public static String importVCards(List<VCard> vCards,
-			PortletRequest portletRequest) throws PortalException,
-			SystemException {
-
-		HttpServletRequest request = PortalUtil
-				.getHttpServletRequest(portletRequest);
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				Contact.class.getName(), portletRequest);
-
-		return importVcards(vCards, request, serviceContext);
-
-	}
+//	public static String importVCards(List<VCard> vCards,
+//			PortletRequest portletRequest) throws PortalException,
+//			SystemException {
+//
+//
+//
+//		return importVcards(vCards, serviceContext);
+//
+//	}
 
 	/**
 	 * 

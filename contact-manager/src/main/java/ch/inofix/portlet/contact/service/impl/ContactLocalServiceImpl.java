@@ -1,6 +1,7 @@
 package ch.inofix.portlet.contact.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -41,8 +42,8 @@ import ch.inofix.portlet.contact.social.ContactActivityKeys;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2015-05-24 12:58
- * @version 1.0.5
+ * @modified 2015-06-04 21:36
+ * @version 1.0.6
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -120,7 +121,8 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 	}
 
 	/**
-	 * 
+	 * @param groupId
+	 * @param uid
 	 * @since 1.0.0
 	 */
 	public Contact getContact(long groupId, String uid) throws PortalException,
@@ -128,6 +130,21 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
 		return contactPersistence.findByG_U(groupId, uid);
 
+	}
+
+	/**
+	 * Return all contacts which belong to the current group.
+	 * 
+	 * @param groupId
+	 * @return all contacts which belong to the current group.
+	 * @since 1.0.6
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public List<Contact> getContacts(long groupId) throws PortalException,
+			SystemException {
+
+		return contactPersistence.findByGroupId(groupId);
 	}
 
 	/**

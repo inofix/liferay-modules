@@ -43,8 +43,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-04 18:24
- * @version 1.0.8
+ * @modified 2015-06-04 21:19
+ * @version 1.0.9
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -52,6 +52,34 @@ public class ContactManagerPortlet extends MVCPortlet {
 	// Enable logging for this class
 	private static Log log = LogFactoryUtil.getLog(ContactManagerPortlet.class
 			.getName());
+
+	/**
+	 * 
+	 * @param actionRequest
+	 * @param actionResponse
+	 * @since 1.0.9
+	 * @throws Exception
+	 */
+	public void deleteAllContacts(ActionRequest actionRequest,
+			ActionResponse actionResponse) throws Exception {
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				Contact.class.getName(), actionRequest);
+		
+		List<Contact> contacts = ContactLocalServiceUtil
+				.getContacts(serviceContext.getScopeGroupId());
+
+		for (Contact contact : contacts) {
+
+			// TODO: Add try-catch and count failed deletions
+			contact = ContactServiceUtil.deleteContact(contact.getContactId());
+
+		}
+
+		SessionMessages.add(actionRequest, "request_processed",
+				PortletUtil.translate("successfully-deleted-x-contacts"));
+
+	}
 
 	/**
 	 * 
@@ -86,7 +114,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		long[] contactIds = ParamUtil.getLongValues(actionRequest, "rowIds");
 
-		log.info("contactIds.length = " + contactIds.length);
+		// log.info("contactIds.length = " + contactIds.length);
 
 		if (contactIds.length > 0) {
 
@@ -178,9 +206,12 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 			String message = PortletUtil.translate("no-vcards-found");
 
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+					Contact.class.getName(), actionRequest);
+
 			if (vCards.size() > 0) {
 
-				message = PortletUtil.importVCards(vCards, actionRequest);
+				message = PortletUtil.importVcards(vCards, serviceContext);
 			}
 
 			SessionMessages.add(actionRequest, "request_processed", message);

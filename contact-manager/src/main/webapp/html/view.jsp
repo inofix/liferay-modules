@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-05-28 15:51 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-06-04 22:03 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -107,6 +107,7 @@
 	    <c:when test='<%= tabs1.equals("import-export") %>'>
             <%@include file="/html/import_vcards.jspf"%>
             <%@include file="/html/export_vcards.jspf"%>
+            <%@include file="/html/delete_contacts.jspf"%>      
 	    </c:when>	    
 
 	    <c:otherwise>
