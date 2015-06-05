@@ -9,7 +9,7 @@
     </parent>
     <artifactId>contact-manager</artifactId>
     <packaging>war</packaging>
-    <name>contact-manager Portlet</name>
+    <name>Contact Manager Portlet</name>
     <version>0.0.1-SNAPSHOT</version>
     <build>
 
