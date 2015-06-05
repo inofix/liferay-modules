@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<!-- 
+    inofix-util.tld: Tag library definition of utility tags by
+    Inofix GmbH, Luzern
+
+    Created:    2015-06-04 11:53 by Christian Berndt 
+    Modified:   2015-06-04 11:53 by Christian Berndt
+    Version:    1.0.0
+-->
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>1.1</jsp-version>
+    <short-name>inofix-util</short-name>
+    <uri>/inofix-util</uri>
+    <tag>
+        <name>build-info</name>
+        <tag-class>ch.inofix.taglib.util.BuildInfoTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+</taglib>
