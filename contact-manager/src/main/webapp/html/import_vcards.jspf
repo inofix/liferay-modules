@@ -2,8 +2,8 @@
     import_vcards.jsp: Import vCards from an uploaded file. 
     
     Created:    2015-05-08 18:11 by Christian Berndt
-    Modified:   2015-05-27 18:45 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-06-05 10:24 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <portlet:actionURL var="importVCardFileURL" name="importVCardFile"/>
@@ -11,7 +11,7 @@
 <portlet:renderURL var="browseURL"/>
 
 <aui:form action="<%=importVCardFileURL%>" enctype="multipart/form-data"
-	method="post" name="fm">
+	method="post" name="fm" cssClass="import-form">
 
 	<%
 		// TODO: Add error handling

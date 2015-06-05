@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-05-28 11:59 by Christian Berndt
- * Version:     1.0.9
+ * Modified:    2015-06-05 10:03 by Christian Berndt
+ * Version:     1.1.0
  *
  */
 .aui .row-fields .control-group {
@@ -45,9 +45,17 @@
     margin-bottom: 0; 
 }
 
+.portlet-contact-manager fieldset .button-holder {
+	margin-top: 0; 
+}
+
 .portlet-contact-manager fieldset .container-fluid {
     padding-right: 0; 
     padding-left: 0;
+}
+
+.portlet-contact-manager form.import-form {
+    margin-bottom: 0; 
 }
 
 .portlet-contact-manager form .btn {
