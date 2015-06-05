@@ -1,0 +1,18 @@
+/**
+ * main.css: The cdav-manager portlet's css configuration
+ *
+ * Created:     2015-06-05 18:11 by Christian Berndt
+ * Modified:    2015-06-05 18:11 by Christian Berndt
+ * Version:     1.0.0
+ *
+ */
+.portlet-cdav-manager dl.build-info dfn, 
+.portlet-cdav-manager dl.build-info dt {
+    display: inline;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.portlet-cdav-manager dl.build-info dfn {
+    margin-right: 20px;
+}

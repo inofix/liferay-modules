@@ -2,8 +2,8 @@
     view.jsp: Default view of the cdav manager portlet.
     
     Created:    2015-05-30 13:11 by Christian Berndt
-    Modified:   2015-05-30 13:11 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-06-05 18:14 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -27,5 +27,9 @@
 		</aui:button-row>
 
 	</aui:form>
+	
+	<hr>
+    
+    <ifx-util:build-info/>
 
 </div>

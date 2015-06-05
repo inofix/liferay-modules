@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the cdav-manager portlet.
     
     Created:    2015-05-30 12:19 by Christian Berndt
-    Modified:   2015-06-01 16:12 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-06-05 18:12 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%-- Import required classes --%>
@@ -16,6 +16,7 @@
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/inofix-util" prefix="ifx-util" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet"%>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
