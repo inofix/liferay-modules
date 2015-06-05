@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-06-04 22:03 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-06-05 12:33 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -263,5 +263,9 @@
 	    </c:otherwise>
 	    
 	</c:choose>
+	
+	<hr>
+	
+	<ifx-util:build-info/>
 	
 </div>

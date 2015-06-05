@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-05-28 14:51 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2015-06-05 17:53 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -64,6 +64,10 @@
 			showButtons="<%= hasUpdatePermission %>" />
 
 	</aui:form>
+	
+	<hr>
+    
+    <ifx-util:build-info/>
 	
 </div>
 

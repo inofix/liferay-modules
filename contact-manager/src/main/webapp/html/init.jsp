@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the contact-manager
     
     Created:    2015-05-07 15:16 by Christian Berndt
-    Modified:   2015-05-28 11:37 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-06-05 12:13 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%-- Import required classes --%>
@@ -36,6 +36,7 @@
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="/inofix-util" prefix="ifx-util" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 <%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security" %>

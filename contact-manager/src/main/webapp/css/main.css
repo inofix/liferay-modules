@@ -2,25 +2,24 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-06-05 10:03 by Christian Berndt
- * Version:     1.1.0
+ * Modified:    2015-06-05 17:32 by Christian Berndt
+ * Version:     1.1.1
  *
  */
 .aui .row-fields .control-group {
 	margin-bottom: 0px;
 }
- 
+
 .aui .structured-name .control-group {
-    margin-bottom: 10px; 
+	margin-bottom: 10px;
 }
 
 .aui .portlet-contact-manager label {
-	color: #8D8D8D; 
+	color: #8D8D8D;
 }
 
-.aui .portlet-contact-manager input[type="text"],
-.aui .portlet-contact-manager textarea
-{
+.aui .portlet-contact-manager input[type="text"], .aui .portlet-contact-manager textarea
+	{
 	color: black;
 }
 
@@ -35,27 +34,38 @@
 .portlet-contact-manager .address .lfr-form-row {
 	border-bottom: none;
 }
- 
+
 .portlet-contact-manager .alert {
 	margin-top: 1.5em; /* The same as lfr-search-container */
 }
 
 .portlet-contact-manager .contact-search .control-group,
-.portlet-contact-manager .row-fluid form {
-    margin-bottom: 0; 
+	.portlet-contact-manager .row-fluid form {
+	margin-bottom: 0;
+}
+
+.portlet-contact-manager dl.build-info dfn, 
+.portlet-contact-manager dl.build-info dt {
+	display: inline;
+	font-weight: normal;
+	font-style: normal;
+}
+
+.portlet-contact-manager dl.build-info dfn {
+	margin-right: 20px;
 }
 
 .portlet-contact-manager fieldset .button-holder {
-	margin-top: 0; 
+	margin-top: 0;
 }
 
 .portlet-contact-manager fieldset .container-fluid {
-    padding-right: 0; 
-    padding-left: 0;
+	padding-right: 0;
+	padding-left: 0;
 }
 
 .portlet-contact-manager form.import-form {
-    margin-bottom: 0; 
+	margin-bottom: 0;
 }
 
 .portlet-contact-manager form .btn {
@@ -63,24 +73,24 @@
 }
 
 .portlet-contact-manager .form-navigator .btn {
-	margin-top: 0; 
+	margin-top: 0;
 }
 
 .portlet-contact-manager .lfr-form-row .handle-sort-vertical {
-	background-size: cover; 
+	background-size: cover;
 }
 
 .portlet-contact-manager .lfr-form-row {
-	border-bottom: 1px solid #e5e5e5; 
+	border-bottom: 1px solid #e5e5e5;
 }
 
 .portlet-contact-manager .lfr-autorow-controls {
 	top: 10px;
 }
- 
+
 .portlet-contact-manager .note {
 	min-height: 100px;
-} 
+}
 
 .portlet-contact-manager select {
 	width: 150px;
@@ -88,43 +98,37 @@
 
 .portlet-contact-manager .sort-handle {
 	height: 20px;
-    float: left; 
-    margin-top: 5px;
-    margin-right: 10px;
+	float: left;
+	margin-top: 5px;
+	margin-right: 10px;
 }
 
 .portlet-contact-manager .taglib-icon-help {
 	margin-right: 10px;
 }
 
-.portlet-contact-manager .note,
-.portlet-contact-manager .v-card {
-    min-width: 490px;
+.portlet-contact-manager .note, .portlet-contact-manager .v-card {
+	min-width: 490px;
 }
 
 .portlet-contact-manager .url-address {
-    min-width: 490px;
+	min-width: 490px;
 }
 
 .portlet-contact-manager .v-card {
 	min-height: 300px;
 }
 
-@media (max-width: 979px) {
-    .portlet-contact-manager .note,
-    .portlet-contact-manager .v-card,
-    .portlet-contact-manager .url-address
-    {
-       min-width: 490px;
-    }
-}   
-   
-@media (max-width: 767px) {
-    .portlet-contact-manager .note,
-    .portlet-contact-manager .v-card,
-    .portlet-contact-manager .url-address 
-    {
-       min-width: 290px;
-    }
-} 
- 
+@media ( max-width : 979px) {
+	.portlet-contact-manager .note, .portlet-contact-manager .v-card,
+		.portlet-contact-manager .url-address {
+		min-width: 490px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.portlet-contact-manager .note, .portlet-contact-manager .v-card,
+		.portlet-contact-manager .url-address {
+		min-width: 290px;
+	}
+}
