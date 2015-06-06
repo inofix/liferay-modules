@@ -2,12 +2,13 @@
     init.jsp: Common imports and setup code of the cdav-manager portlet.
     
     Created:    2015-05-30 12:19 by Christian Berndt
-    Modified:   2015-06-05 18:12 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-06-05 21:57 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%-- Import required classes --%>
 
+<%@page import="java.util.Date"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 
@@ -32,6 +33,8 @@
 	String calendar = portletPreferences.getValue("calendar", "");
 	String calendarId = portletPreferences.getValue("calendarId", "");
 	String domain = portletPreferences.getValue("domain", "");
+	// TODO: Retriev the lastSync from the portlet / application scope
+	Date lastSync = new Date(); 
     String password = portletPreferences.getValue("password", "");
     String restoreFromTrash = portletPreferences.getValue("restoreFromTrash", "true");
 	String servername = portletPreferences.getValue("servername", "");

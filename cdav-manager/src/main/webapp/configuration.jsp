@@ -2,8 +2,8 @@
     configuration.jsp: Configure the cdav-manager's preferences.
     
     Created:    2015-05-30 12:14 by Christian Berndt
-    Modified:   2015-06-01 15:57 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-06-05 22:06 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -82,8 +82,8 @@
 
 	<aui:fieldset label="target">
 
-		<aui:select name="calendarId" inlineField="true"
-			helpMessage="calendar-id-help">
+		<aui:select name="calendarId" inlineField="true" label="calendar"
+			helpMessage="calendar-id-help" inlineLabel="true">
 			<%
 				for (Calendar availableCalendar : availableCalendars) {
 					String availableCalendarId = String
@@ -98,7 +98,7 @@
 		</aui:select>
 
 		<aui:field-wrapper label="restore-from-trash"
-			helpMessage="restore-from-trash-help" inlineField="true">
+			helpMessage="restore-from-trash-help" inlineField="true" inlineLabel="true">
 			<aui:input name="restoreFromTrash" value="true"
 				checked='<%=restoreFromTrash.equals("true")%>' label="yes"
 				inlineLabel="true" inlineField="true" type="radio" />

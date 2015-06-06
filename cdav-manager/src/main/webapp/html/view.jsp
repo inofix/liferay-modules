@@ -2,8 +2,8 @@
     view.jsp: Default view of the cdav manager portlet.
     
     Created:    2015-05-30 13:11 by Christian Berndt
-    Modified:   2015-06-05 18:14 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-06-05 21:41 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -21,10 +21,17 @@
 	</portlet:actionURL>
 
 	<aui:form action="<%=syncResourcesURL%>" method="post" name="fm">
+	
+	   <dl>
+           <dt><liferay-ui:message key="source"/>:</dt>
+           <dd><%= servername %>/<%= domain %>/<%= calendar %></dd>
+           <dt><liferay-ui:message key="target"/>:</dt>
+           <dd><%= calendarId %></dd>
+           <dt><liferay-ui:message key="last-sync"/>:</dt>
+           <dd><%= lastSync %></dd>
+	   </dl>
 
-		<aui:button-row>
-			<aui:button type="submit" value="sync-resources" />
-		</aui:button-row>
+		<aui:button type="submit" value="synchronize" />
 
 	</aui:form>
 	
