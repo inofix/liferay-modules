@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-06-05 12:33 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-06-08 10:19 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -112,9 +112,11 @@
 
 	    <c:otherwise>
 	    
-            <portlet:actionURL var="addURL" name="editContact">
+            <portlet:actionURL var="addURL" name="editContact"
+				windowState="<%= LiferayWindowState.POP_UP.toString() %>">
                 <portlet:param name="mvcPath" value="/html/edit_contact.jsp"/>
-                <portlet:param name="backURL" value="<%= currentURL %>"/>
+                <portlet:param name="redirect" value="<%= currentURL %>"/>
+                <portlet:param name="windowId" value="editContact"/>
             </portlet:actionURL>
             
             <portlet:renderURL var="clearURL">
@@ -123,7 +125,10 @@
             <aui:row>
                 <c:if test='<%=ContactPortletPermission.contains(permissionChecker, 
                     scopeGroupId,ActionKeys.ADD_CONTACT)%>'>
-                    <aui:button type="submit" value="add-contact" href="<%=addURL%>" cssClass="pull-left" />
+                    <%
+	                    String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editContact', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addURL) + "'});";
+                    %>
+                    <aui:button type="submit" value="add-contact" href="<%=taglibAddURL%>" cssClass="pull-left" />
                 </c:if>
 
                 <liferay-portlet:renderURL varImpl="searchURL">
