@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the contact-manager
     
     Created:    2015-05-07 15:16 by Christian Berndt
-    Modified:   2015-06-05 12:13 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-06-09 16:34 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%-- Import required classes --%>
@@ -51,7 +51,7 @@
 
 <%
 	String[] columns = portletPreferences.getValues("columns",
-			new String[0]);
+			new String[] {"name", "modified-date"});
 
 	String currentURL = PortalUtil.getCurrentURL(request);
 
