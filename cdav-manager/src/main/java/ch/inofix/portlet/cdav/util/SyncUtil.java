@@ -1,6 +1,7 @@
 package ch.inofix.portlet.cdav.util;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -8,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -30,7 +30,6 @@ import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Location;
-import net.fortuna.ical4j.model.property.Priority;
 import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
@@ -44,9 +43,10 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portlet.expando.model.ExpandoTableConstants;
+import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
 
 /**
  * Utility methods used to synchronize the Liferay Calendar with a
@@ -63,8 +63,14 @@ public class SyncUtil {
 	// Enable logging for this class
 	private static Log log = LogFactoryUtil.getLog(SyncUtil.class.getName());
 
-	public static CalendarBooking getCalendarBooking(VEvent vEvent,
-			ServiceContext serviceContext) {
+	/**
+	 * 
+	 * @param vEvent
+	 * @param serviceContext
+	 * @since 1.0.0
+	 * @return
+	 */
+	public static CalendarBooking getCalendarBooking(VEvent vEvent) {
 
 		log.info("Executing getCalendarBooking().");
 
@@ -76,7 +82,6 @@ public class SyncUtil {
 		Summary vSummary = vEvent.getSummary();
 		Location vLocation = vEvent.getLocation();
 		RecurrenceId vRecurrenceId = vEvent.getRecurrenceId();
-		Uid uid = vEvent.getUid();
 
 		long parentCalendarBookingId = 0;
 		Map<Locale, String> titleMap = new HashMap<Locale, String>();
@@ -95,20 +100,17 @@ public class SyncUtil {
 		// Only valid notification type according to
 		// com.liferay.calendar.notification.NotificationUtil is "email"
 		String secondReminderType = "email";
-		String uuid = null;
 
 		firstReminder = getReminder(vEvent, 0);
-		log.info("firstReminder = " + firstReminder);
 
 		secondReminder = getReminder(vEvent, 1);
-		log.info("secondReminder = " + secondReminder);
 
 		if (vSummary != null) {
 
 			String summary = vSummary.getValue();
 
-			log.info("summary = " + summary);
-			log.info("defaultLocale = " + defaultLocale);
+			// log.info("summary = " + summary);
+			// log.info("defaultLocale = " + defaultLocale);
 
 			// TODO: retrieve language from vSummary
 
@@ -146,20 +148,6 @@ public class SyncUtil {
 
 		}
 
-		if (uid != null) {
-
-			uuid = uid.getValue();
-
-			if (Validator.isNotNull(uuid)) {
-				serviceContext.setUuid(uuid);
-			} else {
-				uuid = UUID.randomUUID().toString();
-			}
-
-			// log.info("uuid = " + uuid);
-
-		}
-
 		// Store the vEvent parameters in a new calendarBooking
 
 		CalendarBooking calendarBooking = CalendarBookingLocalServiceUtil
@@ -170,7 +158,6 @@ public class SyncUtil {
 		calendarBooking.setEndTime(endTime);
 		calendarBooking.setFirstReminder(firstReminder);
 		calendarBooking.setFirstReminderType(firstReminderType);
-		calendarBooking.setGroupId(serviceContext.getScopeGroupId());
 		calendarBooking.setLocation(location);
 		calendarBooking.setParentCalendarBookingId(parentCalendarBookingId);
 		calendarBooking.setRecurrence(recurrence);
@@ -178,50 +165,45 @@ public class SyncUtil {
 		calendarBooking.setSecondReminderType(secondReminderType);
 		calendarBooking.setStartTime(startTime);
 		calendarBooking.setTitleMap(titleMap);
-		calendarBooking.setUserId(serviceContext.getUserId());
 
 		return calendarBooking;
 
 	}
 
+	/**
+	 * 
+	 * @param calendarBooking
+	 * @param locale
+	 * @since 1.0.0
+	 * @return
+	 */
 	public static VEvent getVEvent(CalendarBooking calendarBooking,
 			Locale locale) {
 
 		log.info("Executing getVEvent().");
 
-		DateTime firstReminderTrigger = new DateTime(
-				calendarBooking.getFirstReminder());
-
+		long firstReminderTime = calendarBooking.getStartTime()
+				- calendarBooking.getFirstReminder();
+		DateTime firstReminderTrigger = new DateTime(firstReminderTime);
 		VAlarm firstReminder = new VAlarm(firstReminderTrigger);
 
-		DateTime secondReminderTrigger = new DateTime(
-				calendarBooking.getSecondReminder());
+		long secondReminderTime = calendarBooking.getStartTime()
+				- calendarBooking.getSecondReminder();
+		DateTime secondReminderTrigger = new DateTime(secondReminderTime);
 		VAlarm secondReminder = new VAlarm(secondReminderTrigger);
 
-		// TODO: set Alarms
-		// TODO: set Classification ?
-		// TODO: set ConsumedTime ?
 		Created created = new Created(new DateTime(
 				calendarBooking.getCreateDate()));
-		// TODO: set DateStamp?
-		String descriptionStr = calendarBooking.getDescription(locale);
-		Description description = new Description(descriptionStr);
-		// Duration duration = new Duration(
-		// new java.util.Date(calendarBooking.getStartTime()),
-		// new java.util.Date(calendarBooking.getEndTime()));
-		// TODO: set GeographicPos
+		Description description = new Description(
+				calendarBooking.getDescription(locale));
+		// No GeographicPos since Liferay's calendar does not support
+		// GeographicPos
 		LastModified lastModified = new LastModified(new DateTime(
 				calendarBooking.getModifiedDate()));
-		String locationStr = calendarBooking.getLocation();
-		log.info("locationStr = " + locationStr);
-		Location location = new Location(locationStr);
-		log.info("location.getValue() = " + location.getValue()); 
-		// TODO: set Name
-		// TODO: set Occurence?
-		// No organizer, since Liferay's calendar does not
-		// know organizers
-		// TODO: set Priority
-		Priority priority = new Priority(0);
+		Location location = new Location(calendarBooking.getLocation());
+		// TODO Organizer - is this the one who created the event /
+		// calendarBooking?
+		// No Priority since Liferay's calendar does not support priorities
 		// TODO: set RecurrenceId
 		// TODO: set Sequence
 		// TODO: set Status?
@@ -249,6 +231,13 @@ public class SyncUtil {
 		return vEvent;
 	}
 
+	/**
+	 * 
+	 * @param uuid
+	 * @param serverVEvents
+	 * @since 1.0.0
+	 * @return
+	 */
 	private static ServerVEvent getServerVEvent(String uuid,
 			List<ServerVEvent> serverVEvents) {
 
@@ -276,6 +265,12 @@ public class SyncUtil {
 		return matchingEvent;
 	}
 
+	/**
+	 * 
+	 * @param vEvent
+	 * @return
+	 * @since 1.0.0
+	 */
 	private static long getEndTime(VEvent vEvent) {
 
 		long endTime = 0;
@@ -295,6 +290,13 @@ public class SyncUtil {
 
 	}
 
+	/**
+	 * 
+	 * @param vEvent
+	 * @param idx
+	 * @return
+	 * @since 1.0.0
+	 */
 	private static long getReminder(VEvent vEvent, int idx) {
 
 		long reminder = 0;
@@ -383,6 +385,12 @@ public class SyncUtil {
 
 	}
 
+	/**
+	 * 
+	 * @param vEvent
+	 * @return
+	 * @since 1.0.0
+	 */
 	private static long getStartTime(VEvent vEvent) {
 
 		long startTime = 0;
@@ -402,15 +410,37 @@ public class SyncUtil {
 
 	}
 
+	/**
+	 * 
+	 * @param date
+	 * @param timeZone
+	 * @return
+	 * @since 1.0.0
+	 */
 	private static long getTime(Date date, TimeZone timeZone) {
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeZone(timeZone);
-		cal.setTime(date);
+		long time = 0;
 
-		return cal.getTimeInMillis();
+		Calendar cal = Calendar.getInstance();
+		if (timeZone != null) {
+			cal.setTimeZone(timeZone);
+		}
+		cal.setTime(date);
+		time = cal.getTimeInMillis();
+
+		return time;
 	}
 
+	/**
+	 * 
+	 * @param calendar
+	 * @param serverVEvents
+	 * @param restoreFromTrash
+	 * @param serviceContext
+	 * @since 1.0.0
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
 	public static void syncFromCalDAVServer(
 			com.liferay.calendar.model.Calendar calendar,
 			List<ServerVEvent> serverVEvents, boolean restoreFromTrash,
@@ -418,6 +448,8 @@ public class SyncUtil {
 			SystemException {
 
 		for (ServerVEvent serverVEvent : serverVEvents) {
+
+			String eTag = serverVEvent.geteTag();
 
 			VEvent vEvent = serverVEvent.getVevent();
 
@@ -442,8 +474,7 @@ public class SyncUtil {
 				// ignore
 			}
 
-			CalendarBooking newBooking = SyncUtil.getCalendarBooking(vEvent,
-					serviceContext);
+			CalendarBooking newBooking = SyncUtil.getCalendarBooking(vEvent);
 
 			// At the moment we do not support synchronization of
 			// childCalendarBookings.
@@ -452,6 +483,13 @@ public class SyncUtil {
 			if (booking == null) {
 
 				try {
+
+					// Use the serverEvent's uuid and modifiedDate
+					// for the new calendarBooking too, so that we
+					// can check, whether they are in sync or not
+
+					serviceContext.setUuid(uuid);
+
 					CalendarBookingServiceUtil.addCalendarBooking(
 							calendar.getCalendarId(), childCalendarBookings,
 							newBooking.getParentCalendarBookingId(),
@@ -469,43 +507,79 @@ public class SyncUtil {
 				}
 			} else {
 
-				java.util.Date lastLocalModification = booking
-						.getModifiedDate();
-				java.util.Date lastRemoteModification = vEvent.getDateStamp()
-						.getDateTime();
+				// Check the whether the record is current (has the same eTag as
+				// the record of the calDAV server.
+				String className = CalendarBooking.class.getName();
+				String tableName = ExpandoTableConstants.DEFAULT_TABLE_NAME;
 
-				log.info("lastLocalModification = "
-						+ lastLocalModification.getTime());
-				log.info("lastRemoteModification = "
-						+ lastRemoteModification.getTime());
+				String currentETag = (String) ExpandoValueLocalServiceUtil
+						.getData(serviceContext.getCompanyId(), className,
+								tableName, "eTag",
+								booking.getCalendarBookingId());
 
-				// if (lastRemoteModification.after(lastLocalModification)) {
+				log.info("title = " + vEvent.getSummary().getValue());
+				log.info(eTag);
+				log.info(currentETag);
 
-				// if (booking.getStatus() ==
-				// WorkflowConstants.STATUS_IN_TRASH
-				// && restoreFromTrash) {
+				if (!eTag.equals(currentETag)) {
 
-				// log.info("restore booking from trash");
+					if (booking.getStatus() != WorkflowConstants.STATUS_IN_TRASH
+							| restoreFromTrash) {
 
-				CalendarBookingServiceUtil.updateCalendarBooking(
-						booking.getCalendarBookingId(),
-						calendar.getCalendarId(), childCalendarBookings,
-						newBooking.getTitleMap(),
-						newBooking.getDescriptionMap(),
-						newBooking.getLocation(), newBooking.getStartTime(),
-						newBooking.getEndTime(), newBooking.getAllDay(),
-						newBooking.getRecurrence(),
-						newBooking.getFirstReminder(),
-						newBooking.getFirstReminderType(),
-						newBooking.getSecondReminder(),
-						newBooking.getSecondReminderType(),
-						WorkflowConstants.STATUS_APPROVED, serviceContext);
+						log.info("Updating calendarBooking, since the event has been modified on the remote server.");
+						// TODO: But might have been modified by Liferay, too.
+
+						Map<String, Serializable> eTagMap = new HashMap<String, Serializable>();
+						eTagMap.put("eTag", eTag);
+
+						serviceContext.setExpandoBridgeAttributes(eTagMap);
+
+						CalendarBookingServiceUtil.updateCalendarBooking(
+								booking.getCalendarBookingId(),
+								calendar.getCalendarId(),
+								childCalendarBookings,
+								newBooking.getTitleMap(),
+								newBooking.getDescriptionMap(),
+								newBooking.getLocation(),
+								newBooking.getStartTime(),
+								newBooking.getEndTime(),
+								newBooking.getAllDay(),
+								newBooking.getRecurrence(),
+								newBooking.getFirstReminder(),
+								newBooking.getFirstReminderType(),
+								newBooking.getSecondReminder(),
+								newBooking.getSecondReminderType(),
+								WorkflowConstants.STATUS_APPROVED,
+								serviceContext);
+
+					} else {
+						log.info("Not updating, since the booking has been moved to trash and the restoreFromTrash flag has not been set.");
+					}
+
+				} else {
+					log.info("Skipping update, since the event has not been modified on the remote server.");
+				}
+
 			}
 
 		}
 
 	}
 
+	/**
+	 * 
+	 * @param conn
+	 * @param serverVEvents
+	 * @param source
+	 * @param syncOnlyUpcoming
+	 * @param locale
+	 * @since 1.0.0
+	 * @throws PortalException
+	 * @throws SystemException
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
 	public static void syncToCalDAVServer(HTTPSConnection conn,
 			List<ServerVEvent> serverVEvents,
 			com.liferay.calendar.model.Calendar source,
@@ -550,6 +624,7 @@ public class SyncUtil {
 					conn.updateVEvent(serverVEvent);
 
 				}
+
 			}
 		}
 	}

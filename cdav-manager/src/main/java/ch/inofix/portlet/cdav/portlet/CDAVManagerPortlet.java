@@ -155,12 +155,12 @@ public class CDAVManagerPortlet extends MVCPortlet {
 						.getCalendar(calendarId);
 
 				// Sync from cDAV-Server
-				// SyncUtil.syncFromCalDAVServer(currentCalendar, serverVEvents,
-				// restoreFromTrash, serviceContext);
+				SyncUtil.syncFromCalDAVServer(currentCalendar, serverVEvents,
+						restoreFromTrash, serviceContext);
 
 				// Sync to cDAV-Server
-				SyncUtil.syncToCalDAVServer(conn, serverVEvents,
-						currentCalendar, syncOnlyUpcoming, defaultLocale);
+//				SyncUtil.syncToCalDAVServer(conn, serverVEvents,
+//						currentCalendar, syncOnlyUpcoming, defaultLocale);
 
 			}
 		}
