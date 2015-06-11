@@ -39,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * 
  * @author Christian Berndt
  * @created 2015-05-29 16:37
- * @modified 2015-06-05 23:20
- * @version 1.0.2
+ * @modified 2015-06-11 22:04
+ * @version 1.0.3
  *
  */
 public class CDAVManagerPortlet extends MVCPortlet {
@@ -157,10 +157,10 @@ public class CDAVManagerPortlet extends MVCPortlet {
 				// Sync from cDAV-Server
 				SyncUtil.syncFromCalDAVServer(currentCalendar, serverVEvents,
 						restoreFromTrash, serviceContext);
-
+				
 				// Sync to cDAV-Server
-//				SyncUtil.syncToCalDAVServer(conn, serverVEvents,
-//						currentCalendar, syncOnlyUpcoming, defaultLocale);
+				SyncUtil.syncToCalDAVServer(conn, serverVEvents,
+					currentCalendar, syncOnlyUpcoming, defaultLocale);
 
 			}
 		}

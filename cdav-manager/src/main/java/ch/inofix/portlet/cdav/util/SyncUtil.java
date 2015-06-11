@@ -54,8 +54,8 @@ import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2015-06-10 10:54
- * @modified 2015-06-10 10:54
- * @version 1.0.0
+ * @modified 2015-06-11 21:30
+ * @version 1.0.1
  *
  */
 public class SyncUtil {
@@ -292,6 +292,46 @@ public class SyncUtil {
 
 	/**
 	 * 
+	 * @param calendarBooking
+	 * @return
+	 * @since 1.0.1
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	private static String getETag(CalendarBooking calendarBooking)
+			throws PortalException, SystemException {
+
+		String className = CalendarBooking.class.getName();
+		String tableName = ExpandoTableConstants.DEFAULT_TABLE_NAME;
+
+		return (String) ExpandoValueLocalServiceUtil.getData(
+				calendarBooking.getCompanyId(), className, tableName, "eTag",
+				calendarBooking.getCalendarBookingId());
+	}
+
+	/**
+	 * 
+	 * @param vEvent
+	 * @return
+	 * @since 1.0.2
+	 */
+	private static long getLastModifiedTime(VEvent vEvent) {
+
+		long lastModifiedTime = 0;
+
+		LastModified lastModified = vEvent.getLastModified();
+		if (lastModified != null) {
+			DateTime dateTime = lastModified.getDateTime();
+			if (dateTime != null) {
+				lastModifiedTime = dateTime.getTime();
+			}
+		}
+
+		return lastModifiedTime;
+	}
+
+	/**
+	 * 
 	 * @param vEvent
 	 * @param idx
 	 * @return
@@ -447,6 +487,8 @@ public class SyncUtil {
 			ServiceContext serviceContext) throws PortalException,
 			SystemException {
 
+		log.info("Executing syncToCalDAVServer().");
+
 		for (ServerVEvent serverVEvent : serverVEvents) {
 
 			String eTag = serverVEvent.geteTag();
@@ -476,18 +518,19 @@ public class SyncUtil {
 
 			CalendarBooking newBooking = SyncUtil.getCalendarBooking(vEvent);
 
-			// At the moment we do not support synchronization of
-			// childCalendarBookings.
+			// Synchronization of childCalendarBookings is not supported
+
 			long[] childCalendarBookings = new long[0];
 
 			if (booking == null) {
 
+				log.info("Adding new calendarBooking, since the event does "
+						+ "not exist in this calendar, yet.");
+
 				try {
-
-					// Use the serverEvent's uuid and modifiedDate
-					// for the new calendarBooking too, so that we
-					// can check, whether they are in sync or not
-
+					// Use the serverEvent's uuid for the new calendarBooking
+					// too,
+					// so that we can check, whether they are in sync or not
 					serviceContext.setUuid(uuid);
 
 					CalendarBookingServiceUtil.addCalendarBooking(
@@ -502,6 +545,7 @@ public class SyncUtil {
 							newBooking.getFirstReminderType(),
 							newBooking.getSecondReminder(),
 							newBooking.getSecondReminderType(), serviceContext);
+
 				} catch (Exception e) {
 					log.error(e);
 				}
@@ -509,13 +553,8 @@ public class SyncUtil {
 
 				// Check the whether the record is current (has the same eTag as
 				// the record of the calDAV server.
-				String className = CalendarBooking.class.getName();
-				String tableName = ExpandoTableConstants.DEFAULT_TABLE_NAME;
 
-				String currentETag = (String) ExpandoValueLocalServiceUtil
-						.getData(serviceContext.getCompanyId(), className,
-								tableName, "eTag",
-								booking.getCalendarBookingId());
+				String currentETag = getETag(booking);
 
 				log.info("title = " + vEvent.getSummary().getValue());
 				log.info(eTag);
@@ -526,13 +565,22 @@ public class SyncUtil {
 					if (booking.getStatus() != WorkflowConstants.STATUS_IN_TRASH
 							| restoreFromTrash) {
 
-						log.info("Updating calendarBooking, since the event has been modified on the remote server.");
-						// TODO: But might have been modified by Liferay, too.
+						log.info("Updating calendarBooking, since the event has "
+								+ "been modified on the remote server.");
+						// TODO: But might have been modified in the liferay
+						// calendar, too.
 
 						Map<String, Serializable> eTagMap = new HashMap<String, Serializable>();
 						eTagMap.put("eTag", eTag);
 
 						serviceContext.setExpandoBridgeAttributes(eTagMap);
+
+						long lastModifiedTime = getLastModifiedTime(vEvent);
+
+						if (lastModifiedTime > 0) {
+							serviceContext.setModifiedDate(new Date(
+									lastModifiedTime));
+						}
 
 						CalendarBookingServiceUtil.updateCalendarBooking(
 								booking.getCalendarBookingId(),
@@ -553,11 +601,14 @@ public class SyncUtil {
 								serviceContext);
 
 					} else {
-						log.info("Not updating, since the booking has been moved to trash and the restoreFromTrash flag has not been set.");
+						log.info("Not updating, since the booking has been "
+								+ "moved to trash and the restoreFromTrash "
+								+ "flag has not been set.");
 					}
 
 				} else {
-					log.info("Skipping update, since the event has not been modified on the remote server.");
+					log.info("Skipping update, since the event has not "
+							+ "been modified on the remote server.");
 				}
 
 			}
@@ -602,26 +653,79 @@ public class SyncUtil {
 
 		log.info("calendarBookings.size = " + calendarBookings.size());
 
-		for (CalendarBooking booking : calendarBookings) {
+		for (CalendarBooking calendarBooking : calendarBookings) {
 
-			String uuid = booking.getUuid();
+			String uuid = calendarBooking.getUuid();
 
 			// Do not sync events from trash
-			if (booking.getStatus() != WorkflowConstants.STATUS_IN_TRASH) {
+
+			if (calendarBooking.getStatus() != WorkflowConstants.STATUS_IN_TRASH) {
 
 				ServerVEvent serverVEvent = getServerVEvent(uuid, serverVEvents);
 
-				VEvent vEvent = SyncUtil.getVEvent(booking, locale);
+				VEvent vEvent = SyncUtil.getVEvent(calendarBooking, locale);
 
 				if (serverVEvent == null) {
+
+					log.info("Adding a new event, since this event does "
+							+ "not exist in the remote calendar yet.");
 
 					conn.addVEvent(vEvent);
 					// conn.addVEvent(vEvent, serverCalendar);
 
 				} else {
 
-					serverVEvent.setVevent(vEvent);
-					conn.updateVEvent(serverVEvent);
+					long lastModifiedTime = 0;
+
+					lastModifiedTime = getLastModifiedTime(serverVEvent
+							.getVevent());
+
+					String eTag = serverVEvent.geteTag();
+
+					String currentETag = getETag(calendarBooking);
+
+					log.info(calendarBooking.getTitle(locale));
+					log.info(eTag);
+					log.info(currentETag);
+
+					if (eTag.equals(currentETag)) {
+
+						// DateTime of VEvent does not support millisecond
+						// resolution so we have to compare the modification
+						// dates on second level
+
+						// TODO: Store the ModifiedDate timestamp as a
+						// non-standard property
+						long lastVEventModification = lastModifiedTime / 1000;
+						long lastCalendarBookingModification = calendarBooking
+								.getModifiedDate().getTime() / 1000;
+
+						log.info(lastVEventModification);
+						log.info(lastCalendarBookingModification);
+
+						if (lastCalendarBookingModification > lastVEventModification) {
+
+							log.info("Updating the event, since it has not been "
+									+ "modified on the remote server.");
+
+							serverVEvent.setVevent(vEvent);
+							conn.updateVEvent(serverVEvent);
+
+						} else {
+
+							log.info("Not updating the event, since it has not "
+									+ "been modified since the last synchronization");
+						}
+
+					} else {
+
+						log.info("Not updating the event, since it has been "
+								+ "modified on the remote server.");
+
+						// TODO: But might have been modified in the liferay
+						// calendar, too
+
+					}
 
 				}
 
