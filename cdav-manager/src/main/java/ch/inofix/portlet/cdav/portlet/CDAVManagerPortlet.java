@@ -3,8 +3,6 @@ package ch.inofix.portlet.cdav.portlet;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Locale;
-
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
@@ -15,7 +13,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
 import zswi.protocols.caldav.ServerCalendar;
-import zswi.protocols.caldav.ServerVEvent;
 import zswi.protocols.communication.core.HTTPSConnection;
 import zswi.protocols.communication.core.InitKeystoreException;
 import zswi.protocols.communication.core.InstallCertException;
@@ -29,7 +26,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
@@ -39,8 +35,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * 
  * @author Christian Berndt
  * @created 2015-05-29 16:37
- * @modified 2015-06-11 22:04
- * @version 1.0.3
+ * @modified 2015-06-12 16:41
+ * @version 1.0.4
  *
  */
 public class CDAVManagerPortlet extends MVCPortlet {
@@ -118,8 +114,6 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 		log.info("Executing syncResources().");
 
-		Locale defaultLocale = LocaleUtil.getDefault();
-
 		// Do not create a keystore in the user's home directory
 		// but use the truststore of the JRE installation. cdav-connect expects
 		// it secured with the default keystore password "changeit".
@@ -144,23 +138,14 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 				log.info("Synchronizing " + serverCalendar.getDisplayName());
 
-				List<ServerVEvent> serverVEvents = conn.getVEvents();
-
-				// List<ServerVEvent> serverVEvents = conn
-				// .getVEvents(serverCalendar);
-
-				log.info("serverVEvents.size() = " + serverVEvents.size());
-
 				Calendar currentCalendar = CalendarLocalServiceUtil
 						.getCalendar(calendarId);
 
-				// Sync from cDAV-Server
-				SyncUtil.syncFromCalDAVServer(currentCalendar, serverVEvents,
-						restoreFromTrash, serviceContext);
-				
-				// Sync to cDAV-Server
-				SyncUtil.syncToCalDAVServer(conn, serverVEvents,
-					currentCalendar, syncOnlyUpcoming, defaultLocale);
+				SyncUtil.syncFromCalDAVServer(currentCalendar, conn,
+						restoreFromTrash, syncOnlyUpcoming, serviceContext);
+
+				SyncUtil.syncToCalDAVServer(currentCalendar, conn,
+						restoreFromTrash, syncOnlyUpcoming, serviceContext);
 
 			}
 		}

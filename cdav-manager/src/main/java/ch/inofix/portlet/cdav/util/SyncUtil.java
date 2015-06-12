@@ -1,7 +1,6 @@
 package ch.inofix.portlet.cdav.util;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -14,6 +13,9 @@ import org.apache.http.client.ClientProtocolException;
 
 import zswi.protocols.caldav.ServerVEvent;
 import zswi.protocols.communication.core.HTTPSConnection;
+import zswi.protocols.communication.core.InitKeystoreException;
+import zswi.protocols.communication.core.InstallCertException;
+import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
@@ -37,7 +39,7 @@ import net.fortuna.ical4j.model.property.Uid;
 import com.liferay.calendar.NoSuchBookingException;
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
-import com.liferay.calendar.service.CalendarBookingServiceUtil;
+import com.liferay.calendar.service.CalendarLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -54,8 +56,8 @@ import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2015-06-10 10:54
- * @modified 2015-06-11 21:30
- * @version 1.0.1
+ * @modified 2015-06-12 14:03
+ * @version 1.0.2
  *
  */
 public class SyncUtil {
@@ -108,9 +110,6 @@ public class SyncUtil {
 		if (vSummary != null) {
 
 			String summary = vSummary.getValue();
-
-			// log.info("summary = " + summary);
-			// log.info("defaultLocale = " + defaultLocale);
 
 			// TODO: retrieve language from vSummary
 
@@ -173,14 +172,14 @@ public class SyncUtil {
 	/**
 	 * 
 	 * @param calendarBooking
-	 * @param locale
 	 * @since 1.0.0
 	 * @return
 	 */
-	public static VEvent getVEvent(CalendarBooking calendarBooking,
-			Locale locale) {
+	public static VEvent getVEvent(CalendarBooking calendarBooking) {
 
 		log.info("Executing getVEvent().");
+		
+		Locale locale = LocaleUtil.getDefault(); 
 
 		long firstReminderTime = calendarBooking.getStartTime()
 				- calendarBooking.getFirstReminder();
@@ -480,14 +479,23 @@ public class SyncUtil {
 	 * @since 1.0.0
 	 * @throws PortalException
 	 * @throws SystemException
+	 * @throws ParserException
+	 * @throws URISyntaxException
+	 * @throws IOException
+	 * @throws ClientProtocolException
 	 */
 	public static void syncFromCalDAVServer(
-			com.liferay.calendar.model.Calendar calendar,
-			List<ServerVEvent> serverVEvents, boolean restoreFromTrash,
+			com.liferay.calendar.model.Calendar calendar, HTTPSConnection conn,
+			boolean restoreFromTrash, boolean syncOnlyUpcoming,
 			ServiceContext serviceContext) throws PortalException,
-			SystemException {
+			SystemException, ClientProtocolException, IOException,
+			URISyntaxException, ParserException {
 
-		log.info("Executing syncToCalDAVServer().");
+		log.info("Executing syncFromCalDAVServer().");
+
+		// TODO: Perform the sync in a background job
+
+		List<ServerVEvent> serverVEvents = conn.getVEvents();
 
 		for (ServerVEvent serverVEvent : serverVEvents) {
 
@@ -518,10 +526,6 @@ public class SyncUtil {
 
 			CalendarBooking newBooking = SyncUtil.getCalendarBooking(vEvent);
 
-			// Synchronization of childCalendarBookings is not supported
-
-			long[] childCalendarBookings = new long[0];
-
 			if (booking == null) {
 
 				log.info("Adding new calendarBooking, since the event does "
@@ -533,9 +537,12 @@ public class SyncUtil {
 					// so that we can check, whether they are in sync or not
 					serviceContext.setUuid(uuid);
 
-					CalendarBookingServiceUtil.addCalendarBooking(
-							calendar.getCalendarId(), childCalendarBookings,
-							newBooking.getParentCalendarBookingId(),
+					long[] childCalendarIds = new long[0];
+					long parentCalendarBookingId = 0;
+
+					CalendarBookingLocalServiceUtil.addCalendarBooking(
+							calendar.getUserId(), calendar.getCalendarId(),
+							childCalendarIds, parentCalendarBookingId,
 							newBooking.getTitleMap(),
 							newBooking.getDescriptionMap(),
 							newBooking.getLocation(),
@@ -567,13 +574,21 @@ public class SyncUtil {
 
 						log.info("Updating calendarBooking, since the event has "
 								+ "been modified on the remote server.");
+
 						// TODO: But might have been modified in the liferay
 						// calendar, too.
 
-						Map<String, Serializable> eTagMap = new HashMap<String, Serializable>();
-						eTagMap.put("eTag", eTag);
+						// We have to bypass the standard way of setting
+						// expandoBridgeAttributes with
+						// portletserviceContext.setExpandoBridgeAttributes(eTagMap)
+						// because of permission issues when we use the SyncUtil
+						// with a scheduler and not from a portletRequest.
 
-						serviceContext.setExpandoBridgeAttributes(eTagMap);
+						ExpandoValueLocalServiceUtil.addValue(
+								calendar.getCompanyId(),
+								CalendarBooking.class.getName(),
+								ExpandoTableConstants.DEFAULT_TABLE_NAME,
+								"eTag", booking.getCalendarBookingId(), eTag);
 
 						long lastModifiedTime = getLastModifiedTime(vEvent);
 
@@ -582,23 +597,29 @@ public class SyncUtil {
 									lastModifiedTime));
 						}
 
-						CalendarBookingServiceUtil.updateCalendarBooking(
-								booking.getCalendarBookingId(),
-								calendar.getCalendarId(),
-								childCalendarBookings,
-								newBooking.getTitleMap(),
-								newBooking.getDescriptionMap(),
-								newBooking.getLocation(),
-								newBooking.getStartTime(),
-								newBooking.getEndTime(),
-								newBooking.getAllDay(),
-								newBooking.getRecurrence(),
-								newBooking.getFirstReminder(),
-								newBooking.getFirstReminderType(),
-								newBooking.getSecondReminder(),
-								newBooking.getSecondReminderType(),
-								WorkflowConstants.STATUS_APPROVED,
-								serviceContext);
+						try {
+
+							CalendarBookingLocalServiceUtil
+									.updateCalendarBooking(
+											calendar.getUserId(),
+											booking.getCalendarBookingId(),
+											calendar.getCalendarId(),
+											newBooking.getTitleMap(),
+											newBooking.getDescriptionMap(),
+											newBooking.getLocation(),
+											newBooking.getStartTime(),
+											newBooking.getEndTime(),
+											newBooking.getAllDay(),
+											newBooking.getRecurrence(),
+											newBooking.getFirstReminder(),
+											newBooking.getFirstReminderType(),
+											newBooking.getSecondReminder(),
+											newBooking.getSecondReminderType(),
+											WorkflowConstants.STATUS_APPROVED,
+											serviceContext);
+						} catch (Exception e) {
+							log.error(e);
+						}
 
 					} else {
 						log.info("Not updating, since the booking has been "
@@ -619,26 +640,29 @@ public class SyncUtil {
 
 	/**
 	 * 
+	 * @param calendar
 	 * @param conn
-	 * @param serverVEvents
-	 * @param source
+	 * @param restoreFromTrash
 	 * @param syncOnlyUpcoming
-	 * @param locale
+	 * @param serviceContext
 	 * @since 1.0.0
 	 * @throws PortalException
 	 * @throws SystemException
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @throws URISyntaxException
+	 * @throws ParserException
 	 */
-	public static void syncToCalDAVServer(HTTPSConnection conn,
-			List<ServerVEvent> serverVEvents,
-			com.liferay.calendar.model.Calendar source,
-			boolean syncOnlyUpcoming, Locale locale) throws PortalException,
+	public static void syncToCalDAVServer(
+			com.liferay.calendar.model.Calendar calendar, HTTPSConnection conn,
+			boolean restoreFromTrash, boolean syncOnlyUpcoming,
+			ServiceContext serviceContext) throws PortalException,
 			SystemException, ClientProtocolException, IOException,
-			URISyntaxException {
+			URISyntaxException, ParserException {
 
 		log.info("Executing syncToCalDAVServer().");
+
+		// TODO: Perform the sync in a background job
 
 		long startTime = 0;
 
@@ -647,11 +671,13 @@ public class SyncUtil {
 			startTime = now.getTime();
 		}
 
-		List<CalendarBooking> calendarBookings = CalendarBookingServiceUtil
-				.getCalendarBookings(source.getCalendarId(), startTime,
+		List<CalendarBooking> calendarBookings = CalendarBookingLocalServiceUtil
+				.getCalendarBookings(calendar.getCalendarId(), startTime,
 						Long.MAX_VALUE);
 
 		log.info("calendarBookings.size = " + calendarBookings.size());
+
+		List<ServerVEvent> serverVEvents = conn.getVEvents();
 
 		for (CalendarBooking calendarBooking : calendarBookings) {
 
@@ -663,7 +689,7 @@ public class SyncUtil {
 
 				ServerVEvent serverVEvent = getServerVEvent(uuid, serverVEvents);
 
-				VEvent vEvent = SyncUtil.getVEvent(calendarBooking, locale);
+				VEvent vEvent = SyncUtil.getVEvent(calendarBooking);
 
 				if (serverVEvent == null) {
 
@@ -684,7 +710,8 @@ public class SyncUtil {
 
 					String currentETag = getETag(calendarBooking);
 
-					log.info(calendarBooking.getTitle(locale));
+					log.info(calendarBooking.getTitle(serviceContext
+							.getLocale()));
 					log.info(eTag);
 					log.info(currentETag);
 
@@ -731,6 +758,56 @@ public class SyncUtil {
 
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param calendarId
+	 * @param servername
+	 * @param domain
+	 * @param username
+	 * @param password
+	 * @param restoreFromTrash
+	 * @param syncOnlyUpcoming
+	 * @since 1.0.2
+	 * @throws InstallCertException
+	 * @throws InitKeystoreException
+	 * @throws PortalException
+	 * @throws SystemException
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws ParserException
+	 */
+	public static void syncWithCalDAVServer(long calendarId, String servername,
+			String domain, String username, String password,
+			boolean restoreFromTrash, boolean syncOnlyUpcoming)
+			throws InstallCertException, InitKeystoreException,
+			PortalException, SystemException, ClientProtocolException,
+			IOException, URISyntaxException, ParserException {
+
+		log.info("Executing syncWithCalDAVServer().");
+
+		com.liferay.calendar.model.Calendar calendar = CalendarLocalServiceUtil
+				.getCalendar(calendarId);
+
+		// Do not create a keystore in the user's home directory
+		// but use the truststore of the JRE installation. cdav-connect expects
+		// it secured with the default keystore password "changeit".
+		boolean installCert = false;
+
+		HTTPSConnection conn = new HTTPSConnection(servername, domain,
+				username, password, 443, installCert);
+
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setScopeGroupId(calendar.getGroupId());
+
+		syncFromCalDAVServer(calendar, conn, restoreFromTrash,
+				syncOnlyUpcoming, serviceContext);
+
+		syncToCalDAVServer(calendar, conn, restoreFromTrash, syncOnlyUpcoming,
+				serviceContext);
+
 	}
 
 }

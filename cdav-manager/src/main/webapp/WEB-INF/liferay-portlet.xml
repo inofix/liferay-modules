@@ -1,28 +1,45 @@
 <?xml version="1.0"?>
-<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
-
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
+<!-- 
+    liferay-portlet.xml: Main configuration file of the 
+    cdav-manager portlet.
+    
+    Created:    2015-06-12 09:49 by Christian Berndt
+    Modified:   2015-06-12 09:49 by Christian Berndt
+    Version:    1.0.0
+ -->
 <liferay-portlet-app>
-	<portlet>
-		<portlet-name>cdav-manager</portlet-name>
-		<icon>/icon.png</icon>
+    <portlet>
+        <portlet-name>cdav-manager</portlet-name>
+        <icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.cdav.action.ConfigurationActionImpl</configuration-action-class>
-		<header-portlet-css>/css/main.css</header-portlet-css>
-		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
-	</portlet>
-	<role-mapper>
-		<role-name>administrator</role-name>
-		<role-link>Administrator</role-link>
-	</role-mapper>
-	<role-mapper>
-		<role-name>guest</role-name>
-		<role-link>Guest</role-link>
-	</role-mapper>
-	<role-mapper>
-		<role-name>power-user</role-name>
-		<role-link>Power User</role-link>
-	</role-mapper>
-	<role-mapper>
-		<role-name>user</role-name>
-		<role-link>User</role-link>
-	</role-mapper>
+        <scheduler-entry>
+            <scheduler-event-listener-class>ch.inofix.portlet.cdav.messaging.SyncCalendarMessageListener</scheduler-event-listener-class>
+            <trigger>
+                <simple>
+                    <property-key>calendar.sync.interval</property-key>
+                    <time-unit>minute</time-unit>
+                </simple>
+            </trigger>
+        </scheduler-entry>
+        <header-portlet-css>/css/main.css</header-portlet-css>
+        <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+    </portlet>
+    <role-mapper>
+        <role-name>administrator</role-name>
+        <role-link>Administrator</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>guest</role-name>
+        <role-link>Guest</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>power-user</role-name>
+        <role-link>Power User</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>user</role-name>
+        <role-link>User</role-link>
+    </role-mapper>
 </liferay-portlet-app>
