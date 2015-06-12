@@ -37,7 +37,7 @@ The CDav Manager allows you to connect your Liferay Calendar to and synchronize 
 
 #### Compile from source
 
-1. clone cdav-connector from <a href="https://github.com/chrberndt/cdav-connector" target="_blank">https://github.com/chrberndt/cdav-connector</a> and 
+1. clone cdav-connector from <a href="https://github.com/Kerio/cdav-connector" target="_blank">https://github.com/Kerio/cdav-connector</a> and 
 2. install it to your local maven repo (mvn package install)
 3. when the cdav-manager's dependency is fulfilled (see steps 1 & 2) build the cdav-manager with mvn package
 
