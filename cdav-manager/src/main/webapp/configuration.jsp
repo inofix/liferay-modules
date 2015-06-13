@@ -2,8 +2,8 @@
     configuration.jsp: Configure the cdav-manager's preferences.
     
     Created:    2015-05-30 12:14 by Christian Berndt
-    Modified:   2015-06-05 22:06 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-06-13 18:26 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -18,6 +18,7 @@
 <%@page import="com.liferay.calendar.model.CalendarResource"%>
 <%@page import="com.liferay.calendar.service.CalendarServiceUtil"%>
 <%@page import="com.liferay.calendar.model.Calendar"%>
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
 
 <%@page import="zswi.protocols.caldav.ServerCalendar"%>
 <%@page import="zswi.protocols.communication.core.HTTPSConnection"%>
@@ -65,6 +66,15 @@
 		// TODO: log exception
 		System.out.println(e);
 	}
+
+	boolean checkConnectionParameters = false;
+
+	if (Validator.isNotNull(servername) && Validator.isNotNull(domain)
+			&& Validator.isNotNull(username)
+			&& Validator.isNotNull(password)
+			&& serverCalendars.size() == 0) {
+		checkConnectionParameters = true;
+	}
 %>
 
 <liferay-portlet:actionURL portletConfiguration="true"
@@ -111,23 +121,23 @@
 
 	<aui:fieldset label="source">
 	
-       <c:if test="<%=serverCalendars.size() == 0%>">
-            <div class="alert alter-info">
-                <liferay-ui:message key="please-enter-your-connection-parameters" />
+       <c:if test="<%= checkConnectionParameters %>">
+            <div class="alert alert-error">
+                <liferay-ui:message key="please-check-your-connection-settings" />
             </div>
         </c:if>
 
-		<aui:input name="servername" value="<%=servername%>"
+		<aui:input name="servername" value="<%=servername%>" required="true"
 			inlineField="true" helpMessage="servername-help" />
 
-		<aui:input name="domain" value="<%=domain%>" inlineField="true"
-			helpMessage="domain-help" />
+		<aui:input name="domain" value="<%=domain%>" required="true"
+			inlineField="true" helpMessage="domain-help" />
 
-		<aui:input name="username" value="<%=username%>" inlineField="true"
-			helpMessage="username-help" />
+		<aui:input name="username" value="<%=username%>" required="true"
+			inlineField="true" helpMessage="username-help" />
 
-		<aui:input name="password" value="<%=password%>" inlineField="true"
-			helpMessage="password-help" type="password" />
+		<aui:input name="password" value="<%=password%>" required="true"
+			inlineField="true" helpMessage="password-help" type="password" />
 
 		<c:if test="<%=serverCalendars.size() > 0%>">
 			<aui:select name="calendar" value="<%=calendar%>" inlineField="true"
