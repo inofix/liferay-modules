@@ -2,15 +2,22 @@
     init.jsp: Common imports and setup code of the cdav-manager portlet.
     
     Created:    2015-05-30 12:19 by Christian Berndt
-    Modified:   2015-06-05 21:57 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-06-13 18:40 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%-- Import required classes --%>
 
 <%@page import="java.util.Date"%>
+
+<%@page import="com.liferay.calendar.service.CalendarServiceUtil"%>
+<%@page import="com.liferay.calendar.model.Calendar"%>
+
+<%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
 
 
 <%-- Import required taglibs --%>
@@ -33,10 +40,29 @@
 	String calendar = portletPreferences.getValue("calendar", "");
 	String calendarId = portletPreferences.getValue("calendarId", "");
 	String domain = portletPreferences.getValue("domain", "");
-	// TODO: Retriev the lastSync from the portlet / application scope
-	Date lastSync = new Date(); 
-    String password = portletPreferences.getValue("password", "");
-    String restoreFromTrash = portletPreferences.getValue("restoreFromTrash", "true");
+	// TODO: Retrieve the lastSync from the portlet / application scope
+	Date lastSync = new Date();
+	String password = portletPreferences.getValue("password", "");
+	String restoreFromTrash = portletPreferences.getValue("restoreFromTrash", "true");
 	String servername = portletPreferences.getValue("servername", "");
 	String username = portletPreferences.getValue("username", "");
+
+	long targetCalendarId = GetterUtil.getLong(calendarId);
+
+	Calendar targetCalendar = null;
+	String targetCalendarName = LanguageUtil.get(pageContext,
+			"not-selected");
+	if (targetCalendarId > 0) {
+		targetCalendar = CalendarServiceUtil
+				.getCalendar(targetCalendarId);
+		targetCalendarName = targetCalendar.getName(locale);
+	}
+
+	boolean hasConnectionParameters = false;
+
+	if (Validator.isNotNull(servername) && Validator.isNotNull(domain)
+			&& Validator.isNotNull(username)
+			&& Validator.isNotNull(password)) {
+		hasConnectionParameters = true;
+	}
 %>

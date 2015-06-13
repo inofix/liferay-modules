@@ -2,8 +2,8 @@
     configuration.jsp: Configure the cdav-manager's preferences.
     
     Created:    2015-05-30 12:14 by Christian Berndt
-    Modified:   2015-06-13 18:26 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-06-13 18:41 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -16,9 +16,6 @@
 <%@page import="ch.inofix.portlet.cdav.util.CalendarResourceUtil"%>
 
 <%@page import="com.liferay.calendar.model.CalendarResource"%>
-<%@page import="com.liferay.calendar.service.CalendarServiceUtil"%>
-<%@page import="com.liferay.calendar.model.Calendar"%>
-<%@page import="com.liferay.portal.kernel.util.Validator"%>
 
 <%@page import="zswi.protocols.caldav.ServerCalendar"%>
 <%@page import="zswi.protocols.communication.core.HTTPSConnection"%>
@@ -69,10 +66,7 @@
 
 	boolean checkConnectionParameters = false;
 
-	if (Validator.isNotNull(servername) && Validator.isNotNull(domain)
-			&& Validator.isNotNull(username)
-			&& Validator.isNotNull(password)
-			&& serverCalendars.size() == 0) {
+	if (hasConnectionParameters && serverCalendars.size() == 0) {
 		checkConnectionParameters = true;
 	}
 %>
