@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-06-07 22:39 by Christian Berndt
- * Version:     1.1.2
+ * Modified:    2015-06-14 12:16 by Christian Berndt
+ * Version:     1.1.3
  *
  */
 @import "compass";
@@ -138,6 +138,27 @@
 	.portlet-contact-manager .url-address {
 		min-width: 490px;
 	}
+	
+	/** 
+	 * Hide any columns in table mode
+	 */
+    .portlet-contact-manager th,
+    .portlet-contact-manager td {
+	   display: none; 
+	}
+	
+	/**
+	 * except the first two and the last 
+	 */
+    .portlet-contact-manager th.table-first-header,
+    .portlet-contact-manager th:nth-child(2),
+    .portlet-contact-manager th.table-last-header,
+    .portlet-contact-manager td.first,
+    .portlet-contact-manager td:nth-child(2),
+    .portlet-contact-manager td.last 
+    {
+	   display: table-cell;
+	}
 }
 
 @media ( max-width : 767px) {
@@ -146,4 +167,14 @@
 	.portlet-contact-manager .url-address {
 		min-width: 290px;
 	}
+	
+    /** 
+     * Hide any columns in smart-phone mode,
+     * except the first and the last (see above).
+     */
+    .portlet-contact-manager th:nth-child(2),
+    .portlet-contact-manager td:nth-child(2)
+    {
+       display: none;
+    }
 }
