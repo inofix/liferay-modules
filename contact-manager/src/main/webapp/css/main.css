@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-06-14 12:16 by Christian Berndt
- * Version:     1.1.3
+ * Modified:    2015-06-14 17:36 by Christian Berndt
+ * Version:     1.1.4
  *
  */
 @import "compass";
@@ -39,6 +39,15 @@
 		.contact-search .control-group {
 		    margin-bottom: 0;
 		}
+		
+		.delete-section a {
+            color: white;
+		}
+        .delete-section a.taglib-icon:focus .taglib-text,
+        .delete-section a.taglib-icon:hover .taglib-text 
+		{
+            text-decoration: none;
+        }
 		
 		dl.build-info dfn, 
         dl.build-info dt {
