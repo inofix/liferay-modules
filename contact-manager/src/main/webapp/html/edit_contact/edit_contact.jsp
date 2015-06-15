@@ -71,6 +71,22 @@
 	}
 %>
 
+<div id='<portlet:namespace/>structuredNamePopover'
+    class="structured-name">
+
+    <%
+        for (String snField : snFields) {
+    %>
+    <aui:input name="<%=snField%>" bean="<%=contact_%>"
+        cssClass='<%=snField.replace(".", "-") + "-twin"%>' 
+        useNamespace="false" helpMessage='<%= snField + "-help" %>'
+        disabled="<%= !hasUpdatePermission %>" />
+    <%
+        }
+    %>
+
+</div>
+
 <aui:fieldset label="name">
 	<aui:container>
 		<aui:row>
@@ -252,33 +268,17 @@
 <aui:model-context model="<%= Contact.class %>"/>
 
 <liferay-ui:panel title="categorization">
-	<aui:fieldset>
-	
-	    <aui:input classPK="<%=contact_.getContactId()%>" name="categories"
-	        type="assetCategories" inlineField="true"
-	        disabled="<%= !hasUpdatePermission %>"/>
-	    
-	    <aui:input classPK="<%=contact_.getContactId()%>" name="tags"
-	        type="assetTags" helpMessage="asset-tags-help" 
-	        disabled="<%= !hasUpdatePermission %>"/>
-	</aui:fieldset>
+    <aui:fieldset>
+    
+        <aui:input classPK="<%=contact_.getContactId()%>" name="categories"
+            type="assetCategories" inlineField="true"
+            disabled="<%= !hasUpdatePermission %>"/>
+        
+        <aui:input classPK="<%=contact_.getContactId()%>" name="tags"
+            type="assetTags" helpMessage="asset-tags-help" 
+            disabled="<%= !hasUpdatePermission %>"/>
+    </aui:fieldset>
 </liferay-ui:panel>
-
-<div id='<portlet:namespace/>structuredNamePopover'
-	class="structured-name">
-
-	<%
-		for (String snField : snFields) {
-	%>
-	<aui:input name="<%=snField%>" bean="<%=contact_%>"
-		cssClass='<%=snField.replace(".", "-") + "-twin"%>' 
-		useNamespace="false" helpMessage='<%= snField + "-help" %>'
-		disabled="<%= !hasUpdatePermission %>" />
-	<%
-		}
-	%>
-
-</div>
 
 <script>
 	YUI().use('aui-popover', 'widget-anim', function(A) {
