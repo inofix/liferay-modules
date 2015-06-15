@@ -23,8 +23,8 @@
 		</supports>
         <resource-bundle>Language</resource-bundle>
 		<portlet-info>
-			<title>contact-manager</title>
-			<short-title>contact-manager</short-title>
+			<title>Contact Manager</title>
+			<short-title>Contact Manager</short-title>
 			<keywords>contact-manager</keywords>
 		</portlet-info>
 		<security-role-ref>
