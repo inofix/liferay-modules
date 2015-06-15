@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-06-04 22:36 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2015-06-15 11:07 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -201,19 +201,6 @@
 		className="<%= Contact.class.getName() %>"
 		classPK="<%= contact_.getContactId() %>" />
 
-</aui:fieldset>
-
-<aui:model-context model="<%= Contact.class %>"/>
-
-<aui:fieldset label="categorization">
-
-	<aui:input classPK="<%=contact_.getContactId()%>" name="categories"
-		type="assetCategories" inlineField="true"
-		disabled="<%= !hasUpdatePermission %>"/>
-	
-	<aui:input classPK="<%=contact_.getContactId()%>" name="tags"
-		type="assetTags" helpMessage="asset-tags-help" 
-		disabled="<%= !hasUpdatePermission %>"/>
 </aui:fieldset>
 
 

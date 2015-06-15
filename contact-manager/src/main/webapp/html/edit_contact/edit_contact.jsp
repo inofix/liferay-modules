@@ -3,7 +3,7 @@
     
     Created:    2015-05-08 18:02 by Christian Berndt
     Modified:   2015-05-29 13:36 by Christian Berndt
-    Version:    1.0.9
+    Version:    1.1.0
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -248,6 +248,21 @@
     <liferay-ui:icon-help message="kind-help"/>
 
 </aui:fieldset>
+
+<aui:model-context model="<%= Contact.class %>"/>
+
+<liferay-ui:panel title="categorization">
+	<aui:fieldset>
+	
+	    <aui:input classPK="<%=contact_.getContactId()%>" name="categories"
+	        type="assetCategories" inlineField="true"
+	        disabled="<%= !hasUpdatePermission %>"/>
+	    
+	    <aui:input classPK="<%=contact_.getContactId()%>" name="tags"
+	        type="assetTags" helpMessage="asset-tags-help" 
+	        disabled="<%= !hasUpdatePermission %>"/>
+	</aui:fieldset>
+</liferay-ui:panel>
 
 <div id='<portlet:namespace/>structuredNamePopover'
 	class="structured-name">
