@@ -2,14 +2,32 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-06-14 17:36 by Christian Berndt
- * Version:     1.1.4
+ * Modified:    2015-06-15 10:48 by Christian Berndt
+ * Version:     1.1.5
  *
  */
 @import "compass";
 @import "mixins";
  
 .aui { 
+	
+	/** 
+	 * Decrease font size of headings on popup-mode
+	 * (like in the popup-mode of asset-publisher).
+	 */
+	 .dialog-iframe-popup h3 {
+		color: #8D8D8D;
+		font-weight: normal;
+		font-size: 20px;
+	 }
+	 
+	 
+	 .dialog-iframe-popup .legend {
+		color: #8D8D8D;
+		font-size: 18px;
+		font-weight: 200;	 
+	 }
+	 
 	.row-fields .control-group { 
 	   margin-bottom:0px;	
     }
