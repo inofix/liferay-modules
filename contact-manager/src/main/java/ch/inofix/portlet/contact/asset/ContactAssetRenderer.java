@@ -73,8 +73,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 		PortletURL portletURL = liferayPortletResponse.createLiferayPortletURL(
 				getControlPanelPlid(liferayPortletRequest),
 				"contactmanager_WAR_contactmanager",
-				PortletRequest.ACTION_PHASE
-				);
+				PortletRequest.ACTION_PHASE);
 
 		String redirect = PortalUtil.getCurrentURL(liferayPortletRequest);
 
@@ -85,13 +84,12 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 		portletURL.setParameter("redirect", redirect);
 
 		return portletURL;
-		
+
 	}
 
 	@Override
 	public String getURLViewInContext(
-
-	LiferayPortletRequest liferayPortletRequest,
+			LiferayPortletRequest liferayPortletRequest,
 			LiferayPortletResponse liferayPortletResponse,
 			String noSuchEntryRedirect) {
 
@@ -118,7 +116,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 	@Override
 	public boolean hasEditPermission(PermissionChecker permissionChecker)
 			throws PortalException, SystemException {
-	
+
 		return ContactPermission.contains(permissionChecker,
 				contact.getContactId(), ActionKeys.UPDATE);
 	}
@@ -126,7 +124,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker)
 			throws PortalException, SystemException {
-		
+
 		return ContactPermission.contains(permissionChecker,
 				contact.getContactId(), ActionKeys.VIEW);
 	}
