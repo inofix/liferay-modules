@@ -1,6 +1,7 @@
 package ch.inofix.portlet.contact.portlet;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +46,7 @@ import ezvcard.property.Birthday;
 import ezvcard.property.Birthplace;
 import ezvcard.property.CalendarRequestUri;
 import ezvcard.property.CalendarUri;
+import ezvcard.property.Categories;
 import ezvcard.property.Deathdate;
 import ezvcard.property.Deathplace;
 import ezvcard.property.Email;
@@ -82,8 +84,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-24 18:15
- * @version 1.0.7
+ * @modified 2015-06-24 23:11
+ * @version 1.0.8
  *
  */
 public class PortletUtil {
@@ -948,6 +950,20 @@ public class PortletUtil {
 				uidObj = new Uid(uid); 
 				vCard.setUid(uidObj);
 			}
+			
+			List<Categories> categories = vCard.getCategoriesList(); 
+			
+			List<String> assetTags = new ArrayList<String>(); 
+			
+			for (Categories category : categories) {
+								
+				List<String> values = category.getValues(); 
+				assetTags.addAll(values); 
+								
+			}
+			
+			String[] assetTagNames = new String[0]; 
+			serviceContext.setAssetTagNames(assetTags.toArray(assetTagNames)); 
 
 			String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
 
