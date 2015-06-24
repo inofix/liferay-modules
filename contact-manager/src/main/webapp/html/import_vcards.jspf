@@ -2,13 +2,13 @@
     import_vcards.jsp: Import vCards from an uploaded file. 
     
     Created:    2015-05-08 18:11 by Christian Berndt
-    Modified:   2015-06-05 10:24 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-06-24 19:22 by Christian Berndt
+    Version:    1.0.3
 --%>
 
-<portlet:actionURL var="importVCardFileURL" name="importVCardFile"/>
+<portlet:actionURL var="importVCardFileURL" name="importVCardFile" />
 
-<portlet:renderURL var="browseURL"/>
+<portlet:renderURL var="browseURL" />
 
 <aui:form action="<%=importVCardFileURL%>" enctype="multipart/form-data"
 	method="post" name="fm" cssClass="import-form">
@@ -24,31 +24,34 @@
 
 	<aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
 
-    <aui:fieldset label="import">
+	<aui:fieldset label="import">
 
 		<aui:input name="file" type="file" inlineField="true" label="" />
-	
+
+		<aui:input name="updateExisting" type="checkbox" inlineField="true" />
+
 		<aui:button name="import" type="submit" value="import" disabled="true" />
 		<aui:button href="<%=browseURL%>" type="cancel" />
-	
+
 	</aui:fieldset>
+
 </aui:form>
 
 <aui:script use="aui-base">
-	var input = A.one('#<portlet:namespace />file');
-	var button = A.one('#<portlet:namespace />import');
+    var input = A.one('#<portlet:namespace />file');
+    var button = A.one('#<portlet:namespace />import');
 
-	input.on('change', function(e) {
+    input.on('change', function(e) {
 
-		if (input.get('value')) {
-			button.removeClass('disabled');
-			button.removeAttribute('disabled');
-		} else {
-			button.addClass('disabled');
-			button.setAttrs({
-				disabled : 'disabled'
-			});
-		}
+        if (input.get('value')) {
+            button.removeClass('disabled');
+            button.removeAttribute('disabled');
+        } else {
+            button.addClass('disabled');
+            button.setAttrs({
+                disabled : 'disabled'
+            });
+        }
 
-	});
+    });
 </aui:script>

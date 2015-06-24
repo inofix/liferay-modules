@@ -104,7 +104,7 @@
 	    
 	<c:choose>
 	
-	    <c:when test='<%= tabs1.equals("import-export") %>'>
+	    <c:when test='<%= tabs1.equals("import-export") %>'>	    
             <%@include file="/html/import_vcards.jspf"%>
             <%@include file="/html/export_vcards.jspf"%>
             <%@include file="/html/delete_contacts.jspf"%>      

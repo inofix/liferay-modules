@@ -21,10 +21,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
+
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -80,8 +82,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-04 22:14
- * @version 1.0.6
+ * @modified 2015-06-24 18:15
+ * @version 1.0.7
  *
  */
 public class PortletUtil {
@@ -922,27 +924,32 @@ public class PortletUtil {
 
 		long userId = serviceContext.getUserId();
 		long groupId = serviceContext.getScopeGroupId();
+		boolean updateExisting = GetterUtil.getBoolean(
+				serviceContext.getAttribute("updateExisting"), false);
 
 		StringBuilder sb = new StringBuilder();
 
 		Integer numVCards = 0;
 		Integer numImported = 0;
 		Integer numIgnored = 0;
+		Integer numUpdated = 0;
 
 		numVCards = vCards.size();
 
-		for (VCard vcard : vCards) {
+		for (VCard vCard : vCards) {
 
-			Uid uidObj = vcard.getUid();
+			Uid uidObj = vCard.getUid();
 			String uid = null;
 
 			if (Validator.isNotNull(uidObj)) {
 				uid = uidObj.getValue();
 			} else {
 				uid = UUID.randomUUID().toString();
+				uidObj = new Uid(uid); 
+				vCard.setUid(uidObj);
 			}
 
-			String card = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
+			String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
 
 			// Only add the contact, if the vCard's uid does not yet exist
 			// in this scope
@@ -959,7 +966,16 @@ public class PortletUtil {
 						serviceContext);
 				numImported++;
 			} else {
-				numIgnored++;
+				
+				if (updateExisting) {
+
+					ContactServiceUtil.updateContact(userId, groupId,
+							contact.getContactId(), card, uid, serviceContext);
+					numUpdated++;
+
+				} else {
+					numIgnored++;
+				}
 			}
 
 		}
@@ -968,7 +984,11 @@ public class PortletUtil {
 		sb.append(" ");
 		sb.append(translate("imported-x-vcards", numImported));
 		sb.append(" ");
-		sb.append(translate("ignored-x-vcards", numIgnored));
+		if (updateExisting) {
+			sb.append(translate("updated-x-vcards", numUpdated));
+		} else {
+			sb.append(translate("ignored-x-vcards", numIgnored));
+		}
 
 		return sb.toString();
 	}

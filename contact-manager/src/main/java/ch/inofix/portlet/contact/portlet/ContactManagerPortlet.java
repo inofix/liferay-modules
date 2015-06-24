@@ -43,8 +43,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-04 21:19
- * @version 1.0.9
+ * @modified 2015-06-24 19:36
+ * @version 1.1.0
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -65,7 +65,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Contact.class.getName(), actionRequest);
-		
+
 		List<Contact> contacts = ContactLocalServiceUtil
 				.getContacts(serviceContext.getScopeGroupId());
 
@@ -207,7 +207,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 			String message = PortletUtil.translate("no-vcards-found");
 
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
-					Contact.class.getName(), actionRequest);
+					Contact.class.getName(), uploadPortletRequest);
 
 			if (vCards.size() > 0) {
 
