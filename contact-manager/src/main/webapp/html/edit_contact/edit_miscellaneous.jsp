@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-06-15 11:07 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2015-06-25 11:34 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -243,21 +243,4 @@
         }
     }).render();
 
-    function restoreOriginalNames(event) {
-
-        // liferay-auto-fields by default adds index numbers
-        // to the cloned row's inputs which is here undone.
-        var row = event.row;
-        var guid = event.guid;
-
-        var inputs = row.all('input, select, textarea');
-
-        inputs.each(function(item) {
-            var name = item.attr('name') || item.attr('id');
-            var original = name.replace(guid, '');
-            item.set('name', original);
-            item.set('id', original);
-        });
-
-    }
 </aui:script>

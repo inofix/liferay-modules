@@ -234,6 +234,7 @@
 
 <%-- Configure auto-fields --%>
 <aui:script use="liferay-auto-fields">
+
 	var urlAutoFields = new Liferay.AutoFields({
 		contentBox : 'fieldset#<portlet:namespace />url',
 		namespace : '<portlet:namespace />',
@@ -281,23 +282,5 @@
 			}
 		}
 	}).render();
-
-	function restoreOriginalNames(event) {
-
-		// liferay-auto-fields by default adds index numbers
-		// to the cloned row's inputs which is here undone.
-		var row = event.row;
-		var guid = event.guid;
-
-		var inputs = row.all('input, select, textarea');
-
-		inputs.each(function(item) {
-			var name = item.attr('name') || item.attr('id');
-			var original = name.replace(guid, '');
-			item.set('name', original);
-			item.set('id', original);
-		});
-
-	}
 
 </aui:script>

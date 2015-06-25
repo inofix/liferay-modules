@@ -2,8 +2,8 @@
     edit_contact/edit_notes.jsp: Edit the vCard's notes of the contact.
     
     Created:    2015-05-11 18:48 by Christian Berndt
-    Modified:   2015-05-26 18:49 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-06-25 14:43 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -54,21 +54,4 @@
         }
     }).render();
 
-    function restoreOriginalNames(event) {
-
-        // liferay-auto-fields by default adds index numbers
-        // to the cloned row's inputs which is here undone.
-        var row = event.row;
-        var guid = event.guid;
-
-        var inputs = row.all('input, select, textarea');
-
-        inputs.each(function(item) {
-            var name = item.attr('name') || item.attr('id');
-            var original = name.replace(guid, '');
-            item.set('name', original);
-            item.set('id', original);
-        });
-
-    }
 </aui:script>

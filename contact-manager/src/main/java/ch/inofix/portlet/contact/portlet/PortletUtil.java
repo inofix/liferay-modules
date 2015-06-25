@@ -84,8 +84,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-24 23:11
- * @version 1.0.8
+ * @modified 2015-06-25 14:26
+ * @version 1.0.9
  *
  */
 public class PortletUtil {
@@ -112,6 +112,29 @@ public class PortletUtil {
 
 		return pref;
 
+	}
+
+	/**
+	 * 
+	 * @param vCard
+	 * @return
+	 * @since 1.0.9
+	 */
+	public static String[] getAssetTagNames(VCard vCard) {
+
+		List<Categories> categories = vCard.getCategoriesList();
+
+		List<String> assetTags = new ArrayList<String>();
+
+		for (Categories category : categories) {
+
+			List<String> values = category.getValues();
+			assetTags.addAll(values);
+
+		}
+
+		String[] assetTagNames = new String[0];
+		return assetTags.toArray(assetTagNames);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -219,7 +242,8 @@ public class PortletUtil {
 			}
 		}
 
-		// TODO: Is the AGENT property still supported?
+		// AGENT property is no longer supported in v.4.0
+		// see: https://tools.ietf.org/html/rfc6350#appendix-A.2
 		// vCard.setAgent(agent);
 
 		if (parameters.containsKey("anniversary.day")
@@ -303,13 +327,38 @@ public class PortletUtil {
 			}
 		}
 
-		// TODO: vCard Categories match probably best with Liferay's tags
-		// vCard.setCategories(categories);
+		if (parameters.containsKey("categories.value")) {
+
+			vCard.removeProperties(Categories.class);
+
+			String[] categoriesValues = request
+					.getParameterValues("categories.value");
+			String[] categoriesTypes = request
+					.getParameterValues("categories.type");
+
+			for (int i = 0; i < categoriesValues.length; i++) {
+
+				if (Validator.isNotNull(categoriesValues[i])) {
+
+					Categories categories = new Categories();
+					categories.setType(categoriesTypes[i]);
+
+					String[] values = categoriesValues[i].split(",");
+
+					for (String value : values) {
+						categories.addValue(value.trim());
+					}
+
+					vCard.addCategories(categories);
+				}
+			}
+		}
 
 		// TODO
 		// vCard.addClientPidMap(clientPidMap);
 
-		// TODO
+		// CLASS property is no longer supported in v.4.0
+		// see: https://tools.ietf.org/html/rfc6350#appendix-A.2
 		// vCard.setClassification(classification);
 
 		if (parameters.containsKey("deathdate.day")
@@ -947,23 +996,13 @@ public class PortletUtil {
 				uid = uidObj.getValue();
 			} else {
 				uid = UUID.randomUUID().toString();
-				uidObj = new Uid(uid); 
+				uidObj = new Uid(uid);
 				vCard.setUid(uidObj);
 			}
+
+			String[] assetTagNames = getAssetTagNames(vCard); 
 			
-			List<Categories> categories = vCard.getCategoriesList(); 
-			
-			List<String> assetTags = new ArrayList<String>(); 
-			
-			for (Categories category : categories) {
-								
-				List<String> values = category.getValues(); 
-				assetTags.addAll(values); 
-								
-			}
-			
-			String[] assetTagNames = new String[0]; 
-			serviceContext.setAssetTagNames(assetTags.toArray(assetTagNames)); 
+			serviceContext.setAssetTagNames(assetTagNames);
 
 			String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
 
@@ -982,7 +1021,7 @@ public class PortletUtil {
 						serviceContext);
 				numImported++;
 			} else {
-				
+
 				if (updateExisting) {
 
 					ContactServiceUtil.updateContact(userId, groupId,

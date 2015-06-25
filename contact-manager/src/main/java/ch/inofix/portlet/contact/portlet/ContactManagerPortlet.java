@@ -43,8 +43,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-24 19:36
- * @version 1.1.0
+ * @modified 2015-06-25 14:29
+ * @version 1.1.1
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -114,14 +114,12 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		long[] contactIds = ParamUtil.getLongValues(actionRequest, "rowIds");
 
-		// log.info("contactIds.length = " + contactIds.length);
-
 		if (contactIds.length > 0) {
 
 			for (long contactId : contactIds) {
 
 				// TODO: Add try-catch and count failed deletions
-				Contact contact = ContactServiceUtil.deleteContact(contactId);
+				ContactServiceUtil.deleteContact(contactId);
 
 			}
 
@@ -279,6 +277,10 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Contact.class.getName(), actionRequest);
+		
+		String[] assetTagNames = PortletUtil.getAssetTagNames(vCard);
+		
+		serviceContext.setAssetTagNames(assetTagNames);
 
 		Contact contact = null;
 

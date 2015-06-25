@@ -2,14 +2,15 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-05-29 13:36 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2015-06-25 14:30 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
 
 <%-- Import required classes --%>
 
+<%@page import="ch.inofix.portlet.contact.dto.CategoriesDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.EmailDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.ImppDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.PhoneDTO"%>
@@ -248,6 +249,40 @@
 	</aui:container>
 </aui:fieldset>
 
+<aui:fieldset label="categories" id="categories">
+    <aui:container>
+        <%
+            List<CategoriesDTO> categoriesList = contact_.getCategoriesList(); 
+
+            for (CategoriesDTO categories : categoriesList) {
+        %>
+        <aui:row>
+            <aui:col span="12">
+                <div class="lfr-form-row">
+                    <div class="row-fields">
+                    
+                        <div class="sort-handle"></div>
+                        
+                        <aui:input name="categories.type" inlineField="true" label="type"
+                            value="<%=categories.getType()%>"
+                            disabled="<%=!hasUpdatePermission%>" />
+                        
+                        <aui:input name="categories.value" inlineField="true" label=""
+                            value="<%=categories.getValue()%>"
+                            disabled="<%=!hasUpdatePermission%>" />
+                            
+                        <liferay-ui:icon-help message="categories-help" />
+
+                    </div>
+                </div>
+            </aui:col>
+        </aui:row>
+        <%
+            }
+        %>
+    </aui:container>
+</aui:fieldset>
+
 <aui:fieldset label="kind">
     <aui:select name="kind" title="kind-help" label="" inlineField="true"
         disabled="<%= !hasUpdatePermission %>">
@@ -274,9 +309,13 @@
             type="assetCategories" inlineField="true"
             disabled="<%= !hasUpdatePermission %>"/>
         
+        <%-- Always disabled, since the tags are managed via --%>
+        <%-- the vCard's categories.                         --%>
+		<%--         
         <aui:input classPK="<%=contact_.getContactId()%>" name="tags"
             type="assetTags" helpMessage="asset-tags-help" 
-            disabled="<%= !hasUpdatePermission %>"/>
+            disabled="<%= !hasUpdatePermission %>"/> 
+        --%>
     </aui:fieldset>
 </liferay-ui:panel>
 
@@ -407,22 +446,17 @@
 			}
 		}
 	}).render();
+	   
+    var categoriesAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />categories',
+        namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
 
-	function restoreOriginalNames(event) {
-
-		// liferay-auto-fields by default adds index numbers
-		// to the cloned row's inputs which is here undone.
-		var row = event.row;
-		var guid = event.guid;
-
-		var inputs = row.all('input, select, textarea');
-
-		inputs.each(function(item) {
-			var name = item.attr('name') || item.attr('id');
-			var original = name.replace(guid, '');
-			item.set('name', original);
-			item.set('id', original);
-		});
-
-	}
 </aui:script>

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import ch.inofix.portlet.contact.dto.AddressDTO;
+import ch.inofix.portlet.contact.dto.CategoriesDTO;
 import ch.inofix.portlet.contact.dto.EmailDTO;
 import ch.inofix.portlet.contact.dto.ExpertiseDTO;
 import ch.inofix.portlet.contact.dto.HobbyDTO;
@@ -36,6 +37,7 @@ import ezvcard.property.Birthday;
 import ezvcard.property.Birthplace;
 import ezvcard.property.CalendarRequestUri;
 import ezvcard.property.CalendarUri;
+import ezvcard.property.Categories;
 import ezvcard.property.Deathdate;
 import ezvcard.property.Deathplace;
 import ezvcard.property.Email;
@@ -70,8 +72,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-06-04 18:23
- * @version 1.0.9
+ * @modified 2015-06-25 11:38
+ * @version 1.1.0
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -345,6 +347,47 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return uriDTOs;
+
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @since 1.1.0
+	 */
+	public List<CategoriesDTO> getCategoriesList() {
+
+		List<CategoriesDTO> categoriesDTOs = new ArrayList<CategoriesDTO>();
+
+		List<Categories> categoriesList = getVCard().getCategoriesList();
+
+		for (Categories categories : categoriesList) {
+
+			CategoriesDTO categoriesDTO = new CategoriesDTO();
+			
+			StringBuilder sb = new StringBuilder(); 
+			List<String> values = categories.getValues(); 
+			Iterator<String> iterator = values.iterator(); 
+			
+			while (iterator.hasNext()) {
+				sb.append(iterator.next()); 
+				if (iterator.hasNext()) {
+					sb.append(", "); 
+				}
+			}
+
+			categoriesDTO.setValue(sb.toString());
+			categoriesDTO.setType(categories.getType());
+
+			categoriesDTOs.add(categoriesDTO);
+		}
+
+		// an empty default categories
+		if (categoriesDTOs.size() == 0) {
+			categoriesDTOs.add(new CategoriesDTO());
+		}
+
+		return categoriesDTOs;
 
 	}
 
