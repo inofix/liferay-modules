@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-06-15 10:48 by Christian Berndt
- * Version:     1.1.5
+ * Modified:    2015-06-25 19:11 by Christian Berndt
+ * Version:     1.1.6
  *
  */
 @import "compass";
@@ -12,7 +12,7 @@
 .aui { 
 	
 	/** 
-	 * Decrease font size of headings on popup-mode
+	 * Decrease font size of headings in popup-mode
 	 * (like in the popup-mode of asset-publisher).
 	 */
 	 .dialog-iframe-popup h3 {
@@ -97,6 +97,10 @@
 		.form-navigator .btn {
 		    margin-top: 0;
 		}	
+		
+		.form-navigator .button-holder {
+		    margin: 20px 0; 
+		}
 	
 		label {
 	        color: #8D8D8D;
