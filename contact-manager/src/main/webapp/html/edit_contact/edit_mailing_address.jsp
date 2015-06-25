@@ -2,8 +2,8 @@
     edit_mailing_address.jsp: Edit the contact's mailing addresses. 
     
     Created:    2015-05-11 18:30 by Christian Berndt
-    Modified:   2015-05-26 18:48 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-06-25 10:33 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -17,9 +17,12 @@
 <%
 	// TODO: make the list of address-types configurable
 	String[] addressTypes = new String[] { "other",
-			AddressType.DOM.getValue(), AddressType.HOME.getValue(),
-			AddressType.INTL.getValue(), AddressType.PARCEL.getValue(),
-			AddressType.POSTAL.getValue(), AddressType.WORK.getValue() };
+			// AddressType.DOM.getValue(),       // Not longer supported in v.4.0
+			AddressType.HOME.getValue(),
+			// AddressType.INTL.getValue(),      // Not longer supported in v.4.0
+			// AddressType.PARCEL.getValue(),    // Not longer supported in v.4.0
+			// AddressType.POSTAL.getValue(),    // Not longer supported in v.4.0
+			AddressType.WORK.getValue() };
 %>
 
 
