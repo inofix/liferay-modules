@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-06-15 23:19 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2015-06-25 17:10 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -87,6 +87,10 @@
 				<aui:input name="uid" type="hidden" value="<%=contact_.getUid()%>" />
 				<aui:input name="windowId" type="hidden" value="<%=windowId%>" />
 
+                <%-- The value of the languages field is managed by the  --%>
+                <%-- move-boxes field and the javascript below.          --%>
+			    <aui:input name="languageKeys" value="" type="hidden"/>
+
 				<liferay-ui:form-navigator categorySections="<%=categorySections%>"
 					categoryNames="<%=categoryNames%>" jspPath="/html/edit_contact/"
 					showButtons="<%=hasUpdatePermission%>" />
@@ -103,24 +107,28 @@
 </div>
 
 <aui:script>
-	Liferay.provide(window, '<portlet:namespace />saveForm', function() {
+	Liferay.provide(window, '<portlet:namespace />saveForm', 
+		function() {
 		
-        var hash = location.hash;
+	        var hash = location.hash;
+	
+			var prefix = '#<portlet:namespace />tab=';
+			var historyKey = '';
+	
+			if (hash.indexOf(prefix) != -1) {
+				historyKey = hash.replace(prefix, '');
+			}
+			
+			var input = document.<portlet:namespace />fm.<portlet:namespace />historyKey; 
+			
+	        if (historyKey != '') {
+	        	input.value = historyKey;
+			}
+	                
+	        document.<portlet:namespace />fm.<portlet:namespace />languageKeys.value = Liferay.Util.listSelect(document.<portlet:namespace />fm.<portlet:namespace />selectedLanguages);
+	
+	        submitForm(document.<portlet:namespace />fm);
 
-		var prefix = '#<portlet:namespace />tab=';
-		var historyKey = '';
-
-		if (hash.indexOf(prefix) != -1) {
-			historyKey = hash.replace(prefix, '');
-		}
-		
-		var input = document.<portlet:namespace />fm.<portlet:namespace />historyKey; 
-		
-        if (historyKey != '') {
-        	input.value = historyKey;
-		}
-
-        submitForm(document.<portlet:namespace />fm);
-
-	});
+		}, ['liferay-util-list-fields']
+	);
 </aui:script>

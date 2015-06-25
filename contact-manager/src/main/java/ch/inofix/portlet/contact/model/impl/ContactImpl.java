@@ -14,6 +14,7 @@ import ch.inofix.portlet.contact.dto.ExpertiseDTO;
 import ch.inofix.portlet.contact.dto.HobbyDTO;
 import ch.inofix.portlet.contact.dto.ImppDTO;
 import ch.inofix.portlet.contact.dto.InterestDTO;
+import ch.inofix.portlet.contact.dto.LanguageDTO;
 import ch.inofix.portlet.contact.dto.NoteDTO;
 import ch.inofix.portlet.contact.dto.PhoneDTO;
 import ch.inofix.portlet.contact.dto.StructuredNameDTO;
@@ -48,6 +49,7 @@ import ezvcard.property.Hobby;
 import ezvcard.property.Impp;
 import ezvcard.property.Interest;
 import ezvcard.property.Kind;
+import ezvcard.property.Language;
 import ezvcard.property.Nickname;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
@@ -72,8 +74,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-06-25 11:38
- * @version 1.1.0
+ * @modified 2015-06-26 16:36
+ * @version 1.1.1
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -841,6 +843,27 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return interestDTOs;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @since 1.1.1
+	 */
+	public List<LanguageDTO> getLanguages() {
+
+		List<Language> languages = getVCard().getLanguages();
+		List<LanguageDTO> languageDTOs = new ArrayList<LanguageDTO>();
+
+		for (Language language : languages) {
+			
+			LanguageDTO languageDTO = new LanguageDTO();
+			languageDTO.setKey(language.getValue());
+
+			languageDTOs.add(languageDTO);
+		}
+
+		return languageDTOs;
 	}
 
 	/**

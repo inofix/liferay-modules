@@ -2,29 +2,35 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-06-25 11:34 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2015-06-25 16:33 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
 
 <%-- Import required classes --%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.TreeSet"%>
+<%@page import="java.util.SortedSet"%>
+<%@page import="java.util.Locale"%>
 <%@page import="java.util.TimeZone"%>
 
 <%@page import="ch.inofix.portlet.contact.dto.ExpertiseDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.HobbyDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.InterestDTO"%>
+<%@page import="ch.inofix.portlet.contact.dto.LanguageDTO"%>
 
 <%@page import="ezvcard.parameter.ExpertiseLevel"%>
 <%@page import="ezvcard.parameter.HobbyLevel"%>
 <%@page import="ezvcard.parameter.InterestLevel"%>
 
 <%
-    String currentTimeZone = themeDisplay.getTimeZone().getID(); 
+	String currentTimeZone = themeDisplay.getTimeZone().getID();
 
-    if (Validator.isNotNull(contact_.getTimezone())) {
-    	currentTimeZone = contact_.getTimezone(); 
-    }
+	if (Validator.isNotNull(contact_.getTimezone())) {
+		currentTimeZone = contact_.getTimezone();
+	}
 
 	String[] expertiseLevels = new String[] {
 			ExpertiseLevel.BEGINNER.getValue(),
@@ -38,6 +44,33 @@
 			InterestLevel.HIGH.getValue(),
 			InterestLevel.MEDIUM.getValue(),
 			InterestLevel.LOW.getValue(), };
+
+	List<KeyValuePair> selectedLanguages = new ArrayList<KeyValuePair>();
+	List<LanguageDTO> languages = contact_.getLanguages();
+	for (LanguageDTO language : languages) {
+		String key = language.getKey();
+		selectedLanguages.add(new KeyValuePair(key, new Locale(key)
+				.getDisplayLanguage(locale)));
+	}
+
+	List<KeyValuePair> availableLanguages = new ArrayList<KeyValuePair>();
+	String[] keys = Locale.getISOLanguages();
+	
+	Map<String, String> map = new HashMap<String, String>();
+	for (String key : keys) {
+		map.put( new Locale(
+                key).getDisplayLanguage(locale), key); 
+	}
+	
+	SortedSet<String> set = new TreeSet<String>(map.keySet());	
+
+	for (String key : set) {
+        KeyValuePair keyValuePair = new KeyValuePair(map.get(key), key);
+		
+		if (selectedLanguages.indexOf(keyValuePair) < 0) {
+			availableLanguages.add(keyValuePair);
+		}
+	}
 %>
 
 <aui:fieldset label="expertise" id="expertise">
@@ -171,6 +204,15 @@
 			}
 		%>
 	</aui:container>
+</aui:fieldset>
+
+<aui:fieldset label="languages" id="languages" helpMessage="languages-help">
+
+	<liferay-ui:input-move-boxes rightList="<%= availableLanguages %>"
+		rightTitle="available" leftBoxName="selectedLanguages"
+		leftList="<%= selectedLanguages %>" rightBoxName="availableLanguages"
+		leftTitle="current" leftReorder="true" />
+		
 </aui:fieldset>
 
 <aui:fieldset label="time-zone">

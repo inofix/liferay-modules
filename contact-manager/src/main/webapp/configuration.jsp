@@ -2,8 +2,8 @@
     configuration.jsp: Configure the contact-manager's preferences.
     
     Created:    2015-05-25 11:36 by Christian Berndt
-    Modified:   2015-05-25 17:51 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-06-25 18:32 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -11,8 +11,6 @@
 <%-- Import required classes --%>
 
 <%@page import="java.util.Arrays"%>
-
-<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
 
 <%
 	PortletURL portletURL = renderResponse.createRenderURL();
@@ -77,13 +75,10 @@
 </aui:form>
 
 <aui:script>
-    Liferay.provide(
-        window,
-        '<portlet:namespace />saveConfiguration',
+    Liferay.provide(window, '<portlet:namespace />saveConfiguration',
         function() {
             document.<portlet:namespace />fm.<portlet:namespace />columns.value = Liferay.Util.listSelect(document.<portlet:namespace />fm.<portlet:namespace />selectedColumns);
             submitForm(document.<portlet:namespace />fm);
-        },
-        ['liferay-util-list-fields']
+        }, ['liferay-util-list-fields']
     );
 </aui:script>

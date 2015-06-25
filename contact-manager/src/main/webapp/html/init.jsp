@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the contact-manager
     
     Created:    2015-05-07 15:16 by Christian Berndt
-    Modified:   2015-06-09 16:34 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-06-25 16:47 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%-- Import required classes --%>
@@ -26,6 +26,7 @@
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
+<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>

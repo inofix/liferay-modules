@@ -38,6 +38,7 @@ import ezvcard.parameter.HobbyLevel;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.ImppType;
 import ezvcard.parameter.InterestLevel;
+import ezvcard.parameter.KeyType;
 import ezvcard.parameter.SoundType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
@@ -56,7 +57,9 @@ import ezvcard.property.Gender;
 import ezvcard.property.Hobby;
 import ezvcard.property.Impp;
 import ezvcard.property.Interest;
+import ezvcard.property.Key;
 import ezvcard.property.Kind;
+import ezvcard.property.Language;
 import ezvcard.property.Logo;
 import ezvcard.property.Member;
 import ezvcard.property.Nickname;
@@ -84,8 +87,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-25 14:26
- * @version 1.0.9
+ * @modified 2015-06-25 16:31
+ * @version 1.1.0
  *
  */
 public class PortletUtil {
@@ -563,8 +566,20 @@ public class PortletUtil {
 			}
 		}
 
-		// TODO: Do we need keys?
-		// vCard.addKey(key);
+		if (parameters.containsKey("key.text")) {
+
+			String keyText = ParamUtil.getString(request, "key.text");
+			String keyType = ParamUtil.getString(request, "key.type");
+
+			// TODO: How to handle mediaType and extension?
+			String mediaType = null;
+			String extension = null;
+			KeyType type = KeyType.find(keyType, mediaType, extension);
+			
+			Key key = new Key();
+			key.setText(keyText, type);
+
+		}
 
 		if (parameters.containsKey("kind")) {
 			String kindStr = ParamUtil.getString(request, "kind");
@@ -572,8 +587,18 @@ public class PortletUtil {
 			vCard.setKind(kind);
 		}
 
-		// TODO: How to handle the vCard's language?
-		// vCard.addLanguage(language);
+		if (parameters.containsKey("languageKeys")) {
+			
+			vCard.removeProperties(Language.class);
+			
+			String[] keys = ParamUtil.getParameterValues(request, "languageKeys");
+			
+			for (String key : keys) {
+				Language language = new Language(key); 
+				vCard.addLanguage(language);
+			}
+
+		}
 
 		if (parameters.containsKey("logo.url")) {
 
@@ -677,9 +702,6 @@ public class PortletUtil {
 
 		// TODO
 		// vCard.addOrgDirectory(orgDirectory);
-
-		// TODO
-		// vCard.addOrphanedLabel(label);
 
 		if (parameters.containsKey("phone.number")) {
 
@@ -1000,8 +1022,8 @@ public class PortletUtil {
 				vCard.setUid(uidObj);
 			}
 
-			String[] assetTagNames = getAssetTagNames(vCard); 
-			
+			String[] assetTagNames = getAssetTagNames(vCard);
+
 			serviceContext.setAssetTagNames(assetTagNames);
 
 			String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
