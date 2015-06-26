@@ -15,8 +15,8 @@ import java.util.UUID;
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import ch.inofix.portlet.contact.ImageFileFormatException;
 import ch.inofix.portlet.contact.NoSuchContactException;
-import ch.inofix.portlet.contact.PhotoFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
@@ -92,8 +92,8 @@ import ezvcard.util.DataUri;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-26 16:11
- * @version 1.1.1
+ * @modified 2015-06-26 16:54
+ * @version 1.1.2
  *
  */
 public class PortletUtil {
@@ -607,32 +607,77 @@ public class PortletUtil {
 
 		}
 
-		if (parameters.containsKey("logo.url")) {
+		if (parameters.containsKey("logo.file")) {
 
 			vCard.removeProperties(Logo.class);
 
-			String[] logoUrls = ParamUtil.getParameterValues(request,
-					"logo.url");
-			String[] logoTypes = ParamUtil.getParameterValues(request,
-					"logo.type");
+			String[] dataUris = request.getParameterValues("logo.data");
 
-			for (int i = 0; i < logoUrls.length; i++) {
+			// Retrieve the corresponding file (if any)
 
-				if (Validator.isNotNull(logoUrls[i])) {
+			File[] files = map.get("logo.file");
 
-					// TODO: How to handle mediaType and extension?
-					String mediaType = null;
+			Logo logo = null;
+
+			for (int i = 0; i < files.length; i++) {
+
+				if (files != null) {
+
+					File file = files[i];
+
 					String extension = null;
-					ImageType type = ImageType.find(logoTypes[i], mediaType,
-							extension);
-					Logo logo = new Logo(logoUrls[i], type);
 
-					Integer pref = getPref(i);
+					if (file != null) {
 
-					logo.setPref(pref);
+						// Try to create a new logo from the request.
 
+						extension = FileUtil.getExtension(file.getName());
+
+						try {
+
+							if ("GIF".equalsIgnoreCase(extension)) {
+
+								logo = new Logo(file, ImageType.GIF);
+
+							} else if ("JPEG".equalsIgnoreCase(extension)
+									|| "JPG".equalsIgnoreCase(extension)) {
+
+								logo = new Logo(file, ImageType.JPEG);
+
+							} else if ("PNG".equalsIgnoreCase(extension)) {
+
+								logo = new Logo(file, ImageType.PNG);
+
+							} else {
+
+								throw new ImageFileFormatException();
+
+							}
+
+						} catch (IOException ioe) {
+
+							throw new PortalException(ioe.getMessage());
+
+						}
+
+					} else if (Validator.isNotNull(dataUris[i])) {
+
+						// Restore an already uploaded logo from its data uri.
+
+						DataUri dataUri = new DataUri(dataUris[i]);
+						String contentType = dataUri.getContentType();
+						ImageType type = ImageType.find(contentType,
+								contentType, extension);
+						logo = new Logo(dataUri.getData(), type);
+
+					}
+
+				}
+
+				if (logo != null) {
 					vCard.addLogo(logo);
 				}
+
 			}
 		}
 
@@ -783,7 +828,7 @@ public class PortletUtil {
 
 							} else {
 
-								throw new PhotoFileFormatException();
+								throw new ImageFileFormatException();
 
 							}
 

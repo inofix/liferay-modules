@@ -13,7 +13,7 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import ch.inofix.portlet.contact.PhotoFileFormatException;
+import ch.inofix.portlet.contact.ImageFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
@@ -46,8 +46,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-26 16:11
- * @version 1.1.2
+ * @modified 2015-06-26 16:54
+ * @version 1.1.3
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -311,10 +311,10 @@ public class ContactManagerPortlet extends MVCPortlet {
 			
 			vCard = PortletUtil.getVCard(uploadPortletRequest, vCard, map);
 			
-		} catch (PhotoFileFormatException pffe) {
+		} catch (ImageFileFormatException iffe) {
 
 			SessionErrors.add(actionRequest,
-					"the-photo-file-format-is-not-supported");
+					"the-image-file-format-is-not-supported");
 			
 			// Store the unmodified contact as a request attribute
 			

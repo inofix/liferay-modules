@@ -4,8 +4,8 @@
     service.xml: Configuration of Liferay's Service-Builder 
 
     Created: 2015-05-07 14:48 by Christian Berndt 
-    Modified: 2015-06-26 11:49 by Christian Berndt 
-    Version: 1.0.4
+    Modified: 2015-06-26 16:55 by Christian Berndt 
+    Version: 1.0.5
 -->
 
 <service-builder package-path="ch.inofix.portlet.contact">
@@ -63,6 +63,7 @@
     </entity>
 
     <exceptions>
-        <exception>PhotoFileFormat</exception>
+        <exception>ImageFileFormat</exception>
+        <exception>SoundFileFormat</exception>
     </exceptions>
 </service-builder>
