@@ -48,8 +48,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-26 18:31
- * @version 1.1.5
+ * @modified 2015-06-26 21:53
+ * @version 1.1.6
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -323,7 +323,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 			uploadPortletRequest.setAttribute("CONTACT", contact);
 
 			return;
-			
+
 		} catch (KeyFileFormatException kffe) {
 
 			SessionErrors.add(actionRequest,
@@ -354,10 +354,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		// Save the contact
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				Contact.class.getName(), uploadPortletRequest);
-
-		ServiceContext uploadContext = ServiceContextFactory.getInstance(
-				Contact.class.getName(), uploadPortletRequest);
+				Contact.class.getName(), actionRequest);
 
 		String[] assetTagNames = PortletUtil.getAssetTagNames(vCard);
 
@@ -365,12 +362,12 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 		if (contactId > 0) {
 			contact = ContactServiceUtil.updateContact(userId, groupId,
-					contactId, card, uid, uploadContext);
+					contactId, card, uid, serviceContext);
 			SessionMessages.add(actionRequest, "request_processed",
 					PortletUtil.translate("successfully-updated-the-contact"));
 		} else {
 			contact = ContactServiceUtil.addContact(userId, groupId, card, uid,
-					uploadContext);
+					serviceContext);
 			SessionMessages.add(actionRequest, "request_processed",
 					PortletUtil.translate("successfully-added-the-contact"));
 		}
