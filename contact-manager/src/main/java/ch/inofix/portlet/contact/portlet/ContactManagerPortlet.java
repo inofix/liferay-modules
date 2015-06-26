@@ -14,6 +14,7 @@ import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.ImageFileFormatException;
+import ch.inofix.portlet.contact.SoundFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
@@ -46,8 +47,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-26 16:54
- * @version 1.1.3
+ * @modified 2015-06-26 17:39
+ * @version 1.1.4
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -273,9 +274,9 @@ public class ContactManagerPortlet extends MVCPortlet {
 			uid = vCard.getUid().getValue();
 
 		}
-		
+
 		// Pass the required parameters to the render phase
-		
+
 		actionResponse.setRenderParameter("contactId",
 				String.valueOf(contactId));
 		actionResponse.setRenderParameter("backURL", backURL);
@@ -308,16 +309,27 @@ public class ContactManagerPortlet extends MVCPortlet {
 		// Update the vCard with the request parameters
 
 		try {
-			
+
 			vCard = PortletUtil.getVCard(uploadPortletRequest, vCard, map);
-			
+
 		} catch (ImageFileFormatException iffe) {
 
 			SessionErrors.add(actionRequest,
 					"the-image-file-format-is-not-supported");
-			
+
 			// Store the unmodified contact as a request attribute
+
+			uploadPortletRequest.setAttribute("CONTACT", contact);
+
+			return;
 			
+		} catch (SoundFileFormatException sffe) {
+
+			SessionErrors.add(actionRequest,
+					"the-sound-file-format-is-not-supported");
+
+			// Store the unmodified contact as a request attribute
+
 			uploadPortletRequest.setAttribute("CONTACT", contact);
 
 			return;

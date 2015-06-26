@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.ImageFileFormatException;
 import ch.inofix.portlet.contact.NoSuchContactException;
+import ch.inofix.portlet.contact.SoundFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
@@ -92,8 +93,8 @@ import ezvcard.util.DataUri;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-26 16:54
- * @version 1.1.2
+ * @modified 2015-06-26 17:39
+ * @version 1.1.3
  *
  */
 public class PortletUtil {
@@ -905,33 +906,88 @@ public class PortletUtil {
 			vCard.setSortString(sortString);
 		}
 
-		if (parameters.containsKey("sound.url")) {
+		if (parameters.containsKey("sound.file")) {
 
 			vCard.removeProperties(Sound.class);
 
-			String[] soundUrls = ParamUtil.getParameterValues(request,
-					"sound.url");
-			String[] soundTypes = ParamUtil.getParameterValues(request,
-					"sound.type");
+			String[] dataUris = request.getParameterValues("sound.data");
 
-			for (int i = 0; i < soundUrls.length; i++) {
+			// Retrieve the corresponding file (if any)
 
-				if (Validator.isNotNull(soundUrls[i])) {
+			File[] files = map.get("sound.file");
 
-					// TODO: How to handle mediaType and extension?
-					String mediaType = null;
+			Sound sound = null;
+
+			for (int i = 0; i < files.length; i++) {
+
+				if (files != null) {
+
+					File file = files[i];
+
 					String extension = null;
-					SoundType type = SoundType.find(soundTypes[i], mediaType,
-							extension);
 
-					Sound sound = new Sound(soundUrls[i], type);
+					if (file != null) {
 
-					Integer pref = getPref(i);
+						// Try to create a new sound from the request.
 
-					sound.setPref(pref);
+						extension = FileUtil.getExtension(file.getName());
 
+						try {
+
+							if ("AAC".equalsIgnoreCase(extension)) {
+
+								sound = new Sound(file, SoundType.AAC);
+
+							} else if ("MIDI".equalsIgnoreCase(extension)) {
+
+								sound = new Sound(file, SoundType.MIDI);
+
+							} else if ("MP3".equalsIgnoreCase(extension)) {
+
+								sound = new Sound(file, SoundType.MP3);
+
+							} else if ("MPEG".equalsIgnoreCase(extension)) {
+
+								sound = new Sound(file, SoundType.MPEG);
+
+							} else if ("OGG".equalsIgnoreCase(extension)) {
+
+								sound = new Sound(file, SoundType.OGG);
+
+							} else if ("WAV".equalsIgnoreCase(extension)) {
+
+								sound = new Sound(file, SoundType.WAV);
+
+							} else {
+
+								throw new SoundFileFormatException();
+
+							}
+
+						} catch (IOException ioe) {
+
+							throw new PortalException(ioe.getMessage());
+
+						}
+
+					} else if (Validator.isNotNull(dataUris[i])) {
+
+						// Restore an already uploaded sound from its data uri.
+
+						DataUri dataUri = new DataUri(dataUris[i]);
+						String contentType = dataUri.getContentType();
+						SoundType type = SoundType.find(contentType,
+								contentType, extension);
+						sound = new Sound(dataUri.getData(), type);
+
+					}
+
+				}
+
+				if (sound != null) {
 					vCard.addSound(sound);
 				}
+
 			}
 		}
 
