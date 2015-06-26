@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
 <!-- 
     service.xml: Configuration of Liferay's Service-Builder 
 
-    Created: 2015-05-07 14:48 by Christian Berndt 
-    Modified: 2015-06-26 16:55 by Christian Berndt 
-    Version: 1.0.5
+    Created:    2015-05-07 14:48 by Christian Berndt 
+    Modified:   2015-06-26 18:00 by Christian Berndt 
+    Version:    1.0.6
 -->
 
 <service-builder package-path="ch.inofix.portlet.contact">
@@ -64,6 +65,7 @@
 
     <exceptions>
         <exception>ImageFileFormat</exception>
+        <exception>KeyFileFormat</exception>
         <exception>SoundFileFormat</exception>
     </exceptions>
 </service-builder>

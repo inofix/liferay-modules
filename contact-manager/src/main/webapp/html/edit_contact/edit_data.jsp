@@ -5,8 +5,8 @@
     - etc.
     
     Created:    2015-06-25 18:50 by Christian Berndt
-    Modified:   2015-06-26 17:40 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-06-26 18:32 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -47,9 +47,6 @@
 	</aui:container>
 </aui:fieldset>
 
-<liferay-ui:error key="the-sound-file-format-is-not-supported" 
-    message="the-sound-file-format-is-not-supported" />
-
 <aui:fieldset label="logos" id="logos" helpMessage="logo.file-help">
     <aui:container>
         <%
@@ -80,6 +77,10 @@
     </aui:container>
 </aui:fieldset>
 
+
+<liferay-ui:error key="the-sound-file-format-is-not-supported" 
+    message="the-sound-file-format-is-not-supported" />
+    
 <aui:fieldset label="sounds" id="sounds" helpMessage="sound.file-help">
     <aui:container>
         <%
@@ -100,6 +101,40 @@
                         </c:if>
                         <aui:input name="sound.data" type="hidden"
                             value="<%=sound.getData()%>" />
+                    </aui:col>
+                </aui:row>
+            </div>
+            </div>
+        <%
+            }
+        %>
+    </aui:container>
+</aui:fieldset>
+
+<liferay-ui:error key="the-key-file-format-is-not-supported" 
+    message="the-key-file-format-is-not-supported" />
+
+<aui:fieldset label="keys" id="keys" helpMessage="key.file-help">
+    <aui:container>
+        <%
+        List<FileDTO> keys = contact_.getKeys(); 
+        for (FileDTO key : keys) {
+       %>
+            <div class="lfr-form-row">
+                <div class="row-fields">
+                    <div class="sort-handle"></div>
+                <aui:row>
+                    <aui:col span="5">
+                        <aui:input name="key.file" type="file" inlineField="true"
+                            label="" disabled="<%=!hasUpdatePermission%>" />
+                    </aui:col>
+                    <aui:col span="5">
+						<c:if test="<%=Validator.isNotNull(key.getData())%>">
+							<aui:input type="textarea" value="<%=key.getData()%>"
+								name="key.data" disabled="true" label="" />
+						</c:if>
+						<aui:input name="key.data" type="hidden"
+                            value="<%=key.getData()%>" />
                     </aui:col>
                 </aui:row>
             </div>
@@ -138,6 +173,18 @@
     
     var soundAutoFields = new Liferay.AutoFields({
         contentBox : 'fieldset#<portlet:namespace />sounds',
+        namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle : '.sort-handle',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+    
+    var keyAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />keys',
         namespace : '<portlet:namespace />',
         sortable : true,
         sortableHandle : '.sort-handle',

@@ -1,3 +1,4 @@
 /NoSuchContactException.java
 /ImageFileFormatException.java
 /SoundFileFormatException.java
+/KeyFileFormatException.java

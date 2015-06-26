@@ -16,6 +16,7 @@ import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.ImageFileFormatException;
+import ch.inofix.portlet.contact.KeyFileFormatException;
 import ch.inofix.portlet.contact.NoSuchContactException;
 import ch.inofix.portlet.contact.SoundFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
@@ -93,8 +94,8 @@ import ezvcard.util.DataUri;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-26 17:39
- * @version 1.1.3
+ * @modified 2015-06-26 18:31
+ * @version 1.1.4
  *
  */
 public class PortletUtil {
@@ -573,18 +574,77 @@ public class PortletUtil {
 			}
 		}
 
-		if (parameters.containsKey("key.text")) {
+		if (parameters.containsKey("key.file")) {
 
-			String keyText = ParamUtil.getString(request, "key.text");
-			String keyType = ParamUtil.getString(request, "key.type");
+			vCard.removeProperties(Key.class);
 
-			// TODO: How to handle mediaType and extension?
-			String mediaType = null;
-			String extension = null;
-			KeyType type = KeyType.find(keyType, mediaType, extension);
+			String[] dataUris = request.getParameterValues("key.data");
 
-			Key key = new Key();
-			key.setText(keyText, type);
+			// Retrieve the corresponding file (if any)
+
+			File[] files = map.get("key.file");
+
+			Key key = null;
+
+			for (int i = 0; i < files.length; i++) {
+
+				if (files != null) {
+
+					File file = files[i];
+
+					String extension = null;
+
+					if (file != null) {
+
+						// Try to create a new key from the request.
+
+						extension = FileUtil.getExtension(file.getName());
+
+						try {
+
+							if ("GPG".equalsIgnoreCase(extension)) {
+
+								key = new Key(file, KeyType.GPG);
+
+							} else if ("PGP".equalsIgnoreCase(extension)) {
+
+								key = new Key(file, KeyType.PGP);
+
+							} else if ("X509".equalsIgnoreCase(extension)) {
+
+								key = new Key(file, KeyType.X509);
+
+							} else {
+
+								throw new KeyFileFormatException();
+
+							}
+
+						} catch (IOException ioe) {
+
+							throw new PortalException(ioe.getMessage());
+
+						}
+
+					} else if (Validator.isNotNull(dataUris[i])) {
+
+						// Restore an already uploaded key from its data uri.
+
+						DataUri dataUri = new DataUri(dataUris[i]);
+						String contentType = dataUri.getContentType();
+						KeyType type = KeyType.find(contentType,
+								contentType, extension);
+						key = new Key(dataUri.getData(), type);
+
+					}
+
+				}
+
+				if (key != null) {
+					vCard.addKey(key);
+				}
+
+			}
 
 		}
 

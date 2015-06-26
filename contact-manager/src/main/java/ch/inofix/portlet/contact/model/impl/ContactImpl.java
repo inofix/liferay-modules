@@ -33,6 +33,7 @@ import ezvcard.parameter.HobbyLevel;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.ImppType;
 import ezvcard.parameter.InterestLevel;
+import ezvcard.parameter.KeyType;
 import ezvcard.parameter.SoundType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
@@ -51,6 +52,7 @@ import ezvcard.property.FreeBusyUrl;
 import ezvcard.property.Hobby;
 import ezvcard.property.Impp;
 import ezvcard.property.Interest;
+import ezvcard.property.Key;
 import ezvcard.property.Kind;
 import ezvcard.property.Language;
 import ezvcard.property.Logo;
@@ -81,8 +83,8 @@ import ezvcard.util.DataUri;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-06-26 16:35
- * @version 1.1.3
+ * @modified 2015-06-26 17:50
+ * @version 1.1.4
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -802,6 +804,37 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return imppDTOs;
+
+	}
+	
+	public List<FileDTO> getKeys() {
+
+		List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
+
+		List<Key> keys = getVCard().getKeys(); 
+
+		for (Key key : keys) {
+
+			FileDTO fileDTO = new FileDTO();
+			fileDTO.setUrl(key.getUrl());
+
+			KeyType contentType = key.getContentType(); 
+
+			if (Validator.isNotNull(contentType)) {
+				DataUri dataUri = new DataUri(contentType.getMediaType(),
+						key.getData());
+				fileDTO.setData(dataUri.toString());
+			}
+
+			fileDTOs.add(fileDTO);
+		}
+
+		// an empty default key
+		if (fileDTOs.size() == 0) {
+			fileDTOs.add(new FileDTO());
+		}
+
+		return fileDTOs;
 
 	}
 

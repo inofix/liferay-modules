@@ -14,6 +14,7 @@ import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.ImageFileFormatException;
+import ch.inofix.portlet.contact.KeyFileFormatException;
 import ch.inofix.portlet.contact.SoundFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
@@ -47,8 +48,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-26 17:39
- * @version 1.1.4
+ * @modified 2015-06-26 18:31
+ * @version 1.1.5
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -323,6 +324,17 @@ public class ContactManagerPortlet extends MVCPortlet {
 
 			return;
 			
+		} catch (KeyFileFormatException kffe) {
+
+			SessionErrors.add(actionRequest,
+					"the-key-file-format-is-not-supported");
+
+			// Store the unmodified contact as a request attribute
+
+			uploadPortletRequest.setAttribute("CONTACT", contact);
+
+			return;
+
 		} catch (SoundFileFormatException sffe) {
 
 			SessionErrors.add(actionRequest,
