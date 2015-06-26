@@ -11,6 +11,7 @@ import ch.inofix.portlet.contact.dto.AddressDTO;
 import ch.inofix.portlet.contact.dto.CategoriesDTO;
 import ch.inofix.portlet.contact.dto.EmailDTO;
 import ch.inofix.portlet.contact.dto.ExpertiseDTO;
+import ch.inofix.portlet.contact.dto.FileDTO;
 import ch.inofix.portlet.contact.dto.HobbyDTO;
 import ch.inofix.portlet.contact.dto.ImppDTO;
 import ch.inofix.portlet.contact.dto.InterestDTO;
@@ -29,6 +30,7 @@ import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ExpertiseLevel;
 import ezvcard.parameter.HobbyLevel;
+import ezvcard.parameter.ImageType;
 import ezvcard.parameter.ImppType;
 import ezvcard.parameter.InterestLevel;
 import ezvcard.parameter.TelephoneType;
@@ -53,12 +55,14 @@ import ezvcard.property.Language;
 import ezvcard.property.Nickname;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
+import ezvcard.property.Photo;
 import ezvcard.property.Role;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.Title;
 import ezvcard.property.Url;
+import ezvcard.util.DataUri;
 
 /**
  * The extended model implementation for the Contact service. Represents a row
@@ -74,8 +78,8 @@ import ezvcard.property.Url;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-06-26 16:36
- * @version 1.1.1
+ * @modified 2015-06-26 10:18
+ * @version 1.1.2
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -351,7 +355,7 @@ public class ContactImpl extends ContactBaseImpl {
 		return uriDTOs;
 
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -366,15 +370,15 @@ public class ContactImpl extends ContactBaseImpl {
 		for (Categories categories : categoriesList) {
 
 			CategoriesDTO categoriesDTO = new CategoriesDTO();
-			
-			StringBuilder sb = new StringBuilder(); 
-			List<String> values = categories.getValues(); 
-			Iterator<String> iterator = values.iterator(); 
-			
+
+			StringBuilder sb = new StringBuilder();
+			List<String> values = categories.getValues();
+			Iterator<String> iterator = values.iterator();
+
 			while (iterator.hasNext()) {
-				sb.append(iterator.next()); 
+				sb.append(iterator.next());
 				if (iterator.hasNext()) {
-					sb.append(", "); 
+					sb.append(", ");
 				}
 			}
 
@@ -844,7 +848,7 @@ public class ContactImpl extends ContactBaseImpl {
 
 		return interestDTOs;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -856,7 +860,7 @@ public class ContactImpl extends ContactBaseImpl {
 		List<LanguageDTO> languageDTOs = new ArrayList<LanguageDTO>();
 
 		for (Language language : languages) {
-			
+
 			LanguageDTO languageDTO = new LanguageDTO();
 			languageDTO.setKey(language.getValue());
 
@@ -1047,6 +1051,43 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return phoneDTOs;
+
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @since 1.1.2
+	 */
+	public List<FileDTO> getPhotos() {
+
+		List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
+
+		List<Photo> photos = getVCard().getPhotos();
+
+		for (Photo photo : photos) {
+			
+			FileDTO fileDTO = new FileDTO();
+			fileDTO.setUrl(photo.getUrl());
+
+			ImageType contentType = photo.getContentType();
+
+			if (Validator.isNotNull(contentType)) {
+				DataUri dataUri = new DataUri(contentType.getMediaType(),
+						photo.getData());
+				fileDTO.setData(dataUri.toString());
+			}
+
+
+			fileDTOs.add(fileDTO);
+		}
+
+		// an empty default photo
+		if (fileDTOs.size() == 0) {
+			fileDTOs.add(new FileDTO());
+		}
+
+		return fileDTOs;
 
 	}
 

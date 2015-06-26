@@ -4,8 +4,8 @@
     service.xml: Configuration of Liferay's Service-Builder 
 
     Created: 2015-05-07 14:48 by Christian Berndt 
-    Modified: 2015-06-04 21.34 by Christian Berndt 
-    Version: 1.0.3
+    Modified: 2015-06-26 11:49 by Christian Berndt 
+    Version: 1.0.4
 -->
 
 <service-builder package-path="ch.inofix.portlet.contact">
@@ -61,4 +61,8 @@
         <reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
 
     </entity>
+
+    <exceptions>
+        <exception>PhotoFileFormat</exception>
+    </exceptions>
 </service-builder>

@@ -2,7 +2,9 @@ package ch.inofix.portlet.contact.portlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -11,6 +13,7 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import ch.inofix.portlet.contact.PhotoFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
@@ -43,8 +46,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-25 14:29
- * @version 1.1.1
+ * @modified 2015-06-26 16:11
+ * @version 1.1.2
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -238,22 +241,28 @@ public class ContactManagerPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request
 				.getAttribute(WebKeys.THEME_DISPLAY);
 
+		UploadPortletRequest uploadPortletRequest = PortalUtil
+				.getUploadPortletRequest(actionRequest);
+
 		long userId = themeDisplay.getUserId();
 		long groupId = themeDisplay.getScopeGroupId();
 
-		String backURL = ParamUtil.getString(actionRequest, "backURL");
-		long contactId = ParamUtil.getLong(actionRequest, "contactId");
-		String historyKey = ParamUtil.getString(actionRequest, "historyKey");
-		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-		String windowId = ParamUtil.getString(actionRequest, "windowId");
+		String backURL = ParamUtil.getString(uploadPortletRequest, "backURL");
+		long contactId = ParamUtil.getLong(uploadPortletRequest, "contactId");
+		String historyKey = ParamUtil.getString(uploadPortletRequest,
+				"historyKey");
+		String mvcPath = ParamUtil.getString(uploadPortletRequest, "mvcPath");
+		String redirect = ParamUtil.getString(uploadPortletRequest, "redirect");
+		String windowId = ParamUtil.getString(uploadPortletRequest, "windowId");
+
+		Contact contact = null;
 
 		VCard vCard = null;
 		String uid = null;
 
 		if (contactId > 0) {
 
-			Contact contact = ContactServiceUtil.getContact(contactId);
+			contact = ContactServiceUtil.getContact(contactId);
 			uid = contact.getUid();
 			vCard = contact.getVCard();
 
@@ -264,10 +273,55 @@ public class ContactManagerPortlet extends MVCPortlet {
 			uid = vCard.getUid().getValue();
 
 		}
+		
+		// Pass the required parameters to the render phase
+		
+		actionResponse.setRenderParameter("contactId",
+				String.valueOf(contactId));
+		actionResponse.setRenderParameter("backURL", backURL);
+		actionResponse.setRenderParameter("historyKey", historyKey);
+		actionResponse.setRenderParameter("mvcPath", mvcPath);
+		actionResponse.setRenderParameter("redirect", redirect);
+		actionResponse.setRenderParameter("windowId", windowId);
+
+		// Retrieve associated file data
+		File[] keyFiles = uploadPortletRequest.getFiles("key.file");
+		File[] logoFiles = uploadPortletRequest.getFiles("logo.file");
+		File[] photoFiles = uploadPortletRequest.getFiles("photo.file");
+		File[] soundFiles = uploadPortletRequest.getFiles("sound.file");
+
+		Map<String, File[]> map = new HashMap<String, File[]>();
+
+		if (keyFiles != null) {
+			map.put("key.file", keyFiles);
+		}
+		if (logoFiles != null) {
+			map.put("logo.file", logoFiles);
+		}
+		if (photoFiles != null) {
+			map.put("photo.file", photoFiles);
+		}
+		if (soundFiles != null) {
+			map.put("sound.file", soundFiles);
+		}
 
 		// Update the vCard with the request parameters
 
-		vCard = PortletUtil.getVCard(actionRequest, vCard);
+		try {
+			
+			vCard = PortletUtil.getVCard(uploadPortletRequest, vCard, map);
+			
+		} catch (PhotoFileFormatException pffe) {
+
+			SessionErrors.add(actionRequest,
+					"the-photo-file-format-is-not-supported");
+			
+			// Store the unmodified contact as a request attribute
+			
+			uploadPortletRequest.setAttribute("CONTACT", contact);
+
+			return;
+		}
 
 		// Store contact information in vCard format
 
@@ -276,35 +330,29 @@ public class ContactManagerPortlet extends MVCPortlet {
 		// Save the contact
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				Contact.class.getName(), actionRequest);
-		
-		String[] assetTagNames = PortletUtil.getAssetTagNames(vCard);
-		
-		serviceContext.setAssetTagNames(assetTagNames);
+				Contact.class.getName(), uploadPortletRequest);
 
-		Contact contact = null;
+		ServiceContext uploadContext = ServiceContextFactory.getInstance(
+				Contact.class.getName(), uploadPortletRequest);
+
+		String[] assetTagNames = PortletUtil.getAssetTagNames(vCard);
+
+		serviceContext.setAssetTagNames(assetTagNames);
 
 		if (contactId > 0) {
 			contact = ContactServiceUtil.updateContact(userId, groupId,
-					contactId, card, uid, serviceContext);
+					contactId, card, uid, uploadContext);
 			SessionMessages.add(actionRequest, "request_processed",
 					PortletUtil.translate("successfully-updated-the-contact"));
 		} else {
 			contact = ContactServiceUtil.addContact(userId, groupId, card, uid,
-					serviceContext);
+					uploadContext);
 			SessionMessages.add(actionRequest, "request_processed",
 					PortletUtil.translate("successfully-added-the-contact"));
 		}
 
-		actionRequest.setAttribute("CONTACT", contact);
-
-		actionResponse.setRenderParameter("contactId",
-				String.valueOf(contactId));
-		actionResponse.setRenderParameter("backURL", backURL);
-		actionResponse.setRenderParameter("historyKey", historyKey);
-		actionResponse.setRenderParameter("mvcPath", mvcPath);
-		actionResponse.setRenderParameter("redirect", redirect);
-		actionResponse.setRenderParameter("windowId", windowId);
+		// Store the updated or added contact as a request attribute
+		uploadPortletRequest.setAttribute("CONTACT", contact);
 
 	}
 

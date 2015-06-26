@@ -1,5 +1,7 @@
 package ch.inofix.portlet.contact.portlet;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +16,7 @@ import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.NoSuchContactException;
+import ch.inofix.portlet.contact.PhotoFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -80,6 +84,7 @@ import ezvcard.property.Timezone;
 import ezvcard.property.Title;
 import ezvcard.property.Uid;
 import ezvcard.property.Url;
+import ezvcard.util.DataUri;
 
 /**
  * Utility methods used by the ContactManagerPortlet. Based on the model of the
@@ -87,8 +92,8 @@ import ezvcard.property.Url;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-25 16:31
- * @version 1.1.0
+ * @modified 2015-06-26 16:11
+ * @version 1.1.1
  *
  */
 public class PortletUtil {
@@ -141,7 +146,8 @@ public class PortletUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static VCard getVCard(HttpServletRequest request, VCard vCard) {
+	public static VCard getVCard(HttpServletRequest request, VCard vCard,
+			Map<String, File[]> map) throws PortalException {
 
 		// Retrieve the parameters and update the received vCard
 		// with the parameter values.
@@ -575,7 +581,7 @@ public class PortletUtil {
 			String mediaType = null;
 			String extension = null;
 			KeyType type = KeyType.find(keyType, mediaType, extension);
-			
+
 			Key key = new Key();
 			key.setText(keyText, type);
 
@@ -588,13 +594,14 @@ public class PortletUtil {
 		}
 
 		if (parameters.containsKey("languageKeys")) {
-			
+
 			vCard.removeProperties(Language.class);
-			
-			String[] keys = ParamUtil.getParameterValues(request, "languageKeys");
-			
+
+			String[] keys = ParamUtil.getParameterValues(request,
+					"languageKeys");
+
 			for (String key : keys) {
-				Language language = new Language(key); 
+				Language language = new Language(key);
 				vCard.addLanguage(language);
 			}
 
@@ -733,32 +740,77 @@ public class PortletUtil {
 			}
 		}
 
-		if (parameters.containsKey("photo.url")) {
+		if (parameters.containsKey("photo.file")) {
 
 			vCard.removeProperties(Photo.class);
 
-			String[] photoUrls = ParamUtil.getParameterValues(request,
-					"photo.url");
-			String[] photoTypes = ParamUtil.getParameterValues(request,
-					"photo.type");
+			String[] dataUris = request.getParameterValues("photo.data");
 
-			for (int i = 0; i < photoUrls.length; i++) {
+			// Retrieve the corresponding file (if any)
 
-				if (Validator.isNotNull(photoUrls[i])) {
+			File[] files = map.get("photo.file");
 
-					// TODO: How to handle mediaType and extension?
-					String mediaType = null;
+			Photo photo = null;
+
+			for (int i = 0; i < files.length; i++) {
+
+				if (files != null) {
+
+					File file = files[i];
+
 					String extension = null;
-					ImageType type = ImageType.find(photoTypes[i], mediaType,
-							extension);
-					Photo photo = new Photo(photoUrls[i], type);
 
-					Integer pref = getPref(i);
+					if (file != null) {
 
-					photo.setPref(pref);
+						// Try to create a new photo from the request.
 
+						extension = FileUtil.getExtension(file.getName());
+
+						try {
+
+							if ("GIF".equalsIgnoreCase(extension)) {
+
+								photo = new Photo(file, ImageType.GIF);
+
+							} else if ("JPEG".equalsIgnoreCase(extension)
+									|| "JPG".equalsIgnoreCase(extension)) {
+
+								photo = new Photo(file, ImageType.JPEG);
+
+							} else if ("PNG".equalsIgnoreCase(extension)) {
+
+								photo = new Photo(file, ImageType.PNG);
+
+							} else {
+
+								throw new PhotoFileFormatException();
+
+							}
+
+						} catch (IOException ioe) {
+
+							throw new PortalException(ioe.getMessage());
+
+						}
+
+					} else if (Validator.isNotNull(dataUris[i])) {
+
+						// Restore an already uploaded photo from its data uri.
+
+						DataUri dataUri = new DataUri(dataUris[i]);
+						String contentType = dataUri.getContentType();
+						ImageType type = ImageType.find(contentType,
+								contentType, extension);
+						photo = new Photo(dataUri.getData(), type);
+
+					}
+
+				}
+
+				if (photo != null) {
 					vCard.addPhoto(photo);
 				}
+
 			}
 		}
 
@@ -971,15 +1023,16 @@ public class PortletUtil {
 	 * @return
 	 * @throws SystemException
 	 * @throws PortalException
+	 * @throws IOException
 	 * @since 1.0.0
 	 */
-	public static VCard getVCard(PortletRequest portletRequest, VCard vCard)
-			throws PortalException, SystemException {
+	public static VCard getVCard(PortletRequest portletRequest, VCard vCard,
+			Map<String, File[]> map) throws PortalException, SystemException {
 
 		HttpServletRequest request = PortalUtil
 				.getHttpServletRequest(portletRequest);
 
-		return getVCard(request, vCard);
+		return getVCard(request, vCard, map);
 	}
 
 	/**

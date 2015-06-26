@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-06-25 17:10 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2015-06-26 16:12 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -34,7 +34,7 @@
 	String[] categoryNames = new String[] { "" };
 	String[][] categorySections = new String[][] { { "edit_contact",
 			"edit_personal_information", "edit_mailing_address",
-			"edit_notes", "edit_miscellaneous", "edit_vcard" } };
+			"edit_notes", "edit_miscellaneous", "edit_data", "edit_vcard" } };
 
 	// TODO: configurable display styles?
 	String displayStyle = "default"; // default, panel, steps
@@ -74,7 +74,7 @@
 
 			<portlet:actionURL var="saveContactURL" name="saveContact" />
 
-			<aui:form action="<%=saveContactURL%>" method="post" name="fm"
+			<aui:form action="<%=saveContactURL%>" method="post" name="fm" enctype="multipart/form-data"
 				onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveForm();" %>'>
 
 				<aui:input name="backURL" type="hidden" value="<%=backURL%>" />
