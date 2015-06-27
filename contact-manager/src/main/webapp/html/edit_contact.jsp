@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-06-26 16:12 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2015-06-27 13:50 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -93,7 +93,7 @@
 
 				<liferay-ui:form-navigator categorySections="<%=categorySections%>"
 					categoryNames="<%=categoryNames%>" jspPath="/html/edit_contact/"
-					showButtons="<%=hasUpdatePermission%>" />
+					showButtons="<%=hasUpdatePermission%>" backURL="<%=backURL%>" />
 
 			</aui:form>
 
