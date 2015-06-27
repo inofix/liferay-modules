@@ -2,8 +2,8 @@
     view_contact.jsp: view a single contact. 
     
     Created:    2015-05-22 11:23 by Christian Berndt
-    Modified:   2015-05-28 10:52 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-06-27 14:33 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -30,6 +30,7 @@
     if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp()) {
         PortletURL portletURL = renderResponse.createRenderURL();
         portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
+        portletURL.setParameter("redirect", redirect); 
         portletURL.setParameter("windowId", windowId);
         backURL = portletURL.toString();
     }

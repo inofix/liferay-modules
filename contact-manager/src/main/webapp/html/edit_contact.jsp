@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-06-27 13:50 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2015-06-27 14:35 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -21,6 +21,7 @@
 	if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp()) {
 		PortletURL portletURL = renderResponse.createRenderURL();
         portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
+        portletURL.setParameter("redirect", redirect); 
         portletURL.setParameter("windowId", windowId);
 		backURL = portletURL.toString();
 	}
