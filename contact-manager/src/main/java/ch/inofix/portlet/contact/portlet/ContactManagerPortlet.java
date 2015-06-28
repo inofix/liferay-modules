@@ -48,8 +48,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-26 21:53
- * @version 1.1.6
+ * @modified 2015-06-28 14:21
+ * @version 1.1.7
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -68,6 +68,8 @@ public class ContactManagerPortlet extends MVCPortlet {
 	public void deleteAllContacts(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
+		String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Contact.class.getName(), actionRequest);
 
@@ -84,6 +86,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		SessionMessages.add(actionRequest, "request_processed",
 				PortletUtil.translate("successfully-deleted-x-contacts"));
 
+		actionResponse.setRenderParameter("tabs1", tabs1);
 	}
 
 	/**

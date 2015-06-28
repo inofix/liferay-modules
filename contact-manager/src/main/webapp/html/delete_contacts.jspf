@@ -2,12 +2,16 @@
     delete_contacts.jspf: Delete all contacts of this group
     
     Created:    2015-06-04 21:26 by Christian Berndt
-    Modified:   2015-06-14 17:37 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-06-28 14:21 by Christian Berndt
+    Version:    1.0.2
 --%>
 
-<portlet:actionURL var="deleteAllContactsURL"
-    name="deleteAllContacts">
+<portlet:actionURL name="deleteAllContacts" var="deleteAllContactsURL"> 
+    <%-- We have to open the import-export tab        --%>
+    <%-- since while deleting the records, they       --%>
+    <%-- they are still found via the index, which    --%>
+    <%-- results in npe-issues in the searchcontainer --%>
+    <portlet:param name="tabs1" value="import-export"/>
 </portlet:actionURL>
 
 <aui:fieldset label="delete" cssClass="delete-section">
