@@ -2,8 +2,8 @@
     edit_contact.jsp: Edit the contact's basic contact information. 
     
     Created:    2015-05-08 18:02 by Christian Berndt
-    Modified:   2015-06-25 14:30 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2015-06-28 16:25 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -332,7 +332,7 @@
 			plugins : [ A.Plugin.WidgetAnim ],
 			position : 'left',
 			visible : false,
-			zIndex : Liferay.zIndex.TOOLTIP
+            zIndex : 100
 
 		}).render();
 
