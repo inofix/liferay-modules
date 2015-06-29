@@ -49,6 +49,9 @@
         name="name" orderable="true" href="<%=detailURL%>"
         orderableProperty="name" />
 </c:if>
+<c:if test='<%="status".equals(column)%>'>
+	<liferay-ui:search-container-column-status property="status" />
+</c:if>
 <c:if test='<%="phone".equals(column)%>'>
     <liferay-ui:search-container-column-text property="phone.number"
         name="phone" orderable="true" href="<%=detailURL%>"

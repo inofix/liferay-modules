@@ -22,8 +22,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
  * 
  * @author Christian Berndt
  * @created 2015-05-24 22:01
- * @modified 2015-05-27 11:45
- * @version 1.0.3
+ * @modified 2015-06-29 15:14
+ * @version 1.0.4
  *
  */
 public class ContactSearch extends SearchContainer<Contact> {
@@ -49,6 +49,8 @@ public class ContactSearch extends SearchContainer<Contact> {
 		headerNames.add("modified-date");
 		headerNames.add("name");
 		headerNames.add("phone");
+		headerNames.add("portrait");
+		headerNames.add("status"); 
 		headerNames.add("user-name");
 
 		orderableHeaders.put("company", "company");
@@ -63,6 +65,7 @@ public class ContactSearch extends SearchContainer<Contact> {
 		orderableHeaders.put("modified-date", "modified-date");
 		orderableHeaders.put("name", "name");
 		orderableHeaders.put("phone", "phone");
+		orderableHeaders.put("status", "status");
 		orderableHeaders.put("user-name", "user-name");
 	}
 
