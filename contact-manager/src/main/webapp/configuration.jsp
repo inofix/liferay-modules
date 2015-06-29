@@ -2,8 +2,8 @@
     configuration.jsp: Configure the contact-manager's preferences.
     
     Created:    2015-05-25 11:36 by Christian Berndt
-    Modified:   2015-06-25 18:32 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-06-29 20:32 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -50,23 +50,89 @@
 		
     <aui:input name="columns" type="hidden" value="" />
 
+	<liferay-ui:panel-container>
 
-	<aui:fieldset label="columns" helpMessage="columns-help">
-		<liferay-ui:input-move-boxes rightList="<%=availableColumns%>"
-			rightTitle="available" leftBoxName="selectedColumns"
-			leftList="<%=selectedColumns%>" rightBoxName="availableColumns"
-			leftTitle="current" leftReorder="true" />
-	</aui:fieldset>
+		<liferay-ui:panel title="columns" extended="true">
 
-	<aui:fieldset label="miscellaneous">
-		<aui:field-wrapper inlineLabel="true" label="show-death-date"
-			helpMessage="show-death-date-help">
-			<aui:input name="showDeathDate" type="radio"
-				value="true" checked="<%= showDeathdate %>" label="yes"/>
-			<aui:input name="showDeathDate" type="radio"
-				value="false" checked="<%= !showDeathdate %>" label="no" />
-		</aui:field-wrapper>
-	</aui:fieldset>
+			<liferay-ui:input-move-boxes rightList="<%=availableColumns%>"
+				rightTitle="available" leftBoxName="selectedColumns"
+				leftList="<%=selectedColumns%>" rightBoxName="availableColumns"
+				leftTitle="current" leftReorder="true" />
+		</liferay-ui:panel>
+
+		<liferay-ui:panel title="miscellaneous" extended="true">
+		 
+		    <aui:input name="portraitStyle" value="<%= portraitStyle %>"/>
+		    
+		    <aui:select name="portraitClass">
+                <aui:option value="img-circle" label="circle" selected='<%= "img-circle".equals(portraitClass) %>' />
+                <aui:option value="img-rounded" label="rounded" selected='<%= "img-rounded".equals(portraitClass) %>' />
+                <aui:option value="img-polaroid" label="polaroid" selected='<%= "img-polaroid".equals(portraitClass) %>' />
+		    </aui:select>
+
+            <aui:row>
+	            <div class="pull-left portrait-config">
+					<c:if test="<%=Validator.isNotNull(portrait)%>">
+	                    <aui:field-wrapper>
+	                        <img src="<%=portrait%>" class="<%= portraitClass %>" style="<%= portraitStyle %>" />
+	                    </aui:field-wrapper>				
+	                </c:if>
+	                <aui:input name="portrait" helpMessage="portrait-help"
+	                    value="<%=portrait%>"/>
+	   			</div>
+	   			
+                <div class="pull-left portrait-config">
+                    <c:if test="<%=Validator.isNotNull(portraitFemale)%>">
+                        <aui:field-wrapper>
+                            <img src="<%=portraitFemale%>" class="<%= portraitClass %>" style="<%= portraitStyle %>" />
+                        </aui:field-wrapper>
+                    </c:if>
+                    <aui:input name="portraitFemale" helpMessage="portrait-female-help"
+                        value="<%=portraitFemale%>" />
+                </div>
+                
+                <div class="pull-left portrait-config">
+                    <c:if test="<%=Validator.isNotNull(portraitGroup)%>">
+                        <aui:field-wrapper>
+                            <img src="<%=portraitGroup%>" class="<%= portraitClass %>" style="<%= portraitStyle %>" />
+                        </aui:field-wrapper>
+                    </c:if>
+                    <aui:input name="portraitGroup" helpMessage="portrait-group-help"
+                        value="<%=portraitGroup%>" />
+                </div>
+                
+                <div class="pull-left portrait-config">
+                    <c:if test="<%=Validator.isNotNull(portraitMale)%>">
+                        <aui:field-wrapper>
+                            <img src="<%=portraitMale%>" class="<%= portraitClass %>" style="<%= portraitStyle %>" />
+                        </aui:field-wrapper>
+                    </c:if>
+                    <aui:input name="portraitMale" helpMessage="portrait-male-help"
+                        value="<%=portraitMale%>" />
+                </div>
+                
+                <div class="pull-left portrait-config">
+                    <c:if test="<%=Validator.isNotNull(portraitOrganization)%>">
+                        <aui:field-wrapper>
+                            <img src="<%=portraitOrganization%>" class="<%= portraitClass %>" style="<%= portraitStyle %>" />
+                        </aui:field-wrapper>
+                    </c:if>
+                    <aui:input name="portraitOrganization" helpMessage="portrait-organization-help"
+                        value="<%=portraitOrganization%>" />
+                </div>
+                
+			</aui:row>
+
+			<aui:field-wrapper inlineLabel="true" label="show-death-date"
+				helpMessage="show-death-date-help">
+				<aui:input name="showDeathDate" type="radio" value="true"
+					checked="<%=showDeathdate%>" label="yes" />
+				<aui:input name="showDeathDate" type="radio" value="false"
+					checked="<%=!showDeathdate%>" label="no" />
+			</aui:field-wrapper>
+		</liferay-ui:panel>
+
+	</liferay-ui:panel-container>
 
 	<aui:button-row>
 		<aui:button type="submit" />

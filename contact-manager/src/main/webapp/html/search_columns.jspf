@@ -2,8 +2,8 @@
     search_columns.jspf: A configurable set of result columns.
     
     Created:    2015-05-11 19:14 by Christian Berndt
-    Modified:   2015-05-27 11:50 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-05-29 20:47 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%
@@ -49,13 +49,57 @@
         name="name" orderable="true" href="<%=detailURL%>"
         orderableProperty="name" />
 </c:if>
-<c:if test='<%="status".equals(column)%>'>
-	<liferay-ui:search-container-column-status property="status" />
-</c:if>
+
 <c:if test='<%="phone".equals(column)%>'>
     <liferay-ui:search-container-column-text property="phone.number"
         name="phone" orderable="true" href="<%=detailURL%>"
         orderableProperty="phone" />
+</c:if>
+<c:if test='<%="portrait".equals(column)%>'>
+    <liferay-ui:search-container-column-text align="middle" valign="middle"
+        href="<%=detailURL%>">
+        <c:choose>
+            <c:when test="<%=Validator.isNotNull(contact_.getPortrait())%>">
+                <img src="<%=contact_.getPortrait()%>" class="<%=portraitClass%>"
+                    style="<%=portraitStyle%>" />
+            </c:when>
+            <c:otherwise>
+                <c:choose>
+                    <c:when test='<%= "individual".equals(contact_.getKind()) %>'>
+                        <c:choose>
+                            <c:when test='<%= "f".equals(contact_.getGender()) %>'>
+                                <img src="<%=portraitFemale%>" class="<%=portraitClass%>"
+                                    style="<%=portraitStyle%>" />
+                            </c:when>
+                            <c:when test='<%= "m".equals(contact_.getGender()) %>'>
+                                <img src="<%=portraitMale%>" class="<%=portraitClass%>"
+                                    style="<%=portraitStyle%>" />
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<%=portrait%>" class="<%=portraitClass%>"
+                                    style="<%=portraitStyle%>" />
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+                    <c:when test='<%= "group".equals(contact_.getKind()) %>'>
+                        <img src="<%=portraitGroup%>" class="<%=portraitClass%>"
+                            style="<%=portraitStyle%>" />
+                    </c:when>
+                    <c:when test='<%= "organization".equals(contact_.getKind()) %>'>
+                        <img src="<%=portraitOrganization%>" class="<%=portraitClass%>"
+                            style="<%=portraitStyle%>" />
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<%=portrait%>" class="<%=portraitClass%>"
+                            style="<%=portraitStyle%>" />
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
+        </c:choose>
+    </liferay-ui:search-container-column-text>
+</c:if>
+<c:if test='<%="status".equals(column)%>'>
+    <liferay-ui:search-container-column-status property="status" />
 </c:if>
 <c:if test='<%="user-name".equals(column)%>'>
     <liferay-ui:search-container-column-text property="userName"

@@ -84,8 +84,8 @@ import ezvcard.util.DataUri;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-06-29 10:01
- * @version 1.1.5
+ * @modified 2015-06-29 15:24
+ * @version 1.1.6
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -727,7 +727,7 @@ public class ContactImpl extends ContactBaseImpl {
 		return fullName;
 
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -736,11 +736,11 @@ public class ContactImpl extends ContactBaseImpl {
 	public String getGender() {
 
 		String str = Gender.UNKNOWN;
-		
-		Gender gender = getVCard().getGender(); 
-		
+
+		Gender gender = getVCard().getGender();
+
 		if (gender != null) {
-			str = gender.getGender(); 
+			str = gender.getGender();
 		}
 
 		return str;
@@ -826,19 +826,19 @@ public class ContactImpl extends ContactBaseImpl {
 		return imppDTOs;
 
 	}
-	
+
 	public List<FileDTO> getKeys() {
 
 		List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
 
-		List<Key> keys = getVCard().getKeys(); 
+		List<Key> keys = getVCard().getKeys();
 
 		for (Key key : keys) {
 
 			FileDTO fileDTO = new FileDTO();
 			fileDTO.setUrl(key.getUrl());
 
-			KeyType contentType = key.getContentType(); 
+			KeyType contentType = key.getContentType();
 
 			if (Validator.isNotNull(contentType)) {
 				DataUri dataUri = new DataUri(contentType.getMediaType(),
@@ -1179,6 +1179,30 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return fileDTOs;
+
+	}
+
+	/**
+	 * 
+	 * @return a dataURI for the entity the vCard represents, i.e. the first
+	 *         photo if the vCard represents a person or a logo if the vCard
+	 *         represents an organization.
+	 * @since 1.1.6
+	 */
+	public String getPortrait() {
+
+		String portrait = null;
+
+		List<Photo> photos = getVCard().getPhotos();
+		List<Logo> logos = getVCard().getLogos();
+
+		if (logos.size() > 0) {
+			portrait = getLogos().get(0).getData();
+		} else if (photos.size() > 0) {
+			portrait = getPhotos().get(0).getData();
+		}
+
+		return portrait;
 
 	}
 
