@@ -48,8 +48,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-28 14:21
- * @version 1.1.7
+ * @modified 2015-06-29 10:32
+ * @version 1.1.8
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -357,7 +357,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 		// Save the contact
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				Contact.class.getName(), actionRequest);
+				Contact.class.getName(), uploadPortletRequest);
 
 		String[] assetTagNames = PortletUtil.getAssetTagNames(vCard);
 
