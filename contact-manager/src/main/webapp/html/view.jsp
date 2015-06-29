@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-06-08 10:19 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-06-29 15:06 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -33,8 +33,8 @@
     int delta = ParamUtil.getInteger(request, "delta", 20); 
     int idx = ParamUtil.getInteger(request, "cur");
     String keywords = ParamUtil.getString(request, "keywords"); 
-    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified"); 
-    String orderByType = ParamUtil.getString(request, "orderByType", "desc"); 
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "name"); 
+    String orderByType = ParamUtil.getString(request, "orderByType", "asc"); 
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
     PortletURL portletURL = renderResponse.createRenderURL();
