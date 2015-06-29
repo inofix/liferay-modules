@@ -49,6 +49,7 @@ import ezvcard.property.Email;
 import ezvcard.property.Expertise;
 import ezvcard.property.FormattedName;
 import ezvcard.property.FreeBusyUrl;
+import ezvcard.property.Gender;
 import ezvcard.property.Hobby;
 import ezvcard.property.Impp;
 import ezvcard.property.Interest;
@@ -83,8 +84,8 @@ import ezvcard.util.DataUri;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-06-26 17:50
- * @version 1.1.4
+ * @modified 2015-06-29 10:01
+ * @version 1.1.5
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -724,6 +725,25 @@ public class ContactImpl extends ContactBaseImpl {
 		}
 
 		return fullName;
+
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @since 1.1.5
+	 */
+	public String getGender() {
+
+		String str = Gender.UNKNOWN;
+		
+		Gender gender = getVCard().getGender(); 
+		
+		if (gender != null) {
+			str = gender.getGender(); 
+		}
+
+		return str;
 
 	}
 

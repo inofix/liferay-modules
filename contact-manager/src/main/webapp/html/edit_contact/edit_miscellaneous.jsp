@@ -2,8 +2,8 @@
     edit_miscellaneous.jsp: Edit the miscellaneous contact information. 
     
     Created:    2015-05-16 20:06 by Christian Berndt
-    Modified:   2015-06-25 16:33 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2015-06-29 10:04 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/html/edit_contact/init.jsp"%>
@@ -17,6 +17,7 @@
 <%@page import="java.util.TimeZone"%>
 
 <%@page import="ch.inofix.portlet.contact.dto.ExpertiseDTO"%>
+<%@page import="ezvcard.property.Gender"%>
 <%@page import="ch.inofix.portlet.contact.dto.HobbyDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.InterestDTO"%>
 <%@page import="ch.inofix.portlet.contact.dto.LanguageDTO"%>
@@ -36,6 +37,14 @@
 			ExpertiseLevel.BEGINNER.getValue(),
 			ExpertiseLevel.AVERAGE.getValue(),
 			ExpertiseLevel.EXPERT.getValue() };
+	
+	String[] genders = new String[] {
+		Gender.FEMALE, 
+		Gender.MALE,
+		Gender.NONE, 
+		Gender.OTHER,
+		Gender.UNKNOWN
+	}; 
 
 	String[] hobbyLevels = new String[] { HobbyLevel.HIGH.getValue(),
 			HobbyLevel.MEDIUM.getValue(), HobbyLevel.LOW.getValue(), };
@@ -214,6 +223,18 @@
 		leftTitle="current" leftReorder="true" />
 		
 </aui:fieldset>
+
+<aui:select name="gender" helpMessage="gender-help"
+        disabled="<%= !hasUpdatePermission %>">
+	<%
+	    for (String gender : genders) {
+	%>
+	<aui:option value="<%=gender%>" label='<%="gender-" + gender.toLowerCase() %>'
+	    selected="<%=gender.equalsIgnoreCase(contact_.getGender())%>" />
+	<%
+	    }
+	%>
+</aui:select>
 
 <aui:fieldset label="time-zone">
 	<aui:container>
