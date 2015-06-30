@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-06-30 09:47 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2015-06-30 14:08 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -245,7 +245,7 @@
                         <liferay-ui:icon-menu>
 
                             <c:if test="<%= hasUpdatePermission %>">
-	                            <liferay-ui:icon image="edit" url="<%=taglibViewURL%>" />
+	                            <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" />
                             </c:if>
                             <c:if test="<%= hasPermissionsPermission %>">
 	                            <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
