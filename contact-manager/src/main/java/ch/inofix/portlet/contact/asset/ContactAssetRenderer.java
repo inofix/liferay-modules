@@ -16,17 +16,18 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.model.BaseAssetRenderer;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2015-05-19 17:25
- * @modified 2015-05-23 16:30
- * @version 1.0.4
+ * @modified 2015-06-30 14:05
+ * @version 1.0.5
  *
  */
 public class ContactAssetRenderer extends BaseAssetRenderer {
@@ -75,13 +76,15 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 				"contactmanager_WAR_contactmanager",
 				PortletRequest.ACTION_PHASE);
 
-		String redirect = PortalUtil.getCurrentURL(liferayPortletRequest);
-
+		String backURL = (String) liferayPortletRequest.getAttribute("backURL");
+		
 		portletURL.setParameter("contactId",
 				String.valueOf(contact.getContactId()));
 		portletURL.setParameter("javax.portlet.action", "editContact");
 		portletURL.setParameter("mvcPath", "/html/edit_contact.jsp");
-		portletURL.setParameter("redirect", redirect);
+		if (Validator.isNotNull(backURL)) {
+			portletURL.setParameter("backURL", backURL);
+		}
 
 		return portletURL;
 

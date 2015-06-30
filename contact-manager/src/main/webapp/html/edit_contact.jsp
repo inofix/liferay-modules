@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-06-27 14:35 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2015-06-30 14:06 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -16,13 +16,17 @@
 	String windowId = ""; 
 	windowId = ParamUtil.getString(request, "windowId"); 
 	
-	// Close the popup, if we are in popup mode and a redirect was provided.
+	// Close the popup, if we are in popup mode, a redirect was provided
+	// and the windowId is "editContact" (which means, viewByDefault 
+	// is false.
 	
-	if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp()) {
+	if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp()
+			&& "editContact".equals(windowId)) {
+		
 		PortletURL portletURL = renderResponse.createRenderURL();
-        portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
-        portletURL.setParameter("redirect", redirect); 
-        portletURL.setParameter("windowId", windowId);
+		portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
+		portletURL.setParameter("redirect", redirect);
+		portletURL.setParameter("windowId", windowId);
 		backURL = portletURL.toString();
 	}
 
@@ -35,18 +39,19 @@
 	String[] categoryNames = new String[] { "" };
 	String[][] categorySections = new String[][] { { "edit_contact",
 			"edit_personal_information", "edit_mailing_address",
-			"edit_notes", "edit_miscellaneous", "edit_data", "edit_vcard" } };
+			"edit_notes", "edit_miscellaneous", "edit_data",
+			"edit_vcard" } };
 
 	// TODO: configurable display styles?
 	String displayStyle = "default"; // default, panel, steps
-    
-	StringBuilder sb = new StringBuilder(); 
-	
-	sb.append(LanguageUtil.get(pageContext, "permissions-of-contact")); 
-	sb.append(" "); 
-	sb.append(contact_.getFullName(true)); 
-	
-	String modelResourceDescription = sb.toString(); 
+
+	StringBuilder sb = new StringBuilder();
+
+	sb.append(LanguageUtil.get(pageContext, "permissions-of-contact"));
+	sb.append(" ");
+	sb.append(contact_.getFullName(true));
+
+	String modelResourceDescription = sb.toString();
 %>
 
 <liferay-security:permissionsURL
