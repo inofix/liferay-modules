@@ -2,8 +2,8 @@
     configuration.jsp: Configure the contact-manager's preferences.
     
     Created:    2015-05-25 11:36 by Christian Berndt
-    Modified:   2015-06-29 20:32 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-06-30 09:53 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -60,16 +60,28 @@
 				leftTitle="current" leftReorder="true" />
 		</liferay-ui:panel>
 
-		<liferay-ui:panel title="miscellaneous" extended="true">
-		 
-		    <aui:input name="portraitStyle" value="<%= portraitStyle %>"/>
-		    
-		    <aui:select name="portraitClass">
+        <liferay-ui:panel title="appearance" extended="true">
+        
+            <aui:field-wrapper label="view-by-default" helpMessage="view-by-default-help">
+                <aui:input name="viewByDefault" type="radio" value="true"
+                    checked="<%= viewByDefault%>" label="yes" inlineField="true" />
+                <aui:input name="viewByDefault" type="radio" value="false"
+                    checked="<%=!viewByDefault%>" label="no" inlineField="true" />
+			</aui:field-wrapper>
+			
+            <aui:input name="portraitStyle" value="<%= portraitStyle %>" helpMessage="portrait-style-help"/>
+            
+            <aui:select name="portraitClass" helpMessage="portrait-class-help">
                 <aui:option value="img-circle" label="circle" selected='<%= "img-circle".equals(portraitClass) %>' />
                 <aui:option value="img-rounded" label="rounded" selected='<%= "img-rounded".equals(portraitClass) %>' />
                 <aui:option value="img-polaroid" label="polaroid" selected='<%= "img-polaroid".equals(portraitClass) %>' />
-		    </aui:select>
+            </aui:select>
+            			
+        </liferay-ui:panel>
+        
+        <liferay-ui:panel title="miscellaneous" extended="true">
 
+            <%-- 
             <aui:row>
 	            <div class="pull-left portrait-config">
 					<c:if test="<%=Validator.isNotNull(portrait)%>">
@@ -122,14 +134,16 @@
                 </div>
                 
 			</aui:row>
+			--%>
 
-			<aui:field-wrapper inlineLabel="true" label="show-death-date"
+			<aui:field-wrapper label="show-death-date"
 				helpMessage="show-death-date-help">
 				<aui:input name="showDeathDate" type="radio" value="true"
-					checked="<%=showDeathdate%>" label="yes" />
+					checked="<%=showDeathdate%>" label="yes" inlineField="true" />
 				<aui:input name="showDeathDate" type="radio" value="false"
-					checked="<%=!showDeathdate%>" label="no" />
+					checked="<%=!showDeathdate%>" label="no" inlineField="true" />
 			</aui:field-wrapper>
+
 		</liferay-ui:panel>
 
 	</liferay-ui:panel-container>

@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-06-29 20:53 by Christian Berndt
- * Version:     1.1.7
+ * Modified:    2015-06-30 09:54 by Christian Berndt
+ * Version:     1.1.8
  *
  */
 @import "compass";
@@ -140,6 +140,14 @@
 		
 		.searchcontainer .table td {
 		    vertical-align: middle; 
+		}
+		
+		.searchcontainer .table td.portrait {
+            text-align: center; 
+        }
+		
+		.searchcontainer .icon {
+		    text-decoration: none; 
 		}
 		
 		select {

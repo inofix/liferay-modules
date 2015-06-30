@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
  * 
  * @author Christian Berndt
  * @created 2015-05-25 11:33
- * @modified 2015-06-29 15:55
- * @version 1.0.2
+ * @modified 2015-06-30 09:14
+ * @version 1.0.3
  *
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
@@ -48,16 +48,19 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 				"portraitStyle");
 		String showDeathDate = ParamUtil.getString(actionRequest,
 				"showDeathDate");
+		String viewByDefault = ParamUtil.getString(actionRequest,
+				"viewByDefault");
 
 		setPreference(actionRequest, "columns", columns);
 		setPreference(actionRequest, "portrait", portrait);
-		setPreference(actionRequest, "portraitClass", portraitClass);
-		setPreference(actionRequest, "portraitFemale", portraitFemale);
-		setPreference(actionRequest, "portraitGroup", portraitGroup);
-		setPreference(actionRequest, "portraitMale", portraitMale);
-		setPreference(actionRequest, "portraitOrganization", portraitOrganization);
-		setPreference(actionRequest, "portraitStyle", portraitStyle);
+		setPreference(actionRequest, "potrait-class", portraitClass);
+		setPreference(actionRequest, "portrait-female", portraitFemale);
+		setPreference(actionRequest, "portrait-group", portraitGroup);
+		setPreference(actionRequest, "portrait-male", portraitMale);
+		setPreference(actionRequest, "portrait-organization", portraitOrganization);
+		setPreference(actionRequest, "portrait-style", portraitStyle);
 		setPreference(actionRequest, "show-death-date", showDeathDate);
+		setPreference(actionRequest, "view-by-default", viewByDefault);
 
 		super.processAction(portletConfig, actionRequest, actionResponse);
 

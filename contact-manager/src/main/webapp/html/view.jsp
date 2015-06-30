@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-06-29 15:06 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2015-06-30 09:47 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -226,7 +226,13 @@
 						String detailURL = null;
 
 						if (hasUpdatePermission) {
-							detailURL = taglibEditURL; 
+							
+							if (!viewByDefault) {
+								detailURL = taglibEditURL; 
+							} else {
+	                            detailURL = taglibViewURL;  								
+							}
+							
 						} else if (hasViewPermission) {
 							detailURL = taglibViewURL;  
 						}
