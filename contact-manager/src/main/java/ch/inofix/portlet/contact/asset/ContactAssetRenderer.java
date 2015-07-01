@@ -6,7 +6,6 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.permission.ContactPermission;
 
@@ -16,7 +15,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
@@ -26,8 +24,8 @@ import com.liferay.portlet.asset.model.BaseAssetRenderer;
  * 
  * @author Christian Berndt
  * @created 2015-05-19 17:25
- * @modified 2015-06-30 14:05
- * @version 1.0.5
+ * @modified 2015-07-01 15:06
+ * @version 1.0.6
  *
  */
 public class ContactAssetRenderer extends BaseAssetRenderer {
@@ -77,7 +75,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 				PortletRequest.ACTION_PHASE);
 
 		String backURL = (String) liferayPortletRequest.getAttribute("backURL");
-		
+
 		portletURL.setParameter("contactId",
 				String.valueOf(contact.getContactId()));
 		portletURL.setParameter("javax.portlet.action", "editContact");
@@ -96,8 +94,22 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 			LiferayPortletResponse liferayPortletResponse,
 			String noSuchEntryRedirect) {
 
-		return getURLViewInContext(liferayPortletRequest, noSuchEntryRedirect,
-				"", "contactId", contact.getCompanyId());
+		try {
+			PortletURL portletURL = liferayPortletResponse
+					.createActionURL("contactmanager_WAR_contactmanager");
+
+			portletURL.setParameter("mvcPath", "/html/view_contact.jsp");
+			portletURL.setParameter("contactId",
+					String.valueOf(contact.getContactId()));
+			portletURL.setParameter("javax.portlet.action", "viewContact");
+			// portletURL.setWindowState(WindowState.MAXIMIZED);
+
+			return portletURL.toString();
+			
+		} catch (Exception e) {
+		}
+
+		return null;
 
 	}
 
