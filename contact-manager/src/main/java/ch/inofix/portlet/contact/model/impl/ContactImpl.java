@@ -84,8 +84,8 @@ import ezvcard.util.DataUri;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-06-29 15:24
- * @version 1.1.6
+ * @modified 2015-07-01 19:27
+ * @version 1.1.7
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -145,6 +145,20 @@ public class ContactImpl extends ContactBaseImpl {
 	 * @since 1.0.8
 	 */
 	public AddressDTO getAddress() {
+		
+		List<Address> addresses = getVCard().getAddresses(); 
+		
+		if (addresses != null) {
+			
+			for (Address address : addresses) {
+				Integer pref = address.getPref(); 
+				if (pref != null) {
+					if (pref == 1) {
+						return getAddress(address); 
+					}
+				}				
+			}			
+		}
 
 		Address address = getVCard().getProperty(Address.class);
 
@@ -524,6 +538,20 @@ public class ContactImpl extends ContactBaseImpl {
 	 * @since 1.0.8
 	 */
 	public EmailDTO getEmail() {
+		
+		List<Email> emails = getVCard().getEmails(); 
+		
+		if (emails != null) {
+			
+			for (Email email : emails) {
+				Integer pref = email.getPref(); 
+				if (pref != null) {
+					if (pref == 1) {
+						return getEmail(email); 
+					}
+				}				
+			}			
+		}
 
 		Email email = getVCard().getProperty(Email.class);
 
@@ -1079,6 +1107,20 @@ public class ContactImpl extends ContactBaseImpl {
 	 * @since 1.0.8
 	 */
 	public PhoneDTO getPhone() {
+		
+		List<Telephone> phones = getVCard().getTelephoneNumbers(); 
+		
+		if (phones != null) {
+			
+			for (Telephone phone : phones) {
+				Integer pref = phone.getPref(); 
+				if (pref != null) {
+					if (pref == 1) {
+						return getPhone(phone); 
+					}
+				}				
+			}			
+		}
 
 		Telephone phone = getVCard().getProperty(Telephone.class);
 
