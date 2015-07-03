@@ -48,8 +48,8 @@ import ezvcard.property.Uid;
  * 
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-06-29 10:32
- * @version 1.1.8
+ * @modified 2015-07-03 20:45
+ * @version 1.1.9
  *
  */
 public class ContactManagerPortlet extends MVCPortlet {
@@ -117,7 +117,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 	 * @since 1.0.0
 	 * @throws Exception
 	 */
-	public void deleteContacts(ActionRequest actionRequest,
+	protected void doDeleteContacts(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
 		long[] contactIds = ParamUtil.getLongValues(actionRequest, "rowIds");
@@ -175,6 +175,56 @@ public class ContactManagerPortlet extends MVCPortlet {
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 		actionResponse.setRenderParameter("redirect", redirect);
 		actionResponse.setRenderParameter("windowId", windowId);
+
+	}
+
+	/**
+	 * 
+	 * @param actionRequest
+	 * @param actionResponse
+	 * @throws Exception
+	 * @since 1.1.9
+	 */
+	public void editSet(ActionRequest actionRequest,
+			ActionResponse actionResponse) throws Exception {
+
+		String cmd = ParamUtil.getString(actionRequest, "cmd");
+
+		if ("delete".equals(cmd)) {
+			doDeleteContacts(actionRequest, actionResponse);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @param resourceRequest
+	 * @param resourceResponse
+	 * @since 1.0.6
+	 * @throws PortalException
+	 * @throws SystemException
+	 * @throws IOException
+	 */
+	protected void exportVCards(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws PortalException,
+			SystemException, IOException {
+
+		// TODO: Move this to an exportContacts() method in
+		// ContactServiceImpl and check for the export permission
+		List<Contact> contacts = ContactLocalServiceUtil.getContacts(0,
+				Integer.MAX_VALUE);
+
+		StringBuilder sb = new StringBuilder();
+
+		for (Contact contact : contacts) {
+			sb.append(contact.getCard());
+			sb.append("\n");
+		}
+
+		String cards = sb.toString();
+
+		PortletResponseUtil.sendFile(resourceRequest, resourceResponse,
+				"list.vcf", cards.getBytes(), ContentTypes.TEXT_PLAIN_UTF8);
 
 	}
 
@@ -394,7 +444,9 @@ public class ContactManagerPortlet extends MVCPortlet {
 		try {
 			String resourceID = resourceRequest.getResourceID();
 
-			if (resourceID.equals("serveVCard")) {
+			if (resourceID.equals("exportVCards")) {
+				exportVCards(resourceRequest, resourceResponse);
+			} else if (resourceID.equals("serveVCard")) {
 				serveVCard(resourceRequest, resourceResponse);
 			} else if (resourceID.equals("serveVCards")) {
 				serveVCards(resourceRequest, resourceResponse);
@@ -437,7 +489,7 @@ public class ContactManagerPortlet extends MVCPortlet {
 	 * 
 	 * @param resourceRequest
 	 * @param resourceResponse
-	 * @since 1.0.6
+	 * @since 1.1.9
 	 * @throws PortalException
 	 * @throws SystemException
 	 * @throws IOException
@@ -446,14 +498,13 @@ public class ContactManagerPortlet extends MVCPortlet {
 			ResourceResponse resourceResponse) throws PortalException,
 			SystemException, IOException {
 
-		// TODO: Move this to an exportContacts() method in
-		// ContactServiceImpl and check for the export permission
-		List<Contact> contacts = ContactLocalServiceUtil.getContacts(0,
-				Integer.MAX_VALUE);
+		long[] contactIds = ParamUtil.getLongValues(resourceRequest, "rowIds");
 
 		StringBuilder sb = new StringBuilder();
 
-		for (Contact contact : contacts) {
+		for (long contactId : contactIds) {
+			// TODO: add exception handling
+			Contact contact = ContactServiceUtil.getContact(contactId);
 			sb.append(contact.getCard());
 			sb.append("\n");
 		}

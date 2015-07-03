@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the contact-manager
     
     Created:    2015-05-07 15:16 by Christian Berndt
-    Modified:   2015-06-30 09:22 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2015-07-03 19:04 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%-- Import required classes --%>
@@ -17,6 +17,7 @@
 <%@page import="ch.inofix.portlet.contact.search.ContactSearch"%>
 <%@page import="ch.inofix.portlet.contact.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.contact.service.permission.ContactPermission"%>
+<%@page import="ch.inofix.portlet.contact.service.permission.ContactPortletPermission"%>
 
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.log.Log"%>

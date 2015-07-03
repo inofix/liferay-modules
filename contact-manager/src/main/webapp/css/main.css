@@ -2,8 +2,8 @@
  * main.css: The contact-manager portlet's css configuration
  *
  * Created:     2015-05-08 15:51 by Christian Berndt
- * Modified:    2015-06-30 09:54 by Christian Berndt
- * Version:     1.1.8
+ * Modified:    2015-07-02 10:40 by Christian Berndt
+ * Version:     1.1.9
  *
  */
 @import "compass";
@@ -80,7 +80,40 @@
 		    margin-right: 20px;
 		}
 
-        fieldset .button-holder {
+		.dropdown-menu > li > span {
+			display: block;
+			padding: 3px 20px;
+			clear: both;
+			font-weight: normal;
+			line-height: 20px;
+			color: #333333;
+			white-space: nowrap;
+		}
+
+        .dropdown-menu>li>span:hover, 
+        .dropdown-menu>li>span:hover .taglib-text, 
+        .dropdown-menu>li>span:focus,
+        .dropdown-menu>li>span:focus .taglib-text
+		{
+			text-decoration: none;
+			color: white;
+			background-color: #0db5e7;
+		}
+	
+		.dropdown-menu a.taglib-icon {
+            color: #333333;
+        }
+		
+        .dropdown-menu a.taglib-icon:focus .taglib-text, 
+        .dropdown-menu a.taglib-icon:hover .taglib-text {
+            text-decoration: none; 
+        }
+		
+		.dropdown-menu .taglib-icon img {
+            width: 11px;
+		}
+		
+		fieldset .button-holder {
 		    margin-top: 0;
 		}
 
@@ -108,6 +141,10 @@
 		label {
 	        color: #8D8D8D;
 	    }
+	    
+	    .lfr-header-row-content  {
+	       padding: 0;
+	    }
 	         
         .lfr-form-row {
             border-bottom: 1px solid #e5e5e5;
@@ -119,6 +156,15 @@
 		
 		.lfr-autorow-controls {
 		    top: 10px;
+		}
+		
+		.navbar .btn.add-contact {
+			margin-top: 8px;
+			margin-left: 8px;
+		}
+		
+		.navbar .navbar-search {
+			margin-bottom: 0; 
 		}
 		
 		.note {
@@ -144,6 +190,10 @@
 		
 		.searchcontainer .table td.portrait {
             text-align: center; 
+        }
+        
+        .searchcontainer th.table-first-header > input {
+            display: none; 
         }
 		
 		.searchcontainer .icon {
