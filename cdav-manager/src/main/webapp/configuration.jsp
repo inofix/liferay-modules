@@ -2,8 +2,8 @@
     configuration.jsp: Configure the cdav-manager's preferences.
     
     Created:    2015-05-30 12:14 by Christian Berndt
-    Modified:   2015-06-13 18:41 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-07-04 20:12 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -84,73 +84,99 @@
 	<aui:input name="redirect" type="hidden"
 		value="<%=configurationRenderURL%>" />
 
-	<aui:fieldset label="target">
+	<aui:row>
 
-		<aui:select name="calendarId" inlineField="true" label="calendar"
-			helpMessage="calendar-id-help" inlineLabel="true">
-			<%
-				for (Calendar availableCalendar : availableCalendars) {
-					String availableCalendarId = String
-							.valueOf(availableCalendar.getCalendarId());
-			%>
-			<aui:option value="<%=availableCalendarId%>"
-				label="<%=availableCalendar.getName(locale)%>"
-				selected="<%=availableCalendarId.equals(calendarId)%>" />
-			<%
-				}
-			%>
-		</aui:select>
+		<aui:col span="6">
+			<aui:fieldset label="source">
 
-		<aui:field-wrapper label="restore-from-trash"
-			helpMessage="restore-from-trash-help" inlineField="true" inlineLabel="true">
-			<aui:input name="restoreFromTrash" value="true"
-				checked='<%=restoreFromTrash.equals("true")%>' label="yes"
-				inlineLabel="true" inlineField="true" type="radio" />
-			<aui:input name="restoreFromTrash" value="false"
-				checked='<%=!restoreFromTrash.equals("true")%>' label="no"
-				inlineLabel="true" inlineField="true" type="radio" />
-		</aui:field-wrapper>
+				<c:if test="<%=checkConnectionParameters%>">
+					<div class="alert alert-error">
+						<liferay-ui:message key="please-check-your-connection-settings" />
+					</div>
+				</c:if>
 
-	</aui:fieldset>
+				<aui:row>
 
-	<aui:fieldset label="source">
-	
-       <c:if test="<%= checkConnectionParameters %>">
-            <div class="alert alert-error">
-                <liferay-ui:message key="please-check-your-connection-settings" />
-            </div>
-        </c:if>
+					<aui:col span="6">
 
-		<aui:input name="servername" value="<%=servername%>" required="true"
-			inlineField="true" helpMessage="servername-help" />
+						<aui:input name="servername" value="<%=servername%>"
+							required="true" helpMessage="servername-help" />
 
-		<aui:input name="domain" value="<%=domain%>" required="true"
-			inlineField="true" helpMessage="domain-help" />
+						<aui:input name="domain" value="<%=domain%>" required="true"
+							helpMessage="domain-help" />
 
-		<aui:input name="username" value="<%=username%>" required="true"
-			inlineField="true" helpMessage="username-help" />
+					</aui:col>
 
-		<aui:input name="password" value="<%=password%>" required="true"
-			inlineField="true" helpMessage="password-help" type="password" />
+					<aui:col span="6">
 
-		<c:if test="<%=serverCalendars.size() > 0%>">
-			<aui:select name="calendar" value="<%=calendar%>" inlineField="true"
-				helpMessage="calendar-help">
+						<aui:input name="username" value="<%=username%>" required="true"
+							helpMessage="username-help" />
 
-				<%
-					for (ServerCalendar serverCalendar : serverCalendars) {
-				%>
-				<aui:option value="<%=serverCalendar.getDisplayName()%>"
-					label="<%=serverCalendar.getDisplayName()%>"
-					selected="<%=calendar.equals(serverCalendar
-										.getDisplayName())%>" />
-				<%
-					}
-				%>
-			</aui:select>
-		</c:if>
+						<aui:input name="password" value="<%=password%>" required="true"
+							helpMessage="password-help" type="password" />
 
-	</aui:fieldset>
+						<c:if test="<%=serverCalendars.size() > 0%>">
+							<aui:select name="calendar" value="<%=calendar%>"
+								helpMessage="calendar-help">
+
+								<aui:option value="" label="no-calendar-selected" />
+								<%
+									for (ServerCalendar serverCalendar : serverCalendars) {
+								%>
+								<aui:option
+									value="<%=serverCalendar
+														.getDisplayName()%>"
+									label="<%=serverCalendar
+														.getDisplayName()%>"
+									selected="<%=calendar.equals(serverCalendar
+														.getDisplayName())%>" />
+								<%
+									}
+								%>
+							</aui:select>
+						</c:if>
+					</aui:col>
+
+				</aui:row>
+
+			</aui:fieldset>
+			
+		</aui:col>
+
+		<aui:col span="6">
+			<aui:fieldset label="target">
+
+				<aui:select name="calendarId" label="calendar"
+					helpMessage="calendar-id-help">
+					<%
+						for (Calendar availableCalendar : availableCalendars) {
+							String availableCalendarId = String
+									.valueOf(availableCalendar
+											.getCalendarId());
+					%>
+					<aui:option value="<%=availableCalendarId%>"
+						label="<%=availableCalendar.getName(locale)%>"
+						selected="<%=availableCalendarId
+											.equals(calendarId)%>" />
+					<%
+						}
+					%>
+				</aui:select>
+
+				<aui:field-wrapper label="restore-from-trash"
+					helpMessage="restore-from-trash-help" inlineField="true">
+					<aui:input name="restoreFromTrash" value="true"
+						checked='<%=restoreFromTrash.equals("true")%>' label="yes"
+						inlineField="true" type="radio" />
+					<aui:input name="restoreFromTrash" value="false"
+						checked='<%=!restoreFromTrash.equals("true")%>' label="no"
+						inlineField="true" type="radio" />
+				</aui:field-wrapper>
+
+			</aui:fieldset>
+		</aui:col>
+
+	</aui:row>
 
 	<aui:button-row>
 		<aui:button type="submit" />

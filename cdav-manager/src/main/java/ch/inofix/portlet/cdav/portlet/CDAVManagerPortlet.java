@@ -35,8 +35,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * 
  * @author Christian Berndt
  * @created 2015-05-29 16:37
- * @modified 2015-06-12 16:41
- * @version 1.0.4
+ * @modified 2015-07-04 20:06
+ * @version 1.0.5
  *
  */
 public class CDAVManagerPortlet extends MVCPortlet {
@@ -61,8 +61,8 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 		String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
 
-		// name of the remote calendar
-		String calendar = portletPreferences.getValue("calendar", "");
+		// name of the remote configuredCalendar
+		String configuredCalendar = portletPreferences.getValue("calendar", "");
 		// id of the liferay calendar
 		long calendarId = GetterUtil.getLong(portletPreferences.getValue(
 				"calendarId", "0"));
@@ -78,7 +78,7 @@ public class CDAVManagerPortlet extends MVCPortlet {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				CalendarBooking.class.getName(), actionRequest);
 
-		syncResources(calendar, calendarId, domain, password, restoreFromTrash,
+		syncResources(configuredCalendar, calendarId, domain, password, restoreFromTrash,
 				servername, syncOnlyUpcoming, username, serviceContext);
 
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
@@ -104,7 +104,7 @@ public class CDAVManagerPortlet extends MVCPortlet {
 	 * @throws SystemException
 	 * @throws PortalException
 	 */
-	private static void syncResources(String calendar, long calendarId,
+	private static void syncResources(String configuredCalendar, long calendarId,
 			String domain, String password, boolean restoreFromTrash,
 			String servername, boolean syncOnlyUpcoming, String username,
 			ServiceContext serviceContext) throws InstallCertException,
@@ -127,14 +127,16 @@ public class CDAVManagerPortlet extends MVCPortlet {
 		// Retrieve the user's calendars
 		List<ServerCalendar> calendars = conn.getCalendars();
 
-		// log.info("calendars.size() = " + calendars.size());
+		log.info("calendars.size() = " + calendars.size());
 
 		for (ServerCalendar serverCalendar : calendars) {
 
-			// log.info("serverCalendar.getDisplayName() = "
-			// + serverCalendar.getDisplayName());
+			log.info("serverCalendar.getDisplayName() = "
+					+ serverCalendar.getDisplayName());
+			
+			log.info("configuredCalendar = " + configuredCalendar); 
 
-			if (calendar.equals(serverCalendar.getDisplayName())) {
+			if (configuredCalendar.equals(serverCalendar.getDisplayName())) {
 
 				log.info("Synchronizing " + serverCalendar.getDisplayName());
 
