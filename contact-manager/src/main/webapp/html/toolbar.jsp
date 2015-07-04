@@ -15,10 +15,6 @@
 		<aui:nav-item cssClass="hide" dropdown="<%=true%>"
 			id="actionsButtonContainer" label="actions">
 
-<%--             <portlet:resourceURL var="downloadVCardsURL" id="serveVCards"> --%>
-
-<%-- 	        </portlet:resourceURL> --%>
-
             <%
 	            String downloadVCardsURL = "javascript:" + renderResponse.getNamespace() + "downloadVCards();";
             %>
