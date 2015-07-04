@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-07-02 15:11 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2015-07-04 12:00 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -320,20 +320,40 @@
 			    );
 			</aui:script>
 			
+            <portlet:resourceURL var="downloadVCardsURL" id="serveVCards"/>
+			
 	         <aui:script>
-             Liferay.provide(window, '<portlet:namespace />downloadVCards', 
-                 function() {
-            	 
-	                 var A = AUI();
-
-	            	 var inputs = A.all('.entry-selector input');
+	             Liferay.provide(window, '<portlet:namespace />downloadVCards', 
+	                 function() {
 	            	 
-	            	 alert('Not yet implemented.')
-// 	            	 alert(inputs.size()); 
-             
-                 }
-             );
-         </aui:script>
+		                 var A = AUI();
+	
+		                 // Get the rowChecker-boxes
+		            	 var inputs = A.all('.entry-selector input');
+		            	 var values = []; 
+		            	 
+		            	 // Filter for checked boxes
+		            	 inputs.each(function() {
+		            		 
+		            		if (this.get('checked') == true) {
+			            		values.push(this.get('value')); 
+		            		}
+		            		
+		            	 });
+		            	 	
+		            	 // Append checked boxes' values to resource-request
+		            	 var rowIds = ""; 
+		            	 
+		            	 for (i=0; i<values.length; i++) {
+		            		 rowIds = rowIds + '&<portlet:namespace />rowIds=' + values[i]; 
+		            	 }
+		            	 
+		            	 // Download checked vCards from server
+		            	 window.location.href= '<%= downloadVCardsURL %>' + rowIds;	 
+	             
+	                 }
+	             );
+	         </aui:script>
 			
 			
 		</c:otherwise>
