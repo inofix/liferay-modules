@@ -31,8 +31,8 @@ import com.liferay.portlet.social.model.SocialActivityConstants;
  * 
  * @author Christian Berndt
  * @created 2015-05-23 21:58
- * @modified 2015-05-28 16:41
- * @version 1.0.1
+ * @modified 2015-07-04 17:19
+ * @version 1.0.2
  *
  */
 public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
@@ -49,13 +49,15 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 	@Override
 	protected String getPath(SocialActivity activity,
 			ServiceContext serviceContext) throws Exception {
+		
+		String windowId = "editContact";
 
 		long plid = PortalUtil.getPlidFromPortletId(
 				serviceContext.getScopeGroupId(),
 				"contactmanager_WAR_contactmanager");
 
 		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
-
+		
 		PermissionChecker permissionChecker = themeDisplay
 				.getPermissionChecker();
 
@@ -70,6 +72,7 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 		portletURL.setParameter("contactId",
 				String.valueOf(activity.getClassPK()));
 		portletURL.setParameter("javax.portlet.action", "editContact");
+		portletURL.setParameter("windowId", windowId);
 		String title = "";
 
 		if (ContactPermission.contains(permissionChecker,
@@ -92,7 +95,7 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 
 		String taglibURL = "javascript:Liferay.Util.openWindow({id: '"
 				+ "_contactmanager_WAR_contactmanager_"
-				+ "editAsset', title: '" + title + "', uri:'"
+				+ windowId + "', title: '" + title + "', uri:'"
 				+ HtmlUtil.escapeJS(portletURL.toString()) + "'});";
 
 		return taglibURL;
