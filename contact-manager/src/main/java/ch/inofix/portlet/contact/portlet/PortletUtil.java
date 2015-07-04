@@ -94,8 +94,8 @@ import ezvcard.util.DataUri;
  * 
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-06-26 18:31
- * @version 1.1.4
+ * @modified 2015-07-04 14:47
+ * @version 1.1.5
  *
  */
 public class PortletUtil {
@@ -765,10 +765,15 @@ public class PortletUtil {
 		}
 
 		if (parameters.containsKey("nickname")) {
-			String nicknameStr = ParamUtil.getString(request, "nickname");
+			
+			String[] names = ParamUtil.getParameterValues(request, "nickname"); 
+			
 			Nickname nickname = new Nickname();
-			// TODO: Add support for multiple nicknames
-			nickname.addValue(nicknameStr);
+
+			for (String name: names) {
+				nickname.addValue(name);
+			}
+			
 			vCard.setNickname(nickname);
 		}
 

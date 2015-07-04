@@ -84,8 +84,8 @@ import ezvcard.util.DataUri;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-07-01 19:27
- * @version 1.1.7
+ * @modified 2015-07-04 14:48
+ * @version 1.1.8
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
@@ -1046,9 +1046,16 @@ public class ContactImpl extends ContactBaseImpl {
 
 		if (nickname != null) {
 			List<String> names = nickname.getValues();
-			for (String name : names) {
-				sb.append(name);
+			Iterator<String> iterator = names.iterator(); 
+			
+			while (iterator.hasNext()) {
+				sb.append(iterator.next());
+				if (iterator.hasNext()) {
+					sb.append(", "); 
+				}
+
 			}
+
 		}
 
 		return sb.toString();
