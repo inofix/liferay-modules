@@ -31,8 +31,8 @@ import com.liferay.portlet.social.model.SocialActivityConstants;
  * 
  * @author Christian Berndt
  * @created 2015-05-23 21:58
- * @modified 2015-07-04 17:19
- * @version 1.0.2
+ * @modified 2015-07-04 17:28
+ * @version 1.0.3
  *
  */
 public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
@@ -50,7 +50,7 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 	protected String getPath(SocialActivity activity,
 			ServiceContext serviceContext) throws Exception {
 		
-		String windowId = "editContact";
+		String action = "editContact";
 
 		long plid = PortalUtil.getPlidFromPortletId(
 				serviceContext.getScopeGroupId(),
@@ -71,16 +71,18 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 		portletURL.setParameter("redirect", serviceContext.getCurrentURL());
 		portletURL.setParameter("contactId",
 				String.valueOf(activity.getClassPK()));
-		portletURL.setParameter("javax.portlet.action", "editContact");
-		portletURL.setParameter("windowId", windowId);
+		portletURL.setParameter("javax.portlet.action", action);
+		portletURL.setParameter("windowId", action);
 		String title = "";
 
 		if (ContactPermission.contains(permissionChecker,
 				activity.getClassPK(), ActionKeys.UPDATE)) {
 
-			portletURL.setParameter("mvcPath", "/html/edit_contact.jsp");
+			portletURL.setParameter("mvcPath", "/html/view_contact.jsp");
+//			portletURL.setParameter("mvcPath", "/html/edit_contact.jsp");
 			// TODO: Format the popup title
-			title = "edit";
+			title = "view";
+//			title = "edit";
 
 		} else if (ContactPermission.contains(permissionChecker,
 				activity.getClassPK(), ActionKeys.VIEW)) {
@@ -95,7 +97,7 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 
 		String taglibURL = "javascript:Liferay.Util.openWindow({id: '"
 				+ "_contactmanager_WAR_contactmanager_"
-				+ windowId + "', title: '" + title + "', uri:'"
+				+ action + "', title: '" + title + "', uri:'"
 				+ HtmlUtil.escapeJS(portletURL.toString()) + "'});";
 
 		return taglibURL;
