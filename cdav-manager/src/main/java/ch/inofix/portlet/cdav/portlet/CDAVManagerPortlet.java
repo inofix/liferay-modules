@@ -35,8 +35,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * 
  * @author Christian Berndt
  * @created 2015-05-29 16:37
- * @modified 2015-07-04 20:06
- * @version 1.0.5
+ * @modified 2015-07-05 15:55
+ * @version 1.0.6
  *
  */
 public class CDAVManagerPortlet extends MVCPortlet {
@@ -125,11 +125,15 @@ public class CDAVManagerPortlet extends MVCPortlet {
 				installCert);
 
 		// Retrieve the user's calendars
-		List<ServerCalendar> calendars = conn.getCalendars();
+		ServerCalendar syncCalendar = null; 
+		Calendar currentCalendar = CalendarLocalServiceUtil
+				.getCalendar(calendarId);
+		
+		List<ServerCalendar> serverCalendars = conn.getCalendars();
 
-		log.info("calendars.size() = " + calendars.size());
+		log.info("calendars.size() = " + serverCalendars.size());
 
-		for (ServerCalendar serverCalendar : calendars) {
+		for (ServerCalendar serverCalendar : serverCalendars) {
 
 			log.info("serverCalendar.getDisplayName() = "
 					+ serverCalendar.getDisplayName());
@@ -140,16 +144,20 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 				log.info("Synchronizing " + serverCalendar.getDisplayName());
 
-				Calendar currentCalendar = CalendarLocalServiceUtil
-						.getCalendar(calendarId);
-
-				SyncUtil.syncFromCalDAVServer(currentCalendar, conn,
-						restoreFromTrash, syncOnlyUpcoming, serviceContext);
-
-				SyncUtil.syncToCalDAVServer(currentCalendar, conn,
-						restoreFromTrash, syncOnlyUpcoming, serviceContext);
+				syncCalendar = serverCalendar; 
 
 			}
+		}
+		
+		// Sync either with the selected or the default calendar
+		if (serverCalendars.size() > 0) {
+		
+			SyncUtil.syncFromCalDAVServer(syncCalendar, currentCalendar, conn,
+					restoreFromTrash, syncOnlyUpcoming, serviceContext);
+
+			SyncUtil.syncToCalDAVServer(syncCalendar, currentCalendar, conn,
+					restoreFromTrash, syncOnlyUpcoming, serviceContext);
+		
 		}
 
 		conn.shutdown();

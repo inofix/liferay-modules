@@ -1,6 +1,7 @@
 package ch.inofix.portlet.cdav.messaging;
 
 import java.util.List;
+
 import ch.inofix.portlet.cdav.util.SyncUtil;
 
 import com.liferay.portal.kernel.log.Log;
@@ -18,8 +19,8 @@ import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2015-06-12 09:55
- * @modified 2015-06-12 09:55
- * @version 1.0.0
+ * @modified 2015-07-05 16:17
+ * @version 1.0.1
  * 
  */
 public class SyncCalendarMessageListener extends BaseMessageListener {
@@ -51,7 +52,8 @@ public class SyncCalendarMessageListener extends BaseMessageListener {
 								preferences.getPlid(), portletId);
 
 				// Retrieve the configuration parameter
-
+				String configuredCalendar = PrefsPropsUtil.getString(
+						"calendar", "");
 				long calendarId = PrefsPropsUtil.getLong(prefs, companyId,
 						"calendarId");
 				String domain = PrefsPropsUtil.getString(prefs, companyId,
@@ -76,9 +78,9 @@ public class SyncCalendarMessageListener extends BaseMessageListener {
 				// log.info("username = " + username);
 
 				try {
-					SyncUtil.syncWithCalDAVServer(calendarId, servername,
-							domain, username, password, restoreFromTrash,
-							syncOnlyUpcoming);
+					SyncUtil.syncWithCalDAVServer(calendarId,
+							configuredCalendar, servername, domain, username,
+							password, restoreFromTrash, syncOnlyUpcoming);
 				} catch (Exception e) {
 					log.error(e.getMessage());
 				}
