@@ -2,8 +2,8 @@
     full_content.jsp: The full_content template for contact assets. 
     
     Created:    2015-05-19 17:41 by Christian Berndt
-    Modified:   2015-05-28 13:15 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-07-06 14:36 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@include file="/html/init.jsp" %>
@@ -42,8 +42,16 @@
 -->
 </style>
 
-<div>
+<portlet:resourceURL var="serveVCardURL" id="serveVCard">
+    <portlet:param name="contactId"
+        value="<%= String.valueOf(contact_.getContactId()) %>" />
+</portlet:resourceURL>
+
+<div> 
     <%= contact_.getVCardHTML() %>
+    <aui:button-row>
+	    <aui:button href="<%=serveVCardURL%>" value="download" />
+    </aui:button-row>
 </div>
 
 <liferay-ui:custom-attributes-available className="<%= Contact.class.getName() %>">
