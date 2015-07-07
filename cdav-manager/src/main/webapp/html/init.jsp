@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the cdav-manager portlet.
     
     Created:    2015-05-30 12:19 by Christian Berndt
-    Modified:   2015-06-13 18:40 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-07-07 20:54 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%-- Import required classes --%>
@@ -43,7 +43,7 @@
 	// TODO: Retrieve the lastSync from the portlet / application scope
 	Date lastSync = new Date();
 	String password = portletPreferences.getValue("password", "");
-	String restoreFromTrash = portletPreferences.getValue("restoreFromTrash", "true");
+	String restoreFromTrash = portletPreferences.getValue("restoreFromTrash", "false");
 	String servername = portletPreferences.getValue("servername", "");
 	String username = portletPreferences.getValue("username", "");
 
