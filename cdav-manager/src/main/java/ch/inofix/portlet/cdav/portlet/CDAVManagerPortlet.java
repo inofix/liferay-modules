@@ -3,12 +3,14 @@ package ch.inofix.portlet.cdav.portlet;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.fortuna.ical4j.data.ParserException;
+
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
@@ -25,8 +27,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -78,8 +82,19 @@ public class CDAVManagerPortlet extends MVCPortlet {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				CalendarBooking.class.getName(), actionRequest);
 
-		syncResources(configuredCalendar, calendarId, domain, password, restoreFromTrash,
-				servername, syncOnlyUpcoming, username, serviceContext);
+		if (Validator.isNotNull(configuredCalendar)) {
+
+			// TODO: catch Exceptions and fail gracefully
+			syncResources(configuredCalendar, calendarId, domain, password,
+					restoreFromTrash, servername, syncOnlyUpcoming, username,
+					serviceContext);
+
+		} else {
+
+			SessionErrors.add(actionRequest,
+					"you-havent-selected-a-calendar-yet");
+
+		}
 
 		actionResponse.setRenderParameter("mvcPath", mvcPath);
 
@@ -104,9 +119,10 @@ public class CDAVManagerPortlet extends MVCPortlet {
 	 * @throws SystemException
 	 * @throws PortalException
 	 */
-	private static void syncResources(String configuredCalendar, long calendarId,
-			String domain, String password, boolean restoreFromTrash,
-			String servername, boolean syncOnlyUpcoming, String username,
+	private static void syncResources(String configuredCalendar,
+			long calendarId, String domain, String password,
+			boolean restoreFromTrash, String servername,
+			boolean syncOnlyUpcoming, String username,
 			ServiceContext serviceContext) throws InstallCertException,
 			InitKeystoreException, ClientProtocolException, IOException,
 			URISyntaxException, ParserConfigurationException, SAXException,
@@ -125,10 +141,10 @@ public class CDAVManagerPortlet extends MVCPortlet {
 				installCert);
 
 		// Retrieve the user's calendars
-		ServerCalendar syncCalendar = null; 
+		ServerCalendar syncCalendar = null;
 		Calendar currentCalendar = CalendarLocalServiceUtil
 				.getCalendar(calendarId);
-		
+
 		List<ServerCalendar> serverCalendars = conn.getCalendars();
 
 		log.info("calendars.size() = " + serverCalendars.size());
@@ -137,27 +153,27 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 			log.info("serverCalendar.getDisplayName() = "
 					+ serverCalendar.getDisplayName());
-			
-			log.info("configuredCalendar = " + configuredCalendar); 
+
+			log.info("configuredCalendar = " + configuredCalendar);
 
 			if (configuredCalendar.equals(serverCalendar.getDisplayName())) {
 
 				log.info("Synchronizing " + serverCalendar.getDisplayName());
 
-				syncCalendar = serverCalendar; 
+				syncCalendar = serverCalendar;
 
 			}
 		}
-		
+
 		// Sync either with the selected or the default calendar
 		if (serverCalendars.size() > 0) {
-		
+
 			SyncUtil.syncFromCalDAVServer(syncCalendar, currentCalendar, conn,
 					restoreFromTrash, syncOnlyUpcoming, serviceContext);
 
 			SyncUtil.syncToCalDAVServer(syncCalendar, currentCalendar, conn,
 					restoreFromTrash, syncOnlyUpcoming, serviceContext);
-		
+
 		}
 
 		conn.shutdown();
