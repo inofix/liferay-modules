@@ -45,6 +45,12 @@ The CDav Manager allows you to connect your Liferay Calendar to and synchronize 
 
 * <a href="https://github.com/Kerio/cdav-connector" target="_blank">cdav-connector</a>
 
+### Display Page Hook
+
+Display Page Hook is a first approach to solve the issue described under https://issues.liferay.com/browse/LPS-30115. 
+
+It allows you to define a default display page for a structure by adding a field named layoutUuid to the structure and set it's default value to the uuid of the respective layout.
+
 ### Taglib Util
 
 taglib-util is a collection of utility tags, which are used by various liferay-portlets but can also be used in other contexts.
