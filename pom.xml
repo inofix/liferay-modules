@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2015-05-06 19:32 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-07-28 12:17 by Christian Berndt
+    Version:    1.0.2
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -108,11 +108,13 @@
     
 
     <modules>
+        <module>asset-display-hook</module>
         <module>cdav-manager</module>
         <module>contact-manager</module>
+        <module>display-page-hook</module>
+        <module>inofix-theme</module>
         <module>taglib-util</module>
-    <module>display-page-hook</module>
-  </modules>
+    </modules>
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
     </issueManagement>

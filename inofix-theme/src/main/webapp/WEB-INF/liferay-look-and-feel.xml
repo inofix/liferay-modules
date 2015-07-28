@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE look-and-feel PUBLIC "-//Liferay//DTD Look and Feel 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-look-and-feel_6_2_0.dtd">
+<!-- 
+    liferay-look-and-feel.xml:  Look and feel configuration of Inofix' 
+    default theme.
+    
+    Created:    2015-07-26 16:27 by Christian Berndt
+    Modified:   2015-07-26 16:27 by Christian Berndt
+    Version:    1.0.0
+    
+ -->
+<look-and-feel>
+    <compatibility>
+        <version>6.2.3+</version>
+    </compatibility>
+    <theme id="inofix" name="inofix-theme">
+        <settings>
+            <setting key="portlet-setup-show-borders-default"
+                value="false" />
+        </settings>
+    </theme>
+</look-and-feel>

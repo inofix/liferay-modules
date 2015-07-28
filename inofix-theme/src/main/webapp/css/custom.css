@@ -1,0 +1,120 @@
+/**
+ * custom.css: Main CSS of Inofix' default theme.
+ * 
+ * Created: 	2015-07-28	12:21 by Christian Berndt
+ * Modified: 	2015-07-28 	12:21 by Christian Berndt
+ * Version: 	0.1.0 
+ */
+
+@import "compass";
+@import "mixins";
+
+.aui {
+	
+    .dockbar-user-notifications .dropdown-toggle .user-notifications-count {
+        display: inline;
+        padding: 2px 2px 2px 2px; 
+        background-color: #FCF8E3;  /* bootstrap alert */
+        color: #C09853;             /* bootstrap alert */
+        border: 1px solid #FBEED5;  /* bootstrap alert */
+    }
+	
+	#wrapper {
+	   padding: 0; 
+	}
+	
+	header nav {
+	   text-transform: uppercase;
+	}
+	
+	.jumbotron {
+	   padding: 120px;
+	   text-align: center;
+	   background-color: lightgray;
+	}
+	
+	.portlet-borderless-container {
+	
+		.portlet-title-default {
+            margin-right: 1.5em;
+		}
+	
+        .article-form {
+            padding: 1.5em;
+        }
+        
+        .alert {
+            margin-left: 1.5em;
+            margin-right: 1.5em;
+        }
+        
+        .lfr-icon-actions,
+	    .lfr-meta-actions .navbar {
+	        padding: 1.5em;
+	    }
+	    
+	    .asset-abstract {
+	       margin-left: 1.5em;
+	       margin-right: 1.5em;
+	       
+	       img {
+	           display: none; 
+	       }
+	       
+	       .asset-title {
+	           border: none; 
+	           text-align: center; 
+	           
+	           a {
+	               color: black; 
+	           }
+	           
+	           a:hover {
+	               color: gray; 
+	               text-decoration: none; 
+	           }
+	       }
+	       
+	       .asset-summary {
+	           font-size: 21px;    /* bootstrap .lead class */
+	           font-weight: 200;   /* bootstrap .lead class */
+	           line-height: 30px;  /* bootstrap .lead class */
+	           text-align: center; 
+	           max-width: 600px;
+	           margin: auto;
+	       }
+	       
+	       .asset-more {
+	           text-align: center; 
+	           padding: 40px;
+	           
+	           a {
+	               padding: 10px 20px 10px 20px; 
+	               border: 1px solid black; 
+	               color: black; 
+	           }
+	           
+	           a:hover {
+	               color: gray; 
+	               border: 1px solid gray; 
+	               text-decoration: none; 
+	           }
+	       }
+	       
+	       .asset-metadata {
+	           text-align: center; 
+	           
+	           span {
+	               float: none; 
+	           }
+	           
+	           .metadata-publish-date {
+	               background: none; 
+	               color: black; 
+	               padding-left: 0; 
+	           }
+	       }
+	    }
+	    
+	}	
+}
