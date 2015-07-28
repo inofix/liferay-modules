@@ -18,7 +18,13 @@ please use the upcoming releases of the modules from the liferay marketplace.
 
 ## Module Description
 
-### Contact Manager ###
+### Asset Display Hook 
+
+The Asset Display Hook adds custom display styles to Liferay's Asset Publisher Portlet. The hook currently comprises the following styles
+
+* ifx-abstract: A slight modification of Liferay's abstracts style where the metadata-section is displayed BEFORE title and summary (instead of after).
+
+### Contact Manager
 
 The Contact Manager Portlet is a contact-manager based on the vCard 4.0 standard with the following features: 
 
@@ -50,6 +56,10 @@ The CDav Manager allows you to connect your Liferay Calendar to and synchronize 
 Display Page Hook is a first approach to solve the issue described under https://issues.liferay.com/browse/LPS-30115. 
 
 It allows you to define a default display page for a structure by adding a field named layoutUuid to the structure and set it's default value to the uuid of the respective layout.
+
+### Inofix Theme
+
+A full responsive theme which makes intensive use of Bootstrap and Alloy UI.
 
 ### Taglib Util
 
