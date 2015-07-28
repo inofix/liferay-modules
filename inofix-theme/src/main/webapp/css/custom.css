@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28	12:21 by Christian Berndt
- * Modified: 	2015-07-28 	12:21 by Christian Berndt
- * Version: 	0.1.0 
+ * Modified: 	2015-07-28 	14:49 by Christian Berndt
+ * Version: 	0.1.1
  */
 
 @import "compass";
@@ -86,7 +86,7 @@
 	       
 	       .asset-more {
 	           text-align: center; 
-	           padding: 40px;
+	           padding: 40px 20px 20px;
 	           
 	           a {
 	               padding: 10px 20px 10px 20px; 
@@ -100,9 +100,10 @@
 	               text-decoration: none; 
 	           }
 	       }
-	       
+	       	       
 	       .asset-metadata {
 	           text-align: center; 
+	           margin: 20px 0 10px 0; 
 	           
 	           span {
 	               float: none; 
