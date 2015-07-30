@@ -2,11 +2,14 @@
     view.jsp: Default view of the cdav manager portlet.
     
     Created:    2015-05-30 13:11 by Christian Berndt
-    Modified:   2015-06-13 18:37 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-07-30 17:30 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
+
+<%-- Import required classes --%>
+<%@page import="ch.inofix.portlet.cdav.NoCalendarSelectedException"%>
 
 <%
 	String backURL = ParamUtil.getString(request, "backURL");
@@ -15,6 +18,9 @@
 <div class="portlet-cdav-manager">
 
 	<liferay-ui:header backURL="<%=backURL%>" title="cdav-manager" />
+	
+	<liferay-ui:error exception="<%= NoCalendarSelectedException.class %>" 
+	   message="you-havent-selected-a-calendar-yet"/>
 
 	<portlet:actionURL var="syncResourcesURL" name="syncResources">
 	   <portlet:param name="mvcPath" value="/html/view.jsp"/>

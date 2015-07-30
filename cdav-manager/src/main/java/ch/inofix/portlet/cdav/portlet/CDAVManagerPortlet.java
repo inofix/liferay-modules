@@ -3,6 +3,7 @@ package ch.inofix.portlet.cdav.portlet;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -18,6 +19,7 @@ import zswi.protocols.caldav.ServerCalendar;
 import zswi.protocols.communication.core.HTTPSConnection;
 import zswi.protocols.communication.core.InitKeystoreException;
 import zswi.protocols.communication.core.InstallCertException;
+import ch.inofix.portlet.cdav.NoCalendarSelectedException;
 import ch.inofix.portlet.cdav.util.SyncUtil;
 
 import com.liferay.calendar.model.Calendar;
@@ -27,7 +29,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -39,8 +40,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * 
  * @author Christian Berndt
  * @created 2015-05-29 16:37
- * @modified 2015-07-05 15:55
- * @version 1.0.6
+ * @modified 2015-07-30 18:07
+ * @version 1.0.7
  *
  */
 public class CDAVManagerPortlet extends MVCPortlet {
@@ -59,7 +60,7 @@ public class CDAVManagerPortlet extends MVCPortlet {
 	public void syncResources(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws Exception {
 
-		log.info("Executing syncResources().");
+		log.debug("Executing syncResources().");
 
 		PortletPreferences portletPreferences = actionRequest.getPreferences();
 
@@ -91,8 +92,15 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 		} else {
 
-			SessionErrors.add(actionRequest,
-					"you-havent-selected-a-calendar-yet");
+			ResourceBundle messages = ResourceBundle.getBundle("Language",
+					actionRequest.getLocale());
+
+			String message = messages
+					.getString("you-havent-selected-a-calendar-yet");
+
+			log.error(message);
+
+			throw new NoCalendarSelectedException();
 
 		}
 
@@ -128,8 +136,6 @@ public class CDAVManagerPortlet extends MVCPortlet {
 			URISyntaxException, ParserConfigurationException, SAXException,
 			ParserException, PortalException, SystemException {
 
-		log.info("Executing syncResources().");
-
 		// Do not create a keystore in the user's home directory
 		// but use the truststore of the JRE installation. cdav-connect expects
 		// it secured with the default keystore password "changeit".
@@ -147,18 +153,18 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 		List<ServerCalendar> serverCalendars = conn.getCalendars();
 
-		log.info("calendars.size() = " + serverCalendars.size());
+		log.trace("calendars.size() = " + serverCalendars.size());
 
 		for (ServerCalendar serverCalendar : serverCalendars) {
 
-			log.info("serverCalendar.getDisplayName() = "
+			log.trace("serverCalendar.getDisplayName() = "
 					+ serverCalendar.getDisplayName());
 
-			log.info("configuredCalendar = " + configuredCalendar);
+			log.trace("configuredCalendar = " + configuredCalendar);
 
 			if (configuredCalendar.equals(serverCalendar.getDisplayName())) {
 
-				log.info("Synchronizing " + serverCalendar.getDisplayName());
+				log.debug("Synchronizing " + serverCalendar.getDisplayName());
 
 				syncCalendar = serverCalendar;
 
