@@ -6,8 +6,8 @@
     cdav-manager portlet.
     
     Created:    2015-06-12 09:49 by Christian Berndt
-    Modified:   2015-06-12 09:49 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-07-30 20:17 by Christian Berndt
+    Version:    1.0.1
  -->
 <liferay-portlet-app>
     <portlet>
@@ -23,6 +23,9 @@
                 </simple>
             </trigger>
         </scheduler-entry>
+        <control-panel-entry-category>site_administration.content</control-panel-entry-category>
+        <control-panel-entry-weight>100</control-panel-entry-weight>
+        <preferences-unique-per-layout>false</preferences-unique-per-layout>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
     </portlet>
