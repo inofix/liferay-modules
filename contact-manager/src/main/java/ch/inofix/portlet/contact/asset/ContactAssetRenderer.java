@@ -6,6 +6,8 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.WindowState;
+
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.permission.ContactPermission;
 
@@ -24,8 +26,8 @@ import com.liferay.portlet.asset.model.BaseAssetRenderer;
  * 
  * @author Christian Berndt
  * @created 2015-05-19 17:25
- * @modified 2015-07-01 15:06
- * @version 1.0.6
+ * @modified 2015-07-30 15:01
+ * @version 1.0.7
  *
  */
 public class ContactAssetRenderer extends BaseAssetRenderer {
@@ -102,7 +104,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 			portletURL.setParameter("contactId",
 					String.valueOf(contact.getContactId()));
 			portletURL.setParameter("javax.portlet.action", "viewContact");
-			// portletURL.setWindowState(WindowState.MAXIMIZED);
+			portletURL.setWindowState(WindowState.MAXIMIZED);
 
 			return portletURL.toString();
 			
