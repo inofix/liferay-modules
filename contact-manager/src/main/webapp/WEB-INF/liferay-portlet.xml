@@ -6,8 +6,8 @@
     contact-manager portlet.
     
     Created:    2015-05-19 17:17 by Christian Berndt
-    Modified:   2015-07-01 10:27 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-07-30 13:37 by Christian Berndt
+    Version:    1.0.4
  -->
 <liferay-portlet-app>
     <portlet>
@@ -24,6 +24,7 @@
         <asset-renderer-factory>ch.inofix.portlet.contact.asset.ContactAssetRendererFactory</asset-renderer-factory>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+        <add-default-resource>true</add-default-resource>
     </portlet>
     <role-mapper>
         <role-name>administrator</role-name>
