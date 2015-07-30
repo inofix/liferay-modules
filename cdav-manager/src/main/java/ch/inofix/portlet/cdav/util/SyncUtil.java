@@ -3,6 +3,7 @@ package ch.inofix.portlet.cdav.util;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,8 @@ import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
+import ch.inofix.portlet.cdav.SyncConnectionException;
+import ch.inofix.portlet.cdav.SyncWithCalDAVServerException;
 
 import com.liferay.calendar.NoSuchBookingException;
 import com.liferay.calendar.model.CalendarBooking;
@@ -60,8 +63,8 @@ import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2015-06-10 10:54
- * @modified 2015-07-05 15:31
- * @version 1.0.3
+ * @modified 2015-07-30 18:55
+ * @version 1.0.4
  *
  */
 public class SyncUtil {
@@ -232,6 +235,69 @@ public class SyncUtil {
 		vEvent.getProperties().add(uid);
 
 		return vEvent;
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param configuredCalendar
+	 * @return
+	 * @since 1.0.4
+	 */
+	public static ServerCalendar getServerCalendar(HTTPSConnection conn,
+			String configuredCalendar) throws SyncConnectionException {
+
+		log.debug("Executing getServerCalendar().");
+
+		ServerCalendar syncCalendar = null;
+
+		List<ServerCalendar> serverCalendars = new ArrayList<ServerCalendar>();
+
+		try {
+
+			serverCalendars = conn.getCalendars();
+
+		} catch (ParserConfigurationException e) {
+
+			log.error(e);
+			throw new SyncConnectionException();
+
+		} catch (SAXException e) {
+
+			log.error(e);
+			throw new SyncConnectionException();
+
+		} catch (IOException e) {
+
+			log.error(e);
+			throw new SyncConnectionException();
+
+		} catch (URISyntaxException e) {
+
+			log.error(e);
+			throw new SyncConnectionException();
+
+		}
+
+		log.trace("calendars.size() = " + serverCalendars.size());
+
+		for (ServerCalendar serverCalendar : serverCalendars) {
+
+			log.trace("serverCalendar.getDisplayName() = "
+					+ serverCalendar.getDisplayName());
+
+			log.trace("configuredCalendar = " + configuredCalendar);
+
+			if (configuredCalendar.equals(serverCalendar.getDisplayName())) {
+
+				log.debug("Synchronizing " + serverCalendar.getDisplayName());
+
+				syncCalendar = serverCalendar;
+
+			}
+		}
+
+		return syncCalendar;
 	}
 
 	/**
@@ -492,21 +558,44 @@ public class SyncUtil {
 			com.liferay.calendar.model.Calendar targetCalendar,
 			HTTPSConnection conn, boolean restoreFromTrash,
 			boolean syncOnlyUpcoming, ServiceContext serviceContext)
-			throws PortalException, SystemException, ClientProtocolException,
-			IOException, URISyntaxException, ParserException {
-
-		log.info("Executing syncFromCalDAVServer().");
+			throws PortalException, SystemException {
 
 		// TODO: Perform the sync in a background job
 
-		List<ServerVEvent> serverVEvents = null;
+		List<ServerVEvent> serverVEvents = new ArrayList<ServerVEvent>();
 
-		if (serverCalendar != null) {
-			// Retrieve the events from the provided calendar
-			serverVEvents = conn.getVEvents(serverCalendar);
-		} else {
-			// Retrieve the events from the default calendar
-			serverVEvents = conn.getVEvents();
+		try {
+
+			if (serverCalendar != null) {
+
+				// Retrieve the events from the provided calendar
+				serverVEvents = conn.getVEvents(serverCalendar);
+
+			} else {
+				// Retrieve the events from the default calendar
+				serverVEvents = conn.getVEvents();
+			}
+
+		} catch (ClientProtocolException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
+		} catch (IOException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
+		} catch (URISyntaxException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
+		} catch (ParserException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
 		}
 
 		for (ServerVEvent serverVEvent : serverVEvents) {
@@ -669,8 +758,7 @@ public class SyncUtil {
 			com.liferay.calendar.model.Calendar targetCalendar,
 			HTTPSConnection conn, boolean restoreFromTrash,
 			boolean syncOnlyUpcoming, ServiceContext serviceContext)
-			throws PortalException, SystemException, ClientProtocolException,
-			IOException, URISyntaxException, ParserException {
+			throws SystemException, PortalException {
 
 		log.info("Executing syncToCalDAVServer().");
 
@@ -689,99 +777,125 @@ public class SyncUtil {
 
 		log.info("calendarBookings.size = " + calendarBookings.size());
 
-		List<ServerVEvent> serverVEvents = null;
+		List<ServerVEvent> serverVEvents = new ArrayList<ServerVEvent>();
 
-		if (serverCalendar != null) {
-			// Retrieve the events from the provided calendar
-			serverVEvents = conn.getVEvents(serverCalendar);
-		} else {
-			// Retrieve the events from the default calendar
-			serverVEvents = conn.getVEvents();
-		}
+		try {
+			if (serverCalendar != null) {
+				// Retrieve the events from the provided calendar
 
-		for (CalendarBooking calendarBooking : calendarBookings) {
+				serverVEvents = conn.getVEvents(serverCalendar);
 
-			String uuid = calendarBooking.getUuid();
+			} else {
+				// Retrieve the events from the default calendar
+				serverVEvents = conn.getVEvents();
+			}
 
-			// Do not sync events from trash
+			for (CalendarBooking calendarBooking : calendarBookings) {
 
-			if (calendarBooking.getStatus() != WorkflowConstants.STATUS_IN_TRASH) {
+				String uuid = calendarBooking.getUuid();
 
-				ServerVEvent serverVEvent = getServerVEvent(uuid, serverVEvents);
+				// Do not sync events from trash
 
-				VEvent vEvent = SyncUtil.getVEvent(calendarBooking);
+				if (calendarBooking.getStatus() != WorkflowConstants.STATUS_IN_TRASH) {
 
-				if (serverVEvent == null) {
+					ServerVEvent serverVEvent = getServerVEvent(uuid,
+							serverVEvents);
 
-					log.info("Adding a new event, since this event does "
-							+ "not exist in the remote calendar yet.");
+					VEvent vEvent = SyncUtil.getVEvent(calendarBooking);
 
-					if (serverCalendar != null) {
-						// Add the event to configured calendar
-						conn.addVEvent(vEvent, serverCalendar);
-					} else {
-						// Add the event to the default calendar
-						conn.addVEvent(vEvent);
-					}
+					if (serverVEvent == null) {
 
-				} else {
+						log.info("Adding a new event, since this event does "
+								+ "not exist in the remote calendar yet.");
 
-					long lastModifiedTime = 0;
-
-					lastModifiedTime = getLastModifiedTime(serverVEvent
-							.getVevent());
-
-					String eTag = serverVEvent.geteTag();
-
-					String currentETag = getETag(calendarBooking);
-
-					log.info(calendarBooking.getTitle(serviceContext
-							.getLocale()));
-					log.info(eTag);
-					log.info(currentETag);
-
-					if (eTag.equals(currentETag)) {
-
-						// DateTime of VEvent does not support millisecond
-						// resolution so we have to compare the modification
-						// dates on second level
-
-						// TODO: Store the ModifiedDate timestamp as a
-						// non-standard property
-						long lastVEventModification = lastModifiedTime / 1000;
-						long lastCalendarBookingModification = calendarBooking
-								.getModifiedDate().getTime() / 1000;
-
-						log.info(lastVEventModification);
-						log.info(lastCalendarBookingModification);
-
-						if (lastCalendarBookingModification > lastVEventModification) {
-
-							log.info("Updating the event, since it has not been "
-									+ "modified on the remote server.");
-
-							serverVEvent.setVevent(vEvent);
-							conn.updateVEvent(serverVEvent);
-
+						if (serverCalendar != null) {
+							// Add the event to configured calendar
+							conn.addVEvent(vEvent, serverCalendar);
 						} else {
-
-							log.info("Not updating the event, since it has not "
-									+ "been modified since the last synchronization");
+							// Add the event to the default calendar
+							conn.addVEvent(vEvent);
 						}
 
 					} else {
 
-						log.info("Not updating the event, since it has been "
-								+ "modified on the remote server.");
+						long lastModifiedTime = 0;
 
-						// TODO: But might have been modified in the liferay
-						// calendar, too
+						lastModifiedTime = getLastModifiedTime(serverVEvent
+								.getVevent());
+
+						String eTag = serverVEvent.geteTag();
+
+						String currentETag = getETag(calendarBooking);
+
+						log.info(calendarBooking.getTitle(serviceContext
+								.getLocale()));
+						log.info(eTag);
+						log.info(currentETag);
+
+						if (eTag.equals(currentETag)) {
+
+							// DateTime of VEvent does not support millisecond
+							// resolution so we have to compare the modification
+							// dates on second level
+
+							// TODO: Store the ModifiedDate timestamp as a
+							// non-standard property
+							long lastVEventModification = lastModifiedTime / 1000;
+							long lastCalendarBookingModification = calendarBooking
+									.getModifiedDate().getTime() / 1000;
+
+							log.info(lastVEventModification);
+							log.info(lastCalendarBookingModification);
+
+							if (lastCalendarBookingModification > lastVEventModification) {
+
+								log.info("Updating the event, since it has not been "
+										+ "modified on the remote server.");
+
+								serverVEvent.setVevent(vEvent);
+								conn.updateVEvent(serverVEvent);
+
+							} else {
+
+								log.info("Not updating the event, since it has not "
+										+ "been modified since the last synchronization");
+							}
+
+						} else {
+
+							log.info("Not updating the event, since it has been "
+									+ "modified on the remote server.");
+
+							// TODO: But might have been modified in the liferay
+							// calendar, too
+
+						}
 
 					}
 
 				}
-
 			}
+
+		} catch (ClientProtocolException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
+		} catch (IOException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
+		} catch (URISyntaxException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
+		} catch (ParserException e) {
+
+			log.error(e);
+			throw new SyncWithCalDAVServerException();
+
 		}
 	}
 

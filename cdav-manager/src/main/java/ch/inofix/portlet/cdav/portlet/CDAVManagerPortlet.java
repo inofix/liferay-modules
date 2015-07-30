@@ -2,24 +2,18 @@ package ch.inofix.portlet.cdav.portlet;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
-import javax.xml.parsers.ParserConfigurationException;
-
-import net.fortuna.ical4j.data.ParserException;
-
-import org.apache.http.client.ClientProtocolException;
-import org.xml.sax.SAXException;
 
 import zswi.protocols.caldav.ServerCalendar;
 import zswi.protocols.communication.core.HTTPSConnection;
 import zswi.protocols.communication.core.InitKeystoreException;
 import zswi.protocols.communication.core.InstallCertException;
 import ch.inofix.portlet.cdav.NoCalendarSelectedException;
+import ch.inofix.portlet.cdav.SyncConnectionException;
 import ch.inofix.portlet.cdav.util.SyncUtil;
 
 import com.liferay.calendar.model.Calendar;
@@ -40,8 +34,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * 
  * @author Christian Berndt
  * @created 2015-05-29 16:37
- * @modified 2015-07-30 18:07
- * @version 1.0.7
+ * @modified 2015-07-30 19:57
+ * @version 1.0.8
  *
  */
 public class CDAVManagerPortlet extends MVCPortlet {
@@ -85,7 +79,6 @@ public class CDAVManagerPortlet extends MVCPortlet {
 
 		if (Validator.isNotNull(configuredCalendar)) {
 
-			// TODO: catch Exceptions and fail gracefully
 			syncResources(configuredCalendar, calendarId, domain, password,
 					restoreFromTrash, servername, syncOnlyUpcoming, username,
 					serviceContext);
@@ -121,9 +114,7 @@ public class CDAVManagerPortlet extends MVCPortlet {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @throws URISyntaxException
-	 * @throws ParserConfigurationException
 	 * @throws SAXException
-	 * @throws ParserException
 	 * @throws SystemException
 	 * @throws PortalException
 	 */
@@ -131,53 +122,46 @@ public class CDAVManagerPortlet extends MVCPortlet {
 			long calendarId, String domain, String password,
 			boolean restoreFromTrash, String servername,
 			boolean syncOnlyUpcoming, String username,
-			ServiceContext serviceContext) throws InstallCertException,
-			InitKeystoreException, ClientProtocolException, IOException,
-			URISyntaxException, ParserConfigurationException, SAXException,
-			ParserException, PortalException, SystemException {
+			ServiceContext serviceContext) throws PortalException,
+			SystemException {
 
 		// Do not create a keystore in the user's home directory
-		// but use the truststore of the JRE installation. cdav-connect expects
-		// it secured with the default keystore password "changeit".
+		// but use the truststore of the JRE installation. cdav-connect
+		// expects it secured with the default keystore password "changeit".
 		boolean installCert = false;
 
 		HTTPSConnection conn = null;
 
-		conn = new HTTPSConnection(servername, domain, username, password, 443,
-				installCert);
+		try {
 
-		// Retrieve the user's calendars
-		ServerCalendar syncCalendar = null;
+			conn = new HTTPSConnection(servername, domain, username, password,
+					443, installCert);
+
+		} catch (InstallCertException e) {
+
+			log.error(e);
+			throw new SyncConnectionException();
+
+		} catch (InitKeystoreException e) {
+
+			log.error(e);
+			throw new SyncConnectionException();
+		}
+
+		// Retrieve the serverCalendar from the calDAV server.
+		ServerCalendar serverCalendar = SyncUtil.getServerCalendar(conn,
+				configuredCalendar);
+
 		Calendar currentCalendar = CalendarLocalServiceUtil
 				.getCalendar(calendarId);
 
-		List<ServerCalendar> serverCalendars = conn.getCalendars();
+		// Sync with the selected calendar
+		if (serverCalendar != null) {
 
-		log.trace("calendars.size() = " + serverCalendars.size());
-
-		for (ServerCalendar serverCalendar : serverCalendars) {
-
-			log.trace("serverCalendar.getDisplayName() = "
-					+ serverCalendar.getDisplayName());
-
-			log.trace("configuredCalendar = " + configuredCalendar);
-
-			if (configuredCalendar.equals(serverCalendar.getDisplayName())) {
-
-				log.debug("Synchronizing " + serverCalendar.getDisplayName());
-
-				syncCalendar = serverCalendar;
-
-			}
-		}
-
-		// Sync either with the selected or the default calendar
-		if (serverCalendars.size() > 0) {
-
-			SyncUtil.syncFromCalDAVServer(syncCalendar, currentCalendar, conn,
+			SyncUtil.syncFromCalDAVServer(serverCalendar, currentCalendar, conn,
 					restoreFromTrash, syncOnlyUpcoming, serviceContext);
 
-			SyncUtil.syncToCalDAVServer(syncCalendar, currentCalendar, conn,
+			SyncUtil.syncToCalDAVServer(serverCalendar, currentCalendar, conn,
 					restoreFromTrash, syncOnlyUpcoming, serviceContext);
 
 		}
