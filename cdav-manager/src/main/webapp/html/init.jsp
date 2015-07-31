@@ -2,13 +2,15 @@
     init.jsp: Common imports and setup code of the cdav-manager portlet.
     
     Created:    2015-05-30 12:19 by Christian Berndt
-    Modified:   2015-07-07 20:54 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-07-31 16:22 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%-- Import required classes --%>
-
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Date"%>
+<%@page import="java.util.List"%>
+
 
 <%@page import="com.liferay.calendar.service.CalendarServiceUtil"%>
 <%@page import="com.liferay.calendar.model.Calendar"%>
@@ -37,32 +39,38 @@
 <theme:defineObjects/>
 
 <%
-	String calendar = portletPreferences.getValue("calendar", "");
-	String calendarId = portletPreferences.getValue("calendarId", "");
-	String domain = portletPreferences.getValue("domain", "");
+	String[] calendars = portletPreferences.getValues("calendar",
+			new String[] {""});
+	String[] calendarIds = portletPreferences.getValues("calendarId",
+			new String[] {""});
+	String[] domains = portletPreferences.getValues("domain",
+			new String[]{""});
 	// TODO: Retrieve the lastSync from the portlet / application scope
 	Date lastSync = new Date();
-	String password = portletPreferences.getValue("password", "");
-	String restoreFromTrash = portletPreferences.getValue("restoreFromTrash", "false");
-	String servername = portletPreferences.getValue("servername", "");
-	String username = portletPreferences.getValue("username", "");
+	String[] passwords = portletPreferences.getValues("password",
+			new String[]{""});
+	String[] restoreFromTrash = portletPreferences.getValues(
+			"restoreFromTrash", new String[] {"false"});
+	String[] servernames = portletPreferences.getValues("servername",
+			new String[]{""});
+	String[] usernames = portletPreferences.getValues("username",
+			new String[]{""});
 
-	long targetCalendarId = GetterUtil.getLong(calendarId);
+	long[] targetCalendarIds = GetterUtil.getLongValues(calendarIds);
 
-	Calendar targetCalendar = null;
-	String targetCalendarName = LanguageUtil.get(pageContext,
-			"not-selected");
-	if (targetCalendarId > 0) {
-		targetCalendar = CalendarServiceUtil
-				.getCalendar(targetCalendarId);
-		targetCalendarName = targetCalendar.getName(locale);
-	}
+	List<Calendar> targetCalendars = new ArrayList<Calendar>();
 
-	boolean hasConnectionParameters = false;
+	for (long targetCalendarId : targetCalendarIds) {
 
-	if (Validator.isNotNull(servername) && Validator.isNotNull(domain)
-			&& Validator.isNotNull(username)
-			&& Validator.isNotNull(password)) {
-		hasConnectionParameters = true;
+		if (targetCalendarId > 0) {
+			
+			Calendar targetCalendar = CalendarServiceUtil
+					.getCalendar(targetCalendarId);
+			
+			targetCalendars.add(targetCalendar);
+			
+		} else {
+			targetCalendars.add(null);
+		}
 	}
 %>

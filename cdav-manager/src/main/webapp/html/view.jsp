@@ -2,8 +2,8 @@
     view.jsp: Default view of the cdav manager portlet.
     
     Created:    2015-05-30 13:11 by Christian Berndt
-    Modified:   2015-07-30 19:11 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-07-31 17:12 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -32,6 +32,28 @@
 	   <portlet:param name="mvcPath" value="/html/view.jsp"/>
 	</portlet:actionURL>
 
+<%
+	for (int i = 0; i < servernames.length; i++) {
+
+		boolean hasConnectionParameters = false;
+
+		if (Validator.isNotNull(servernames[i])
+				&& Validator.isNotNull(domains[i])
+				&& Validator.isNotNull(usernames[i])
+				&& Validator.isNotNull(passwords[i])) {
+			hasConnectionParameters = true;
+		}
+
+		String targetCalendarName = LanguageUtil.get(pageContext,
+				"not-selected");
+		
+		Calendar targetCalendar = targetCalendars.get(i); 
+		
+		if (targetCalendar != null) {
+			targetCalendarName = targetCalendar.getName(locale); 
+		}
+%>
+
 	<aui:form action="<%=syncResourcesURL%>" method="post" name="fm">
 		<aui:row>
 			<dl>
@@ -40,7 +62,7 @@
 				</dt>
 				<c:choose>
 					<c:when test="<%=hasConnectionParameters%>">
-						<dd><%=servername%>/<%=domain%>/<%=username%>/<%=calendar%></dd>
+						<dd><%=servernames[i]%>/<%=domains[i]%>/<%=usernames[i]%>/<%=calendars[i]%></dd>
 					</c:when>
 					<c:otherwise>
 						<dd>
@@ -60,12 +82,19 @@
 				disabled="<%=!hasConnectionParameters%>" />
 
 			<c:if test="<%=!hasConnectionParameters%>">
-				<div class="alert alert-warn pull-right">
-					<liferay-ui:message key="please-configure-your-sync-settings" />
-				</div>
+
 			</c:if>
 		</aui:row>
 	</aui:form>
+<%
+   }
+%>
+
+    <c:if test="<%= servernames == null || servernames.length == 0 %>">
+		<div class="alert alert-warn">
+		    <liferay-ui:message key="please-configure-your-sync-settings" />
+		</div>
+	</c:if>
 
 	<hr>
     
