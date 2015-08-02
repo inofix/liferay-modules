@@ -3,13 +3,15 @@
 ## the example of portal_normal.vm of Liferay's classic-theme.
 ##
 ## Created:     2015-07-26 16:23 by Christian Berndt
-## Modified:    2015-07-26 16:23 by Christian Berndt
-## Version:     1.0.0
+## Modified:    2015-08-02 13:42 by Christian Berndt
+## Version:     1.0.1
 ##
 
 <!DOCTYPE html>
 
 #parse ($init)
+
+#set ($default_font= $theme_display.getThemeSetting('default-font'))
 
 <html class="$root_css_class" dir="#language ("lang.dir")" lang="$w3c_language_id">
 
@@ -17,6 +19,7 @@
     <title>$the_title - $company_name</title>
 
     <meta content="initial-scale=1.0, width=device-width" name="viewport" />
+    <link href='$default_font' rel='stylesheet' type='text/css'>
 
     $theme.include($top_head_include)
 </head>
@@ -70,12 +73,17 @@ $theme.include($body_top_include)
             $theme.wrapPortlet("portlet.vm", $content_include)
         #end
     </div>
-
-##    <footer id="footer" role="contentinfo">
-##        <p class="powered-by">
-##            #language ("powered-by") <a href="http://www.liferay.com" rel="external">Liferay</a>
-##        </p>
-##    </footer>
+    
+    <footer id="footer" role="contentinfo">
+        <div class="container">
+            <p class="copyright pull-right">
+                &copy; 2015 <a href="http://www.inofix.ch" target="_blank">inofix.ch</a>
+            </p>
+##          <p class="powered-by">
+##              #language ("powered-by") <a href="http://www.liferay.com" rel="external">Liferay</a>
+##          </p>
+        </div>
+    </footer>
 </div>
 
 $theme.include($body_bottom_include)
