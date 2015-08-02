@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28	12:21 by Christian Berndt
- * Modified: 	2015-07-28 	14:49 by Christian Berndt
- * Version: 	0.1.1
+ * Modified: 	2015-08-02 	13:06 by Christian Berndt
+ * Version: 	0.2.0
  */
 
 @import "compass";
@@ -11,21 +11,131 @@
 
 .aui {
 	
+    font-family: 'Source Sans Pro', sans-serif;
+    
+    h1,h2,h3,h4,h5,h6 {
+    
+       font-weight: 600;
+       
+    }
+    
+    a:hover, 
+    a:focus {
+        text-decoration: none; 
+    }
+	
     .dockbar-user-notifications .dropdown-toggle .user-notifications-count {
         display: inline;
-        padding: 2px 2px 2px 2px; 
+        padding: 2px 4px 2px; 
         background-color: #FCF8E3;  /* bootstrap alert */
         color: #C09853;             /* bootstrap alert */
         border: 1px solid #FBEED5;  /* bootstrap alert */
     }
 	
-	#wrapper {
-	   padding: 0; 
-	}
+    body {
+    
+        font-family: 'Source Sans Pro', sans-serif;  
+        background: #fcfcfc;
+
+    }
+        
+    #wrapper {
+       padding: 0; 
+    }
 	
-	header nav {
-	   text-transform: uppercase;
-	}
+    .navbar {
+        
+        .brand {
+            padding: 18px 40px 18px;
+            font-weight: 600;
+            font-size: 24px;
+            color: red;
+            
+            .icon {
+                color: #555;
+            }
+        }
+    
+        .nav {
+            > .active a,
+            > .active a:focus,
+            > .active a:hover
+            {
+                background-color: #F3F3F3; 
+                box-shadow: none; 
+                -moz-box-shadow: none; 
+                -webkit-box-shadow: none; 
+            }
+            
+            > li > a {
+              padding: 20px 20px; 
+              text-transform: uppercase;
+            }
+        }
+        
+        .divider-vertical {
+            height: 60px;
+        }
+    }
+    
+    .navbar-inner {
+    
+        background-color: white;
+        background-image: none;
+        
+        .container {
+            padding: 0; 
+        }
+
+    }
+    
+    .navbar-static-top .navbar-inner {
+        box-shadow: none; 
+        -webkit-box-shadow: none; 
+    }
+    
+    #content {
+        background: url("../images/background_schwarze_pumpe_xl.jpg") no-repeat;
+        background-position: -470px -260px;
+    }
+    
+    .container {
+        padding: 15px 0; 
+        
+        > .lead {
+            max-width: 700px;
+        }
+    }
+    
+    .hero-unit {
+    
+       color: white;
+       background-color: transparent;
+       margin-top: 40px;
+       margin-bottom: 100px; 
+       
+       h1, h2 {
+           max-width: 600px;
+       }
+       
+       h1 {
+           font-size: 38.5px;
+       }
+       
+       p {
+           font-size: 21.5px;
+           font-weight: 600; 
+           margin-top: 20px;
+           margin-bottom: 20px;
+           max-width: 500px;           
+       }
+       
+       .btn {
+           font-size: 21.5px;
+           font-weight: 600;  
+       }
+       
+    }
 	
 	.jumbotron {
 	   padding: 120px;
@@ -41,6 +151,7 @@
 	
         .article-form {
             padding: 1.5em;
+            background-color: #fcfcfc;
         }
         
         .alert {
@@ -115,7 +226,15 @@
 	               padding-left: 0; 
 	           }
 	       }
-	    }
-	    
+	    }	    
+	}
+	
+	.add-content-menu {
+	
+       color: #555;
+	   
+	   h1 {
+			font-size: 24.5px; /* bootstrap h3 */
+	   }
 	}	
 }
