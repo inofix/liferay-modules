@@ -76,9 +76,25 @@ $theme.include($body_top_include)
     
     <footer id="footer" role="contentinfo">
         <div class="container">
-            <p class="copyright pull-right">
+            <div class="copyright">
+                <ul class="pull-left">
+                    <li>
                 &copy; 2015 <a href="http://www.inofix.ch" target="_blank">inofix.ch</a>
-            </p>
+                    </li>
+                    <li><a href="#">Datenschutz</a></li>
+                </ul>
+                
+                <ul class="pull-right">
+                
+                    <li><a href="https://github.com/inofix" target="_blank"><span class="icon icon-github-sign">&nbsp;</span></a></li>
+                    
+                    #if (!$is_signed_in)             
+                        <li><a href="/c/portal/login" title="#language ("sign-in")"><span class="icon icon-signin">&nbsp;</span></a></li>
+                    #else
+                        <li><a href="/c/portal/logout" title="#language ("sign-out")"><span class="icon icon-signout">&nbsp;</span></a></li>
+                    #end
+                </ul>                
+            </div>
 ##          <p class="powered-by">
 ##              #language ("powered-by") <a href="http://www.liferay.com" rel="external">Liferay</a>
 ##          </p>

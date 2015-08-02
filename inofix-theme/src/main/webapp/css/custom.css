@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28	12:21 by Christian Berndt
- * Modified: 	2015-08-02 	13:06 by Christian Berndt
- * Version: 	0.2.0
+ * Modified: 	2015-08-02 	18:34 by Christian Berndt
+ * Version: 	0.2.1
  */
 
 @import "compass";
@@ -97,11 +97,18 @@
     #content {
         background: url("../images/background_schwarze_pumpe_xl.jpg") no-repeat;
         background-position: -470px -260px;
+        
+        > form {
+            margin: 0; 
+        }
     }
     
     .container {
-        padding: 15px 0; 
-        
+    
+        > h2 {
+            padding-top: 20px;
+        }
+            
         > .lead {
             max-width: 700px;
         }
@@ -112,7 +119,7 @@
        color: white;
        background-color: transparent;
        margin-top: 40px;
-       margin-bottom: 100px; 
+       margin-bottom: 180px; 
        
        h1, h2 {
            max-width: 600px;
@@ -141,6 +148,33 @@
 	   padding: 120px;
 	   text-align: center;
 	   background-color: lightgray;
+	}
+	
+	.copyright {
+	   
+	   padding: 20px 0 40px;
+	   
+	   ul {
+	       list-style: none;
+	       margin: 0;  
+	   }
+	   
+	   li {
+	       display: inline;
+	   }
+	   
+	   .pull-left li {
+           padding: 0 20px 0 0;
+	   }
+	   
+       .pull-right li {
+           padding: 0 0 0 20px;
+       }
+       
+       .icon {
+            font-size: 21.5px;
+       }
+	   
 	}
 	
 	.portlet-borderless-container {

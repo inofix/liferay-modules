@@ -59,12 +59,6 @@
                         </li>
                     #end
                     
-                    #if (!$is_signed_in)             
-                        <li><a href="/c/portal/login">#language ("sign-in")</a></li>
-                    #else
-                        <li><a href="/c/portal/logout">#language ("sign-out")</a></li>                
-                    #end
-                    
                 </ul>
     
             </div>
