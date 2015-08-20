@@ -3,8 +3,8 @@
     portlet.xml: Main configuration file of the social-media portlet.
     
     Created:    2015-08-20 15:00 by Christian Berndt
-    Modified:   2015-08-20 15:00 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-08-20 15:37 by Christian Berndt
+    Version:    1.0.1
  -->
 
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
@@ -23,6 +23,7 @@
         <supports>
             <mime-type>text/html</mime-type>
         </supports>
+        <resource-bundle>Language</resource-bundle>
         <portlet-info>
             <title>Social Media Portlet</title>
             <short-title>Social Media Portlet</short-title>
