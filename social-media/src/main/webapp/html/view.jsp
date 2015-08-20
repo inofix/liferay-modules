@@ -2,8 +2,8 @@
     view.jsp: Default view of the social-media-portlet
     
     Created:    2015-08-19 22:17 by Christian Berndt
-    Modified:   2015-08-20 16:07 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-08-20 20:06 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -37,10 +37,14 @@
 
 %>
 
-<div class="shariff" data-backend-url="<%= backendUrl %>"
-	data-url="http://www.example.com/my-article.html" data-theme="<%= selectedTheme %>"
-	data-orientation="<%= selectedOrientation %>" data-services="<%= servicesConfig %>"></div>
-
-<c:if test="<%= showBuildInfo %>">
-	<ifx-util:build-info />
-</c:if>
+<div class="portlet-social-media">
+    <div class="container">
+		<div class="shariff" data-backend-url="<%= backendUrl %>"
+			data-url="http://www.example.com/my-article.html" data-theme="<%= selectedTheme %>"
+			data-orientation="<%= selectedOrientation %>" data-services="<%= servicesConfig %>"></div>
+		
+		<c:if test="<%= showBuildInfo %>">
+			<ifx-util:build-info />
+		</c:if>
+	</div>
+</div>
