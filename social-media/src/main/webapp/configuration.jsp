@@ -2,8 +2,8 @@
     configuration.jsp: Configure the social-media portlet's preferences.
     
     Created:    2015-08-20 13:05 by Christian Berndt
-    Modified:   2015-08-20 13:05 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-08-20 15:56 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -24,6 +24,10 @@
             available.add(new KeyValuePair(service, service));
         }
     }
+    
+    // Add variables to pagecontext in order to access them in EL-Syntax
+    pageContext.setAttribute("selectedOrientation", selectedOrientation); 
+    pageContext.setAttribute("selectedTheme", selectedTheme); 
 %>
 
 <liferay-portlet:actionURL portletConfiguration="true"
@@ -50,9 +54,60 @@
                 rightTitle="available" leftBoxName="selected"
                 leftList="<%=selected%>" rightBoxName="available"
                 leftTitle="current" leftReorder="true" />
+                
         </liferay-ui:panel>
-        
-    </liferay-ui:panel-container>
+
+		<liferay-ui:panel title="backend" extended="true">
+
+			<aui:input name="backendUrl" value="<%=backendUrl%>"
+				helpMessage="backend-url-help" />
+
+		</liferay-ui:panel>
+
+		<liferay-ui:panel title="display-settings" extended="true">
+		
+            <aui:field-wrapper label="orientation"
+                helpMessage="orientation-help">
+                
+                <c:forEach items="<%= availableOrientations %>" var="orientation">
+
+	                <aui:input name="orientation" type="radio" value="${orientation}"
+	                    label="${orientation}" inlineLabel="true" inlineField="true"
+	                    checked="${selectedOrientation==orientation}" />
+
+				</c:forEach>
+				
+            </aui:field-wrapper>
+            
+            <aui:field-wrapper label="theme"
+                helpMessage="theme-help">
+                
+                <c:forEach items="<%= availableThemes %>" var="theme">
+
+                    <aui:input name="theme" type="radio" value="${theme}"
+                        label="${theme}" inlineLabel="true" inlineField="true"
+                        checked="${selectedTheme==theme}" />
+
+                </c:forEach>
+                
+            </aui:field-wrapper>
+
+			<aui:field-wrapper label="show-build-info"
+				helpMessage="show-build-info-help">
+
+				<aui:input name="showBuildInfo" type="radio" value="false"
+					label="no" inlineLabel="true" inlineField="true"
+					checked="<%=!showBuildInfo%>" />
+					
+				<aui:input name="showBuildInfo" type="radio" value="true"
+					label="yes" inlineLabel="true" inlineField="true"
+					checked="<%=showBuildInfo%>" />
+
+			</aui:field-wrapper>
+
+		</liferay-ui:panel>
+
+	</liferay-ui:panel-container>
 
     <aui:button-row>
         <aui:button type="submit" />

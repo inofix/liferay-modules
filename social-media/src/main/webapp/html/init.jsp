@@ -2,12 +2,13 @@
     init.jsp: Common imports and setup code of the social-media portlet.
     
     Created:    2015-08-20 13:12 by Christian Berndt
-    Modified:   2015-08-20 13:12 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-08-20 16:57 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%-- Import required classes --%>
 
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.List"%>
@@ -21,6 +22,7 @@
 <%-- Import required taglibs --%>
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/inofix-util" prefix="ifx-util" %>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
@@ -35,26 +37,39 @@
 
 <%
 
-    // orientation
-    
-    String[] availableOrientations = new String[] {"horizontal", "vertical"}; 
-    
-    String selectedOrientation = portletPreferences.getValue("orientation", "horizontal"); 
+    // backend-url
 
+	String backendUrl = portletPreferences.getValue(
+	        "backend-url", null);
 
-    // services
-    
+	// orientation
+
+	String[] availableOrientations = new String[] { "horizontal",
+			"vertical" };
+
+	String selectedOrientation = portletPreferences.getValue(
+			"orientation", "horizontal");
+
+	// services
+
 	String[] availableServices = new String[] { "facebook",
 			"googleplus", "info", "linkedin", "mail", "pinterest",
 			"twitter", "whatsapp", "xing" };
 
-	String[] selectedServices = portletPreferences.getValues("services",
-			new String[] { "facebook", "googleplus", "twitter" });
-	
+	String[] selectedServices = portletPreferences.getValues(
+			"services", new String[] { "facebook", "googleplus",
+					"twitter" });
+
+	// show build info
+
+	boolean showBuildInfo = GetterUtil.getBoolean(portletPreferences
+			.getValue("show-build-info", "false"));
 
 	// theme
-	
-    String[] availableThemes = new String[] {"standard", "grey", "white"};
-	
-    String selectedTheme = portletPreferences.getValue("theme", "standard"); 
+
+	String[] availableThemes = new String[] { "standard", "grey",
+			"white" };
+
+	String selectedTheme = portletPreferences.getValue("theme",
+			"standard");
 %>
