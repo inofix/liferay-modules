@@ -61,6 +61,18 @@ It allows you to define a default display page for a structure by adding a field
 
 A full responsive theme which makes intensive use of Bootstrap and Alloy UI.
 
+### Social Media Portlet
+
+Social Media Portlet provides a set of social media buttons which respect the user's privacy. 
+
+It's based on heiseonline's shariff library, which can be found at <a href="https://github.com/heiseonline/shariff" target="_blank">https://github.com/heiseonline/shariff</a>. 
+
+
+
+#### Third Party Libraries
+
+* <a href="https://github.com/heiseonline/shariff" target="_blank">heiseonline's shariff</a>
+
 ### Taglib Util
 
 taglib-util is a collection of utility tags, which are used by various liferay-portlets but can also be used in other contexts.
