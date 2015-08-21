@@ -3,8 +3,8 @@
 ## the example of navigation.vm of Liferay's classic-theme.
 ##
 ## Created:     2015-07-26 16:32 by Christian Berndt
-## Modified:    2015-08-02 13:25 by Christian Berndt
-## Version:     1.0.1
+## Modified:    2015-08-21 10:25 by Christian Berndt
+## Version:     1.0.2
 ##
 
 #set ($brand= $theme_display.getThemeSetting('brand'))
@@ -12,6 +12,11 @@
 <nav class="$nav_css_class navbar navbar-static-top site-navigation" id="navigation" role="navigation">
     <div class="navbar-inner">
         <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <a class="brand" href="$site_default_url" title="#language_format ("go-to-x", ["home"])">$brand</a>
             <div class="collapse nav-collapse pull-right">
                 <ul aria-label="#language ("site-pages")" class="nav nav-collapse" role="menubar">
