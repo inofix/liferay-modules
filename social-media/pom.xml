@@ -9,9 +9,14 @@
 	<artifactId>social-media</artifactId>
 	<packaging>war</packaging>
 	<name>Social Media Portlet</name>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 	<build>
-        
+
+        <!-- Required for the auto-generated -->
+        <!-- liferay-plugin-package.xml file but -->
+        <!-- missing in the 6.2.2 archetype. -->
+        <finalName>${project.artifactId}</finalName>
+                
 		<plugins>
 			<plugin>
 				<groupId>com.liferay.maven.plugins</groupId>
@@ -90,9 +95,6 @@
                             <addDefaultSpecificationEntries>
                                 true
                             </addDefaultSpecificationEntries>
-                            <addDefaultImplementationEntries>
-                                true
-                            </addDefaultImplementationEntries>
                         </manifest>
                         <!-- Additional info used by the -->
                         <!-- BuildInfoTag of Inofix'     -->

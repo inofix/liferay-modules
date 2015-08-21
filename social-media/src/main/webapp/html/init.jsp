@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the social-media portlet.
     
     Created:    2015-08-20 13:12 by Christian Berndt
-    Modified:   2015-08-20 16:57 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-08-21 10:42 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%-- Import required classes --%>
@@ -36,11 +36,23 @@
 <theme:defineObjects />
 
 <%
+	// backend-url
 
-    // backend-url
+	String backendUrl = portletPreferences
+			.getValue("backend-url", null);
 
-	String backendUrl = portletPreferences.getValue(
-	        "backend-url", null);
+	// github-url
+
+	String githubUrl = portletPreferences.getValue("github-url", null);
+
+	// mail
+
+	String mailBody = portletPreferences.getValue("mail-body", null);
+
+	String mailSubject = portletPreferences.getValue("mail-subject",
+			null);
+
+	String mailUrl = portletPreferences.getValue("mail-url", null);
 
 	// orientation
 
@@ -72,4 +84,14 @@
 
 	String selectedTheme = portletPreferences.getValue("theme",
 			"standard");
+
+	// twitter
+
+	String twitterVia = portletPreferences
+			.getValue("twitter-via", null);
+
+	// use container
+
+	boolean useContainer = GetterUtil.getBoolean(portletPreferences
+			.getValue("use-container", "false"));
 %>

@@ -2,8 +2,8 @@
     configuration.jsp: Configure the social-media portlet's preferences.
     
     Created:    2015-08-20 13:05 by Christian Berndt
-    Modified:   2015-08-20 15:56 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-08-21 10:49 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -56,6 +56,35 @@
                 leftTitle="current" leftReorder="true" />
                 
         </liferay-ui:panel>
+        
+        <liferay-ui:panel title="service-settings" extended="true">
+
+            <aui:fieldset label="mail">
+            
+	            <aui:input name="mailSubject" value="<%= mailSubject%>"
+	                helpMessage="mail-subject-help" />
+	
+	            <aui:input name="mailBody" value="<%= mailBody%>"
+	                helpMessage="mail-body-help" />
+	
+	            <aui:input name="mailUrl" value="<%= mailUrl%>"
+	                helpMessage="mail-url-help" />
+                
+            </aui:fieldset>
+            
+            <aui:fieldset label="other">
+
+                <%-- Not yet implemented in view.jsp
+	            <aui:input name="githubUrl" value="<%= githubUrl%>"
+	                helpMessage="github-url-help" />
+	            --%>
+	            
+	            <aui:input name="twitterVia" value="<%= twitterVia%>"
+	                helpMessage="twitter-via-help" />
+                
+            </aui:fieldset>
+
+        </liferay-ui:panel>
 
 		<liferay-ui:panel title="backend" extended="true">
 
@@ -104,6 +133,19 @@
 					checked="<%=showBuildInfo%>" />
 
 			</aui:field-wrapper>
+			
+            <aui:field-wrapper label="use-container"
+                helpMessage="use-container-help">
+
+                <aui:input name="useContainer" type="radio" value="false"
+                    label="no" inlineLabel="true" inlineField="true"
+                    checked="<%=!useContainer%>" />
+                    
+                <aui:input name="useContainer" type="radio" value="true"
+                    label="yes" inlineLabel="true" inlineField="true"
+                    checked="<%=useContainer%>" />
+
+            </aui:field-wrapper>
 
 		</liferay-ui:panel>
 
