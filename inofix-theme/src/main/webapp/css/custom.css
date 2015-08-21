@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-08-21 10:23 by Christian Berndt
- * Version: 	0.2.2
+ * Modified: 	2015-08-21 14:27 by Christian Berndt
+ * Version: 	0.2.3
  */
 @import "compass";
 
@@ -202,6 +202,11 @@
                  
         .portlet-social-media {
             padding-top: 30px; 
+            
+            a:hover, 
+            a:focus {
+                color: white;
+            }
         }
 
         .asset-abstract {
