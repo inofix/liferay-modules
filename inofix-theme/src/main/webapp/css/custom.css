@@ -2,7 +2,7 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-08-20 21:12 by Christian Berndt
+ * Modified: 	2015-08-21 10:23 by Christian Berndt
  * Version: 	0.2.2
  */
 @import "compass";
@@ -36,6 +36,18 @@
 
     #wrapper {
         padding: 0;
+    }
+    
+    /* override settings in dockbar.css */
+    @include respond-to(phone, tablet) {
+    
+        #navigation {
+            display: block; /* override settings in dockbar.css */    
+
+            &.open {
+                display: block;
+            }
+        }
     }
 
     .navbar { 
