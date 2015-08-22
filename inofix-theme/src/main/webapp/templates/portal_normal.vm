@@ -22,6 +22,7 @@
     <link href='$default_font' rel='stylesheet' type='text/css'>
 
     $theme.include($top_head_include)
+        
 </head>
 
 <body class="$css_class">

@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-08-21 14:27 by Christian Berndt
- * Version: 	0.2.3
+ * Modified: 	2015-08-22 19:29 by Christian Berndt
+ * Version: 	0.2.4
  */
 @import "compass";
 
@@ -32,6 +32,10 @@
     body {
         font-family: 'Source Sans Pro', sans-serif;
         background: #fcfcfc;
+        
+        @media (max-width: 767px)  {
+            padding: 0;     
+        }
     }
 
     #wrapper {
@@ -51,24 +55,12 @@
     }
 
     .navbar { 
-    
-        .brand { 
-            padding:18px40px18px;
-            font-weight: 600;
-            font-size: 24px;
-            color: red;
-            
-            .icon {
-                color:#555;
-            }
-
-        }
         
         .nav { 
         
             > .active a, 
             > .active a:focus, 
-            > .activea :hover {
+            > .active a:hover {
                 background-color : #F3F3F3;
                 box-shadow: none;
                 -moz-box-shadow: none;
@@ -82,31 +74,65 @@
 
         }
         
+        .btn-navbar {
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            text-shadow: none;
+            color: #555;
+        }
+        
         .divider-vertical {
             height: 60px;
         }
 
     }
     
-    .navbar-inner {
+    #navigation {
     
-        background-color: white;
-        background-image: none;
-        
-        .container {
-            padding:0;
+        @media (max-width: 767px) {
+            margin-right: 0;
         }
-    }
     
-    .navbar-static-top .navbar-inner {
-        box-shadow: none;
-        -webkit-box-shadow: none;
+        .brand { 
+            padding:18px 40px 18px 20px;
+            font-weight: 600;
+            font-size: 24px;
+            
+            .icon {
+                color:#555;
+            }
+        }
+    
+        .btn-navbar {
+            margin-top: 12px;
+            margin-right: 10px;
+        }
+    
+        .nav-collapse {
+            @media (min-width: 980px) {
+                float: right;
+            }
+        }    
+        
+        .navbar-inner {
+        
+            background-color: white;
+            background-image: none;
+            
+            .dropdown-menu {
+                margin-top: -5px;
+            }
+            
+            @media (max-width: 767px) {
+                padding-right: 0;
+            }
+            
+        }        
+        
     }
 
     #content {
-    
-        background: url("../images/background_schwarze_pumpe_xl.jpg") no-repeat;
-        background-position: -470px -260px;
         
         > form {
             margin: 0;
@@ -125,34 +151,110 @@
 
     }
     
-    .hero-unit {
+    .opener {  
+       
+        min-height: 600px; 
+               
+    }
     
-        color: white;
-        background-color: transparent;
-        margin-top: 40px;
-        margin-bottom: 180px;
+    .carousel {
+    
+        margin: 3px 0 0; 
+        max-height: 550px;
         
-        h1, h2 {
-            max-width: 600px;
+        @media (max-width: 1199px)  {
+            max-height: 500px;     
+        }  
+        
+        @media (max-width: 979px)  {
+            max-height: 400px;     
+        }  
+        
+        @media (max-width: 767px)  {
+            max-height: 300px;     
         }
-
-        h1 {
-            font-size: 38.5px;
+        
+        @media (max-width: 480px)  {
+            max-height: 200px;     
         }
+        
+        .carousel-control {
+            height: 80px;
+            margin-top: 0px;
+            font-size: 120px;
+            text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+            background-color: transparent;
+            border: 0px none;
+            z-index: 10;
+        }
+    }
+    
+    .screenshot {  
+       
+        min-height: 550px; 
+        background-position: center 0; 
 
+        @media (max-width: 1199px)  {
+            background-size: 1200px;
+            min-height: 500px;     
+        }  
+        
+        @media (max-width: 979px)  {
+            background-size: 980px;
+            min-height: 400px;     
+        }  
+        
+        @media (max-width: 767px)  {
+            background-size: 768px;
+            min-height: 300px;     
+        }
+        
+        @media (max-width: 480px)  {
+            background-size: 480px;
+            min-height: 200px;     
+        }                     
+    }
+    
+    .matterhorn {
+    
+        background-size: 1500px;
+        background-repeat: no-repeat;
+        background-position: center -30px;
+        
+        .hero-unit {
+        
+            background-color: transparent;
+            padding-left: 0;
+        
+            h1 {
+                color: white; 
+                max-width: 700px;
+                margin-top: 80px;
+                line-height: 1.1;
+            }
+        }
+        
+    }
+    
+    .profile {
+    
+        font-size: 16px;
+    
+        .hero-unit {
+            padding-bottom: 0;
+            text-align: center;
+            
+            h1 {
+                font-size: 55px;
+                line-height: 60px;
+                max-width: 700px;
+                margin: auto;
+            } 
+        }
+        
         p {
-            font-size: 21.5px;
-            font-weight: 600;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            max-width: 500px;
+            margin: 15px 0 25px; 
         }
-
-        .btn {
-            font-size: 21.5px;
-            font-weight: 600;
-        }
-
     }
     
     .jumbotron {
@@ -206,6 +308,10 @@
             a:hover, 
             a:focus {
                 color: white;
+            }
+            
+            .shariff li .share_text {
+                font-family: 'Source Sans Pro', sans-serif;
             }
         }
 

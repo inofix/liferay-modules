@@ -22,5 +22,5 @@
             <setting key="portlet-setup-show-borders-default"
                 value="false" />
         </settings>
-    </theme>
+    </theme>    
 </look-and-feel>

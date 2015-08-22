@@ -3,7 +3,7 @@
 ## the example of navigation.vm of Liferay's classic-theme.
 ##
 ## Created:     2015-07-26 16:32 by Christian Berndt
-## Modified:    2015-08-21 10:25 by Christian Berndt
+## Modified:    2015-08-22 19:40 by Christian Berndt
 ## Version:     1.0.2
 ##
 
@@ -12,14 +12,12 @@
 <nav class="$nav_css_class navbar navbar-static-top site-navigation" id="navigation" role="navigation">
     <div class="navbar-inner">
         <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+            <button type="button" class="btn btn-navbar"  id="nav_toggle" data-navid="navCollapse" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-reorder"></span>
             </button>
             <a class="brand" href="$site_default_url" title="#language_format ("go-to-x", ["home"])">$brand</a>
-            <div class="collapse nav-collapse pull-right">
-                <ul aria-label="#language ("site-pages")" class="nav nav-collapse" role="menubar">
+            <div class="collapse nav-collapse">
+                <ul aria-label="#language ("site-pages")" id="navCollapse" class="nav" role="menubar">
                     #foreach ($nav_item in $nav_items)
                             #set ($nav_item_attr_selected="")
                             #set ($nav_item_attr_has_popup="")
@@ -60,6 +58,7 @@
                                         </li>
                                     #end
                                 </ul>
+                                
                             #end
                         </li>
                     #end
