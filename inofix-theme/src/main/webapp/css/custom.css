@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-08-22 19:29 by Christian Berndt
- * Version: 	0.2.4
+ * Modified: 	2015-08-28 17:56 by Christian Berndt
+ * Version: 	0.2.5
  */
 @import "compass";
 
@@ -161,6 +161,7 @@
     
         margin: 3px 0 0; 
         max-height: 550px;
+        overflow: hidden; 
         
         @media (max-width: 1199px)  {
             max-height: 500px;     
@@ -245,8 +246,10 @@
             text-align: center;
             
             h1 {
-                font-size: 55px;
-                line-height: 60px;
+                @media (min-width: 980px)  {
+                    font-size: 55px;
+                    line-height: 60px;
+                }
                 max-width: 700px;
                 margin: auto;
             } 
