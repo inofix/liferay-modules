@@ -3,6 +3,8 @@
 liferay-modules is a collection of portlets, hooks and other plugins which customize or extend 
 the Liferay Portal Platform. 
 
+This collection is created and maintained by Inofix GmbH, a Luzern bases company specialized on the development and operation of Liferay Portal Solutions. Visit us at <a href="http://www.inofix.ch" target="_blank">www.inofix.ch</a>.
+
 ## Installation
 
 If you want to use Inofix' modules for liferay in your portal installation, 
@@ -17,6 +19,10 @@ please use the upcoming releases of the modules from the liferay marketplace.
 1. install or auto-deploy the module to your liferay-installation (mvn package liferay:deploy)
 
 ## Module Description
+
+### Asset Categories Summary Hook
+
+Wrap the vocabulary-title of Liferay's asset-categories-summary tag into a span with class="vocabulary-title".
 
 ### Asset Display Hook 
 
