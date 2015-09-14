@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+<!--  
+    liferay-hook.xml: The configuration of Inofix' asset-categories-summary hook.
+    
+    Created:    2015-09-14 13:50 by Christian Berndt
+    Modified:   2015-09-14 13:50 by Christian Berndt
+    Version:    1.0.0
+ -->
+<hook>
+    <custom-jsp-dir>/META-INF/custom_jsps</custom-jsp-dir>
+</hook>
