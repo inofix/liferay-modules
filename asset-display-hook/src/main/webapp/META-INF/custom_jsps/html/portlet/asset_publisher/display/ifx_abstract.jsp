@@ -3,8 +3,8 @@
     metadata is displayed BEFORE the title and summary. 
     
     Created:    2015-07-28 11:53 by Christian Berndt
-    Modified:   2015-09-17 13:39 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-09-17 20:35 by Christian Berndt
+    Version:    1.0.2
 --%>
 <%--
 /**
@@ -153,6 +153,30 @@ String summary = StringUtil.shorten(assetRenderer.getSummary(locale), abstractLe
                     <a href="<%= viewURL %>"><liferay-ui:message arguments='<%= new Object[] {"hide-accessible", HtmlUtil.escape(assetRenderer.getTitle(locale))} %>' key="<%= viewURLMessage %>" /> &raquo; </a>
                 </div>
             </c:if>
+        </div>
+        
+        <div class="asset-social-media">
+			<liferay-ui:message key="tell-others"/>
+            <ul>
+                <li class="shariff-button facebook">
+                    <a aria-label="TODO" role="button" title="TODO" rel="popup" href="javascript:;">
+                        <span class="fa fa-facebook"></span>
+                        <span class="share_text">Facebook</span>
+                    </a>
+                </li>
+                <li class="shariff-button twitter">
+                    <a aria-label="TODO" role="button" title="TODO" rel="popup" href="javascript:;">
+                        <span class="fa fa-twitter"></span>
+                        <span class="share_text">Twitter</span>
+                    </a>
+                </li>
+                <li class="shariff-button mail">
+                    <a aria-label="TODO" role="button" title="TODO" rel="popup" href="javascript:;">
+                        <span class="fa fa-mail"></span>
+                        <span class="share_text">Email</span>
+                    </a>
+                </li>
+            </ul>
         </div>
 
     </div>
