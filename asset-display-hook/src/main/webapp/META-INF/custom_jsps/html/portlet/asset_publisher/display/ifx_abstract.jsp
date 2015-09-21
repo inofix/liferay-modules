@@ -3,8 +3,8 @@
     metadata is displayed BEFORE the title and summary. 
     
     Created:    2015-07-28 11:53 by Christian Berndt
-    Modified:   2015-09-21 21:47 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-09-21 23:53 by Christian Berndt
+    Version:    1.0.4
 --%>
 <%--
 /**
@@ -80,7 +80,7 @@ if (assetCategory != null) {
             String value = categoryProperty.getValue();
             
             if (Validator.isNotNull(value)) {
-                backgroundColor = value; 
+                backgroundColor = "#" + value; 
             }           
         }
         
