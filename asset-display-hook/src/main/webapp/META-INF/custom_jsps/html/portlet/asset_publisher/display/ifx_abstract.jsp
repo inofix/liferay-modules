@@ -3,8 +3,8 @@
     metadata is displayed BEFORE the title and summary. 
     
     Created:    2015-07-28 11:53 by Christian Berndt
-    Modified:   2015-09-17 20:35 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-09-21 21:47 by Christian Berndt
+    Version:    1.0.3
 --%>
 <%--
 /**
@@ -28,8 +28,10 @@
 <%@page import="com.liferay.portal.kernel.xml.Document"%>
 <%@page import="com.liferay.portal.kernel.xml.Node"%>
 <%@page import="com.liferay.portal.kernel.xml.SAXReaderUtil"%>
-<%@page import="com.liferay.portlet.journal.asset.JournalArticleAssetRenderer"%>
 
+<%@page import="com.liferay.portlet.asset.service.AssetCategoryPropertyServiceUtil"%>
+<%@page import="com.liferay.portlet.asset.model.AssetCategoryProperty"%>
+<%@page import="com.liferay.portlet.journal.asset.JournalArticleAssetRenderer"%>
 
 <%
 List results = (List)request.getAttribute("view.jsp-results");
@@ -56,12 +58,53 @@ String viewURLMessage = viewInContext ? assetRenderer.getViewInContextMessage() 
 
 String summary = StringUtil.shorten(assetRenderer.getSummary(locale), abstractLength);
 
+List<AssetCategory> assetCategories = AssetCategoryServiceUtil.getCategories(assetEntry.getClassName(), assetEntry.getClassPK());
+
+AssetCategory assetCategory = null; 
+
+if (assetCategories.size() > 0) {
+	assetCategory = assetCategories.get(0); 
+}
+
+boolean invert = false;
+String backgroundColor = "white"; 
+
+if (assetCategory != null) {
+    
+    List<AssetCategoryProperty> categoryProperties = AssetCategoryPropertyServiceUtil.getCategoryProperties(assetCategory.getCategoryId());
+    
+    for (AssetCategoryProperty categoryProperty : categoryProperties) {
+        
+        if ("background-color".equals(categoryProperty.getKey())) {
+            
+            String value = categoryProperty.getValue();
+            
+            if (Validator.isNotNull(value)) {
+                backgroundColor = value; 
+            }           
+        }
+        
+        if ("invert".equals(categoryProperty.getKey())) {
+            invert = GetterUtil.getBoolean(categoryProperty.getValue()); 
+        }
+    }
+}
 %>
 
 <c:if test="<%= show %>">
 
-    <div class="asset-abstract <%= defaultAssetPublisher ? "default-asset-publisher" : StringPool.BLANK %>">
+<%-- 
+    Customization: read the background-color and invert property from the current category 
+--%> 
+    <div class="asset-abstract <%= defaultAssetPublisher ? "default-asset-publisher" : StringPool.BLANK %> <%= invert ? "invert" : StringPool.BLANK %>"
+         style="background-color: <%= backgroundColor %>">
+         
         <liferay-util:include page="/html/portlet/asset_publisher/asset_actions.jsp" />
+<%-- 
+    Customization: wrap the asset's content sections. 
+--%> 
+     
+    <div class="asset-wrapper">  
 <%-- 
     Customization: display the asset's metadata as first element.
  --%>
@@ -179,5 +222,6 @@ String summary = StringUtil.shorten(assetRenderer.getSummary(locale), abstractLe
             </ul>
         </div>
 
+        </div>
     </div>
 </c:if>
