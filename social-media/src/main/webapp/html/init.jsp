@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the social-media portlet.
     
     Created:    2015-08-20 13:12 by Christian Berndt
-    Modified:   2015-08-21 10:42 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-09-25 14:46 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%-- Import required classes --%>
@@ -64,9 +64,9 @@
 
 	// services
 
-	String[] availableServices = new String[] { "facebook",
+	String[] availableServices = new String[] { "addthis", "facebook",
 			"googleplus", "info", "linkedin", "mail", "pinterest",
-			"twitter", "whatsapp", "xing" };
+			"twitter", "tumblr", "whatsapp", "xing" };
 
 	String[] selectedServices = portletPreferences.getValues(
 			"services", new String[] { "facebook", "googleplus",
