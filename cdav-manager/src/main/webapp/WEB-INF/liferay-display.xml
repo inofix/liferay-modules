@@ -3,7 +3,10 @@
     "http://www.liferay.com/dtd/liferay-display_6_2_0.dtd">
 
 <display>
-    <category name="category.hidden">
+    <category name="category.inofix">
         <portlet id="cdav-manager" />
-    </category> 
+    </category>
+<!--     <category name="category.hidden"> -->
+<!--         <portlet id="cdav-manager" /> -->
+<!--     </category>  -->
 </display>
