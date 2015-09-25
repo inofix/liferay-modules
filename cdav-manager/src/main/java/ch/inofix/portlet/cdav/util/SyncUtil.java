@@ -37,6 +37,7 @@ import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
@@ -81,7 +82,7 @@ public class SyncUtil {
 	 */
 	public static CalendarBooking getCalendarBooking(VEvent vEvent) {
 
-		log.info("Executing getCalendarBooking().");
+		log.trace("Executing getCalendarBooking().");
 
 		log.info(vEvent);
 
@@ -144,13 +145,14 @@ public class SyncUtil {
 
 		startTime = getStartTime(vEvent);
 		endTime = getEndTime(vEvent);
-
-		if (vRecurrenceId != null) {
-
-			recurrence = vRecurrenceId.getValue();
+		
+		RRule rRule=(RRule)vEvent.getProperty(Property.RRULE);
+		
+		if (rRule != null) {
 
 			// TODO: process recurrence
-			// log.info("recurrence = " + recurrence);
+			log.info("rRule.getName() = " + rRule.getName());
+			log.info("rRule.getValue() = " + rRule.getValue());
 
 		}
 
