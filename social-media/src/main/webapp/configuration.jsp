@@ -2,8 +2,8 @@
     configuration.jsp: Configure the social-media portlet's preferences.
     
     Created:    2015-08-20 13:05 by Christian Berndt
-    Modified:   2015-08-21 10:49 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-09-25 15:11 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -46,9 +46,9 @@
         
     <aui:input name="services" type="hidden" value="" />
 
-    <liferay-ui:panel-container>
+    <liferay-ui:panel-container id="socialmediaSettingsPanelContainer" persistState="<%= true %>">
 
-        <liferay-ui:panel title="services" extended="true">
+        <liferay-ui:panel id="socialmediaServicesPanel" title="services" extended="true">
 
             <liferay-ui:input-move-boxes rightList="<%=available%>"
                 rightTitle="available" leftBoxName="selected"
@@ -57,7 +57,7 @@
                 
         </liferay-ui:panel>
         
-        <liferay-ui:panel title="service-settings" extended="true">
+        <liferay-ui:panel id="socialmediaServiceSettingsPanel" title="service-settings" extended="true">
 
             <aui:fieldset label="mail">
             
@@ -86,14 +86,14 @@
 
         </liferay-ui:panel>
 
-		<liferay-ui:panel title="backend" extended="true">
+		<liferay-ui:panel id="socialmediaBackenPanel" title="backend" extended="true">
 
 			<aui:input name="backendUrl" value="<%=backendUrl%>"
 				helpMessage="backend-url-help" />
 
 		</liferay-ui:panel>
 
-		<liferay-ui:panel title="display-settings" extended="true">
+		<liferay-ui:panel id="socialmediaDisplaySettingsPanel" title="display-settings" extended="true">
 		
             <aui:field-wrapper label="orientation"
                 helpMessage="orientation-help">
