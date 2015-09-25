@@ -52,7 +52,7 @@
 
         <liferay.version>6.1.1</liferay.version>
 
-        <liferay.maven.plugin.version>6.1.1</liferay.maven.plugin.version>
+        <liferay.maven.plugin.version>6.1.2</liferay.maven.plugin.version>
 
     </properties>
 
