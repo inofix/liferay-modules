@@ -2,17 +2,21 @@
     init.jsp: Common imports and setup code of the social-media portlet.
     
     Created:    2015-08-20 13:12 by Christian Berndt
-    Modified:   2015-09-25 14:46 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-09-25 15:15 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%-- Import required classes --%>
-
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
+<%@page import="com.liferay.portlet.PortletPreferencesFactoryUtil"%>
+
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.List"%>
 
+<%@page import="javax.portlet.PortletPreferences"%>
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
@@ -36,31 +40,39 @@
 <theme:defineObjects />
 
 <%
+	PortletPreferences preferences = renderRequest.getPreferences();
+
+	String portletResource = ParamUtil.getString(request,
+			"portletResource");
+
+	if (Validator.isNotNull(portletResource)) {
+		preferences = PortletPreferencesFactoryUtil.getPortletSetup(
+				request, portletResource);
+	}
+
 	// backend-url
 
-	String backendUrl = portletPreferences
-			.getValue("backend-url", null);
+	String backendUrl = preferences.getValue("backend-url", null);
 
 	// github-url
 
-	String githubUrl = portletPreferences.getValue("github-url", null);
+	String githubUrl = preferences.getValue("github-url", null);
 
 	// mail
 
-	String mailBody = portletPreferences.getValue("mail-body", null);
+	String mailBody = preferences.getValue("mail-body", null);
 
-	String mailSubject = portletPreferences.getValue("mail-subject",
-			null);
+	String mailSubject = preferences.getValue("mail-subject", null);
 
-	String mailUrl = portletPreferences.getValue("mail-url", null);
+	String mailUrl = preferences.getValue("mail-url", null);
 
 	// orientation
 
 	String[] availableOrientations = new String[] { "horizontal",
 			"vertical" };
 
-	String selectedOrientation = portletPreferences.getValue(
-			"orientation", "horizontal");
+	String selectedOrientation = preferences.getValue("orientation",
+			"horizontal");
 
 	// services
 
@@ -68,30 +80,27 @@
 			"googleplus", "info", "linkedin", "mail", "pinterest",
 			"twitter", "tumblr", "whatsapp", "xing" };
 
-	String[] selectedServices = portletPreferences.getValues(
-			"services", new String[] { "facebook", "googleplus",
-					"twitter" });
+	String[] selectedServices = preferences.getValues("services",
+			new String[] { "facebook", "googleplus", "twitter" });
 
 	// show build info
 
-	boolean showBuildInfo = GetterUtil.getBoolean(portletPreferences
-			.getValue("show-build-info", "false"));
+	boolean showBuildInfo = GetterUtil.getBoolean(preferences.getValue(
+			"show-build-info", "false"));
 
 	// theme
 
 	String[] availableThemes = new String[] { "standard", "grey",
 			"white" };
 
-	String selectedTheme = portletPreferences.getValue("theme",
-			"standard");
+	String selectedTheme = preferences.getValue("theme", "standard");
 
 	// twitter
 
-	String twitterVia = portletPreferences
-			.getValue("twitter-via", null);
+	String twitterVia = preferences.getValue("twitter-via", null);
 
 	// use container
 
-	boolean useContainer = GetterUtil.getBoolean(portletPreferences
-			.getValue("use-container", "false"));
+	boolean useContainer = GetterUtil.getBoolean(preferences.getValue(
+			"use-container", "false"));
 %>
