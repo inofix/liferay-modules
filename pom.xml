@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2015-09-25 11:38 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-09-25 14:02 by Christian Berndt
+    Version:    1.0.4
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -50,9 +50,9 @@
             ${liferay.base.dir}/deploy
         </liferay.auto.deploy.dir>
 
-        <liferay.version>6.2.3</liferay.version>
+        <liferay.version>6.1.1</liferay.version>
 
-        <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version>
+        <liferay.maven.plugin.version>6.1.1</liferay.maven.plugin.version>
 
     </properties>
 
@@ -68,12 +68,13 @@
             <version>${liferay.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.liferay.portal</groupId>
-            <artifactId>portal-pacl</artifactId>
-            <version>${liferay.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- not required in 6.1.x -->
+<!--         <dependency> -->
+<!--             <groupId>com.liferay.portal</groupId> -->
+<!--             <artifactId>portal-pacl</artifactId> -->
+<!--             <version>${liferay.version}</version> -->
+<!--             <scope>provided</scope> -->
+<!--         </dependency> -->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-service</artifactId>
@@ -97,11 +98,12 @@
             <artifactId>util-java</artifactId>
             <version>${liferay.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.liferay.portal</groupId>
-            <artifactId>util-slf4j</artifactId>
-            <version>${liferay.version}</version>
-        </dependency>
+        <!-- not required in 6.1.x -->
+<!--         <dependency> -->
+<!--             <groupId>com.liferay.portal</groupId> -->
+<!--             <artifactId>util-slf4j</artifactId> -->
+<!--             <version>${liferay.version}</version> -->
+<!--         </dependency> -->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>util-taglib</artifactId>
