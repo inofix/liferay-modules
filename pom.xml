@@ -3,15 +3,16 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2015-07-28 12:17 by Christian Berndt
-    Version:    1.0.2
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    Modified:   2015-09-25 11:38 by Christian Berndt
+    Version:    1.0.3
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.9.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -26,16 +27,19 @@
 
     <properties>
 
-        <liferay.base.dir>
-            /home/berndt/Applications/liferay-portal-6.2-ce-ga4
-        </liferay.base.dir>
+		<!-- liferay.base.dir is read by the modules from -->
+		<!-- dev.properties. Please create this file and  -->
+		<!-- adjust it to your personal environment.      -->
+<!--         <liferay.base.dir> -->
+<!--             /home/berndt/Applications/liferay-portal-6.2-ce-ga4 -->
+<!--         </liferay.base.dir> -->
 
         <liferay.app.server.deploy.dir>
-            ${liferay.base.dir}/tomcat-7.0.42/webapps
+            ${liferay.base.dir}/${tomcat-version}/webapps
         </liferay.app.server.deploy.dir>
 
         <liferay.app.server.lib.global.dir>
-            ${liferay.base.dir}/tomcat-7.0.42/lib/ext
+            ${liferay.base.dir}/${tomcat-version}/lib/ext
         </liferay.app.server.lib.global.dir>
 
         <liferay.app.server.portal.dir>
@@ -51,7 +55,6 @@
         <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version>
 
     </properties>
-
 
     <dependencies>
         <dependency>
@@ -106,15 +109,17 @@
         </dependency>
     </dependencies>
     
-
     <modules>
+        <module>asset-categories-summary-hook</module>
         <module>asset-display-hook</module>
         <module>cdav-manager</module>
         <module>contact-manager</module>
         <module>display-page-hook</module>
         <module>inofix-theme</module>
+        <module>social-media</module>
         <module>taglib-util</module>
     </modules>
+    
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
     </issueManagement>
