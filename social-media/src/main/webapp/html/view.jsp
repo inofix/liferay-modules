@@ -2,8 +2,8 @@
     view.jsp: Default view of the social-media-portlet
     
     Created:    2015-08-19 22:17 by Christian Berndt
-    Modified:   2015-08-20 20:06 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-08-20 15:53 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@page import="com.liferay.portal.util.PortalUtil"%>
@@ -39,27 +39,29 @@
 	String completeURL = PortalUtil.getCurrentCompleteURL(request);
 	String currentURL = PortalUtil.getCanonicalURL(completeURL,
 			themeDisplay, layout);
+	
+	String cssClass="";
+	if (useContainer) {
+		cssClass="container"; 
+	}
+	
 %>
 
 <div class="portlet-social-media">
 
-	<c:if test="<%= useContainer %>">
-		<div class="container">
-	</c:if>
+	<div class="<%= cssClass %>">
 
-	<div class="shariff" data-backend-url="<%= backendUrl %>"
-		data-url="<%= currentURL %>" data-mail-body="<%= mailBody %>"
-		data-mail-subject="<%= mailSubject %>" data-mail-url="<%= mailUrl %>"
-		data-orientation="<%= selectedOrientation %>"
-		data-services="<%= servicesConfig %>"
-		data-theme="<%= selectedTheme %>" data-twitter-via="<%= twitterVia %>"></div>
+		<div class="shariff" data-backend-url="<%= backendUrl %>"
+			data-url="<%= currentURL %>" data-mail-body="<%= mailBody %>"
+			data-mail-subject="<%= mailSubject %>" data-mail-url="<%= mailUrl %>"
+			data-orientation="<%= selectedOrientation %>"
+			data-services="<%= servicesConfig %>"
+			data-theme="<%= selectedTheme %>" data-twitter-via="<%= twitterVia %>"></div>
+	
+		<c:if test="<%= showBuildInfo %>">
+			<ifx-util:build-info />
+		</c:if>
 
-	<c:if test="<%= showBuildInfo %>">
-		<ifx-util:build-info />
-	</c:if>
-
-	<c:if test="<%= useContainer %>">
-		</div>
-	</c:if>
+	</div>
 </div>
 
