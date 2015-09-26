@@ -2,8 +2,8 @@
     configuration.jsp: Configure the social-media portlet's preferences.
     
     Created:    2015-08-20 13:05 by Christian Berndt
-    Modified:   2015-09-25 15:11 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-09-26 16:04 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -58,6 +58,13 @@
         </liferay-ui:panel>
         
         <liferay-ui:panel id="socialmediaServiceSettingsPanel" title="service-settings" extended="true">
+        
+            <aui:fieldset label="url">
+	            
+	            <aui:input name="shareUrl" value="<%= shareUrl %>"
+	                helpMessage="share-url-help" />
+                
+            </aui:fieldset>
 
             <aui:fieldset label="mail">
             

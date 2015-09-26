@@ -2,13 +2,12 @@
     init.jsp: Common imports and setup code of the social-media portlet.
     
     Created:    2015-08-20 13:12 by Christian Berndt
-    Modified:   2015-09-25 14:46 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-09-26 15:48 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%-- Import required classes --%>
 
-<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.List"%>
@@ -16,6 +15,7 @@
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
 
 
@@ -71,6 +71,11 @@
 	String[] selectedServices = portletPreferences.getValues(
 			"services", new String[] { "facebook", "googleplus",
 					"twitter" });
+
+	// share-url
+	
+	String shareUrl = portletPreferences
+			.getValue("share-url", null);
 
 	// show build info
 

@@ -2,14 +2,16 @@
     view.jsp: Default view of the social-media-portlet
     
     Created:    2015-08-19 22:17 by Christian Berndt
-    Modified:   2015-08-20 15:53 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-08-26 16:04 by Christian Berndt
+    Version:    1.0.4
 --%>
 
-<%@page import="com.liferay.portal.util.PortalUtil"%>
 <%@ include file="/html/init.jsp"%>
 
 <%-- Import required classes --%>
+
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
+<%@page import="com.liferay.portal.util.PortalUtil"%>
 
 <%@page import="java.util.Iterator"%>
 
@@ -39,6 +41,11 @@
 	String completeURL = PortalUtil.getCurrentCompleteURL(request);
 	String currentURL = PortalUtil.getCanonicalURL(completeURL,
 			themeDisplay, layout);
+	
+	// Override currentURL with configuredUrl 
+	if (Validator.isNotNull(shareUrl)) {
+		currentURL = shareUrl; 
+	}
 	
 	String cssClass="";
 	if (useContainer) {
