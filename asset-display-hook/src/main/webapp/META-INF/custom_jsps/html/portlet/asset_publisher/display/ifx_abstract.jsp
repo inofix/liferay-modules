@@ -22,11 +22,12 @@
  */
 --%>
 
-<%@page import="com.liferay.portal.kernel.util.Validator"%>
-<%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@ include file="/html/portlet/asset_publisher/init.jsp" %>
 
 <%-- Import classes required by customization --%>
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
+<%@page import="com.liferay.portal.kernel.util.StringPool"%>
+
 <%@page import="com.liferay.portal.kernel.xml.Document"%>
 <%@page import="com.liferay.portal.kernel.xml.Node"%>
 <%@page import="com.liferay.portal.kernel.xml.SAXReaderUtil"%>
