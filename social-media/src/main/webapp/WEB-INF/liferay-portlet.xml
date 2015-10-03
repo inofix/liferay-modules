@@ -6,19 +6,19 @@
     social-media portlet.
     
     Created:    2015-08-19 23:17 by Christian Berndt
-    Modified:   2015-08-20 13:58 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-10-03 20:32 by Christian Berndt
+    Version:    1.0.2
  -->
 
 <liferay-portlet-app>
     <portlet>
-        <portlet-name>social-media</portlet-name>
+        <portlet-name>social-media-portlet</portlet-name>
         <icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.socialmedia.action.ConfigurationActionImpl</configuration-action-class>
+        <header-portal-css>/html/css/shariff.complete.css</header-portal-css>
         <header-portlet-css>/css/main.css</header-portlet-css>
-        <header-portlet-css>/css/shariff.complete.css</header-portlet-css>
+        <footer-portal-javascript>/html/js/shariff.complete.js</footer-portal-javascript>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/shariff.complete.js</footer-portlet-javascript>
     </portlet>
     <role-mapper>
         <role-name>administrator</role-name>

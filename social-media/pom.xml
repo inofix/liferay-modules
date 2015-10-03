@@ -6,16 +6,11 @@
         <groupId>ch.inofix</groupId>
         <version>0.9.1-SNAPSHOT</version>
     </parent>
-	<artifactId>social-media</artifactId>
+	<artifactId>social-media-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>Social Media Portlet</name>
-	<version>0.1.6-SNAPSHOT</version>
+	<version>0.1.7-SNAPSHOT</version>
 	<build>
-
-        <!-- Required for the auto-generated -->
-        <!-- liferay-plugin-package.xml file but -->
-        <!-- missing in the 6.2.2 archetype. -->
-        <finalName>${project.artifactId}</finalName>
                 
 		<plugins>
 			<!-- Read properties from dev.properties in -->
