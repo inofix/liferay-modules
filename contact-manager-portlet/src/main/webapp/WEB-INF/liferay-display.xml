@@ -3,6 +3,6 @@
 
 <display>
 	<category name="category.inofix">
-		<portlet id="contact-manager" />
+		<portlet id="contact-manager-portlet" />
 	</category>
 </display>

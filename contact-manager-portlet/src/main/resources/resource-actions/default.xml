@@ -13,7 +13,7 @@
     <!-- Permissions configuration for -->
     <!-- the portlet itself. -->
     <portlet-resource>
-        <portlet-name>contact-manager</portlet-name>
+        <portlet-name>contact-manager-portlet</portlet-name>
         <permissions>
             <supports>
                 <action-key>ACCESS_IN_CONTROL_PANEL</action-key>
@@ -39,7 +39,7 @@
     <model-resource>
         <model-name>ch.inofix.portlet.contact</model-name>
         <portlet-ref>
-            <portlet-name>contact-manager</portlet-name>
+            <portlet-name>contact-manager-portlet</portlet-name>
         </portlet-ref>
         <permissions>
             <supports>
@@ -62,7 +62,7 @@
     <model-resource>
         <model-name>ch.inofix.portlet.contact.model.Contact</model-name>
         <portlet-ref>
-            <portlet-name>contact-manager</portlet-name>
+            <portlet-name>contact-manager-portlet</portlet-name>
         </portlet-ref>
         <permissions>
             <supports>
