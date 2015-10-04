@@ -6,12 +6,12 @@
     cdav-manager portlet.
     
     Created:    2015-06-12 09:49 by Christian Berndt
-    Modified:   2015-07-30 20:17 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-10-04 12:21 by Christian Berndt
+    Version:    1.0.2
  -->
 <liferay-portlet-app>
     <portlet>
-        <portlet-name>cdav-manager</portlet-name>
+        <portlet-name>cdav-manager-portlet</portlet-name>
         <icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.cdav.action.ConfigurationActionImpl</configuration-action-class>
         <scheduler-entry>

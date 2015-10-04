@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
     version="2.0">
     <portlet>
-        <portlet-name>cdav-manager</portlet-name>
+        <portlet-name>cdav-manager-portlet</portlet-name>
         <display-name>CDAV Manager</display-name>
         <portlet-class>ch.inofix.portlet.cdav.portlet.CDAVManagerPortlet</portlet-class>
         <init-param>
@@ -20,7 +20,7 @@
         <portlet-info>
             <title>CDAV Manager</title>
             <short-title>CDAV Manager</short-title>
-            <keywords>cdav-manager</keywords>
+            <keywords>CDAV Manager</keywords>
         </portlet-info>
         <security-role-ref>
             <role-name>administrator</role-name>
