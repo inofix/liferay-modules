@@ -11,7 +11,7 @@
  -->
 <liferay-portlet-app>
     <portlet>
-        <portlet-name>contact-manager</portlet-name>
+        <portlet-name>contact-manager-portlet</portlet-name>
         <icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.contact.action.ConfigurationActionImpl</configuration-action-class>
         <indexer-class>ch.inofix.portlet.contact.search.ContactIndexer</indexer-class>

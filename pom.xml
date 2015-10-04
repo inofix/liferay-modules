@@ -112,8 +112,8 @@
     <modules>
         <module>asset-categories-summary-hook</module>
         <module>asset-display-hook</module>
-        <module>cdav-manager</module>
-        <module>contact-manager</module>
+        <module>cdav-manager-portlet</module>
+        <module>contact-manager-portlet</module>
         <module>display-page-hook</module>
         <module>inofix-theme</module>
         <module>social-media-portlet</module>
