@@ -4,9 +4,6 @@
 
 <display>
     <category name="category.inofix">
-        <portlet id="cdav-manager" />
+        <portlet id="cdav-manager-portlet" />
     </category>
-<!--     <category name="category.hidden"> -->
-<!--         <portlet id="cdav-manager" /> -->
-<!--     </category>  -->
 </display>
