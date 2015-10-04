@@ -2,8 +2,8 @@
     configuration.jsp: Configure the contact-manager's preferences.
     
     Created:    2015-05-25 11:36 by Christian Berndt
-    Modified:   2015-06-30 09:53 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-10-03 14:52 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -50,9 +50,9 @@
 		
     <aui:input name="columns" type="hidden" value="" />
 
-	<liferay-ui:panel-container>
+    <liferay-ui:panel-container id="contactmanagerSettingsPanelContainer" persistState="<%= true %>">
 
-		<liferay-ui:panel title="columns" extended="true">
+		<liferay-ui:panel id="contactmanagerColumnsPanel" title="columns" extended="true">
 
 			<liferay-ui:input-move-boxes rightList="<%=availableColumns%>"
 				rightTitle="available" leftBoxName="selectedColumns"
@@ -60,7 +60,7 @@
 				leftTitle="current" leftReorder="true" />
 		</liferay-ui:panel>
 
-        <liferay-ui:panel title="appearance" extended="true">
+        <liferay-ui:panel id="contactmanagerAppearancePanel" title="appearance" extended="true">
         
             <aui:field-wrapper label="view-by-default" helpMessage="view-by-default-help">
                 <aui:input name="viewByDefault" type="radio" value="true"
@@ -79,7 +79,7 @@
             			
         </liferay-ui:panel>
         
-        <liferay-ui:panel title="miscellaneous" extended="true">
+        <liferay-ui:panel id="contactmanagerMiscellaneousPanel" title="miscellaneous" extended="true">
 
             <%-- 
             <aui:row>
