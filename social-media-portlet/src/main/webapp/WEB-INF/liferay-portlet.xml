@@ -6,8 +6,8 @@
     social-media portlet.
     
     Created:    2015-08-19 23:17 by Christian Berndt
-    Modified:   2015-10-08 17:39 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-10-10 22:07 by Christian Berndt
+    Version:    1.0.4
  -->
 
 <liferay-portlet-app>
@@ -16,10 +16,15 @@
         <icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.socialmedia.action.ConfigurationActionImpl</configuration-action-class>
         <layout-cacheable>true</layout-cacheable>
-        <header-portal-css>/html/css/shariff.complete.css</header-portal-css>
         <header-portlet-css>/css/main.css</header-portlet-css>
-        <footer-portal-javascript>/html/js/shariff.complete.js</footer-portal-javascript>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+    </portlet>
+    <!-- Include the required shariff.css and shariff.js into every layout -->
+    <portlet>
+        <portlet-name>include-portlet</portlet-name>
+        <use-default-template>false</use-default-template>
+        <layout-cacheable>true</layout-cacheable>
+        <system>true</system>
     </portlet>
     <role-mapper>
         <role-name>administrator</role-name>

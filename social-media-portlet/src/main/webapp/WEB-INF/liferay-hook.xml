@@ -5,9 +5,10 @@
     liferay-hook.xml: The hook configuration of the social media portlet.
     
     Created:    2015-10-03 20:33 by Christian Berndt
-    Modified:   2015-10-03 20:33 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-10-10 21:06 by Christian Berndt
+    Version:    1.0.1
  -->
 <hook>
+    <portal-properties>portal.properties</portal-properties>
     <custom-jsp-dir>/META-INF/custom_jsps</custom-jsp-dir>
 </hook>
