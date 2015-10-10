@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the social-media portlet.
     
     Created:    2015-08-20 13:12 by Christian Berndt
-    Modified:   2015-09-26 15:48 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-10-10 21:57 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%-- Import required classes --%>
@@ -36,67 +36,65 @@
 <theme:defineObjects />
 
 <%
-	// backend-url
+    // backend-url
 
-	String backendUrl = portletPreferences
-			.getValue("backend-url", null);
+    String backendUrl = portletPreferences.getValue("backend-url", "");
 
-	// github-url
+    // github-url
 
-	String githubUrl = portletPreferences.getValue("github-url", null);
+    String githubUrl = portletPreferences.getValue("github-url", "");
 
-	// mail
+    // mail
 
-	String mailBody = portletPreferences.getValue("mail-body", null);
+    String mailBody = portletPreferences.getValue("mail-body", "");
 
-	String mailSubject = portletPreferences.getValue("mail-subject",
-			null);
+    String mailSubject = portletPreferences
+            .getValue("mail-subject", "");
 
-	String mailUrl = portletPreferences.getValue("mail-url", null);
+    String mailUrl = portletPreferences.getValue("mail-url", "");
 
-	// orientation
+    // orientation
 
-	String[] availableOrientations = new String[] { "horizontal",
-			"vertical" };
+    String[] availableOrientations = new String[] { "horizontal",
+            "vertical" };
 
-	String selectedOrientation = portletPreferences.getValue(
-			"orientation", "horizontal");
+    String selectedOrientation = portletPreferences.getValue(
+            "orientation", "horizontal");
 
-	// services
+    // services
 
-	String[] availableServices = new String[] { "addthis", "facebook",
-			"googleplus", "info", "linkedin", "mail", "pinterest",
-			"twitter", "tumblr", "whatsapp", "xing" };
+    String[] availableServices = new String[] { "addthis", "facebook",
+            "googleplus", "info", "linkedin", "mail", "pinterest",
+            "twitter", "tumblr", "whatsapp", "xing" };
 
-	String[] selectedServices = portletPreferences.getValues(
-			"services", new String[] { "facebook", "googleplus",
-					"twitter" });
+    String[] selectedServices = portletPreferences.getValues(
+            "services", new String[] { "facebook", "googleplus",
+                    "twitter" });
 
-	// share-url
-	
-	String shareUrl = portletPreferences
-			.getValue("share-url", null);
+    // share-url
 
-	// show build info
+    String shareUrl = portletPreferences.getValue("share-url", null);
 
-	boolean showBuildInfo = GetterUtil.getBoolean(portletPreferences
-			.getValue("show-build-info", "false"));
+    // show build info
 
-	// theme
+    boolean showBuildInfo = GetterUtil.getBoolean(portletPreferences
+            .getValue("show-build-info", "false"));
 
-	String[] availableThemes = new String[] { "standard", "grey",
-			"white" };
+    // theme
 
-	String selectedTheme = portletPreferences.getValue("theme",
-			"standard");
+    String[] availableThemes = new String[] { "standard", "grey",
+            "white" };
 
-	// twitter
+    String selectedTheme = portletPreferences.getValue("theme",
+            "standard");
 
-	String twitterVia = portletPreferences
-			.getValue("twitter-via", null);
+    // twitter
 
-	// use container
+    String twitterVia = portletPreferences
+            .getValue("twitter-via", null);
 
-	boolean useContainer = GetterUtil.getBoolean(portletPreferences
-			.getValue("use-container", "false"));
+    // use container
+
+    boolean useContainer = GetterUtil.getBoolean(portletPreferences
+            .getValue("use-container", "false"));
 %>
