@@ -4,8 +4,8 @@
     and makes css customization more easy.
             
     Created:    2015-09-14 13:55 by Christian Berndt
-    Modified:   2015-09-14 13:55 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-10-12 23:08 by Christian Berndt
+    Version:    1.0.1
 --%>
 <%--
 /**
@@ -24,6 +24,11 @@
 --%>
 
 <%@ include file="/html/taglib/init.jsp" %>
+
+<%-- Import classes required by customization --%>
+
+<%@page import="com.liferay.portlet.asset.service.AssetCategoryPropertyServiceUtil"%>
+<%@page import="com.liferay.portlet.asset.model.AssetCategoryProperty"%>
 
 <%
 String className = (String)request.getAttribute("liferay-ui:asset-categories-summary:className");
@@ -56,11 +61,28 @@ for (AssetVocabulary vocabulary : vocabularies) {
                     <%
                     for (AssetCategory category : curCategories) {
                         category = category.toEscapedModel();
+                        
+// Customization: check whether the category has the show-in-logbook property
+
+					    String cssClass = StringPool.BLANK; 
+					    
+					    if (category != null) {
+					        
+					        List<AssetCategoryProperty> categoryProperties = AssetCategoryPropertyServiceUtil.getCategoryProperties(category.getCategoryId());
+					        
+					        for (AssetCategoryProperty categoryProperty : categoryProperties) {
+					            
+					            if ("show-in-logbook".equals(categoryProperty.getKey())) {
+					                
+					                cssClass="show-in-logbook"; 
+					            }
+					        }
+					    }
 
                         portletURL.setParameter("categoryId", String.valueOf(category.getCategoryId()));
                     %>
 
-                        <a class="asset-category" href="<%= HtmlUtil.escape(portletURL.toString()) %>"><%= _buildCategoryPath(category, themeDisplay) %></a>
+                        <a class="asset-category <%= cssClass %>" href="<%= HtmlUtil.escape(portletURL.toString()) %>"><%= _buildCategoryPath(category, themeDisplay) %></a>
 
                     <%
                     }
