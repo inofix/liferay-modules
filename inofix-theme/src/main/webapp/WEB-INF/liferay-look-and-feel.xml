@@ -19,8 +19,6 @@
         <settings>
             <setting key="brand" configurable="true" type="text"
                 value="Your Brand" />
-            <setting key="default-font" configurable="true"
-                type="text" value="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" />
             <setting key="portlet-setup-show-borders-default"
                 value="false" />
         </settings>
