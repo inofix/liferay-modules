@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.1.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_1_0.dtd">
+
+<hook>
+    <servlet-filter>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <servlet-filter-impl>ch.inofix.hook.cachefilter.CacheFilter</servlet-filter-impl>
+        <init-param>
+            <param-name>considerClient</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>considerOS</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet-filter>
+    <servlet-filter-mapping>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <after-filter>Virtual Host Filter</after-filter>
+        <!-- <after-filter>Cache Filter - Friendly</after-filter> -->
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </servlet-filter-mapping>
+</hook>
