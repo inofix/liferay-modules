@@ -6,8 +6,11 @@
  * Version: 	0.2.5
  */
 @import "compass";
-
 @import "mixins";
+
+$dockbar-height: 42px;
+$nav-height: 60px;
+$nav-and-dockbar-height: 102px; 
 
 .aui {
     
@@ -21,25 +24,23 @@
         text-decoration: none;
     }
 
+    body {
+        font-family: 'Source Sans Pro', sans-serif;
+/*         background: #fcfcfc; */
+    }
+
+    #wrapper {
+        padding: 0;
+    }
+    
+/** --------------------------------- dockbar */
+    
     .dockbar-user-notifications .dropdown-toggle .user-notifications-count {
         display: inline;
         padding: 2px 4px 2px;
         background-color: #FCF8E3; /* bootstrap alert */
         color: #C09853; /* bootstrap alert */
         border: 1px solid #FBEED5; /* bootstrap alert */
-    }
-
-    body {
-        font-family: 'Source Sans Pro', sans-serif;
-        background: #fcfcfc;
-        
-        @media (max-width: 767px)  {
-            padding: 0;     
-        }
-    }
-
-    #wrapper {
-        padding: 0;
     }
     
     /* override settings in dockbar.css */
@@ -53,353 +54,57 @@
             }
         }
     }
-
-    .navbar { 
-        
-        .nav { 
-        
-            > .active a, 
-            > .active a:focus, 
-            > .active a:hover {
-                background-color : #F3F3F3;
-                box-shadow: none;
-                -moz-box-shadow: none;
-                -webkit-box-shadow: none;
-            }
-
-            > li > a {
-                padding: 20px 20px;
-                text-transform: uppercase;
-            }
-
-        }
-        
-        .btn-navbar {
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            text-shadow: none;
-            color: #555;
-        }
-        
-        .divider-vertical {
-            height: 60px;
-        }
-
-    }
     
+/** --------------------------------- navigation */
+
     #navigation {
-    
-        @media (max-width: 767px) {
-            margin-right: 0;
-        }
-    
-        .brand { 
-            padding:18px 40px 18px 20px;
-            font-weight: 600;
-            font-size: 24px;
-            
-            .icon {
-                color:#555;
+        .nav {
+            li:first-of-type {
+                display: none; 
+            }
+            li:last-of-type {
+                margin-right: -15px;
             }
         }
-    
-        .btn-navbar {
-            margin-top: 12px;
-            margin-right: 10px;
-        }
-    
-        .nav-collapse {
-            @media (min-width: 980px) {
-                float: right;
-            }
-        }    
-        
-        .navbar-inner {
-        
-            background-color: white;
-            background-image: none;
-            
-            .dropdown-menu {
-                margin-top: -5px;
-            }
-            
-            @media (max-width: 767px) {
-                padding-right: 0;
-            }
-                        
-        }        
-        
     }
+
+    
+/** --------------------------------- content */
 
     #content {
-        
-        > form {
-            margin: 0;
-        }
+        margin-top: $nav-height; 
     }
     
-    .container { 
-    
-        > h2 { 
-            padding-top:20px;
-        }
+/** --------------------------------- templates */
 
-        > .lead {
-            max-width: 700px;
-        }
-
-    }
+    .claim {
     
-    .opener {  
-       
-        min-height: 600px; 
-               
-    }
-    
-    .carousel {
-    
-        margin: 3px 0 0; 
-        max-height: 550px;
-        overflow: hidden; 
-        
-        @media (max-width: 1199px)  {
-            max-height: 500px;     
-        }  
-        
-        @media (max-width: 979px)  {
-            max-height: 400px;     
-        }  
-        
-        @media (max-width: 767px)  {
-            max-height: 300px;     
-        }
-        
-        @media (max-width: 480px)  {
-            max-height: 200px;     
-        }
-        
-        .carousel-control {
-            height: 80px;
-            margin-top: 0px;
-            font-size: 120px;
-            text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
-            background-color: transparent;
-            border: 0px none;
-            z-index: 10;
-        }
-    }
-    
-    .screenshot {  
-       
-        min-height: 550px; 
-        background-position: center 0; 
-
-        @media (max-width: 1199px)  {
-            background-size: 1200px;
-            min-height: 500px;     
-        }  
-        
-        @media (max-width: 979px)  {
-            background-size: 980px;
-            min-height: 400px;     
-        }  
-        
-        @media (max-width: 767px)  {
-            background-size: 768px;
-            min-height: 300px;     
-        }
-        
-        @media (max-width: 480px)  {
-            background-size: 480px;
-            min-height: 200px;     
-        }                     
-    }
-    
-    .matterhorn {
-    
-        background-size: 1500px;
-        background-repeat: no-repeat;
-        background-position: center -30px;
-        
-        .hero-unit {
-        
-            background-color: transparent;
-            padding-left: 0;
-        
-            h1 {
-                color: white; 
-                max-width: 700px;
-                margin-top: 80px;
-                line-height: 1.1;
-            }
-        }
-        
-    }
-    
-    .profile {
-    
-        font-size: 16px;
-    
-        .hero-unit {
-            padding-bottom: 0;
-            text-align: center;
-            
-            h1 {
-                @media (min-width: 980px)  {
-                    font-size: 55px;
-                    line-height: 60px;
-                }
-                max-width: 700px;
-                margin: auto;
-            } 
-        }
-        
-        p {
-            margin: 15px 0 25px; 
-        }
-    }
-    
-    .jumbotron {
-        padding: 120px;
         text-align: center;
-        background-color: lightgray;
+        
+        h1 { 
+            line-height: 1.2em;
+        }
+    }
+
+    
+/** --------------------------------- liferay-ui */
+    .signed-in {
+    
+        #navigation {
+            margin-top: $dockbar-height; 
+        } 
     }
     
-    .copyright {
-    
-        padding: 20px 0 40px; 
-        
-        ul { 
-            list-style : none;
-            margin: 0;
-        }
-
-        li {
-            display: inline;
-        }
-
-        .pull-left li {
-            padding: 0 20px 0 0;
+    .portlet-journal-content {
+        .alert,
+        .lfr-meta-actions {
+            margin: 20px 20px 0; 
         }
         
-        .pull-right li {
-            padding: 0 0 0 20px;
-        }
-
-    }
-    
-    .portlet-borderless-container { 
-    
-        .alert {
-            margin-left: 1.5em;
-            margin-right: 1.5em;
-        }
-        
-        .article-form { 
-            padding:1.5em;
-            background-color: #fcfcfc;
-        }
-
-        .lfr-icon-actions, .lfr-meta-actions .navbar {
-            padding: 1.5em;
-        }
-                 
-        .portlet-social-media {
-            padding-top: 30px; 
-            
-            a:hover, 
-            a:focus {
-                color: white;
-            }
-            
-            .shariff li .share_text {
-                font-family: 'Source Sans Pro', sans-serif;
-            }
-        }
-
-        .asset-abstract {
-        
-            margin-left: 1.5em;
-            margin-right: 1.5em;
-            
-            img {
-                display: none;
-            }
-
-            .asset-title {
-            
-                border: none;
-                text-align: center;
-                
-                a {
-                    color: black;
-                }
-
-                a:hover {
-                    color: gray;
-                    text-decoration: none;
-                }
-
-            }
-            
-            .asset-summary {
-                font-size: 21px; /* bootstrap .lead class */
-                font-weight: 200; /* bootstrap .lead class */
-                line-height: 30px; /* bootstrap .lead class */
-                text-align: center;
-                max-width: 600px;
-                margin: auto;
-            }
-
-            .asset-more {
-            
-                text-align: center;
-                padding: 40px 20px 20px; 
-                
-                a {    
-                    padding : 10px 20px 10px 20px;
-                    border: 1px solid black;
-                    color: black;
-                }
-
-                a:hover {
-                    color: gray;
-                    border: 1px solid gray;
-                    text-decoration: none;
-                }
-    
-            }
-            
-            .asset-metadata {
-            
-                text-align: center;
-                margin: 20px 0 10px 0;
-                
-                span {
-                    float: none;
-                }
-
-                .metadata-publish-date {
-                    background: none;
-                    color: black;
-                    padding-left: 0;
-                }
-
-            }
-            
-            .portlet-title-default {
-                margin-right: 1.5em;
-            }
+        .lfr-meta-actions {
+            padding-top: 0; 
+            padding-bottom: 1em;
         }
     }
     
-    .add-content-menu {
-    
-        color: #555;
-        
-        h1 {
-            font-size: 24.5px; /* bootstrap h3 */
-        }
-    }
 }
