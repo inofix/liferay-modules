@@ -37,7 +37,7 @@ ${theme.include(body_top_include)}
         </#if>
 
         <#if has_navigation || is_signed_in>
-           <#include "${full_templates_path}/navigation.ftl" />
+           <#-- <#include "${full_templates_path}/navigation.ftl" /> -->
         </#if>
     </header>
 
