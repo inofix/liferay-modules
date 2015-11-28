@@ -6,20 +6,28 @@
         <servlet-filter-name>Cache Filter</servlet-filter-name>
         <servlet-filter-impl>ch.inofix.hook.cachefilter.CacheFilter</servlet-filter-impl>
         <init-param>
-            <param-name>considerClient</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <init-param>
-            <param-name>considerOS</param-name>
-            <param-value>false</param-value>
+            <param-name>pattern</param-name>
+            <param-value>0</param-value>
         </init-param>
     </servlet-filter>
+    <!--  
     <servlet-filter-mapping>
         <servlet-filter-name>Cache Filter</servlet-filter-name>
-        <after-filter>Virtual Host Filter</after-filter>
-        <!-- <after-filter>Cache Filter - Friendly</after-filter> -->
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
+        <url-pattern>/group/*</url-pattern>
         <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </servlet-filter-mapping>
+    <servlet-filter-mapping>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <url-pattern>/user/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </servlet-filter-mapping>
+    -->
+    <servlet-filter-mapping>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <url-pattern>/web/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
     </servlet-filter-mapping>
 </hook>
