@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.1.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_1_0.dtd">
+
+<hook>
+    <servlet-filter>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <servlet-filter-impl>ch.inofix.hook.cachefilter.CacheFilter</servlet-filter-impl>
+        <init-param>
+            <param-name>pattern</param-name>
+            <param-value>0</param-value>
+        </init-param>
+    </servlet-filter>
+    <!--  
+    <servlet-filter-mapping>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <url-pattern>/group/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </servlet-filter-mapping>
+    <servlet-filter-mapping>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <url-pattern>/user/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </servlet-filter-mapping>
+    -->
+    <servlet-filter-mapping>
+        <servlet-filter-name>Cache Filter</servlet-filter-name>
+        <url-pattern>/web/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </servlet-filter-mapping>
+</hook>
