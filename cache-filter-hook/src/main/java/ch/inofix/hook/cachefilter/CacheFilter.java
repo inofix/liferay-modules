@@ -51,12 +51,11 @@ import com.liferay.util.servlet.filters.CacheResponseUtil;
  * 
  * @author Christian Berndt
  * @created 2015-11-27 15:17
- * @modified 2015-11-27 15:17
- * @version 1.0.0
+ * @modified 2015-11-29 14:15
+ * @version 1.0.1
  * 
  */
 public class CacheFilter extends BaseFilter {
-    // public class CacheFilter implements Filter {
 
     public static final String SKIP_FILTER = CacheFilter.class + "SKIP_FILTER";
 
@@ -217,7 +216,15 @@ public class CacheFilter extends BaseFilter {
         friendlyURL = null;
 
         if ((pos != -1) && ((pos + 1) != pathInfo.length())) {
-            friendlyURL = pathInfo.substring(pos);
+
+            // with friendly-url-routes
+            if (pathInfo.indexOf("/-/", 1) > 0) {
+                friendlyURL = pathInfo.substring(pos, pathInfo.indexOf("/-/", 1));
+            } else {
+                friendlyURL = pathInfo.substring(pos);
+            }
+            
+            _log.info("friendlyURL = " + friendlyURL);
         }
 
         if (Validator.isNull(friendlyURL)) {
@@ -425,8 +432,7 @@ public class CacheFilter extends BaseFilter {
 
         //
         // The cache filter caches processed web content. Set the threshold size
-        // to
-        // prevent caching resources that are too large. The default value is
+        // to prevent caching resources that are too large. The default value is
         // 500 kb.
         //
         // cache.content.threshold.size=512000
