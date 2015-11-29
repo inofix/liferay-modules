@@ -51,8 +51,8 @@ import com.liferay.util.servlet.filters.CacheResponseUtil;
  * 
  * @author Christian Berndt
  * @created 2015-11-27 15:17
- * @modified 2015-11-29 14:15
- * @version 1.0.1
+ * @modified 2015-11-29 18:17
+ * @version 1.0.2
  * 
  */
 public class CacheFilter extends BaseFilter {
@@ -64,13 +64,14 @@ public class CacheFilter extends BaseFilter {
             HttpServletResponse response, FilterChain filterChain)
             throws Exception {
 
-        _log.info("Executing processFilter().");
-
         long userId = PortalUtil.getUserId(request);
         String remoteUser = request.getRemoteUser();
 
-        _log.info("userId = " + userId);
-        _log.info("remoteUser = " + remoteUser);
+        if (_log.isDebugEnabled()) {
+            _log.debug("Executing processFilter().");
+            _log.debug("userId = " + userId);
+            _log.debug("remoteUser = " + remoteUser);
+        }
 
         request.setAttribute(SKIP_FILTER, Boolean.TRUE);
 
@@ -85,22 +86,24 @@ public class CacheFilter extends BaseFilter {
         // public layouts, too).
         if (userId == 0) {
             cacheResponseData = (CacheResponseData) MultiVMPoolUtil.get(
-                    "web-cache", key);
+                    CacheFilter.class.getName(), key);
         }
 
         if (cacheResponseData == null) {
 
             if (!isCacheableData(companyId, request)) {
 
-                _log.info("Request is not cacheable " + key);
+                if (_log.isDebugEnabled()) {
+                    _log.debug("Request is not cacheable " + key);
+                }
 
                 processFilter(CacheFilter.class, request, response, filterChain);
 
                 return;
             }
 
-            if (_log.isInfoEnabled()) {
-                _log.info("Caching request " + key);
+            if (_log.isDebugEnabled()) {
+                _log.debug("Caching request " + key);
             }
 
             ByteBufferServletResponse byteBufferResponse = new ByteBufferServletResponse(
@@ -132,7 +135,8 @@ public class CacheFilter extends BaseFilter {
                     && isCacheableRequest(request)
                     && isCacheableResponse(byteBufferResponse)) {
 
-                MultiVMPoolUtil.put("web-cache", key, cacheResponseData);
+                MultiVMPoolUtil.put(CacheFilter.class.getName(), key,
+                        cacheResponseData);
 
             }
         }
@@ -219,12 +223,15 @@ public class CacheFilter extends BaseFilter {
 
             // with friendly-url-routes
             if (pathInfo.indexOf("/-/", 1) > 0) {
-                friendlyURL = pathInfo.substring(pos, pathInfo.indexOf("/-/", 1));
+                friendlyURL = pathInfo.substring(pos,
+                        pathInfo.indexOf("/-/", 1));
             } else {
                 friendlyURL = pathInfo.substring(pos);
             }
-            
-            _log.info("friendlyURL = " + friendlyURL);
+
+            if (_log.isDebugEnabled()) {
+                _log.debug("friendlyURL = " + friendlyURL);
+            }
         }
 
         if (Validator.isNull(friendlyURL)) {
@@ -309,6 +316,7 @@ public class CacheFilter extends BaseFilter {
 
         // User agent
 
+        // TODO: make user-agent processing configurable
         // String userAgent = GetterUtil.getString(request
         // .getHeader(HttpHeaders.USER_AGENT));
         //
