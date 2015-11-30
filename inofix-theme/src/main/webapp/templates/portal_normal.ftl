@@ -18,6 +18,9 @@
     <meta content="initial-scale=1.0, width=device-width" name="viewport" />
 
     ${theme.include(top_head_include)}
+    
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    
 </head>
 
 <body class="${css_class}">
