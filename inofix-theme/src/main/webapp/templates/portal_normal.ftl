@@ -2,8 +2,8 @@
 <#-- portal_normal.ftl: Main template of the inofix theme   -->
 <#--                                                        -->
 <#-- Created:     2015-11-26 22:31 by Christian Berndt      -->
-<#-- Modified:    2015-11-30 20:36 by Christian Berndt      -->
-<#-- Version:     1.0.2                                     -->
+<#-- Modified:    2015-11-30 22:54 by Christian Berndt      -->
+<#-- Version:     1.0.3                                     -->
 <#--                                                        -->
 
 <!DOCTYPE html>
@@ -21,6 +21,11 @@
     
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     
+    <script src='${javascript_folder}/jquery-1.11.3.min.js' type='text/javascript'></script>
+    
+    <script src='${javascript_folder}/jquery.flexslider-min.js' type='text/javascript'></script>
+    <link href='${css_folder}/flexslider.css' rel='stylesheet' type='text/css' media='screen' />
+       
 </head>
 
 <body class="${css_class}">
