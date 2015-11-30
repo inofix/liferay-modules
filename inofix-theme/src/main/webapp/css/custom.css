@@ -34,12 +34,20 @@ $nav-and-dockbar-height: 102px;
     
 /** --------------------------------- dockbar */
     
-    .dockbar-user-notifications .dropdown-toggle .user-notifications-count {
-        display: inline;
-        padding: 2px 4px 2px;
-        background-color: #FCF8E3; /* bootstrap alert */
-        color: #C09853; /* bootstrap alert */
-        border: 1px solid #FBEED5; /* bootstrap alert */
+    .portlet-dockbar {
+        
+        .dropdown-menu {
+            z-index: 2000; 
+        }
+        
+        .user-notifications-count {
+            display: inline;
+            padding: 2px 4px 2px;
+            background-color: #FCF8E3; /* bootstrap alert */
+            color: #C09853; /* bootstrap alert */
+            border: 1px solid #FBEED5; /* bootstrap alert */
+        }
+        
     }
     
     /* override settings in dockbar.css */
