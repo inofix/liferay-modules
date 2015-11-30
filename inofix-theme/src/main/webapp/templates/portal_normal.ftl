@@ -2,8 +2,8 @@
 <#-- portal_normal.ftl: Main template of the inofix theme   -->
 <#--                                                        -->
 <#-- Created:     2015-11-26 22:31 by Christian Berndt      -->
-<#-- Modified:    2015-11-26 22:31 by Christian Berndt      -->
-<#-- Version:     1.0.0                                     -->
+<#-- Modified:    2015-11-30 17:07 by Christian Berndt      -->
+<#-- Version:     1.0.1                                     -->
 <#--                                                        -->
 
 <!DOCTYPE html>
@@ -37,7 +37,7 @@ ${theme.include(body_top_include)}
         </#if>
 
         <#if has_navigation || is_signed_in>
-           <#-- <#include "${full_templates_path}/navigation.ftl" /> -->
+           <#include "${full_templates_path}/navigation.ftl" />
         </#if>
     </header>
 

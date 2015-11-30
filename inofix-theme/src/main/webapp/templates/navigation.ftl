@@ -2,13 +2,13 @@
 <#-- navigation.vm: Navigation template of the inofix theme -->
 <#--                                                        -->
 <#-- Created:     2015-11-26 22:31 by Christian Berndt      -->
-<#-- Modified:    2015-11-26 22:31 by Christian Berndt      -->
-<#-- Version:     1.0.0                                     -->
+<#-- Modified:    2015-11-30 17:47 by Christian Berndt      -->
+<#-- Version:     1.0.1                                     -->
 <#--                                                        -->
 
 <#assign brand = theme_display.getThemeSetting('brand') />
 
-<nav class="${nav_css_class} navbar navbar-fixed-top" id="navigation" role="navigation">
+<nav class="${nav_css_class} navbar navbar-fixed-top" id="site-navigation" role="navigation">
     <div class="navbar-inner">
         <div class="container">
             <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">

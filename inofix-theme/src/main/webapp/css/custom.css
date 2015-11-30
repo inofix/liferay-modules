@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-08-28 17:56 by Christian Berndt
- * Version: 	0.2.5
+ * Modified: 	2015-11-30 17:47 by Christian Berndt
+ * Version: 	0.2.6
  */
 @import "compass";
 @import "mixins";
@@ -26,7 +26,6 @@ $nav-and-dockbar-height: 102px;
 
     body {
         font-family: 'Source Sans Pro', sans-serif;
-/*         background: #fcfcfc; */
     }
 
     #wrapper {
@@ -57,7 +56,8 @@ $nav-and-dockbar-height: 102px;
     
 /** --------------------------------- navigation */
 
-    #navigation {
+
+    #site-navigation {
         .nav {
             li:first-of-type {
                 display: none; 
@@ -78,19 +78,18 @@ $nav-and-dockbar-height: 102px;
 /** --------------------------------- templates */
 
     .claim {
-    
+        
         text-align: center;
         
         h1 { 
-            line-height: 1.2em;
+            line-height: 1.2em; 
         }
     }
-
-    
+        
 /** --------------------------------- liferay-ui */
     .signed-in {
     
-        #navigation {
+        #site-navigation {
             margin-top: $dockbar-height; 
         } 
     }
