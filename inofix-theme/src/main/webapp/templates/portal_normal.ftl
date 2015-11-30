@@ -2,8 +2,8 @@
 <#-- portal_normal.ftl: Main template of the inofix theme   -->
 <#--                                                        -->
 <#-- Created:     2015-11-26 22:31 by Christian Berndt      -->
-<#-- Modified:    2015-11-30 17:07 by Christian Berndt      -->
-<#-- Version:     1.0.1                                     -->
+<#-- Modified:    2015-11-30 20:36 by Christian Berndt      -->
+<#-- Version:     1.0.2                                     -->
 <#--                                                        -->
 
 <!DOCTYPE html>
@@ -35,10 +35,6 @@ ${theme.include(body_top_include)}
 
 <div class="container-fluid" id="wrapper">
     <header id="banner" role="banner">
-        <#if !is_signed_in>
-            <a href="${sign_in_url}" data-redirect="${is_login_redirect_required?string}" id="sign-in" rel="nofollow">${sign_in_text}</a>
-        </#if>
-
         <#if has_navigation || is_signed_in>
            <#include "${full_templates_path}/navigation.ftl" />
         </#if>
