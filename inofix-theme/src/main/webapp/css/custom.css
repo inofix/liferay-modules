@@ -10,7 +10,7 @@
 
 $dockbar-height: 42px;
 $nav-height: 60px;
-$nav-and-dockbar-height: 102px; 
+$dockbar-and-nav-height: 102px; 
 
 .aui {
     
@@ -35,11 +35,11 @@ $nav-and-dockbar-height: 102px;
 /** --------------------------------- dockbar */
     
     .portlet-dockbar {
-        
-        .dropdown-menu {
-            z-index: 2000; 
-        }
-        
+    
+        position: fixed;
+        width: 100%;
+        z-index: 2000; 
+
         .user-notifications-count {
             display: inline;
             padding: 2px 4px 2px;
@@ -66,13 +66,30 @@ $nav-and-dockbar-height: 102px;
 
 
     #site-navigation {
+    
+        .navbar-inner {
+            height: $nav-height;
+        } 
+    
         .nav {
+        
+            text-transform: uppercase;
+        
+            > li > a {
+                padding: 20px 15px;
+            }
+        
             li:first-of-type {
                 display: none; 
             }
+            
             li:last-of-type {
                 margin-right: -15px;
             }
+        }
+        
+        .brand {
+            padding: 20px; 
         }
     }
 
@@ -86,12 +103,21 @@ $nav-and-dockbar-height: 102px;
 /** --------------------------------- templates */
 
     .claim {
-        
+            
         text-align: center;
         
         h1 { 
-            line-height: 1.2em; 
+            line-height: 1.2em;
+            min-height: 3em;
+            padding: 200px;
         }
+        
+    }
+    
+/** --------------------------------- footer */
+
+    #footer {
+        padding: 20px; 
     }
         
 /** --------------------------------- liferay-ui */
@@ -99,7 +125,11 @@ $nav-and-dockbar-height: 102px;
     
         #site-navigation {
             margin-top: $dockbar-height; 
-        } 
+        }
+        
+        #content {
+            margin-top: $dockbar-and-nav-height;
+        }
     }
     
     .portlet-journal-content {
@@ -112,6 +142,5 @@ $nav-and-dockbar-height: 102px;
             padding-top: 0; 
             padding-bottom: 1em;
         }
-    }
-    
+    }   
 }
