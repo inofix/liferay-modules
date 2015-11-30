@@ -166,5 +166,12 @@ $dockbar-and-nav-height: 102px;
             padding-top: 0; 
             padding-bottom: 1em;
         }
-    }   
+    }
+    
+    /* bootstrap container-breakpoints for liferay standard portlets */
+    .portlet-dynamic-data-mapping .portlet-body,
+    .portlet-journal .article-form-edit {
+        width: 1170px; /* bootstrap container */
+        margin: auto; 
+    } 
 }
