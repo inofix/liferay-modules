@@ -10,7 +10,7 @@
 
 $dockbar-height: 42px;
 $nav-height: 60px;
-$dockbar-and-nav-height: 102px; 
+$dockbar-and-nav-height: 102px;
 
 .aui {
     
@@ -26,6 +26,10 @@ $dockbar-and-nav-height: 102px;
 
     body {
         font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    form {
+        margin: 0; 
     }
 
     #wrapper {
@@ -69,6 +73,8 @@ $dockbar-and-nav-height: 102px;
     
         .navbar-inner {
             height: $nav-height;
+            
+            background: white; 
         } 
     
         .nav {
@@ -77,6 +83,7 @@ $dockbar-and-nav-height: 102px;
         
             > li > a {
                 padding: 20px 15px;
+                letter-spacing: 0.1em;
             }
         
             li:first-of-type {
@@ -89,7 +96,8 @@ $dockbar-and-nav-height: 102px;
         }
         
         .brand {
-            padding: 20px; 
+            padding: 20px;
+            letter-spacing: 0.1em;
         }
     }
 
@@ -129,6 +137,7 @@ $dockbar-and-nav-height: 102px;
         .teaser-body {
         
             padding: 150px 200px 200px;
+            border-bottom: 1px solid lightgray;
             
             h1 {
                 line-height: 1.2em;
@@ -141,7 +150,7 @@ $dockbar-and-nav-height: 102px;
 /** --------------------------------- footer */
 
     #footer {
-        padding: 20px; 
+        padding: 30px; 
     }
         
 /** --------------------------------- liferay-ui */
