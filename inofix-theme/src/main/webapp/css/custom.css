@@ -108,6 +108,16 @@ $dockbar-and-nav-height: 102px;
         margin-top: $nav-height; 
     }
     
+/** --------------------------------- flex-slider */
+
+/*     .flex-direction-nav a:before { */
+/*         content: "<";    */
+/*     } */
+    
+/*     .flex-direction-nav a.flex-next:before { */
+/*         content: ">"; */
+/*     } */
+    
 /** --------------------------------- templates */
 
     .wc-template {
