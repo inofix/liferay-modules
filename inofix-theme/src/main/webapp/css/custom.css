@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-12-01 12:10 by Christian Berndt
- * Version: 	0.3.0
+ * Modified: 	2015-12-02 00:01 by Christian Berndt
+ * Version: 	0.3.1
  */
 @import "compass";
 @import "mixins";
@@ -112,6 +112,9 @@ $dockbar-and-nav-height: 102px;
 
     .flexslider {
     
+        border: none;
+        margin: 0;  
+    
         ul, ol {
             margin: 0;
         }
@@ -132,6 +135,46 @@ $dockbar-and-nav-height: 102px;
             .flex-next {
                 right: 10px;
             }
+        }
+        
+        &.projects.slider {
+
+        }
+        
+        &.projects.carousel {
+        
+            li {
+            
+                opacity: 0.5;
+                -webkit-transition: opacity 200ms ease-in;
+                -moz-transition: opacity 200ms ease-in;
+                -o-transition: opacity 200ms ease-in;
+                -ms-transition: opacity 200ms ease-in;
+                transition: opacity 200ms ease-in;
+            
+                text-align: center; 
+                background: lightgray;
+                cursor: pointer;
+                height: 6em;
+            
+                > div {
+                
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    
+                    width: 200px;
+                    margin: auto; 
+                    
+                    // center vertically
+                    position: relative;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                
+                &.flex-active-slide {
+                    opacity: 1;
+                }
+            } 
         }
     }
     
@@ -155,6 +198,12 @@ $dockbar-and-nav-height: 102px;
             background: none; 
             color: black;
         }
+        
+        h1 {
+            line-height: 1.2em;
+            min-height: 3em;
+            margin-bottom: 70px;
+        }
     }
 
     .teaser {
@@ -166,13 +215,16 @@ $dockbar-and-nav-height: 102px;
             padding: 150px 200px 200px;
             border-bottom: 1px solid lightgray;
             
-            h1 {
-                line-height: 1.2em;
-                min-height: 3em;
-                margin-bottom: 70px;
-            }
         }
     }
+    
+    .project {
+        
+        .project-body {
+            padding: 40px 200px;
+        }            
+    }
+    
     
 /** --------------------------------- footer */
 
@@ -207,8 +259,9 @@ $dockbar-and-nav-height: 102px;
     /* bootstrap container-breakpoints for liferay standard portlets */
     .portlet-asset-publisher .add-asset-selector,
     .portlet-dynamic-data-mapping .portlet-body,
-    .portlet-journal .article-form-edit {
+    .portlet-journal .article-form-add,
+    .portlet-journal .article-form-edit,
+    .portlet-login .portlet-body {
         width: 1170px; /* bootstrap container */
-        margin: auto; 
     } 
 }
