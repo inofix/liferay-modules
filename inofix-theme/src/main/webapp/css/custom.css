@@ -205,6 +205,7 @@ $dockbar-and-nav-height: 102px;
     }
     
     /* bootstrap container-breakpoints for liferay standard portlets */
+    .portlet-asset-publisher .add-asset-selector,
     .portlet-dynamic-data-mapping .portlet-body,
     .portlet-journal .article-form-edit {
         width: 1170px; /* bootstrap container */
