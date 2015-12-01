@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-11-30 23:54 by Christian Berndt
- * Version: 	0.2.8
+ * Modified: 	2015-12-01 11:44 by Christian Berndt
+ * Version: 	0.2.9
  */
 @import "compass";
 @import "mixins";
@@ -42,7 +42,7 @@ $dockbar-and-nav-height: 102px;
     
         position: fixed;
         width: 100%;
-        z-index: 2000; 
+        z-index: 1040; 
 
         .user-notifications-count {
             display: inline;
