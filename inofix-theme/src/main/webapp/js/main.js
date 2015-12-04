@@ -1,8 +1,8 @@
 /**
  * 
  * Created: 	2015-08-22 19:42 by Christian Berndt
- * Modified:	2015-12-01 14:24 by Christian Berndt
- * Version: 	1.0.2
+ * Modified:	2015-12-04 10:39 by Christian Berndt
+ * Version: 	1.0.3
  */
 $(document).ready(function() {
 	
@@ -19,7 +19,8 @@ $(document).ready(function() {
 	 
 	$('.projects.flexslider.slider').flexslider({
 		animation: "fade",
-		controlNav: false,
+		controlNav: true,
+		directionNav: false,
 		animationLoop: true,
 		slideshow: true,
 		sync: ".projects.flexslider.carousel"
