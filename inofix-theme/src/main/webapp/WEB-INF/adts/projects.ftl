@@ -2,26 +2,28 @@
     projects.ftl: Display a list of projects with the flexslider widget.
     
     Created:    2015-12-01 14:52 by Christian Berndt
-    Modified:   2015-12-01 14:52 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-12-04 00:58 by Christian Berndt
+    Version:    1.0.1
     
     Please note: the flexsliders are configured in js/main.js.
 -->
 
 <#assign journalArticleService = serviceLocator.findService("com.liferay.portlet.journal.service.JournalArticleLocalService") />
 
-<div class="projects flexslider slider">
-    <#if entries?has_content>
-        <ul class="slides">
-        <#list entries as curEntry>
-            <li>
-                <#assign article = journalArticleService.getLatestArticle(curEntry.getClassPK()) />
-                <#assign content = journalContentUtil.getContent(themeDisplay.getScopeGroupId(), article.getArticleId(), article.getTemplateId(), themeDisplay.getLanguageId(), themeDisplay) />
-                ${content}
-            </li>
-        </#list>
-        </ul>
-    </#if>
+<div class="container">
+    <div class="projects flexslider slider">
+        <#if entries?has_content>
+            <ul class="slides">
+            <#list entries as curEntry>
+                <li>
+                    <#assign article = journalArticleService.getLatestArticle(curEntry.getClassPK()) />
+                    <#assign content = journalContentUtil.getContent(themeDisplay.getScopeGroupId(), article.getArticleId(), article.getTemplateId(), themeDisplay.getLanguageId(), themeDisplay) />
+                    ${content}
+                </li>
+            </#list>
+            </ul>
+        </#if>
+    </div>
 </div>
 
 <div class="container">
