@@ -161,35 +161,43 @@ $dockbar-and-nav-height: 102px;
         &.projects.carousel {
         
             li {
-            
-                opacity: 0.5;
+                        
+                opacity: 0.2;
+                
                 -webkit-transition: opacity 200ms ease-in;
                 -moz-transition: opacity 200ms ease-in;
                 -o-transition: opacity 200ms ease-in;
                 -ms-transition: opacity 200ms ease-in;
-                transition: opacity 200ms ease-in;
-            
-                text-align: center; 
-                background: lightgray;
-                cursor: pointer;
-                height: 6em;
-            
-                > div {
+                transition: opacity 200ms ease-in;                
                 
-                    text-transform: uppercase;
-                    letter-spacing: 0.1em;
+                .client-name {
+            
+                    text-align: center; 
+                    background: lightgray;
+                    cursor: pointer;
+                    height: 6em;
+                
+                    > div {
                     
-                    width: 200px;
-                    margin: auto; 
-                    
-                    // center vertically
-                    position: relative;
-                    top: 50%;
-                    transform: translateY(-50%);
+                        text-transform: uppercase;
+                        letter-spacing: 0.1em;
+                        
+                        width: 200px;
+                        margin: auto; 
+                        
+                        // center vertically
+                        position: relative;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
                 }
                 
                 &.flex-active-slide {
                     opacity: 1;
+                }
+                
+                .client-body {
+                    padding: 15px 30px;
                 }
             } 
         }
@@ -280,5 +288,6 @@ $dockbar-and-nav-height: 102px;
     .portlet-journal .article-form-edit,
     .portlet-login .portlet-body {
         width: 1170px; /* bootstrap container */
+        margin: auto; 
     } 
 }
