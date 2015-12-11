@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-12-11 17:14 by Christian Berndt
- * Version: 	0.3.5
+ * Modified: 	2015-12-11 17:41 by Christian Berndt
+ * Version: 	0.3.6
  */
 @import "compass";
 @import "mixins";
@@ -87,6 +87,10 @@ $dockbar-and-nav-height: 102px;
             > li > a {
                 padding: 20px 15px;
                 letter-spacing: 0.1em;
+                
+                &:last-of-type {
+                    padding-right: 0;
+                }
             }
         
             li:first-of-type {
