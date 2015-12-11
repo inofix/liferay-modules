@@ -6,8 +6,8 @@
     default theme.
     
     Created:    2015-07-26 16:27 by Christian Berndt
-    Modified:   2015-11-26 22:04 by Christian Berndt
-    Version:    1.0.2   
+    Modified:   2015-12-11 18:04 by Christian Berndt
+    Version:    1.0.3 
  -->
 <look-and-feel>
     <compatibility>
@@ -19,6 +19,8 @@
         <settings>
             <setting key="brand" configurable="true" type="text"
                 value="Your Brand" />
+            <setting key="services-layout-uuid" configurable="true" type="text"
+                value=""/>                
             <setting key="portlet-setup-show-borders-default"
                 value="false" />
         </settings>

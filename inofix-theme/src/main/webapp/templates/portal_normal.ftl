@@ -2,13 +2,15 @@
 <#-- portal_normal.ftl: Main template of the inofix theme   -->
 <#--                                                        -->
 <#-- Created:     2015-11-26 22:31 by Christian Berndt      -->
-<#-- Modified:    2015-12-11 17:15 by Christian Berndt      -->
-<#-- Version:     1.0.4                                     -->
+<#-- Modified:    2015-12-11 18:02 by Christian Berndt      -->
+<#-- Version:     1.0.5                                     -->
 <#--                                                        -->
 
 <!DOCTYPE html>
 
 <#include init />
+
+<#assign services_layout_uuid = theme_display.getThemeSetting('services-layout-uuid') />
 
 <html class="${root_css_class}" dir="<@liferay.language key="lang.dir" />" lang="${w3c_language_id}">
 
@@ -63,17 +65,44 @@ ${theme.include(body_top_include)}
     <footer id="footer" role="contentinfo">
         <div class="container">
             <div class="copyright pull-left">
-                &copy; 2015&dash;2016 <a href="http://www.inofix.ch" rel="external" target="_blank">www.inofix.ch</a>
+                &copy; 2015&ndash;2016 <a href="http://www.inofix.ch" rel="external" target="_blank">www.inofix.ch</a>
             </div>
-            <#if !is_signed_in>
-                <a href="${sign_in_url}" data-redirect="${is_login_redirect_required?string}" id="sign-in" rel="nofollow">${sign_in_text}</a>
-            <#else>
-                <a href="${sign_out_url}" id="sign-out" rel="nofollow">${sign_out_text}</a>
-            </#if>
+            
+            
             <div class="pull-right">
-                <a href="https://github.com/inofix" target="_blank" title="<@liferay.language key="visit-us-on-github" />"><span class="icon icon-github"></span></a>
+            
+                <#if (validator.isNotNull(services_layout_uuid))>  
+                
+                    <#--                                        -->
+                    <#-- Embed a configurable services-site-map -->
+                    <#--                                        -->       
+        
+                    <#-- Hide borders  -->
+                    ${freeMarkerPortletPreferences.setValue("portletSetupShowBorders", "false")}
+                    
+                    <#-- Set the displayDepth -->
+                    ${freeMarkerPortletPreferences.setValue("displayDepth", "1")}
+                                
+                    <#-- Set the root-layout-uuid  -->
+                    ${freeMarkerPortletPreferences.setValue("rootLayoutUuid", services_layout_uuid)}                     
+                              
+                    <#-- Include a site-map-portlet instance  -->  
+                    <#-- ${theme.runtime("145")} -->       
+                    ${theme.runtime("85_INSTANCE_N6bz", "", freeMarkerPortletPreferences.toString())}         
+                    
+                    <#-- Reset the preferences settings -->
+                    ${freeMarkerPortletPreferences.reset()}                     
+                                         
+                </#if>
+            
+                <#if !is_signed_in>
+                    <a href="${sign_in_url}" data-redirect="${is_login_redirect_required?string}" id="sign-in" rel="nofollow">${sign_in_text}</a>
+                <#else>
+                    <a href="${sign_out_url}" id="sign-out" rel="nofollow">${sign_out_text}</a>
+                </#if>
+                <a href="https://github.com/inofix" target="_blank" title="<@liferay.language key="meet-us-on-github" />"><span class="icon icon-github"></span></a>
                 <a href="mailto:contact@inofix.ch?subject=<@liferay.language key="contact-message" />" title="<@liferay.language key="send-us-a-message" />"><span class="icon icon-envelope-alt"></span></a>
-            </div>
+           </div>
         </div>
     </footer>
 </div>
