@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-12-04 10:51 by Christian Berndt
- * Version: 	0.3.3
+ * Modified: 	2015-12-11 16:37 by Christian Berndt
+ * Version: 	0.3.4
  */
 @import "compass";
 @import "mixins";
@@ -238,7 +238,6 @@ $dockbar-and-nav-height: 102px;
         .teaser-body {
         
             padding: 150px 200px 200px;
-            border-bottom: 1px solid lightgray;
             
         }
     }
@@ -255,6 +254,19 @@ $dockbar-and-nav-height: 102px;
 
     #footer {
         padding: 30px; 
+        
+        background-color: #252525; 
+        border-top-color: #333;
+        
+        color: #999;
+        
+        a {
+            color: #ccc;
+            
+            &:hover {
+                color: #fff;
+            }
+        }
     }
         
 /** --------------------------------- liferay-ui */
