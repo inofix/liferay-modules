@@ -2,8 +2,8 @@
     project.ftl: format the project-structure. 
     
     Created:    2015-12-01 14:47 by Christian Berndt
-    Modified:   2015-12-01 14:47 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-12-12 13:38 by Christian Berndt
+    Version:    1.0.1
     
     Please note: Although this template is stored in the
     site's context it's source is managed via git. Whenever you
@@ -19,19 +19,13 @@
                     <img src="${keyvisual.getData()}">
                 </#if>
             </#if>
-            <#if target??>
-                <#if target.getFriendlyUrl()?has_content>
-                    <a href="${target.getFriendlyUrl()}" class="btn">
-                        <#if label??>
-                            <#if label.getData()?has_content>
-                                ${label.getData()}
-                            <#else>
-                                <@liferay.language key="read-more" />
-                            </#if>
-                        </#if>
-                    </a>
-                </#if>
-            </#if>
         </div>
+        <#if headline??>
+            <#if headline.getData()?has_content>
+                <div class="span8 offset2">
+                    <h3>${headline.getData()}</h3>
+                </div>
+            </#if>
+        </#if>
     </div>
 </div>

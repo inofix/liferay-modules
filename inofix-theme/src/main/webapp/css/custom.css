@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-12-12 13:27 by Christian Berndt
- * Version: 	0.3.8
+ * Modified: 	2015-12-12 14:05 by Christian Berndt
+ * Version: 	0.3.9
  */
 @import "compass";
 @import "mixins";
@@ -144,6 +144,7 @@ $dockbar-and-nav-height: 102px;
             }
         }
         
+        &.projects-min.slider,
         &.projects.slider {
         
             /* vertical control-nav for main slider of .projects */
@@ -163,6 +164,17 @@ $dockbar-and-nav-height: 102px;
                 }
             }
 
+        }
+        
+        &.projects .project{
+        
+            h2,h3  {
+                display: none; 
+            }
+        }
+                     
+        &.projects-min {
+            text-align: center;
         }
         
         &.projects.carousel {
