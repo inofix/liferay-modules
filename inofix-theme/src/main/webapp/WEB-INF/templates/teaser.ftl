@@ -2,13 +2,8 @@
     teaser.ftl: format the teaser-structure. 
     
     Created:    2015-11-30 18:17 by Christian Berndt
-    Modified:   2015-11-30 18:17 by Christian Berndt
-    Version:    1.0.0
-    
-    Please note: Although this template is stored in the
-    site's context it's source is managed via git. Whenever you
-    change the template online make sure that you commit your
-    changes to the liferay-modules repo, too.
+    Modified:   2015-12-12 14:44 by Christian Berndt
+    Version:    1.0.1
 -->
 
 <div class="teaser wc-template">
@@ -29,5 +24,17 @@
                 </#if>
             </#if>
         </div>
+        <#if assertion??>
+            <#if assertion.getSiblings()?has_content>
+                <div class="row">
+                    <#list assertion.getSiblings() as cur_assertion>
+                        <div class="span4">
+                            <h2>${cur_assertion.getData()}</h2>
+                            <p class="lead">${cur_assertion.explanation.getData()}</p>
+                        </div>
+                    </#list>
+                </div>
+            </#if>
+        </#if>
     </div>
 </div>
