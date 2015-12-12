@@ -9,7 +9,7 @@
 	<artifactId>inofix-theme</artifactId>
 	<packaging>war</packaging>
 	<name>Inofix Theme</name>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.2.3-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<!-- Read properties from dev.properties in -->
