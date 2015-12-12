@@ -2,8 +2,8 @@
     project.ftl: format the project-structure. 
     
     Created:    2015-12-01 14:47 by Christian Berndt
-    Modified:   2015-12-12 13:38 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-12-12 17:27 by Christian Berndt
+    Version:    1.0.2
     
     Please note: Although this template is stored in the
     site's context it's source is managed via git. Whenever you
@@ -22,9 +22,9 @@
         </div>
         <#if headline??>
             <#if headline.getData()?has_content>
-                <div class="span8 offset2">
-                    <h3>${headline.getData()}</h3>
-                </div>
+                <h3>${client.getData()}:
+                    <span class="muted">${headline.getData()}</span>
+                </h3>
             </#if>
         </#if>
     </div>
