@@ -5,8 +5,8 @@
     topic.
     
     Created:    2015-11-30 21:00 by Christian Berndt
-    Modified:   2015-11-30 21:00 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-12-12 17:06 by Christian Berndt
+    Version:    1.0.1
     
     Please note: Although this structure is stored in the 
     site's context it's source is managed via git. Whenever you 
@@ -82,6 +82,102 @@
             </entry>
             <entry name="tip">
                 <![CDATA[Geben Sie den Text ein, mit dem der Link zur weiterführenden Seite beschriftet sein soll.]]>
+            </entry>
+        </meta-data>
+    </dynamic-element>
+    <dynamic-element dataType="string" indexType="keyword" localizable="true" name="assertion" readOnly="false" repeatable="true" required="false" showLabel="true" type="text" width="small">
+        <dynamic-element dataType="string" indexType="keyword" localizable="true" name="explanation" readOnly="false" repeatable="false" required="false" showLabel="true" type="textarea" width="small">
+            <meta-data locale="en_US">
+                <entry name="label">
+                    <![CDATA[Explanation]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[]]>
+                </entry>
+            </meta-data>
+            <meta-data locale="de_DE">
+                <entry name="label">
+                    <![CDATA[Explanation]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[]]>
+                </entry>
+            </meta-data>
+        </dynamic-element>
+        <dynamic-element dataType="link-to-page" fieldNamespace="ddm" indexType="keyword" localizable="true" name="assertionTarget" readOnly="false" repeatable="false" required="false" showLabel="true" type="ddm-link-to-page" width="small">
+            <meta-data locale="en_US">
+                <entry name="label">
+                    <![CDATA[Target]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[]]>
+                </entry>
+            </meta-data>
+            <meta-data locale="de_DE">
+                <entry name="label">
+                    <![CDATA[Target]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[]]>
+                </entry>
+            </meta-data>
+        </dynamic-element>
+        <dynamic-element dataType="string" indexType="keyword" localizable="true" name="assertionLabel" readOnly="false" repeatable="false" required="false" showLabel="true" type="text" width="small">
+            <meta-data locale="en_US">
+                <entry name="label">
+                    <![CDATA[Label]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[]]>
+                </entry>
+            </meta-data>
+            <meta-data locale="de_DE">
+                <entry name="label">
+                    <![CDATA[Label]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[]]>
+                </entry>
+            </meta-data>
+        </dynamic-element>
+        <meta-data locale="en_US">
+            <entry name="label">
+                <![CDATA[Assertion]]>
+            </entry>
+            <entry name="predefinedValue">
+                <![CDATA[]]>
+            </entry>
+            <entry name="tip">
+                <![CDATA[]]>
+            </entry>
+        </meta-data>
+        <meta-data locale="de_DE">
+            <entry name="label">
+                <![CDATA[Assertion]]>
+            </entry>
+            <entry name="predefinedValue">
+                <![CDATA[]]>
+            </entry>
+            <entry name="tip">
+                <![CDATA[]]>
             </entry>
         </meta-data>
     </dynamic-element>
