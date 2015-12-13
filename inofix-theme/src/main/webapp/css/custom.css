@@ -12,6 +12,9 @@ $dockbar-height: 42px;
 $nav-height: 60px;
 $dockbar-and-nav-height: 102px;
 
+$h2-font-size: 31.5px;
+$h2-line-height: 40px;
+
 .aui {
     
 /** --------------------------------- global settings */
@@ -19,7 +22,8 @@ $dockbar-and-nav-height: 102px;
     
     font-family: 'Source Sans Pro', sans-serif;
     
-    h1,h2,h3,h4,h5,h6 {
+    h1,h2,h3,h4,h5,h6,strong,
+    .fieldset-legend {
         font-weight:600;
     }
 
@@ -27,7 +31,7 @@ $dockbar-and-nav-height: 102px;
         text-decoration: none;
     }
 
-    body {
+    body,input,button,select,textarea {
         font-family: 'Source Sans Pro', sans-serif;
     }
     
@@ -37,6 +41,11 @@ $dockbar-and-nav-height: 102px;
 
     #wrapper {
         padding: 0;
+    }
+    
+    #content {
+        font-size: 16px;
+        line-height: 22px;
     }
 
 /** --------------------------------- dockbar */
@@ -73,7 +82,7 @@ $dockbar-and-nav-height: 102px;
 
 
     #site-navigation {
-    
+            
         .navbar-inner {
             height: $nav-height;
             
@@ -249,6 +258,17 @@ $dockbar-and-nav-height: 102px;
             margin-bottom: 70px;
         }
     }
+    
+    .contact {
+    
+        font-size: 16px; 
+        line-height: 20px;
+        margin: 0 0 100px;
+        
+        p {
+            margin: 0 0 20px;
+        }
+    }
 
     .teaser {
             
@@ -259,14 +279,11 @@ $dockbar-and-nav-height: 102px;
             margin-left: 0; 
         }
         
-        .teaser-body {
-        
-            padding: 100px 200px 0;
-            
+        .teaser-body {        
+            padding: 100px 200px 0;           
         }
         
-        h2,
-        .lead {
+        h2, .lead {
             text-align: left;
         }
     }
@@ -291,6 +308,57 @@ $dockbar-and-nav-height: 102px;
         margin-bottom: 3em;
     }
     
+/* ---------------------------------- forms */
+
+    .web-form-portlet {  
+          
+        .portlet-body {   
+                 
+            margin-bottom: 100px;
+            
+            .fieldset {
+            
+                margin-top: 10px;
+                
+                .fieldset-legend {
+                    font-size: $h2-font-size; 
+                    line-height: $h2-line-height; 
+                    margin-bottom: 10px;
+                    border: none; 
+                }
+            }
+            
+            .description {
+                font-size: 21px;    /* bootstrap .lead */
+                font-weight: 200;   /* bootstrap .lead */
+                line-height: 30px;  /* bootstrap .lead */  
+                margin-bottom: 20px;        
+            } 
+            
+            input, select, textarea {
+                border-color: #e4e4e4;
+                background: #f4f4f4;
+                font-size: 16px; 
+                font-weight: 600;
+            }    
+        }
+        
+        &.contact-form {
+        
+            width: 570px;       /* bootstrap span6 */
+            
+            input,
+            textarea {
+                width: 562px;   /* bootstrap span6 - default padding */
+                max-width: 562px;
+            }
+            
+            select, textarea {
+                width: 100%;
+            }
+            
+        }
+    }
     
 /** --------------------------------- footer */
 
@@ -375,7 +443,8 @@ $dockbar-and-nav-height: 102px;
         }
     }
     
-    /* bootstrap container-breakpoints for liferay standard portlets */
+    /* bootstrap container-breakpoints for liferay standard portlets and layouts */
+    .columns-1-2 .portlet-layout,
     .portlet-asset-publisher .add-asset-selector,
     .portlet-dynamic-data-mapping .portlet-body,
     .portlet-journal .article-form-add,
