@@ -33,4 +33,11 @@ $(document).ready(function() {
 		slideshow: true,
 		sync: ".projects.flexslider.carousel"
 	});
+		
+	/**
+	 * Affix the toc of articles
+	 */
+	$('.article .toc').affix({
+	     offset: {top: 0, bottom: 100 }
+    });
 });

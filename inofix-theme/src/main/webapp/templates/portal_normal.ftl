@@ -25,6 +25,11 @@
     
     <script src='${javascript_folder}/jquery-1.11.3.min.js' type='text/javascript'></script>
     
+    <#-- bootstrap -->
+    <script src='${javascript_folder}/affix.js' type='text/javascript'></script>
+    <script src='${javascript_folder}/scrollspy.js' type='text/javascript'></script>
+    
+    <#-- flexslider -->
     <script src='${javascript_folder}/jquery.flexslider-min.js' type='text/javascript'></script>
     <link href='${css_folder}/flexslider.css' rel='stylesheet' type='text/css' media='screen' />
        
