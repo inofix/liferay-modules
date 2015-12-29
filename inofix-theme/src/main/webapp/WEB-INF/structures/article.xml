@@ -1,0 +1,120 @@
+<root available-locales="de_DE" default-locale="de_DE">
+<!--
+    article.xml: A structure for a content object of 
+    type "article", which is the standard structure for all
+    long texts.
+    
+    Created:    2015-12-29 17:15 by Christian Berndt
+    Modified:   2015-12-29 17:15 by Christian Berndt
+    Version:    0.9.0
+    
+    Please note: Although this structure is stored in the 
+    site's context it's source is managed via git. Whenever you 
+    change the structure online make sure to commit your 
+    changes to the liferay-modules repo, too.
+-->
+    <dynamic-element dataType="string" indexType="keyword" localizable="true" name="headline" readOnly="false" repeatable="false" required="false" showLabel="true" type="text" width="large">
+        <meta-data locale="de_DE">
+            <entry name="label">
+                <![CDATA[Überschrift]]>
+            </entry>
+            <entry name="predefinedValue">
+                <![CDATA[]]>
+            </entry>
+            <entry name="tip">
+                <![CDATA[Gib Deinem Beitrag eine knappe aber aussagekräftige Überschrift.]]>
+            </entry>
+        </meta-data>
+    </dynamic-element>
+    <dynamic-element dataType="string" indexType="keyword" localizable="true" name="summary" readOnly="false" repeatable="false" required="false" showLabel="true" type="textarea" width="large">
+        <meta-data locale="de_DE">
+            <entry name="label">
+                <![CDATA[Zusammenfassung]]>
+            </entry>
+            <entry name="predefinedValue">
+                <![CDATA[]]>
+            </entry>
+            <entry name="tip">
+                <![CDATA[Die Zusammenfassung erscheint als einspaltiger Textblock unterhalb der Überschrift und wird in Listendarstellungen als Kurzbeschreibung verwendet.]]>
+            </entry>
+        </meta-data>
+    </dynamic-element>
+    <dynamic-element dataType="boolean" indexType="keyword" localizable="true" name="showToc" readOnly="false" repeatable="false" required="false" showLabel="true" type="checkbox" width="">
+        <meta-data locale="de_DE">
+            <entry name="label">
+                <![CDATA[Inhaltsverzeichnis anzeigen?]]>
+            </entry>
+            <entry name="predefinedValue">
+                <![CDATA[false]]>
+            </entry>
+            <entry name="tip">
+                <![CDATA[Markiere diese Option, wenn Du ein Inhaltsverzeichnis für diesen Beitrag anzeigen möchtest. Das Inhaltsverzeichnis wird auf Grundlage der von Dir vergebenen Zwischenüberschriften erstellt.]]>
+            </entry>
+        </meta-data>
+    </dynamic-element>
+    <dynamic-element dataType="string" indexType="keyword" localizable="true" name="section" readOnly="false" repeatable="true" required="false" showLabel="true" type="text" width="medium">
+        <dynamic-element dataType="html" fieldNamespace="ddm" indexType="keyword" localizable="true" name="content" readOnly="false" repeatable="false" required="false" showLabel="true" type="ddm-text-html" width="large">
+            <meta-data locale="de_DE">
+                <entry name="label">
+                    <![CDATA[Textkörper]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[Schreibe hier Deinen Text und bemühe Dich, Deinen Beitrag sinnvoll in überschaubare Abschnitte zu gliedern.]]>
+                </entry>
+            </meta-data>
+        </dynamic-element>
+        <dynamic-element dataType="boolean" indexType="keyword" localizable="true" name="imageAboveTheText" readOnly="false" repeatable="false" required="false" showLabel="true" type="checkbox" width="">
+            <meta-data locale="de_DE">
+                <entry name="label">
+                    <![CDATA[Abbildung(en) vor dem Text]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[false]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[Entscheide, ob die Abbildung(en) vor oder nach dem Text (Standard) angezeigt werden sollen]]>
+                </entry>
+            </meta-data>
+        </dynamic-element>
+        <dynamic-element dataType="document-library" fieldNamespace="ddm" indexType="keyword" localizable="true" name="image" readOnly="false" repeatable="true" required="false" showLabel="true" type="ddm-documentlibrary" width="">
+            <dynamic-element dataType="string" indexType="keyword" localizable="true" name="caption" readOnly="false" repeatable="false" required="false" showLabel="true" type="textarea" width="small">
+                <meta-data locale="de_DE">
+                    <entry name="label">
+                        <![CDATA[Bildunterschrift]]>
+                    </entry>
+                    <entry name="predefinedValue">
+                        <![CDATA[]]>
+                    </entry>
+                    <entry name="tip">
+                        <![CDATA[Gib jedem Bild eine knappe und aussagekräftige Bildunterschrift.]]>
+                    </entry>
+                </meta-data>
+            </dynamic-element>
+            <meta-data locale="de_DE">
+                <entry name="label">
+                    <![CDATA[Abbildung]]>
+                </entry>
+                <entry name="predefinedValue">
+                    <![CDATA[]]>
+                </entry>
+                <entry name="tip">
+                    <![CDATA[Wähle eine oder mehrere Abbildungen aus, die in diesem Absatz angezeigt werden.]]>
+                </entry>
+            </meta-data>
+        </dynamic-element>
+        <meta-data locale="de_DE">
+            <entry name="label">
+                <![CDATA[Abschnitt]]>
+            </entry>
+            <entry name="predefinedValue">
+                <![CDATA[]]>
+            </entry>
+            <entry name="tip">
+                <![CDATA[Gib dem Abschnitt eine knappe aber aussagekräftige Zwischenüberschrift.]]>
+            </entry>
+        </meta-data>
+    </dynamic-element>
+</root>
