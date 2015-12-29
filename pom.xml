@@ -12,7 +12,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.2-SNAPSHOT</version>
+    <version>0.9.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -31,7 +31,6 @@
 		<!-- dev.properties. Please create this file and  -->
 		<!-- adjust it to your personal environment.      -->
 <!--         <liferay.base.dir> -->
-<!--             /home/berndt/Applications/liferay-portal-6.2-ce-ga4 -->
 <!--         </liferay.base.dir> -->
 
         <liferay.app.server.deploy.dir>
@@ -53,6 +52,8 @@
         <liferay.version>6.2.3</liferay.version>
 
         <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version>
+        
+        <properties.plugin.version>1.0.0</properties.plugin.version>
 
     </properties>
 

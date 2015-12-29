@@ -4,7 +4,7 @@
 	<parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.9.3-SNAPSHOT</version>
     </parent>
 	<artifactId>display-page-hook</artifactId>
 	<packaging>war</packaging>
@@ -17,7 +17,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
+                <version>${properties.plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
