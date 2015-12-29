@@ -2,8 +2,8 @@
     article.ftl: Format the article structure
 
     Created:    2015-12-29 17:36 by Christian Berndt
-    Modified:   2015-12-29 17:36 by Christian Berndt
-    Version:    0.9.0
+    Modified:   2015-12-29 21:48 by Christian Berndt
+    Version:    0.9.1
 
     Please note: Although this template is stored in the
     site's context it's source is managed via git. Whenever you
@@ -11,13 +11,7 @@
     changes to the liferay-modules repo, too.
 -->
 
-<#assign articleService = serviceLocator.findService("com.liferay.portlet.journal.service.JournalArticleService") />
-<#assign articleId = getterUtil.getString(.vars['reserved-article-id'].data) />
-<#assign article = articleService.getArticle(groupId, articleId) />
-<#assign classPK =  article.getResourcePrimKey() />
-
 <#assign displayToc = false />
-<#assign hasKeyVisual = false />
 
 <#if showToc?? >
     <#if showToc.getData()?has_content>
