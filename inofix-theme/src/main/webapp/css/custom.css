@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-12-29 17:54 by Christian Berndt
- * Version: 	0.4.2
+ * Modified: 	2015-12-30 22:12 by Christian Berndt
+ * Version: 	0.5.0
  */
 @import "compass";
 @import "mixins";
@@ -29,6 +29,10 @@ $h2-line-height: 40px;
 
     a:hover, a:focus {
         text-decoration: none;
+    }
+    
+    .btn:focus {
+        outline: none; 
     }
 
     body,input,button,select,textarea {
@@ -114,6 +118,10 @@ $h2-line-height: 40px;
         .brand {
             padding: 20px;
             letter-spacing: 0.1em;
+        }
+        
+        &.navbar-fixed-top {
+            position: fixed; 
         }
     }
 
@@ -313,6 +321,7 @@ $h2-line-height: 40px;
             left: 100px;
             width: 400px;
             text-align: left;
+            line-height: 30px;
         }           
     }
     
@@ -376,14 +385,12 @@ $h2-line-height: 40px;
 /** --------------------------------- footer */
 
     #footer {
-    
-        text-align: center;
-    
-        padding: 30px; 
-        
+                
         background-color: #252525; 
         border-top-color: #333;
         
+        padding: 30px 0; 
+                
         color: #999;
         
         a {
@@ -392,10 +399,6 @@ $h2-line-height: 40px;
             &:hover {
                 color: #fff;
             }
-        }
-        
-        .copyright {
-            position: absolute; 
         }
         
         .portlet-site-map {
@@ -465,5 +468,254 @@ $h2-line-height: 40px;
     .portlet-login .portlet-body {
         width: 1170px; /* bootstrap container */
         margin: auto; 
-    } 
+    }
+ 
+/** --------------------------------- responsive */
+
+    
+    @media (min-width: 980px) and (max-width: 1199px) {
+    
+        .container {
+            width: 940px;
+        }
+        
+        .teaser {      
+            
+            .teaser-body {        
+                padding: 75px 150px 0;           
+            }
+        }
+        
+        /* bootstrap container-breakpoints for liferay standard portlets and layouts */
+        .columns-1-2 .portlet-layout,
+        .portlet-asset-publisher .add-asset-selector,
+        .portlet-dynamic-data-mapping .portlet-body,
+        .portlet-journal .article-form-add,
+        .portlet-journal .article-form-edit,
+        .portlet-login .portlet-body {
+            width: 940px; /* bootstrap container */
+            margin: auto; 
+        }        
+    }
+
+    @media (max-width: 979px) {  
+    
+        h1 {
+            font-size: 31.5px; /** bootstrap h2 */
+            line-height: 40px; /** bootstrap h2 */            
+        }
+        
+        .web-form-portlet .portlet-body .fieldset .fieldset-legend,
+        h2 {
+            font-size: 24.5px; /** bootstrap h3 */
+            line-height: 40px; /** bootstrap h3 */            
+        }
+    
+        h3 {
+            font-size: 17.5px; /** bootstrap h4 */
+            line-height: 20px; /** bootstrap h4 */
+            font-weight: 600; 
+        }
+        
+        #site-navigation {
+        
+            .navbar-inner {
+            
+                padding: 0;
+                
+                .btn-navbar {
+                    background: none; 
+                    border: none; 
+                    padding: 15px 20px 15px; 
+                    color: #333;
+                    text-shadow: none;
+                    
+                    &:focus {
+                        box-shadow: none; 
+                    }
+                }
+            
+                .container .nav-collapse {
+                
+                    display: block;
+                    float: none;
+                    background: white; 
+                                        
+                    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);    
+                    
+                    .nav a {
+                        font-weight: normal;
+                    }          
+                }
+            }
+        }
+                
+        .container {
+            width: 100%;    
+        }
+        
+        .wc-template {
+            h1 {
+                margin-bottom: 0;
+            }
+        }
+        
+        .wc-template,
+        .footer-content {        
+            padding-left: 20px;
+            padding-right: 20px;           
+        }  
+    
+        .project {
+            h3 {
+                top: 10px;
+                left: 30px;
+                width: 300px;
+                line-height: 20px; /** bootstrap h3 */
+                
+            }
+            .project-body {
+                padding: 30px
+            }
+        }
+        
+        .teaser {
+        
+            h1 {
+                padding: 0 30px;            
+            }
+        
+            .teaser-body {
+                padding: 30px 0;
+            }        
+        }
+        
+        .toc {
+            display: none;         
+        }
+        
+        .web-form-portlet {
+                    
+            &.contact-form {
+            
+                width: 100%;
+                
+                input,
+                textarea {
+                    width: 98%;
+                    max-width: 98%;
+                }
+                
+                select, textarea {
+                    width: 100%;
+                }
+                
+            }
+        }        
+        
+        /* bootstrap container-breakpoints for liferay standard portlets and layouts */
+        .columns-1-2 .portlet-layout,
+        .portlet-asset-publisher .add-asset-selector,
+        .portlet-dynamic-data-mapping .portlet-body,
+        .portlet-journal .article-form-add,
+        .portlet-journal .article-form-edit,
+        .portlet-login .portlet-body {
+            width: 100%; /* bootstrap container */
+            margin: auto; 
+        }
+        
+        .columns-1-2 {
+                  
+            #column-2 {
+                padding: 0 20px;
+            }
+        }       
+    }   
+    
+    @media (max-width: 767px) {
+    
+        body {
+            padding: 0; 
+        }
+        
+        .container {
+            width: 100%;    
+        }
+    
+        #site-navigation.navbar-fixed-top {
+            margin: 0;
+        }
+        
+        .wc-template {
+        
+            word-wrap: break-word;            
+        
+            h1 {
+                margin-bottom: 0;
+                padding: 0;
+            }
+        }
+        
+        .project {
+                    
+            .project-body {
+                padding: 30px 0; 
+            }
+        
+            h3 {
+                position: relative;
+                width: 100%;
+                left: 0;
+            }            
+        }
+        
+        .flexslider.projects-min.slider {
+        
+            margin-bottom: 70px;
+        
+            .flex-control-nav {
+                position: relative;
+                bottom: -40px;
+                
+                li {
+                    display: inline-block;
+                }
+            }     
+        }
+        
+        .web-form-portlet {
+                    
+            &.contact-form {
+                            
+                input,
+                textarea {
+                    width: 95%;
+                    max-width: 95%;
+                }                
+            }
+        }
+        
+        .footer-content {
+        
+            padding: 0 20px;
+
+            .copyright {
+                padding-bottom: 20px;
+            }
+            
+            .pull-left {
+                float: none; 
+            }
+            
+            .pull-right {
+                float: none;
+            }
+            
+            .portlet-site-map {
+                ul {
+                    margin-left: 0; 
+                }
+            }
+        }          
+    }
 }
