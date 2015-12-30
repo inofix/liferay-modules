@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-12-30 22:12 by Christian Berndt
- * Version: 	0.5.0
+ * Modified: 	2015-12-30 23:48 by Christian Berndt
+ * Version: 	0.5.1
  */
 @import "compass";
 @import "mixins";
@@ -48,8 +48,8 @@ $h2-line-height: 40px;
     }
     
     #content {
-        font-size: 16px;
-        line-height: 22px;
+        font-size: 18px;
+        line-height: 25px;
     }
 
 /** --------------------------------- dockbar */
@@ -259,12 +259,6 @@ $h2-line-height: 40px;
             background: none; 
             color: black;
         }
-        
-        h1 {
-            line-height: 1.2em;
-            min-height: 3em;
-            margin-bottom: 70px;
-        }
     }
     
     .article {
@@ -282,8 +276,6 @@ $h2-line-height: 40px;
     
     .contact {
     
-        font-size: 16px; 
-        line-height: 20px;
         margin: 0 0 100px;
         
         p {
@@ -298,6 +290,12 @@ $h2-line-height: 40px;
         
         .row {
             margin-left: 0; 
+        }
+        
+        h1 {
+            line-height: 1.2em;
+            min-height: 3em;
+            margin-bottom: 70px;
         }
         
         .teaser-body {        
