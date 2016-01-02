@@ -131,6 +131,7 @@
         <module>contact-manager-portlet</module>
         <module>display-page-hook</module>
         <module>inofix-theme</module>
+        <module>reference-manager-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
     </modules>
