@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2015-10-03 22:52 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-01-02 23:01 by Christian Berndt
+    Version:    1.0.5
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -12,7 +12,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -24,6 +24,14 @@
         <developerConnection>scm:git:https://github.com/inofix/liferay-modules</developerConnection>
         <tag>HEAD</tag>
     </scm>
+
+	<repositories>
+		<repository>
+			<id>liferay-repo</id>
+			<name>Liferay Snapshots CE</name>
+			<url>https://repository.liferay.com/nexus/content/repositories/liferay-snapshots-ce/</url>
+		</repository>
+	</repositories>
 
     <properties>
 
@@ -49,32 +57,38 @@
             ${liferay.base.dir}/deploy
         </liferay.auto.deploy.dir>
 
-        <liferay.version>6.2.3</liferay.version>
+        <liferay.version>7.0.0-b1</liferay.version>
+<!--         <liferay.version>6.2.3</liferay.version> -->
 
-        <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version>
+        <liferay.maven.plugin.version>7.0.0-m2</liferay.maven.plugin.version>
+<!--         <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version> -->
         
         <properties.plugin.version>1.0.0</properties.plugin.version>
 
     </properties>
 
     <dependencies>
+        <!--  
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-client</artifactId>
             <version>${liferay.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-impl</artifactId>
             <version>${liferay.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!--  
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-pacl</artifactId>
             <version>${liferay.version}</version>
             <scope>provided</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-service</artifactId>
