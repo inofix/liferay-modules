@@ -27,11 +27,18 @@
 
 	<repositories>
 		<repository>
-			<id>liferay-repo</id>
-			<name>Liferay Snapshots CE</name>
-			<url>https://repository.liferay.com/nexus/content/repositories/liferay-snapshots-ce/</url>
+			<id>liferay-previews</id>
+            <name>Liferay Previews</name>
+            <url>https://repository.liferay.com/nexus/content/repositories/liferay-previews/</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+	   <pluginRepository>
+	       <id>liferay-previews</id>
+	       <name>Liferay Previews</name>
+           <url>https://repository.liferay.com/nexus/content/repositories/liferay-previews/</url>	       
+	   </pluginRepository>
+	</pluginRepositories>
 
     <properties>
 
@@ -60,7 +67,7 @@
         <liferay.version>7.0.0-b1</liferay.version>
 <!--         <liferay.version>6.2.3</liferay.version> -->
 
-        <liferay.maven.plugin.version>7.0.0-m2</liferay.maven.plugin.version>
+        <liferay.maven.plugin.version>7.0.0-b1</liferay.maven.plugin.version>
 <!--         <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version> -->
         
         <properties.plugin.version>1.0.0</properties.plugin.version>
@@ -68,27 +75,25 @@
     </properties>
 
     <dependencies>
-        <!--  
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-client</artifactId>
             <version>${liferay.version}</version>
         </dependency>
-        -->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-impl</artifactId>
             <version>${liferay.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--  
+<!--    
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-pacl</artifactId>
             <version>${liferay.version}</version>
             <scope>provided</scope>
         </dependency>
-        -->
+-->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-service</artifactId>
