@@ -6,7 +6,6 @@
         <groupId>ch.inofix</groupId>
         <version>0.9.4-SNAPSHOT</version>
     </parent>
-	<groupId>ch.inofix</groupId>
 	<artifactId>reference-manager-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>reference-manager-portlet Portlet</name>

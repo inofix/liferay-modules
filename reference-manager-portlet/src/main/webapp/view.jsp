@@ -18,4 +18,6 @@
 
 <portlet:defineObjects />
 
-This is the <b>reference-manager-portlet</b>.
+This is the <b>reference-manager-portlet</b>. <br/>
+
+v.0.0.1
