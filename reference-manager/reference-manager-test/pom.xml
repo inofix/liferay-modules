@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>reference-manager-test</artifactId>
+	<name>Reference Manager Test</name>
+	<packaging>bundle</packaging>
+	
+
+	<parent>
+        <artifactId>reference-manager</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <groupId>ch.inofix</groupId>
+	</parent>
+	
+	<dependencies>
+		<dependency>
+			<groupId>ch.inofix</groupId>
+			<artifactId>reference-manager-api</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+		</dependency>			
+<!-- 		<dependency> -->
+<!-- 			<groupId>blade</groupId> -->
+<!-- 			<artifactId>blade.servicebuilder.api</artifactId> -->
+<!-- 			<version>1.0.0-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>portal-service</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+	        </plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Private-Package>ch.inofix.referencemanager.test</Private-Package>
+						<Bundle-Activator>ch.inofix.referencemanager.Activator</Bundle-Activator>
+						<Import-Package>com.liferay.portal.kernel.*,org.osgi.framework;version="[1.7,2)",*</Import-Package>
+						<_dsannotations>*</_dsannotations>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
