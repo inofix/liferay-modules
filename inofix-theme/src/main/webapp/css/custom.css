@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2016-01-08 17:57 by Christian Berndt
- * Version: 	0.5.2
+ * Modified: 	2016-01-09 00:56 by Christian Berndt
+ * Version: 	0.5.3
  */
 @import "compass";
 @import "mixins";
@@ -202,6 +202,24 @@ $tablet-padding: 20px;
                     display: block;
                     margin: 12px 6px;
                 }
+            }
+            
+            .flex-control-paging {
+            
+            	li a {
+            	
+	            	background: transparent; 
+				    box-shadow: inset 0 0 2px rgba(0, 0, 0, 1);
+				    
+				    &:hover {
+ 		            	background: #ccc;				    	
+				    }
+	            		            
+		            &.flex-active {
+		            	background: #333;
+		            }
+	            }
+
             }
 
         }
