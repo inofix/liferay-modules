@@ -2,8 +2,8 @@
     article.ftl: Format the article structure
 
     Created:    2015-12-29 17:36 by Christian Berndt
-    Modified:   2015-12-30 20:27 by Christian Berndt
-    Version:    0.9.2
+    Modified:   2016-01-08 21:58 by Christian Berndt
+    Version:    0.9.3
 
     Please note: Although this template is stored in the
     site's context it's source is managed via git. Whenever you
@@ -21,13 +21,13 @@
     </#if>
 </#if>
 
-<div class="article wc-template">
+<div class="article template">
     <div class="container">
     
-        <#assign cssClass = "content span8 offset2" />
+        <#assign cssClass = "template-body span8 offset2" />
         
         <#if displayToc >
-            <#assign cssClass = "content span8" />       
+            <#assign cssClass = "template-body span8" />       
         </#if>    
 
         <div class="${cssClass}">

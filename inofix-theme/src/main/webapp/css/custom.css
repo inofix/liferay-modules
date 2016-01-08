@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-12-30 23:48 by Christian Berndt
- * Version: 	0.5.1
+ * Modified: 	2016-01-08 17:57 by Christian Berndt
+ * Version: 	0.5.2
  */
 @import "compass";
 @import "mixins";
@@ -14,6 +14,9 @@ $dockbar-and-nav-height: 102px;
 
 $h2-font-size: 31.5px;
 $h2-line-height: 40px;
+
+$phone-padding: 15px;
+$tablet-padding: 20px;
 
 .aui {
     
@@ -116,8 +119,22 @@ $h2-line-height: 40px;
         }
         
         .brand {
-            padding: 20px;
+        
+        	margin-top: 11px;
+        	margin-left: 0; 
+            padding: 9px 12px;
+            background: red; 
+            color: white;
+            font-size: 18px;
+            line-height: 18px;
+            font-weight: normal; 
             letter-spacing: 0.1em;
+            
+            border-color: red;
+            border-width: 0px 0px 1px;
+			border-style: none none solid;
+		    border-radius: 3px;
+            
         }
         
         &.navbar-fixed-top {
@@ -163,6 +180,12 @@ $h2-line-height: 40px;
         
         &.projects-min.slider,
         &.projects.slider {
+        
+        	.project {
+        		h3 {
+		            position: absolute;       		
+        		}
+        	}
         
             /* vertical control-nav for main slider of .projects */
             .flex-control-nav {
@@ -241,7 +264,7 @@ $h2-line-height: 40px;
     
 /** --------------------------------- templates */
 
-    .wc-template {
+    .template {
     
         a.btn {
             text-transform: uppercase;
@@ -259,18 +282,20 @@ $h2-line-height: 40px;
             background: none; 
             color: black;
         }
+        
+        .template-body {
+        	padding: 60px 0 75px;
+        }       
     }
     
     .article {
-    
-        padding: 30px 0 100px;
-        
+            
         .section {
             margin-bottom: 20px;
         }
         
         .toc {
-            margin-top: 60px;
+            margin-top: 120px;
         }
     }
     
@@ -282,11 +307,27 @@ $h2-line-height: 40px;
             margin: 0 0 20px;
         }
     }
+    
+    .project { 
+        
+        h3 {
+            top: 30px;
+            left: 100px;
+            width: 400px;
+            text-align: left;
+            line-height: 30px;
+        } 
+        
+        .template-body {
+	    	padding-left: 100px; 
+	    	padding-right: 100px;
+        }          
+    }
+    
 
     .teaser {
             
         text-align: center;
-        padding-bottom: 100px;
         
         .row {
             margin-left: 0; 
@@ -296,31 +337,12 @@ $h2-line-height: 40px;
             line-height: 1.2em;
             min-height: 3em;
             margin-bottom: 70px;
-        }
-        
-        .teaser-body {        
-            padding: 100px 200px 0;           
+            padding: 0 200px;
         }
         
         h2, .lead {
             text-align: left;
         }
-    }
-    
-    .project {
-        
-        .project-body {
-            padding: 100px;
-        } 
-        
-        h3 {
-            position: absolute;
-            top: 30px;
-            left: 100px;
-            width: 400px;
-            text-align: left;
-            line-height: 30px;
-        }           
     }
     
     .map {
@@ -383,7 +405,9 @@ $h2-line-height: 40px;
 /** --------------------------------- footer */
 
     #footer {
-                
+    
+    	margin-top: 30px;
+                    
         background-color: #252525; 
         border-top-color: #333;
         
@@ -477,12 +501,36 @@ $h2-line-height: 40px;
             width: 940px;
         }
         
-        .teaser {      
-            
-            .teaser-body {        
-                padding: 75px 150px 0;           
-            }
-        }
+        .template {
+	        .template-body {
+	        	padding-top: 60px; 
+	        	padding-bottom: 60px;
+	        }
+	    }
+	    
+	    .project {
+	    
+            h3 {
+	            top: 20px;
+	            left: 80px;
+	        } 
+	    
+   	        .template-body {
+				padding-left: 80px;
+				padding-right: 80px;
+	        }
+	    }
+	    
+	    .teaser {
+	    	h1 {
+	    		padding-left: 160px;
+	    		padding-right: 160px;
+	    	}
+	    }
+	    
+	    #footer {    
+	    	margin-top: 20px;
+	    }	    
         
         /* bootstrap container-breakpoints for liferay standard portlets and layouts */
         .columns-1-2 .portlet-layout,
@@ -524,7 +572,7 @@ $h2-line-height: 40px;
                 .btn-navbar {
                     background: none; 
                     border: none; 
-                    padding: 15px 20px 15px; 
+                    padding: 15px 10px 15px; 
                     color: #333;
                     text-shadow: none;
                     
@@ -543,8 +591,13 @@ $h2-line-height: 40px;
                     
                     .nav a {
                         font-weight: normal;
+                        text-align: center;
                     }          
                 }
+            }
+            
+            .brand {
+            	margin-left: $tablet-padding;
             }
         }
                 
@@ -552,40 +605,44 @@ $h2-line-height: 40px;
             width: 100%;    
         }
         
-        .wc-template {
+        .template {
+        
             h1 {
                 margin-bottom: 0;
             }
+            
+            .template-body {
+            	padding: 30px 0; 
+            }
         }
         
-        .wc-template,
+        .template,
         .footer-content {        
-            padding-left: 20px;
-            padding-right: 20px;           
+            padding-left: $tablet-padding;
+            padding-right: $tablet-padding;           
         }  
     
         .project {
+        
             h3 {
-                top: 10px;
-                left: 30px;
+                top: 20px;
+                left: 50px;
                 width: 300px;
-                line-height: 20px; /** bootstrap h3 */
-                
+                line-height: 20px; /** bootstrap h3 */         
             }
-            .project-body {
-                padding: 30px
+            
+            .template-body {
+            	padding-left: 30px; 
+            	padding-right: 30px;
             }
+
         }
         
         .teaser {
-        
+                            
             h1 {
-                padding: 0 30px;            
+                padding: 0 120px 60px;            
             }
-        
-            .teaser-body {
-                padding: 30px 0;
-            }        
         }
         
         .toc {
@@ -625,7 +682,7 @@ $h2-line-height: 40px;
         .columns-1-2 {
                   
             #column-2 {
-                padding: 0 20px;
+                padding: 0 $tablet-padding;
             }
         }       
     }   
@@ -637,43 +694,68 @@ $h2-line-height: 40px;
         }
         
         .container {
-            width: 100%;    
+            width: 100%;        
         }
     
         #site-navigation.navbar-fixed-top {
             margin: 0;
+            
+            .brand {
+            	margin-left: $phone-padding; 
+            }
         }
         
-        .wc-template {
+        .template {
         
-            word-wrap: break-word;            
+            word-wrap: break-word;
+            padding: 0;          
         
             h1 {
                 margin-bottom: 0;
                 padding: 0;
+            }  
+            
+            .template-body {
+            	padding: 30px $phone-padding;
             }
         }
         
         .project {
-                    
-            .project-body {
-                padding: 30px 0; 
-            }
         
             h3 {
                 position: relative;
-                width: 100%;
+                width: auto;
                 left: 0;
-            }            
+               	padding-left: $phone-padding; 
+            	padding-right: $phone-padding; 
+            }
+            
+            .template-body {
+            	padding-left: $phone-padding; 
+            	padding-right: $phone-padding; 
+            }           
         }
         
+        .teaser {
+                                    
+            h1 {
+                padding: 0 10% 60px;            
+            }
+		}
+		
         .flexslider.projects-min.slider {
         
-            margin-bottom: 70px;
+            margin-bottom: 30px;
+        
+        	.project {
+        		h3 {
+		            position: relative;       		
+        		}
+        	}
         
             .flex-control-nav {
                 position: relative;
-                bottom: -40px;
+                bottom: -60px;
                 
                 li {
                     display: inline-block;
@@ -695,7 +777,7 @@ $h2-line-height: 40px;
         
         .footer-content {
         
-            padding: 0 20px;
+            padding: 0 $phone-padding;
 
             .copyright {
                 padding-bottom: 20px;
@@ -714,6 +796,13 @@ $h2-line-height: 40px;
                     margin-left: 0; 
                 }
             }
-        }          
+        }
+        
+        .columns-1-2 {
+                  
+            #column-2 {
+                padding: 0 $phone-padding;
+            }
+        }           
     }
 }
