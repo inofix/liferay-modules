@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2016-01-09 13:50 by Christian Berndt
- * Version: 	0.5.4
+ * Modified: 	2016-01-09 15:11 by Christian Berndt
+ * Version: 	0.5.5
  */
 @import "compass";
 @import "mixins";
@@ -182,7 +182,11 @@ $tablet-padding: 20px;
         &.projects.slider {
         
         	.project {
-        		h3 {
+        		h3 {   
+		            top: 30px;
+		            left: 100px;
+		            width: 400px;
+		            text-align: left;
 		            position: absolute;       		
         		}
         	}
@@ -328,10 +332,6 @@ $tablet-padding: 20px;
     .project { 
         
         h3 {
-            top: 30px;
-            left: 100px;
-            width: 400px;
-            text-align: left;
             line-height: 30px;
         } 
         

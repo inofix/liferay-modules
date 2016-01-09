@@ -1,8 +1,8 @@
 /**
  * 
  * Created: 	2015-08-22 19:42 by Christian Berndt
- * Modified:	2015-12-12 13:43 by Christian Berndt
- * Version: 	1.0.4
+ * Modified:	2016-01-09 15:12 by Christian Berndt
+ * Version: 	1.0.5
  */
 $(document).ready(function() {
 	
@@ -40,4 +40,9 @@ $(document).ready(function() {
 	$('.article .toc').affix({
 	     offset: {top: 0, bottom: 100 }
     });
+	
+	/**
+	 * Add the target="_blank" attribute dynamically.
+	 */
+	 $('a[rel="external"]').attr('target', '_blank');
 });
