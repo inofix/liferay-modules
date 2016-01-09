@@ -37,4 +37,4 @@
 	        </#if>
 	    </div> <#-- / .template-body -->
     </div> <#-- / .container -->
-</div> <#-- / .article -->
+</div> <#-- / .teaser -->
