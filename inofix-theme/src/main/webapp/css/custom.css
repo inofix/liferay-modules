@@ -338,7 +338,11 @@ $tablet-padding: 20px;
         .template-body {
 	    	padding-left: 100px; 
 	    	padding-right: 100px;
-        }          
+        }
+        
+        .client-link {
+        	padding-top: 20px;
+        }        
     }
     
 
