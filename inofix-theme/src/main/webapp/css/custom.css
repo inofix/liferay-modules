@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2016-01-08 17:57 by Christian Berndt
- * Version: 	0.5.2
+ * Modified: 	2016-01-09 13:50 by Christian Berndt
+ * Version: 	0.5.4
  */
 @import "compass";
 @import "mixins";
@@ -203,7 +203,24 @@ $tablet-padding: 20px;
                     margin: 12px 6px;
                 }
             }
-
+            
+            .flex-control-paging {
+            
+            	li a {
+            	
+	            	background: transparent; 
+				    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.5);
+				    border: 1px solid #333;
+				    
+				    &:hover {
+ 		            	background: #666;				    	
+				    }
+	            		            
+		            &.flex-active {
+		            	background: #333;
+		            }
+	            }
+            }
         }
         
         &.projects .project{
@@ -606,10 +623,6 @@ $tablet-padding: 20px;
         }
         
         .template {
-        
-            h1 {
-                margin-bottom: 0;
-            }
             
             .template-body {
             	padding: 30px 0; 
@@ -621,6 +634,14 @@ $tablet-padding: 20px;
             padding-left: $tablet-padding;
             padding-right: $tablet-padding;           
         }  
+        
+	    .article {
+	        
+	        .toc {
+	            margin-top: 90px;
+	            max-width: 160px;
+	        }
+	    }        
     
         .project {
         
@@ -641,12 +662,9 @@ $tablet-padding: 20px;
         .teaser {
                             
             h1 {
-                padding: 0 120px 60px;            
+                padding: 0 120px;
+                margin-bottom: 50px;           
             }
-        }
-        
-        .toc {
-            display: none;         
         }
         
         .web-form-portlet {
@@ -705,20 +723,23 @@ $tablet-padding: 20px;
             }
         }
         
+		.toc {
+            display: none;         
+        }
+        
         .template {
         
             word-wrap: break-word;
-            padding: 0;          
-        
-            h1 {
-                margin-bottom: 0;
-                padding: 0;
-            }  
+            padding: 0; 
             
             .template-body {
             	padding: 30px $phone-padding;
             }
         }
+        
+        .contact {
+        	padding: 0 $phone-padding;
+        }        
         
         .project {
         
@@ -732,14 +753,15 @@ $tablet-padding: 20px;
             
             .template-body {
             	padding-left: $phone-padding; 
-            	padding-right: $phone-padding; 
+            	padding-right: $phone-padding;
+            	padding-bottom: 15px;
             }           
         }
         
         .teaser {
                                     
             h1 {
-                padding: 0 10% 60px;            
+                padding: 0;            
             }
 		}
 		
@@ -797,7 +819,7 @@ $tablet-padding: 20px;
                 }
             }
         }
-        
+
         .columns-1-2 {
                   
             #column-2 {
