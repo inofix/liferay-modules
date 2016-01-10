@@ -1,75 +1,97 @@
+<%--
+    view.jsp: Default view of the reference manager portlet.
+    
+    Created:    2016-01-10 22:51 by Christian Berndt
+    Modified:   2016-01-10 22:51 by Christian Berndt
+    Version:    1.0.0
+--%>
 
 <%@ include file="/init.jsp" %>
 
-<strong><liferay-ui:message key="welcome" /></strong>
+<%
+	String backURL = ParamUtil.getString(request, "backURL");
+	String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+%>
 
-<aui:button-row>
-	<portlet:renderURL var="editReferenceURL">
-		<portlet:param name="mvcPath" value="/edit_reference.jsp" />
-		<portlet:param name="redirect" value="<%= currentURL %>" />
-	</portlet:renderURL>
+<div class="reference-manager-portlet">
 
-	<aui:button href="<%= editReferenceURL %>" value="add-reference" />
-</aui:button-row>
+	<liferay-ui:header backURL="<%=backURL%>" title="reference-manager" />
 
+	<liferay-ui:error exception="<%= PrincipalException.class %>"
+		message="you-dont-have-the-required-permissions" />
 
-<liferay-ui:search-container
-	total="<%= referenceLocalService.getReferencesCount() %>"
->
-<liferay-ui:search-container-results
-	results="<%= referenceLocalService.getReferences(searchContainer.getStart(), searchContainer.getEnd()) %>"
-/>
+	<liferay-ui:tabs names="browse,import,export" param="tabs1"
+		url="<%=portletURL.toString()%>" />
 
-	<liferay-ui:search-container-row
-		className="ch.inofix.referencemanager.model.Reference"
-		escapedModel="true"
-		modelVar="reference"
-	>
-		<liferay-ui:search-container-column-text
-			name="id"
-			property="referenceId"
-			valign="top"
-		/>
+	<c:choose>
 
-		<liferay-ui:search-container-column-text
-			name="bibtex"
-			valign="top">
-			<strong><%= reference.getBibtex() %></strong>
+		<c:when test='<%= tabs1.equals("import") %>'>
+	        <liferay-util:include page="/import.jsp" servletContext="<%= application %>" />
+		</c:when>
 
-			<br />
+		<c:when test='<%= tabs1.equals("export") %>'>
+            <liferay-util:include page="/export.jsp" servletContext="<%= application %>" />
+		</c:when>
 
-			<div class="lfr-asset-categories">
-				<liferay-ui:asset-categories-summary
-					className="<%= Reference.class.getName() %>"
-					classPK="<%= reference.getReferenceId() %>"
-				/>
-			</div>
+		<c:otherwise>
 
-			<div class="lfr-asset-tags">
-				<liferay-ui:asset-tags-summary
-					className="<%= Reference.class.getName() %>"
-					classPK="<%= reference.getReferenceId() %>"
-					message="tags"
-				/>
-			</div>
-		</liferay-ui:search-container-column-text>
-		
-		<%--
+			<aui:button-row>
+				<portlet:renderURL var="editReferenceURL">
+					<portlet:param name="mvcPath" value="/edit_reference.jsp" />
+					<portlet:param name="redirect" value="<%= currentURL %>" />
+				</portlet:renderURL>
 
-		<liferay-ui:search-container-column-text
-			property="field2"
-			valign="top"
-		/>
+				<aui:button href="<%= editReferenceURL %>" value="add-reference" />
+			</aui:button-row>
 
-		--%>
+			<liferay-ui:search-container
+				total="<%= referenceLocalService.getReferencesCount() %>">
 
-		<liferay-ui:search-container-column-jsp
-			cssClass="entry-action"
-			path="/reference_action.jsp"
-			valign="top"
-		/>
-		
-	</liferay-ui:search-container-row>
+				<liferay-ui:search-container-results
+					results="<%= referenceLocalService.getReferences(searchContainer.getStart(), searchContainer.getEnd()) %>" />
 
-	<liferay-ui:search-iterator />
-</liferay-ui:search-container>
+				<liferay-ui:search-container-row
+					className="ch.inofix.referencemanager.model.Reference"
+					escapedModel="true" modelVar="reference">
+
+					<liferay-ui:search-container-column-text name="id"
+						property="referenceId" valign="top" />
+
+					<liferay-ui:search-container-column-text name="bibtex" valign="top">
+						<strong><%= reference.getBibtex() %></strong>
+
+						<br />
+
+						<div class="lfr-asset-categories">
+							<liferay-ui:asset-categories-summary
+								className="<%= Reference.class.getName() %>"
+								classPK="<%= reference.getReferenceId() %>" />
+						</div>
+
+						<div class="lfr-asset-tags">
+							<liferay-ui:asset-tags-summary
+								className="<%=Reference.class.getName()%>"
+								classPK="<%=reference.getReferenceId()%>" message="tags" />
+						</div>
+					</liferay-ui:search-container-column-text>
+
+					<%--
+				
+						<liferay-ui:search-container-column-text
+							property="field2"
+							valign="top"
+						/>
+				
+						--%>
+
+					<liferay-ui:search-container-column-jsp cssClass="entry-action"
+						path="/reference_action.jsp" valign="top" />
+
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator />
+				
+			</liferay-ui:search-container>
+		</c:otherwise>
+	</c:choose>
+</div>
