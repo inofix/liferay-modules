@@ -13,13 +13,17 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@ page import="com.liferay.portal.kernel.upload.UploadException"%>
 <%@ page import="com.liferay.portal.kernel.util.Constants"%>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@ page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@ page import="com.liferay.portal.kernel.util.WebKeys"%>
+<%@ page import="com.liferay.portal.security.auth.PrincipalException"%>
+
+<%@ page import="com.liferay.portlet.documentlibrary.FileExtensionException"%>
 
 <%@ page import="com.liferay.taglib.search.ResultRow"%>
-<%@ page import="com.liferay.portal.security.auth.PrincipalException"%>
+
 <%@ page import="javax.portlet.PortletURL"%>
 
 <%@ page import="ch.inofix.referencemanager.model.Reference"%>
@@ -36,6 +40,5 @@
 
 	//get service bean
 	ReferenceLocalService referenceLocalService = (ReferenceLocalService) request
-			.getAttribute("referenceLocalService");
-	
+			.getAttribute("referenceLocalService");	
 %>
