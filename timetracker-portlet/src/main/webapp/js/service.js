@@ -1,0 +1,1 @@
+Liferay.Service.register("Liferay.Service.tt", "ch.inofix.portlet.timetracker.service", "timetracker-portlet");
