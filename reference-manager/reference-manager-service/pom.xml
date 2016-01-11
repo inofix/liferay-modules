@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>reference-manager-service</artifactId>
+	<name>Reference Manager Service</name>
+	<packaging>bundle</packaging>
+	
+	<parent>
+        <artifactId>reference-manager</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <groupId>ch.inofix</groupId>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>portal-service</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-java</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-bridges</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay</groupId>
+			<artifactId>com.liferay.portal.spring.extender</artifactId>
+			<version>1.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.inofix</groupId>
+			<artifactId>reference-manager-api</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>blade</groupId> -->
+<!-- 			<artifactId>blade.servicebuilder.api</artifactId> -->
+<!-- 			<version>1.0.0-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>biz.aQute.bnd</groupId>
+			<artifactId>biz.aQute.bndlib</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+	        </plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Private-Package>
+							ch.inofix.referencemanager.model.impl,
+							ch.inofix.referencemanager.service.base,
+							ch.inofix.referencemanager.service.http,
+							ch.inofix.referencemanager.service.impl,
+							ch.inofix.referencemanager.service.persistence.impl
+						</Private-Package>
+						<Import-Package>ch.inofix.referencemanager.*,com.liferay.portal.service;version="7.0.0",org.osgi.framework;version="[1.7,2)",*</Import-Package>
+						<_dsannotations>*</_dsannotations>
+						<Liferay-Service>true</Liferay-Service>
+						<Require-Capability>
+						<![CDATA[liferay.extender;filter:="(&(liferay.extender=spring.extender)(version>=1.0)(!(version>=2.0)))"]]>
+						</Require-Capability>
+						<Spring-Context>META-INF/spring</Spring-Context>
+						<Require-SchemaVersion>1.0.0</Require-SchemaVersion>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.liferay</groupId>
+				<artifactId>com.liferay.portal.tools.service.builder</artifactId>
+				<version>1.0.63</version>
+				<configuration>
+					<apiDirName>../reference-manager-api/src/main/java</apiDirName>
+					<beanLocatorUtil>com.liferay.util.bean.PortletBeanLocatorUtil</beanLocatorUtil>
+					<hbmFileName>src/main/resources/META-INF/module-hbm.xml</hbmFileName>
+					<implDirName>src/main/java</implDirName>
+					<inputFileName>service.xml</inputFileName>
+					<modelHintsFileName>src/main/resources/META-INF/portlet-model-hints.xml</modelHintsFileName>
+					<osgiModule>true</osgiModule>
+					<propsUtil>ch.inofix.referencemanager.service.util.PropsUtil</propsUtil>
+					<resourcesDirName>src/main/resources</resourcesDirName>
+					<springFileName>src/main/resources/META-INF/spring/module-spring.xml</springFileName>
+					<springNamespaces>beans,osgi</springNamespaces>
+					<sqlDirName>src/main/resources/META-INF/sql</sqlDirName>
+					<sqlFileName>tables.sql</sqlFileName>
+					<testDirName>src/it</testDirName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.liferay</groupId>
+				<artifactId>com.liferay.portal.tools.wsdd.builder</artifactId>
+				<version>1.0.3</version>
+				<configuration>
+					<inputFileName>service.xml</inputFileName>
+					<outputDirName>src/main/java</outputDirName>
+					<serverConfigFileName>src/main/resources/server-config.wsdd</serverConfigFileName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
