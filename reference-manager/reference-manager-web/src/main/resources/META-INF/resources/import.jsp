@@ -33,12 +33,11 @@
     <liferay-ui:success key="pluginUploaded" message="the-plugin-was-uploaded-successfully-and-is-now-being-installed" />
     --%>
     
-    <aui:input name="tabs1" value="<%=tabs1%>" />
-    <aui:input name="<%= Constants.CMD %>" value="importBibtexFile" />
+    <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
+    <aui:input name="<%= Constants.CMD %>" type="hidden" value="importBibtexFile" />
     
     <aui:fieldset label="import">
         <aui:input cssClass="file-input" label="" name="file" type="file" />
-
         <aui:button type="submit" value="import" />
     </aui:fieldset>
 </aui:form>
