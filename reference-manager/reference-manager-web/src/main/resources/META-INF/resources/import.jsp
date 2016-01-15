@@ -2,11 +2,15 @@
     export.jsp: The export-gui of the reference manager portlet.
     
     Created:    2016-01-10 23:33 by Christian Berndt
-    Modified:   2016-01-10 23:33 by Christian Berndt
-    Version:    0.0.1
+    Modified:   2016-01-16 00:37 by Christian Berndt
+    Version:    0.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
+
+<%
+    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+%>
 
 <portlet:actionURL name="importBibtexFile" var="importBibtexFileURL" />
 
@@ -29,9 +33,11 @@
     <liferay-ui:success key="pluginUploaded" message="the-plugin-was-uploaded-successfully-and-is-now-being-installed" />
     --%>
     
+    <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
+    <aui:input name="<%= Constants.CMD %>" type="hidden" value="importBibtexFile" />
+    
     <aui:fieldset label="import">
         <aui:input cssClass="file-input" label="" name="file" type="file" />
-
         <aui:button type="submit" value="import" />
     </aui:fieldset>
 </aui:form>

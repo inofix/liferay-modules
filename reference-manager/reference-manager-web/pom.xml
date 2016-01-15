@@ -20,24 +20,12 @@
 			<artifactId>reference-manager-api</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>			
-<!-- 		 <dependency> -->
-<!-- 			<groupId>blade</groupId> -->
-<!-- 			<artifactId>blade.servicebuilder.api</artifactId> -->
-<!-- 			<version>1.0.0-SNAPSHOT</version> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>ch.inofix</groupId>
 			<artifactId>reference-manager-service</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>blade</groupId> -->
-<!-- 			<artifactId>blade.servicebuilder.svc</artifactId> -->
-<!-- 			<version>1.0.0-SNAPSHOT</version> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency>		 -->
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
@@ -62,7 +50,13 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
-		</dependency>	
+		</dependency>
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.2</version>
+		    <scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
