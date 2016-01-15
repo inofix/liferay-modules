@@ -69,15 +69,13 @@ A full responsive theme which makes intensive use of Bootstrap and Alloy UI.
 
 ### Portlet Title Hook
 
-Include the portlet-title-default node also for unregistered users. The title can then be used for dynamic scrollspies like those included for example in the <a href="https://github.com/inofix/flussbad-modules/tree/master/flussbad-theme">flussbad-theme</a>
+Include the portlet-title-default node also for unregistered users. The title can then be used for dynamic scrollspies like those included for example in the <a href="https://github.com/inofix/flussbad-modules/tree/master/flussbad-theme" target="_blank">flussbad-theme</a>.
 
 ### Social Media Portlet
 
 Social Media Portlet provides a set of social media buttons which respect the user's privacy. 
 
 It's based on heiseonline's shariff library, which can be found at <a href="https://github.com/heiseonline/shariff" target="_blank">https://github.com/heiseonline/shariff</a>. 
-
-
 
 #### Third Party Libraries
 
