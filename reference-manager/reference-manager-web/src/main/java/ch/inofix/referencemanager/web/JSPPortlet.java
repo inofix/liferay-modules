@@ -17,8 +17,7 @@
 package ch.inofix.referencemanager.web;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
+import java.io.InputStream;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -27,114 +26,193 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.apache.commons.fileupload.FileUploadBase;
 import org.osgi.service.component.annotations.Component;
 //import org.osgi.service.component.annotations.Reference;
 
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceLocalService;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.upload.UploadException;
+import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StreamUtil;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portlet.documentlibrary.FileSizeException;
 
 @Component(immediate = true, property = {
-		"com.liferay.portlet.display-category=category.osgi",
-		"com.liferay.portlet.instanceable=true",
-		"javax.portlet.security-role-ref=power-user,user",
-		"javax.portlet.init-param.template-path=/",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.resource-bundle=content.Language" }, service = Portlet.class)
+    "com.liferay.portlet.display-category=category.osgi",
+    "com.liferay.portlet.instanceable=true",
+    "javax.portlet.security-role-ref=power-user,user",
+    "javax.portlet.init-param.template-path=/",
+    "javax.portlet.init-param.view-template=/view.jsp",
+    "javax.portlet.resource-bundle=content.Language"
+}, service = Portlet.class)
 /**
  * @author Christian Berndt
+ * @version 0.1.0
  */
 public class JSPPortlet extends MVCPortlet {
 
-	@Override
-	public void processAction(ActionRequest actionRequest,
-			ActionResponse actionResponse) throws IOException, PortletException {
+    private static Log _log = LogFactoryUtil.getLog(JSPPortlet.class.getName());
 
-		try {
-			String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+    @Override
+    public void processAction(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws IOException, PortletException {
 
-			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-				updateReference(actionRequest);
-			} else if (cmd.equals(Constants.DELETE)) {
-				deleteReference(actionRequest);
-			}
+        try {
+            String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+            String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
-			if (Validator.isNotNull(cmd)) {
-				if (SessionErrors.isEmpty(actionRequest)) {
-					SessionMessages.add(actionRequest, "requestProcessed");
-				}
+            if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
+                updateReference(actionRequest);
+            }
+            else if (cmd.equals("importBibtexFile")) {
+                importBibtexFile(actionRequest);
+            }
+            else if (cmd.equals(Constants.DELETE)) {
+                deleteReference(actionRequest);
+            }
 
-				String redirect = ParamUtil
-						.getString(actionRequest, "redirect");
+            if (Validator.isNotNull(cmd)) {
+                if (SessionErrors.isEmpty(actionRequest)) {
+                    SessionMessages.add(actionRequest, "requestProcessed");
+                }
 
-				actionResponse.sendRedirect(redirect);
-			}
-		} catch (Exception e) {
-			throw new PortletException(e);
-		}
-	}
+                actionResponse.setRenderParameter("tabs1", tabs1);
 
-	@Override
-	public void render(RenderRequest request, RenderResponse response)
-			throws IOException, PortletException {
+            }
+        }
+        catch (Exception e) {
+            throw new PortletException(e);
+        }
+    }
 
-		// set service bean
-		request.setAttribute("referenceLocalService",
-				getReferenceLocalService());
+    @Override
+    public void render(RenderRequest request, RenderResponse response)
+        throws IOException, PortletException {
 
-		super.render(request, response);
-	}
+        // set service bean
+        request.setAttribute(
+            "referenceLocalService", getReferenceLocalService());
 
-	protected void deleteReference(ActionRequest actionRequest)
-			throws Exception {
-		long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+        super.render(request, response);
+    }
 
-		getReferenceLocalService().deleteReference(referenceId);
-	}
+    protected void deleteReference(ActionRequest actionRequest)
+        throws Exception {
 
-	protected void updateReference(ActionRequest actionRequest)
-			throws Exception {
-		long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
 
-		String bibtex = ParamUtil.getString(actionRequest, "bibtex");
+        getReferenceLocalService().deleteReference(referenceId);
+    }
 
-		if (referenceId <= 0) {
-			Reference reference = getReferenceLocalService().createReference(0);
+    protected void importBibtexFile(ActionRequest actionRequest)
+        throws Exception {
 
-			reference.setBibtex(bibtex);
+        _log.info("Executing importBibtexFile().");
 
-			reference.isNew();
-			getReferenceLocalService().addReferenceWithoutId(reference);
-		} else {
-			Reference reference = getReferenceLocalService().fetchReference(
-					referenceId);
-			reference.setReferenceId(referenceId);
-			reference.setBibtex(bibtex);
+        UploadPortletRequest uploadPortletRequest =
+            PortalUtil.getUploadPortletRequest(actionRequest);
 
-			getReferenceLocalService().updateReference(reference);
-		}
-	}
+        String sourceFileName = uploadPortletRequest.getFileName("file");
 
-	public ReferenceLocalService getReferenceLocalService() {
+        StringBundler sb = new StringBundler(5);
 
-		return _referenceLocalService;
-	}
+        String extension = FileUtil.getExtension(sourceFileName);
 
-	@org.osgi.service.component.annotations.Reference
-	public void setReferenceLocalService(
-			ReferenceLocalService referenceLocalService) {
+        if (Validator.isNotNull(extension)) {
+            sb.append(StringPool.PERIOD);
+            sb.append(extension);
+        }
 
-		this._referenceLocalService = referenceLocalService;
-	}
+        InputStream inputStream = null;
 
-	private ReferenceLocalService _referenceLocalService;
+        try {
+            inputStream = uploadPortletRequest.getFileAsStream("file");
+
+            String contentType = uploadPortletRequest.getContentType("file");
+
+            _log.info("sourceFileName = " + sourceFileName);
+            _log.info("extension = " + extension);
+            _log.info("contentType = " + contentType);
+
+        }
+        catch (Exception e) {
+            UploadException uploadException =
+                (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
+
+            if ((uploadException != null) &&
+                (uploadException.getCause() instanceof FileUploadBase.IOFileUploadException)) {
+
+                // Cancelled a temporary upload
+
+            }
+            else if ((uploadException != null) &&
+
+            uploadException.isExceededSizeLimit()) {
+
+                throw new FileSizeException(uploadException.getCause());
+            }
+            else {
+                throw e;
+            }
+        }
+        finally {
+            StreamUtil.cleanUp(inputStream);
+        }
+
+    }
+
+    protected void updateReference(ActionRequest actionRequest)
+        throws Exception {
+
+        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+
+        String bibtex = ParamUtil.getString(actionRequest, "bibtex");
+
+        if (referenceId <= 0) {
+            Reference reference = getReferenceLocalService().createReference(0);
+
+            reference.setBibtex(bibtex);
+
+            reference.isNew();
+            getReferenceLocalService().addReferenceWithoutId(reference);
+        }
+        else {
+            Reference reference =
+                getReferenceLocalService().fetchReference(referenceId);
+            reference.setReferenceId(referenceId);
+            reference.setBibtex(bibtex);
+
+            getReferenceLocalService().updateReference(reference);
+        }
+    }
+
+    public ReferenceLocalService getReferenceLocalService() {
+
+        return _referenceLocalService;
+    }
+
+    @org.osgi.service.component.annotations.Reference
+    public void setReferenceLocalService(
+        ReferenceLocalService referenceLocalService) {
+
+        this._referenceLocalService = referenceLocalService;
+    }
+
+    private ReferenceLocalService _referenceLocalService;
 
 }
