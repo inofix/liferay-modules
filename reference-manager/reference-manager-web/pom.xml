@@ -6,11 +6,10 @@
 	<artifactId>reference-manager-web</artifactId>
 	<name>Reference Manager Web</name>
 	<packaging>jar</packaging>
-	
 
 	<parent>
         <artifactId>reference-manager</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
         <groupId>ch.inofix</groupId>
 	</parent>
 	
@@ -57,6 +56,19 @@
 		    <version>1.2</version>
 		    <scope>provided</scope>
 		</dependency>
+		
+<!-- Until we have figured out how to convert maven dependencies -->
+<!-- into osgi modules and deploy them with maven, copy          -->
+<!-- jbibtex-1.0.15.jar to $TMP, convert it with                 -->	
+<!-- bnd wrap jbibtex-1.0.15.jar into an osgi bundle (named      -->
+<!-- jbibtex-1.0.15.bar) and install this bundle with            -->
+<!-- blade deploy jbibtex-1.0.15.bar .                           -->	      
+        <dependency>
+            <groupId>org.jbibtex</groupId>
+            <artifactId>jbibtex</artifactId>
+            <version>1.0.15</version>
+        </dependency>
+    		
 	</dependencies>
 
 	<build>
