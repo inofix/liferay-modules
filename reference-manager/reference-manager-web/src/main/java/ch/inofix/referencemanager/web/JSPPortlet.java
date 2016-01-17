@@ -16,9 +16,11 @@
 
 package ch.inofix.referencemanager.web;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.io.InputStreamReader;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
@@ -27,6 +29,10 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.apache.commons.fileupload.FileUploadBase;
+
+import org.jbibtex.BibTeXDatabase;
+import org.jbibtex.BibTeXParser;
+
 import org.osgi.service.component.annotations.Component;
 //import org.osgi.service.component.annotations.Reference;
 
@@ -61,7 +67,7 @@ import com.liferay.portlet.documentlibrary.FileSizeException;
 }, service = Portlet.class)
 /**
  * @author Christian Berndt
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class JSPPortlet extends MVCPortlet {
 
@@ -141,13 +147,24 @@ public class JSPPortlet extends MVCPortlet {
         InputStream inputStream = null;
 
         try {
+
             inputStream = uploadPortletRequest.getFileAsStream("file");
+
+            BufferedReader bufferedReader =
+                new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+
+            BibTeXParser bibtexParser = new BibTeXParser();
+
+            BibTeXDatabase database = bibtexParser.parse(bufferedReader);
 
             String contentType = uploadPortletRequest.getContentType("file");
 
             _log.info("sourceFileName = " + sourceFileName);
             _log.info("extension = " + extension);
             _log.info("contentType = " + contentType);
+
+            _log.info("database.getEntries().size() = " +
+                database.getEntries().size());
 
         }
         catch (Exception e) {
