@@ -135,11 +135,11 @@
 				<artifactId>biz.aQute.bnd.annotation</artifactId>
 				<version>2.4.0</version>
 			</dependency>
+				     
 		</dependencies>
 	</dependencyManagement>
-
 <!-- end parent -->
-	
+
     <modules>
         <module>reference-manager-api</module>
         <module>reference-manager-service</module>
