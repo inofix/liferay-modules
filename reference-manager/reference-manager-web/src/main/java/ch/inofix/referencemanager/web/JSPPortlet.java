@@ -17,10 +17,14 @@
 package ch.inofix.referencemanager.web;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
@@ -29,12 +33,20 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.apache.commons.fileupload.FileUploadBase;
-
 import org.jbibtex.BibTeXDatabase;
+import org.jbibtex.BibTeXEntry;
 import org.jbibtex.BibTeXParser;
-
+import org.jbibtex.Key;
+import org.jbibtex.Value;
 import org.osgi.service.component.annotations.Component;
 //import org.osgi.service.component.annotations.Reference;
+
+
+
+
+
+
+
 
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceLocalService;
@@ -165,6 +177,26 @@ public class JSPPortlet extends MVCPortlet {
 
             _log.info("database.getEntries().size() = " +
                 database.getEntries().size());
+            
+            Collection<BibTeXEntry> entries = database.getEntries().values();
+            
+            for (BibTeXEntry entry : entries) {
+                
+                Reference reference = getReferenceLocalService().createReference(0);
+                
+                Map<Key, Value> fields = entry.getFields();
+                
+                Set<Key> keys = fields.keySet();
+                
+                for (Key key : keys) {
+                    _log.info(key + ": " + fields.get(key).toUserString()); 
+                }
+                
+//                _log.info(entry.toString()); 
+                
+//                reference.setBibtex(bibtex);
+                
+            }
 
         }
         catch (Exception e) {
@@ -178,12 +210,16 @@ public class JSPPortlet extends MVCPortlet {
 
             }
             else if ((uploadException != null) &&
-
-            uploadException.isExceededSizeLimit()) {
+                uploadException.isExceededSizeLimit()) {
 
                 throw new FileSizeException(uploadException.getCause());
             }
             else {
+                
+                // TODO: What else can go wrong?
+                // - the uploaded file is not BibTeX-Database
+                // - the uploaded file contains syntax errors
+                
                 throw e;
             }
         }
