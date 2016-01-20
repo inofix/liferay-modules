@@ -7,12 +7,6 @@
     <artifactId>reference-manager</artifactId>
     <name>Reference Manager</name>
 	
-<!-- 	<parent> -->
-<!-- 		<groupId>blade</groupId> -->
-<!-- 		<artifactId>blade.maven</artifactId> -->
-<!-- 		<version>1.0.0-SNAPSHOT</version> -->
-<!-- 	</parent> -->
-	
     <packaging>pom</packaging>	
     
 <!-- start parent -->
@@ -139,6 +133,20 @@
 		</dependencies>
 	</dependencyManagement>
 <!-- end parent -->
+
+    <dependencies>
+<!-- Until we have figured out how to convert maven dependencies -->
+<!-- into osgi modules and deploy them with maven, copy          -->
+<!-- jbibtex-1.0.15.jar to $TMP, convert it with                 -->    
+<!-- bnd wrap jbibtex-1.0.15.jar into an osgi bundle (named      -->
+<!-- jbibtex-1.0.15.bar) and install this bundle with            -->
+<!-- blade deploy jbibtex-1.0.15.bar .                           -->          
+        <dependency>
+            <groupId>org.jbibtex</groupId>
+            <artifactId>jbibtex</artifactId>
+            <version>1.0.15</version>
+        </dependency>
+    </dependencies>
 
     <modules>
         <module>reference-manager-api</module>
