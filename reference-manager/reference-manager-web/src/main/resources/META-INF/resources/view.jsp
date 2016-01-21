@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-01-10 22:51 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-01-20 22:58 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -20,7 +20,7 @@
 	<liferay-ui:error exception="<%= PrincipalException.class %>"
 		message="you-dont-have-the-required-permissions" />
 
-	<liferay-ui:tabs names="browse,import,export" param="tabs1"
+	<liferay-ui:tabs names="browse,import,export,manage" param="tabs1"
 		url="<%=portletURL.toString()%>" />
 
 	<c:choose>
@@ -32,6 +32,10 @@
 		<c:when test='<%= tabs1.equals("export") %>'>
             <liferay-util:include page="/export.jsp" servletContext="<%= application %>" />
 		</c:when>
+		
+        <c:when test='<%= tabs1.equals("manage") %>'>
+            <liferay-util:include page="/manage.jsp" servletContext="<%= application %>" />
+        </c:when>		
 
 		<c:otherwise>
 
