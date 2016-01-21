@@ -90,7 +90,8 @@
 			<plugin>
 				<groupId>com.liferay</groupId>
 				<artifactId>com.liferay.portal.tools.service.builder</artifactId>
-				<version>1.0.63</version>
+                <version>1.0.67</version>
+<!--                 <version>1.0.63</version> -->
 				<configuration>
 					<apiDirName>../reference-manager-api/src/main/java</apiDirName>
 					<beanLocatorUtil>com.liferay.util.bean.PortletBeanLocatorUtil</beanLocatorUtil>
