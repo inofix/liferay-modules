@@ -9,7 +9,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "import");
 %>
 
 <portlet:actionURL name="importBibtexFile" var="importBibtexFileURL" />

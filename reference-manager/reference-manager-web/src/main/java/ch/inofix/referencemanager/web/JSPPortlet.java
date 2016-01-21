@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -66,9 +67,10 @@ import com.liferay.portlet.documentlibrary.FileSizeException;
     "javax.portlet.init-param.view-template=/view.jsp",
     "javax.portlet.resource-bundle=content.Language"
 }, service = Portlet.class)
+
 /**
  * @author Christian Berndt
- * @version 0.1.2
+ * @version 0.1.3
  */
 public class JSPPortlet extends MVCPortlet {
 
@@ -88,6 +90,9 @@ public class JSPPortlet extends MVCPortlet {
             }
             else if (cmd.equals("importBibtexFile")) {
                 importBibtexFile(actionRequest);
+            }
+            else if (cmd.equals("deleteAllReferences")) {
+                deleteAllReferences(actionRequest);
             }
             else if (cmd.equals(Constants.DELETE)) {
                 deleteReference(actionRequest);
@@ -118,6 +123,20 @@ public class JSPPortlet extends MVCPortlet {
         super.render(request, response);
     }
 
+    protected void deleteAllReferences(ActionRequest actionRequest)
+        throws Exception {
+
+        _log.info("Executing deleteAllReferences().");
+
+        List<Reference> references =
+            getReferenceLocalService().getReferences(0, Integer.MAX_VALUE);
+
+        for (Reference reference : references) {
+
+            getReferenceLocalService().deleteReference(reference);
+        }
+    }
+
     protected void deleteReference(ActionRequest actionRequest)
         throws Exception {
 
@@ -128,8 +147,6 @@ public class JSPPortlet extends MVCPortlet {
 
     protected void importBibtexFile(ActionRequest actionRequest)
         throws Exception {
-
-        _log.info("Executing importBibtexFile().");
 
         UploadPortletRequest uploadPortletRequest =
             PortalUtil.getUploadPortletRequest(actionRequest);
@@ -171,6 +188,13 @@ public class JSPPortlet extends MVCPortlet {
                 String bibTeX = BibTeXUtil.format(bibTeXEntry);
 
                 reference.setBibtex(bibTeX);
+
+                reference.isNew();
+
+                // TODO: check whether a reference with the same uid has alread
+                // been uploaded
+
+                getReferenceLocalService().addReferenceWithoutId(reference);
 
             }
 
