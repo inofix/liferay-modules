@@ -2,8 +2,8 @@
 <#-- portal_normal.ftl: Main template of the inofix theme   -->
 <#--                                                        -->
 <#-- Created:     2015-11-26 22:31 by Christian Berndt      -->
-<#-- Modified:    2015-12-30 22:13 by Christian Berndt      -->
-<#-- Version:     1.0.6                                 -->
+<#-- Modified:    2016-02-14 15:11 by Christian Berndt      -->
+<#-- Version:     1.0.7                                     -->
 <#--                                                        -->
 
 <!DOCTYPE html>
@@ -11,12 +11,17 @@
 <#include init />
 
 <#assign services_layout_uuid = theme_display.getThemeSetting('services-layout-uuid') />
+<#assign virtualhost = layout.getLayoutSet().getVirtualHostname() />
 
 <html class="${root_css_class}" dir="<@liferay.language key="lang.dir" />" lang="${w3c_language_id}">
 
 <head>
-    <title>${the_title} - ${company_name}</title>
-
+    <#if virtualhost?has_content >
+        <title>${the_title} - ${virtualhost}</title>
+    <#else>
+        <title>${the_title} - ${company_name}</title>
+    </#if>
+    
     <meta content="initial-scale=1.0, width=device-width" name="viewport" />
 
     ${theme.include(top_head_include)}
