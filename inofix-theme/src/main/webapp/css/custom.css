@@ -2,8 +2,8 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2016-02-14 17:10 by Christian Berndt
- * Version: 	0.5.7
+ * Modified: 	2016-02-14 22:32 by Christian Berndt
+ * Version: 	0.5.8
  */
 @import "compass";
 
@@ -308,6 +308,10 @@ $tablet-padding: 20px;
        
 		.file-entries {
 		
+			h1 {
+				margin-bottom: 30px;
+			}
+		
 			.file-entry {
 			
 			    .preview {
@@ -317,7 +321,7 @@ $tablet-padding: 20px;
 			        background-size: cover;
 			        background-position: center center;
 			        background-repeat: no-repeat;
-			        margin-bottom: 30px;
+			        margin-bottom: 10px;
                 }
 			}
 			
