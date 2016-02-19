@@ -3,8 +3,8 @@
     metadata is displayed BEFORE the title and summary. 
     
     Created:    2015-07-28 11:53 by Christian Berndt
-    Modified:   2015-09-21 23:53 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-09-29 20:35 by Christian Berndt
+    Version:    1.0.5
 --%>
 <%--
 /**
@@ -25,6 +25,9 @@
 <%@ include file="/html/portlet/asset_publisher/init.jsp" %>
 
 <%-- Import classes required by customization --%>
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
+<%@page import="com.liferay.portal.kernel.util.StringPool"%>
+
 <%@page import="com.liferay.portal.kernel.xml.Document"%>
 <%@page import="com.liferay.portal.kernel.xml.Node"%>
 <%@page import="com.liferay.portal.kernel.xml.SAXReaderUtil"%>
@@ -66,8 +69,7 @@ if (assetCategories.size() > 0) {
 	assetCategory = assetCategories.get(0); 
 }
 
-boolean invert = false;
-String backgroundColor = "white"; 
+String scheme = StringPool.BLANK; 
 
 if (assetCategory != null) {
     
@@ -75,17 +77,13 @@ if (assetCategory != null) {
     
     for (AssetCategoryProperty categoryProperty : categoryProperties) {
         
-        if ("background-color".equals(categoryProperty.getKey())) {
+        if ("color-scheme".equals(categoryProperty.getKey())) {
             
-            String value = categoryProperty.getValue();
-            
-            if (Validator.isNotNull(value)) {
-                backgroundColor = "#" + value; 
-            }           
-        }
-        
-        if ("invert".equals(categoryProperty.getKey())) {
-            invert = GetterUtil.getBoolean(categoryProperty.getValue()); 
+        	String value = categoryProperty.getValue(); 
+        	
+        	if (Validator.isNotNull(value)) {
+	            scheme = value; 
+        	}
         }
     }
 }
@@ -94,10 +92,9 @@ if (assetCategory != null) {
 <c:if test="<%= show %>">
 
 <%-- 
-    Customization: read the background-color and invert property from the current category 
+    Customization: read the color-scheme from the current category 
 --%> 
-    <div class="asset-abstract <%= defaultAssetPublisher ? "default-asset-publisher" : StringPool.BLANK %> <%= invert ? "invert" : StringPool.BLANK %>"
-         style="background-color: <%= backgroundColor %>">
+    <div class="asset-abstract <%= defaultAssetPublisher ? "default-asset-publisher" : StringPool.BLANK %> <%= scheme %>">
          
         <liferay-util:include page="/html/portlet/asset_publisher/asset_actions.jsp" />
 <%-- 

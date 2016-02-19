@@ -1,0 +1,275 @@
+/**
+ * main.css: The contact-manager portlet's css configuration
+ *
+ * Created:     2015-05-08 15:51 by Christian Berndt
+ * Modified:    2015-07-02 10:40 by Christian Berndt
+ * Version:     1.1.9
+ *
+ */
+@import "compass";
+@import "mixins";
+ 
+.aui  {
+	/** 
+	 * Decrease font size of headings in popup-mode
+	 * (like in the popup-mode of asset-publisher).
+	 */ 
+    .dialog-iframe-popup h3 { 
+        color:#8D8D8D;
+		font-weight: normal;
+		font-size: 20px;
+	}
+	
+	.dialog-iframe-popup .legend {
+		color: #8D8D8D;
+		font-size: 18px;
+		font-weight: 200;
+	}
+	
+	.portrait-config {
+		margin-right: 20px;
+	}
+	
+	.row-fields .control-group {
+		margin-bottom: 0px;
+	}
+	
+	.structured-name .control-group {
+		margin-bottom: 10px;
+	}
+
+	.portlet-contact-manager  {
+	
+		.address .lfr-form-row {
+		    border-bottom: none;
+		}
+		
+		.alert {
+		    margin-top: 1.5em; /* The same as lfr-search-container */
+		}
+	
+		.asset-actions {
+		    float: right;
+		    font-size: 11px;
+		    font-weight: normal;
+		    margin-bottom: 3px;
+		    margin-top: 0;
+		}	
+		
+		.contact-search .control-group {
+		    margin-bottom: 0;
+		}
+		
+		.delete-section a {
+            color: white;
+		}
+        .delete-section a.taglib-icon:focus .taglib-text,
+        .delete-section a.taglib-icon:hover .taglib-text 
+		{
+            text-decoration: none;
+        }
+		
+		dl.build-info dfn, 
+        dl.build-info dt {
+		    display: inline;
+		    font-weight: normal;
+		    font-style: normal;
+		}
+		
+        dl.build-info dfn {
+		    margin-right: 20px;
+		}
+
+		.dropdown-menu > li > span {
+			display: block;
+			padding: 3px 20px;
+			clear: both;
+			font-weight: normal;
+			line-height: 20px;
+			color: #333333;
+			white-space: nowrap;
+		}
+
+        .dropdown-menu>li>span:hover, 
+        .dropdown-menu>li>span:hover .taglib-text, 
+        .dropdown-menu>li>span:focus,
+        .dropdown-menu>li>span:focus .taglib-text
+		{
+			text-decoration: none;
+			color: white;
+			background-color: #0db5e7;
+		}
+	
+		.dropdown-menu a.taglib-icon {
+            color: #333333;
+        }
+		
+        .dropdown-menu a.taglib-icon:focus .taglib-text, 
+        .dropdown-menu a.taglib-icon:hover .taglib-text {
+            text-decoration: none; 
+        }
+		
+		.dropdown-menu .taglib-icon img {
+            width: 11px;
+		}
+		
+		fieldset .button-holder {
+		    margin-top: 0;
+		}
+
+		fieldset .container-fluid {
+		    padding-right: 0;
+		    padding-left: 0;
+		}
+		
+		form.import-form {
+		    margin-bottom: 0;
+		}
+		
+		form .btn {
+		    margin-top: -6px;
+		}
+		
+		.form-navigator .btn {
+		    margin-top: 0;
+		}	
+		
+		.form-navigator .button-holder {
+		    margin: 20px 0; 
+		}
+	
+		label {
+	        color: #8D8D8D;
+	    }
+	    
+	    .lfr-header-row-content  {
+	       padding: 0;
+	    }
+	         
+        .lfr-form-row {
+            border-bottom: 1px solid #e5e5e5;
+        }
+	    
+		.lfr-form-row .handle-sort-vertical {
+		    background-size: cover;
+		}
+		
+		.lfr-autorow-controls {
+		    top: 10px;
+		}
+		
+		.navbar .btn.add-contact {
+			margin-top: 8px;
+			margin-left: 8px;
+		}
+		
+		.navbar .navbar-search {
+			margin-bottom: 0; 
+		}
+		
+		.note {
+		    min-height: 100px;
+		}
+		
+		.note {
+		    min-width: 490px;
+		}
+	    
+	    input[type="text"], 
+        textarea {
+	        color: black;
+	    }
+	    
+	    .row-fluid form {
+		    margin-bottom: 0;
+		}
+		
+		.searchcontainer .table td {
+		    vertical-align: middle; 
+		}
+		
+		.searchcontainer .table td.portrait {
+            text-align: center; 
+        }
+        
+        .searchcontainer th.table-first-header > input {
+            display: none; 
+        }
+		
+		.searchcontainer .icon {
+		    text-decoration: none; 
+		}
+		
+		select {
+		    width: 150px;
+		}
+		
+		.sort-handle {
+		    height: 20px;
+		    float: left;
+		    margin-top: 5px;
+		    margin-right: 10px;
+		}
+		
+		.taglib-icon-help {
+		    margin-right: 10px;
+		}
+		
+		.url-address {
+		    min-width: 490px;
+		}
+		
+		.v-card {
+		    min-height: 300px;
+            min-width: 490px;
+        }
+        
+	}
+}
+
+@media ( max-width : 979px) {
+	.portlet-contact-manager .note, 
+	.portlet-contact-manager .v-card,
+	.portlet-contact-manager .url-address {
+		min-width: 490px;
+	}
+	
+	/** 
+	 * Hide any columns in table mode
+	 */
+    .portlet-contact-manager th,
+    .portlet-contact-manager td {
+	   display: none; 
+	}
+	
+	/**
+	 * except the first two and the last 
+	 */
+    .portlet-contact-manager th.table-first-header,
+    .portlet-contact-manager th:nth-child(2),
+    .portlet-contact-manager th.table-last-header,
+    .portlet-contact-manager td.first,
+    .portlet-contact-manager td:nth-child(2),
+    .portlet-contact-manager td.last 
+    {
+	   display: table-cell;
+	}
+}
+
+@media ( max-width : 767px) {
+	.portlet-contact-manager .note, 
+	.portlet-contact-manager .v-card,
+	.portlet-contact-manager .url-address {
+		min-width: 290px;
+	}
+	
+    /** 
+     * Hide any columns in smart-phone mode,
+     * except the first and the last (see above).
+     */
+    .portlet-contact-manager th:nth-child(2),
+    .portlet-contact-manager td:nth-child(2)
+    {
+       display: none;
+    }
+}

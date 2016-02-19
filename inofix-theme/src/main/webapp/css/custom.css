@@ -2,44 +2,81 @@
  * custom.css: Main CSS of Inofix' default theme.
  * 
  * Created: 	2015-07-28 12:21 by Christian Berndt
- * Modified: 	2015-08-28 17:56 by Christian Berndt
- * Version: 	0.2.5
+ * Modified: 	2016-02-14 22:32 by Christian Berndt
+ * Version: 	0.5.8
  */
 @import "compass";
 
 @import "mixins";
 
+/** --------------------------------- variables */
+
+$default-font-color: #333; /* bootstrap default font color */
+
+
+$dockbar-height: 42px;
+$nav-height: 60px;
+$dockbar-and-nav-height: 102px;
+
+$h2-font-size: 31.5px;
+$h2-line-height: 40px;
+
+$phone-padding: 15px;
+$tablet-padding: 20px;
+
 .aui {
+    
+/** --------------------------------- global settings */
+    
     
     font-family: 'Source Sans Pro', sans-serif;
     
-    h1,h2,h3,h4,h5,h6 {
+    h1,h2,h3,h4,h5,h6,strong,
+    .fieldset-legend {
         font-weight:600;
     }
 
     a:hover, a:focus {
         text-decoration: none;
     }
-
-    .dockbar-user-notifications .dropdown-toggle .user-notifications-count {
-        display: inline;
-        padding: 2px 4px 2px;
-        background-color: #FCF8E3; /* bootstrap alert */
-        color: #C09853; /* bootstrap alert */
-        border: 1px solid #FBEED5; /* bootstrap alert */
+    
+    .btn:focus {
+        outline: none; 
     }
 
-    body {
+    body,input,button,select,textarea {
         font-family: 'Source Sans Pro', sans-serif;
-        background: #fcfcfc;
-        
-        @media (max-width: 767px)  {
-            padding: 0;     
-        }
+    }
+    
+    form {
+        margin: 0; 
     }
 
     #wrapper {
         padding: 0;
+    }
+    
+    #content {
+        font-size: 18px;
+        line-height: 25px;
+    }
+
+/** --------------------------------- dockbar */
+    
+    .portlet-dockbar {
+    
+        position: fixed;
+        width: 100%;
+        z-index: 1040; 
+
+        .user-notifications-count {
+            display: inline;
+            padding: 2px 4px 2px;
+            background-color: #FCF8E3; /* bootstrap alert */
+            color: #C09853; /* bootstrap alert */
+            border: 1px solid #FBEED5; /* bootstrap alert */
+        }
+        
     }
     
     /* override settings in dockbar.css */
@@ -53,353 +90,826 @@
             }
         }
     }
-
-    .navbar { 
-        
-        .nav { 
-        
-            > .active a, 
-            > .active a:focus, 
-            > .active a:hover {
-                background-color : #F3F3F3;
-                box-shadow: none;
-                -moz-box-shadow: none;
-                -webkit-box-shadow: none;
-            }
-
-            > li > a {
-                padding: 20px 20px;
-                text-transform: uppercase;
-            }
-
-        }
-        
-        .btn-navbar {
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            text-shadow: none;
-            color: #555;
-        }
-        
-        .divider-vertical {
-            height: 60px;
-        }
-
-    }
     
-    #navigation {
-    
-        @media (max-width: 767px) {
-            margin-right: 0;
-        }
-    
-        .brand { 
-            padding:18px 40px 18px 20px;
-            font-weight: 600;
-            font-size: 24px;
+/** --------------------------------- navigation */
+
+
+    #site-navigation {
             
-            .icon {
-                color:#555;
-            }
-        }
-    
-        .btn-navbar {
-            margin-top: 12px;
-            margin-right: 10px;
-        }
-    
-        .nav-collapse {
-            @media (min-width: 980px) {
-                float: right;
-            }
-        }    
-        
         .navbar-inner {
-        
-            background-color: white;
-            background-image: none;
+            height: $nav-height;
             
-            .dropdown-menu {
-                margin-top: -5px;
+            background: white; 
+        } 
+    
+        .nav {
+        
+            text-transform: uppercase;
+        
+            > li > a {
+                padding: 20px 15px;
+                letter-spacing: 0.1em;
+                
+                &:last-of-type {
+                    padding-right: 0;
+                }
+            }
+        
+            li:first-of-type {
+                display: none; 
             }
             
-            @media (max-width: 767px) {
-                padding-right: 0;
+            li:last-of-type {
+                margin-right: -15px;
             }
-            
-        }        
+        }
         
+        .brand {
+        
+        	margin-top: 11px;
+        	margin-left: 0; 
+            padding: 9px 12px;
+            background: red; 
+            color: white;
+            font-size: 18px;
+            line-height: 18px;
+            font-weight: normal; 
+            letter-spacing: 0.1em;
+            
+            border-color: red;
+            border-width: 0px 0px 1px;
+			border-style: none none solid;
+		    border-radius: 3px;
+            
+        }
+        
+        &.navbar-fixed-top {
+            position: fixed; 
+        }
     }
+
+    
+/** --------------------------------- content */
 
     #content {
+        margin-top: $nav-height; 
+    }
+    
+/** --------------------------- asset-publisher */
+
+    .portlet-asset-publisher {
+                   
+        h1 a, h2 a, h3 a, h4 a {
         
-        > form {
+            color: $default-font-color;
+         
+        }
+	}
+    
+/** --------------------------------- flex-slider */
+
+    .flexslider {
+    
+        border: none;
+        margin: 0;
+    
+        ul, ol {
             margin: 0;
         }
-    }
-    
-    .container { 
-    
-        > h2 { 
-            padding-top:20px;
-        }
 
-        > .lead {
-            max-width: 700px;
-        }
-
-    }
-    
-    .opener {  
-       
-        min-height: 600px; 
-               
-    }
-    
-    .carousel {
-    
-        margin: 3px 0 0; 
-        max-height: 550px;
-        overflow: hidden; 
+        .flex-direction-nav {
         
-        @media (max-width: 1199px)  {
-            max-height: 500px;     
-        }  
-        
-        @media (max-width: 979px)  {
-            max-height: 400px;     
-        }  
-        
-        @media (max-width: 767px)  {
-            max-height: 300px;     
-        }
-        
-        @media (max-width: 480px)  {
-            max-height: 200px;     
-        }
-        
-        .carousel-control {
-            height: 80px;
-            margin-top: 0px;
-            font-size: 120px;
-            text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
-            background-color: transparent;
-            border: 0px none;
-            z-index: 10;
-        }
-    }
-    
-    .screenshot {  
-       
-        min-height: 550px; 
-        background-position: center 0; 
-
-        @media (max-width: 1199px)  {
-            background-size: 1200px;
-            min-height: 500px;     
-        }  
-        
-        @media (max-width: 979px)  {
-            background-size: 980px;
-            min-height: 400px;     
-        }  
-        
-        @media (max-width: 767px)  {
-            background-size: 768px;
-            min-height: 300px;     
-        }
-        
-        @media (max-width: 480px)  {
-            background-size: 480px;
-            min-height: 200px;     
-        }                     
-    }
-    
-    .matterhorn {
-    
-        background-size: 1500px;
-        background-repeat: no-repeat;
-        background-position: center -30px;
-        
-        .hero-unit {
-        
-            background-color: transparent;
-            padding-left: 0;
-        
-            h1 {
-                color: white; 
-                max-width: 700px;
-                margin-top: 80px;
-                line-height: 1.1;
+            a {
+                opacity: 0.7;
+                
+                &:before {
+                    margin-top: 10px;
+                }
+            }
+            
+            .flex-prev {
+                left: 10px;
+            }
+            .flex-next {
+                right: 10px;
             }
         }
         
-    }
-    
-    .profile {
-    
-        font-size: 16px;
-    
-        .hero-unit {
-            padding-bottom: 0;
-            text-align: center;
+        &.projects-min.slider,
+        &.projects.slider {
+        
+        	.project {
+        		h3 {   
+		            top: 30px;
+		            left: 100px;
+		            width: 400px;
+		            text-align: left;
+		            position: absolute;       		
+        		}
+        	}
+        
+            /* vertical control-nav for main slider of .projects */
+            .flex-control-nav {
             
-            h1 {
-                @media (min-width: 980px)  {
-                    font-size: 55px;
-                    line-height: 60px;
+                bottom: 0; 
+                width: auto;
+                position: absolute;
+                top: 60%;
+                transform: translateY(-60%);
+                right: 0; 
+                z-index: 1000;
+                
+                li {
+                    display: block;
+                    margin: 12px 6px;
                 }
-                max-width: 700px;
-                margin: auto;
+            }
+            
+            .flex-control-paging {
+            
+            	li a {
+            	
+	            	background: transparent; 
+				    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.5);
+				    border: 1px solid #333;
+				    
+				    &:hover {
+ 		            	background: #666;				    	
+				    }
+	            		            
+		            &.flex-active {
+		            	background: #333;
+		            }
+	            }
+            }
+        }
+        
+        &.projects .project{
+        
+            h2,h3  {
+                display: none; 
+            }
+        }
+                     
+        &.projects-min {
+            text-align: center;
+        }
+        
+        &.projects.carousel {
+        
+            li {
+                        
+                opacity: 0.2;
+                
+                -webkit-transition: opacity 200ms ease-in;
+                -moz-transition: opacity 200ms ease-in;
+                -o-transition: opacity 200ms ease-in;
+                -ms-transition: opacity 200ms ease-in;
+                transition: opacity 200ms ease-in;                
+                
+                .client-name {
+            
+                    text-align: center; 
+                    background: lightgray;
+                    cursor: pointer;
+                    height: 6em;
+                
+                    > div {
+                    
+                        text-transform: uppercase;
+                        letter-spacing: 0.1em;
+                        
+                        width: 200px;
+                        margin: auto; 
+                        
+                        // center vertically
+                        position: relative;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
+                }
+                
+                &.flex-active-slide {
+                    opacity: 1;
+                }
+                
+                .client-body {
+                    padding: 15px 30px;
+                }
             } 
         }
+    }
+    
+     
+    
+/** --------------------------------- image-gallery-display */
+
+    .portlet-image-gallery-display {
+       
+		.file-entries {
+		
+			h1 {
+				margin-bottom: 30px;
+			}
+		
+			.file-entry {
+			
+			    .preview {
+				    width: 370px;
+				    height: 247px; /* 2:3 */
+				    background-color: lightgray;			    
+			        background-size: cover;
+			        background-position: center center;
+			        background-repeat: no-repeat;
+			        margin-bottom: 10px;
+                }
+			}
+			
+			.row-fluid {
+			    margin-bottom: 30px;
+			}		
+		}        
+    }
+
+
+
+/** --------------------------------- templates */
+
+    .template {
+    
+        a.btn {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            
+            background: none;
+            padding: 15px 30px;
+            border-color: #333; /* bootstrap default font color */
+            
+            box-shadow: none; 
+            -webkit-box-shadow: none;
+        }
+        
+        a.btn:hover {
+            background: none; 
+            color: black;
+        }
+        
+        .template-body {
+        	padding: 60px 0 75px;
+        }       
+    }
+    
+    .article {
+            
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .toc {
+            margin-top: 120px;
+        }
+    }
+    
+    .contact {
+    
+        margin: 0 0 100px;
         
         p {
-            margin: 15px 0 25px; 
+            margin: 0 0 20px;
         }
     }
     
-    .jumbotron {
-        padding: 120px;
+    .project { 
+        
+        h3 {
+            line-height: 30px;
+        } 
+        
+        .template-body {
+	    	padding-left: 100px; 
+	    	padding-right: 100px;
+        }
+        
+        .client-link {
+        	padding-top: 20px;
+        }        
+    }
+    
+
+    .teaser {
+            
         text-align: center;
-        background-color: lightgray;
-    }
-    
-    .copyright {
-    
-        padding: 20px 0 40px; 
         
-        ul { 
-            list-style : none;
-            margin: 0;
+        .row {
+            margin-left: 0; 
         }
-
-        li {
-            display: inline;
-        }
-
-        .pull-left li {
-            padding: 0 20px 0 0;
-        }
-        
-        .pull-right li {
-            padding: 0 0 0 20px;
-        }
-
-    }
-    
-    .portlet-borderless-container { 
-    
-        .alert {
-            margin-left: 1.5em;
-            margin-right: 1.5em;
-        }
-        
-        .article-form { 
-            padding:1.5em;
-            background-color: #fcfcfc;
-        }
-
-        .lfr-icon-actions, .lfr-meta-actions .navbar {
-            padding: 1.5em;
-        }
-                 
-        .portlet-social-media {
-            padding-top: 30px; 
-            
-            a:hover, 
-            a:focus {
-                color: white;
-            }
-            
-            .shariff li .share_text {
-                font-family: 'Source Sans Pro', sans-serif;
-            }
-        }
-
-        .asset-abstract {
-        
-            margin-left: 1.5em;
-            margin-right: 1.5em;
-            
-            img {
-                display: none;
-            }
-
-            .asset-title {
-            
-                border: none;
-                text-align: center;
-                
-                a {
-                    color: black;
-                }
-
-                a:hover {
-                    color: gray;
-                    text-decoration: none;
-                }
-
-            }
-            
-            .asset-summary {
-                font-size: 21px; /* bootstrap .lead class */
-                font-weight: 200; /* bootstrap .lead class */
-                line-height: 30px; /* bootstrap .lead class */
-                text-align: center;
-                max-width: 600px;
-                margin: auto;
-            }
-
-            .asset-more {
-            
-                text-align: center;
-                padding: 40px 20px 20px; 
-                
-                a {    
-                    padding : 10px 20px 10px 20px;
-                    border: 1px solid black;
-                    color: black;
-                }
-
-                a:hover {
-                    color: gray;
-                    border: 1px solid gray;
-                    text-decoration: none;
-                }
-    
-            }
-            
-            .asset-metadata {
-            
-                text-align: center;
-                margin: 20px 0 10px 0;
-                
-                span {
-                    float: none;
-                }
-
-                .metadata-publish-date {
-                    background: none;
-                    color: black;
-                    padding-left: 0;
-                }
-
-            }
-            
-            .portlet-title-default {
-                margin-right: 1.5em;
-            }
-        }
-    }
-    
-    .add-content-menu {
-    
-        color: #555;
         
         h1 {
-            font-size: 24.5px; /* bootstrap h3 */
+            line-height: 1.2em;
+            min-height: 3em;
+            margin-bottom: 70px;
+            padding: 0 200px;
         }
+        
+        h2, .lead {
+            text-align: left;
+        }
+    }
+    
+    .map {
+        height: 70vh;
+        margin-bottom: 3em;
+    }
+    
+/* ---------------------------------- forms */
+
+    .web-form-portlet {  
+          
+        .portlet-body {   
+                 
+            margin-bottom: 100px;
+            
+            .fieldset {
+            
+                margin-top: 10px;
+                
+                .fieldset-legend {
+                    font-size: $h2-font-size; 
+                    line-height: $h2-line-height; 
+                    margin-bottom: 10px;
+                    border: none; 
+                }
+            }
+            
+            .description {
+                font-size: 21px;    /* bootstrap .lead */
+                font-weight: 200;   /* bootstrap .lead */
+                line-height: 30px;  /* bootstrap .lead */  
+                margin-bottom: 20px;        
+            } 
+            
+            input, select, textarea {
+                border-color: #e4e4e4;
+                background: #f4f4f4;
+                font-size: 16px; 
+                font-weight: 600;
+            }    
+        }
+        
+        &.contact-form {
+        
+            width: 570px;       /* bootstrap span6 */
+            
+            input,
+            textarea {
+                width: 562px;   /* bootstrap span6 - default padding */
+                max-width: 562px;
+            }
+            
+            select, textarea {
+                width: 100%;
+            }
+            
+        }
+    }
+    
+/** --------------------------------- footer */
+
+    #footer {
+    
+    	margin-top: 30px;
+                    
+        background-color: #252525; 
+        border-top-color: #333;
+        
+        padding: 30px 0; 
+                
+        color: #999;
+        
+        a {
+            color: #ccc;
+            
+            &:hover {
+                color: #fff;
+            }
+        }
+        
+        .portlet-site-map {
+        
+            display: inline;
+            
+            .portlet-borderless-container {
+                min-height: 1em;
+                display: inline;
+            }
+            
+            .portlet-body {
+                display: inline; 
+                
+                ul {
+                    list-style: none; 
+                    display: inline; 
+                }
+                
+                li {
+                    display: inline; 
+                    
+                    a {
+                        &:after {
+                            content: " / ";
+                        }
+                    }
+                }
+            }       
+        }
+        
+        .icon {
+            margin-left: 12px;           
+        }
+    }
+        
+/** --------------------------------- liferay-ui */
+    .signed-in {
+    
+        #site-navigation {
+            margin-top: $dockbar-height; 
+        }
+        
+        #content {
+            margin-top: $dockbar-and-nav-height;
+        }
+    }
+    
+    .portlet-journal-content {
+        .alert,
+        .lfr-meta-actions {
+            margin: 20px 20px 0; 
+        }
+        
+        .lfr-meta-actions {
+            padding-top: 0; 
+            padding-bottom: 1em;
+        }
+    }
+    
+    /* bootstrap container-breakpoints for liferay standard portlets and layouts */
+    .columns-1-2 .portlet-layout,
+    .portlet-asset-publisher .add-asset-selector,
+    .portlet-dynamic-data-mapping .portlet-body,
+    .portlet-journal .article-form-add,
+    .portlet-journal .article-form-edit,
+    .portlet-login .portlet-body {
+        width: 1170px; /* bootstrap container */
+        margin: auto; 
+    }
+ 
+/** --------------------------------- responsive */
+
+    
+    @media (min-width: 980px) and (max-width: 1199px) {
+    	
+	    .flexslider {    
+    
+	        &.projects-min.slider,
+	        &.projects.slider {
+	        
+	        	.project {
+	        		h3 {   
+			            top: 20px;
+			            left: 80px;
+	        		}
+	        	}
+			}   
+		}
+    
+        .container {
+            width: 940px;
+        }
+        
+        .template {
+	        .template-body {
+	        	padding-top: 60px; 
+	        	padding-bottom: 60px;
+	        }
+	    }
+	    
+	    .project {
+	    
+            h3 {
+	            top: 20px;
+	            left: 80px;
+	        } 
+	    
+   	        .template-body {
+				padding-left: 80px;
+				padding-right: 80px;
+	        }
+	    }
+	    
+	    .teaser {
+	    	h1 {
+	    		padding-left: 160px;
+	    		padding-right: 160px;
+	    	}
+	    }
+	    
+	    #footer {    
+	    	margin-top: 20px;
+	    }	    
+        
+        /* bootstrap container-breakpoints for liferay standard portlets and layouts */
+        .columns-1-2 .portlet-layout,
+        .portlet-asset-publisher .add-asset-selector,
+        .portlet-dynamic-data-mapping .portlet-body,
+        .portlet-journal .article-form-add,
+        .portlet-journal .article-form-edit,
+        .portlet-login .portlet-body {
+            width: 940px; /* bootstrap container */
+            margin: auto; 
+        }        
+    }
+
+    @media (max-width: 979px) {  
+    
+        h1 {
+            font-size: 31.5px; /** bootstrap h2 */
+            line-height: 40px; /** bootstrap h2 */            
+        }
+        
+        .web-form-portlet .portlet-body .fieldset .fieldset-legend,
+        h2 {
+            font-size: 24.5px; /** bootstrap h3 */
+            line-height: 40px; /** bootstrap h3 */            
+        }
+    
+        h3 {
+            font-size: 17.5px; /** bootstrap h4 */
+            line-height: 20px; /** bootstrap h4 */
+            font-weight: 600; 
+        }
+        
+        #site-navigation {
+        
+            .navbar-inner {
+            
+                padding: 0;
+                
+                .btn-navbar {
+                    background: none; 
+                    border: none; 
+                    padding: 15px 10px 15px; 
+                    color: #333;
+                    text-shadow: none;
+                    
+                    &:focus {
+                        box-shadow: none; 
+                    }
+                }
+            
+                .container .nav-collapse {
+                
+                    display: block;
+                    float: none;
+                    background: white; 
+                                        
+                    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);    
+                    
+                    .nav a {
+                        font-weight: normal;
+                        text-align: center;
+                    }          
+                }
+            }
+            
+            .brand {
+            	margin-left: $tablet-padding;
+            }
+        }
+                
+        .container {
+            width: 100%;    
+        }
+        
+	    .flexslider {    
+    
+	        &.projects-min.slider,
+	        &.projects.slider {
+	        
+	        	.project {
+	        		h3 {   
+			            top: 20px;
+			            left: 50px;
+			            width: 300px;
+	        		}
+	        	}
+			}
+		}
+        
+        .template {
+            
+            .template-body {
+            	padding: 30px 0; 
+            }
+        }
+        
+        .template,
+        .footer-content {        
+            padding-left: $tablet-padding;
+            padding-right: $tablet-padding;           
+        }  
+        
+	    .article {
+	        
+	        .toc {
+	            margin-top: 90px;
+	            max-width: 160px;
+	        }
+	    }        
+    
+        .project {
+        
+            h3 {
+                top: 20px;
+                left: 50px;
+                width: 300px;
+                line-height: 20px; /** bootstrap h3 */         
+            }
+            
+            .template-body {
+            	padding-left: 30px; 
+            	padding-right: 30px;
+            }
+
+        }
+        
+        .teaser {
+                            
+            h1 {
+                padding: 0 120px;
+                margin-bottom: 50px;           
+            }
+        }
+        
+        .web-form-portlet {
+                    
+            &.contact-form {
+            
+                width: 100%;
+                
+                input,
+                textarea {
+                    width: 98%;
+                    max-width: 98%;
+                }
+                
+                select, textarea {
+                    width: 100%;
+                }
+                
+            }
+        }        
+        
+        /* bootstrap container-breakpoints for liferay standard portlets and layouts */
+        .columns-1-2 .portlet-layout,
+        .portlet-asset-publisher .add-asset-selector,
+        .portlet-dynamic-data-mapping .portlet-body,
+        .portlet-journal .article-form-add,
+        .portlet-journal .article-form-edit,
+        .portlet-login .portlet-body {
+            width: 100%; /* bootstrap container */
+            margin: auto; 
+        }
+        
+        .columns-1-2 {
+                  
+            #column-2 {
+                padding: 0 $tablet-padding;
+            }
+        }       
+    }   
+    
+    @media (max-width: 767px) {
+    
+        body {
+            padding: 0; 
+        }
+        
+        .container {
+            width: 100%;        
+        }
+    
+        #site-navigation.navbar-fixed-top {
+            margin: 0;
+            
+            .brand {
+            	margin-left: $phone-padding; 
+            }
+        }
+        
+		.toc {
+            display: none;         
+        }
+        
+        .template {
+        
+            word-wrap: break-word;
+            padding: 0; 
+            
+            .template-body {
+            	padding: 30px $phone-padding;
+            }
+        }
+        
+        .contact {
+        	padding: 0 $phone-padding;
+        }        
+        
+        .project {
+        
+            h3 {
+                position: relative;
+                width: auto;
+                left: 0;
+               	padding-left: $phone-padding; 
+            	padding-right: $phone-padding; 
+            }
+            
+            .template-body {
+            	padding-left: $phone-padding; 
+            	padding-right: $phone-padding;
+            	padding-bottom: 15px;
+            }           
+        }
+        
+        .teaser {
+                                    
+            h1 {
+                padding: 0;            
+            }
+		}
+		
+        .flexslider.projects-min.slider {
+        
+            margin-bottom: 30px;
+        
+        	.project {
+        		h3 {
+		            position: relative; 
+		            width: auto;
+		            left: 0;      		
+        		}
+        	}
+        
+            .flex-control-nav {
+                position: relative;
+                bottom: -60px;
+                
+                li {
+                    display: inline-block;
+                }
+            }     
+        }
+        
+        .web-form-portlet {
+                    
+            &.contact-form {
+                            
+                input,
+                textarea {
+                    width: 95%;
+                    max-width: 95%;
+                }                
+            }
+        }
+        
+        .footer-content {
+        
+            padding: 0 $phone-padding;
+
+            .copyright {
+                padding-bottom: 20px;
+            }
+            
+            .pull-left {
+                float: none; 
+            }
+            
+            .pull-right {
+                float: none;
+            }
+            
+            .portlet-site-map {
+                ul {
+                    margin-left: 0; 
+                }
+            }
+        }
+
+        .columns-1-2 {
+                  
+            #column-2 {
+                padding: 0 $phone-padding;
+            }
+        }           
     }
 }

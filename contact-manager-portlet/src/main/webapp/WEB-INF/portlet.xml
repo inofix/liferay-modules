@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0">
+	<portlet>
+		<portlet-name>contact-manager-portlet</portlet-name>
+		<display-name>Contact Manager</display-name>
+		<portlet-class>ch.inofix.portlet.contact.portlet.ContactManagerPortlet</portlet-class>
+<!--         <init-param> -->
+<!--             <name>copy-request-parameters</name> -->
+<!--             <value>true</value> -->
+<!--         </init-param> -->
+        <init-param>
+            <name>add-process-action-success-action</name>
+            <value>false</value>
+        </init-param>
+		<init-param>
+			<name>view-template</name>
+            <value>/html/view.jsp</value>
+		</init-param>
+		<expiration-cache>0</expiration-cache>
+		<supports>
+			<mime-type>text/html</mime-type>
+		</supports>
+        <resource-bundle>Language</resource-bundle>
+		<portlet-info>
+			<title>Contact Manager</title>
+			<short-title>Contact Manager</short-title>
+			<keywords>Contact Manager</keywords>
+		</portlet-info>
+		<security-role-ref>
+			<role-name>administrator</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>guest</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>power-user</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>user</role-name>
+		</security-role-ref>
+	</portlet>
+</portlet-app>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+    project.xml: custom sql queries of the project portlet.
+
+    Created:    2013-10-15 18:37 by Christian Berndt
+    Modified:   2013-10-15 18:37 by Christian Berndt
+    Version:    1.0
+ -->
+
+<custom-sql>
+    <!-- IMPORTANT: In order to use the CustomSQLUtil's replaceKeywords()-method    -->
+    <!-- the clause to be replaced must be enclosed by brackets without whitespace! -->
+    <!-- i.e. (lower(lastname) LIKE ? [$AND_OR_NULL_CHECK$])                        -->
+    <!-- NOT: ( lower(lastname) LIKE ? [$AND_OR_NULL_CHECK$] )                      -->
+
+    <!-- The select clause of the query. -->
+    <sql id="ch.inofix.portlet.timetracker.service.persistence.TaskRecordFinder.SELECT_STMT">
+        <![CDATA[
+            SELECT
+                taskRecordId
+            FROM
+                tt_taskRecord
+        ]]>
+    </sql>
+
+    <!-- The WHERE clause common to the count- and findy_C_G_U_W_S_E_D_S-method. -->
+    <!-- TODO: Add clauses for the Date and long fields. -->
+    <sql id="ch.inofix.portlet.timetracker.service.persistence.TaskRecordFinder.WHERE_BY_C_G_U_W_S_E_D_S">
+        <![CDATA[
+            WHERE
+            (
+                (companyId = ?) AND
+                (groupId = ?) AND 
+                (lower(workPackage) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+                (lower(description) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+				(startDate >= ? [$AND_OR_NULL_CHECK$]) AND
+				(endDate <= ? [$AND_OR_NULL_CHECK$])
+				AND (userId = ?)
+                AND (status = ?)				                
+            )
+        ]]>
+    </sql>
+</custom-sql>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+<!--  
+    liferay-hook.xml: Configure custom Language.properties
+    required by the bak-theme.
+    
+    Created:    2016-02-14 22:28 by Christian Berndt
+    Modified:   2015-02-14 22:28 by Christian Berndt
+    Version:    1.0.0
+ -->
+<hook>
+    <language-properties>Language.properties</language-properties>
+    <language-properties>Language_de_DE.properties</language-properties>
+</hook>

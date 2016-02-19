@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+    ext-spring.xml: Configuration of custom spring beans.
+
+    Created:     2013-11-09 22:48 by Christian Berndt
+    Version:     1.0
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    default-destroy-method="destroy" default-init-method="afterPropertiesSet"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- The Timetracker portlet's utility class beans. -->
+    <bean id="ch.inofix.portlet.timetracker.util.TimetrackerPortlet"
+          class="ch.inofix.portlet.timetracker.util.TimetrackerPortletImpl" />
+    <bean id="ch.inofix.portlet.timetracker.util.TimetrackerPortletUtil"
+          class="ch.inofix.portlet.timetracker.util.TimetrackerPortletUtil">
+        <property name="TimetrackerPortlet"
+                  ref="ch.inofix.portlet.timetracker.util.TimetrackerPortlet" />
+    </bean>
+   </beans>
