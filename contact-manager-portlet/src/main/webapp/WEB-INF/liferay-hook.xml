@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+<!-- 
+    liferay-hook.xml: Configuration of the contac-manager portlet's hook(s).
+
+    Created:    2015-06-14 11:56 by Christian Berndt
+    Modified:   2015-06-16 23:37 by Christian Berndt
+    Version:    1.0.1
+ -->
+<hook>
+    <language-properties>Language.properties</language-properties>
+</hook>

@@ -1,0 +1,24 @@
+/**
+ * main.css: The social-media portlet's css configuration
+ *
+ * Created:     2015-08-19 22:22 by Christian Berndt
+ * Modified:    2015-08-19 22:22 by Christian Berndt
+ * Version:     1.0.1
+ *
+ */
+@import "compass";
+@import "mixins";
+ 
+.aui  {
+	
+    dl.build-info dfn, 
+    dl.build-info dt {
+        display: inline;
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    dl.build-info dfn {
+       margin-right: 20px;
+    }
+}

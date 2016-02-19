@@ -1,0 +1,17 @@
+<%--
+    export_vcards.jspf: Export vCards to a file
+    
+    Created:    2015-05-27 18:40 by Christian Berndt
+    Modified:   2015-07-03 21:03 by Christian Berndt
+    Version:    1.0.2
+--%>
+
+<portlet:resourceURL var="serveVCardsURL" id="exportVCards">
+</portlet:resourceURL>
+
+<aui:fieldset label="export">
+    <aui:button-row>
+		<aui:button href="<%=serveVCardsURL%>" value="export-vcards"
+			cssClass="btn-primary" />
+	</aui:button-row>
+</aui:fieldset>

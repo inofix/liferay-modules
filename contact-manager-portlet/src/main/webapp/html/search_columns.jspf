@@ -1,0 +1,141 @@
+<%--
+    search_columns.jspf: A configurable set of result columns.
+    
+    Created:    2015-05-11 19:14 by Christian Berndt
+    Modified:   2015-05-30 09:55 by Christian Berndt
+    Version:    1.0.7
+--%>
+
+<%
+	for (String column : columns) {
+%>
+<c:if test='<%="company".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="company"
+        name="company" orderable="true" href="<%=detailURL%>"
+        orderableProperty="company" />
+</c:if>
+<c:if test='<%="contactId".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="contactId"
+		name="contact-id" orderable="true" href="<%=detailURL%>"
+		orderableProperty="contactId" />
+</c:if>
+<c:if test='<%="create-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="createDate"
+        name="create-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="createDate" />
+</c:if>
+<c:if test='<%="email".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="email.address"
+        name="email" orderable="true" href="<%=detailURL%>"
+        orderableProperty="email" />
+</c:if>
+<c:if test='<%="fax".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="fax" name="fax"
+        orderable="true" href="<%=detailURL%>"
+        orderableProperty="fax" />
+</c:if>
+<c:if test='<%="full-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="fullName"
+        name="full-name" orderable="true" href="<%=detailURL%>"
+        orderableProperty="fullName" />
+</c:if>
+<c:if test='<%="modified-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="modifiedDate"
+        name="modified-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="modified"  />
+</c:if>
+<c:if test='<%="name".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="name"
+        name="name" orderable="true" href="<%=detailURL%>"
+        orderableProperty="name" />
+</c:if>
+
+<c:if test='<%="phone".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="phone.number"
+        name="phone" orderable="true" href="<%=detailURL%>"
+        orderableProperty="phone" />
+</c:if>
+<c:if test='<%="portrait".equals(column)%>'>
+    <liferay-ui:search-container-column-text align="middle" valign="middle"
+        href="<%=detailURL%>" cssClass="portrait">
+        <c:choose>
+            <c:when test="<%=Validator.isNotNull(contact_.getPortrait())%>">
+                <img src="<%=contact_.getPortrait()%>" class="<%=portraitClass%>"
+                    style="<%=portraitStyle%>" />
+            </c:when>
+            <c:otherwise>
+                <c:choose>
+                    <c:when test='<%= "individual".equals(contact_.getKind()) %>'>
+                        <c:choose>
+                            <c:when test='<%= "f".equals(contact_.getGender()) %>'>
+		                        <c:if test="<%= Validator.isNotNull(portraitFemale) %>">
+		                            <img src="<%=portraitFemale%>" class="<%=portraitClass%>"
+		                                style="<%=portraitStyle%>" />
+		                        </c:if>
+		                        <c:if test="<%= Validator.isNull(portraitFemale) %>">
+		                           <span class="icon icon-user" style="font-size: 50px;"></span>
+		                        </c:if> 
+                            </c:when>
+                            <c:when test='<%= "m".equals(contact_.getGender()) %>'>
+		                        <c:if test="<%= Validator.isNotNull(portraitMale) %>">
+		                            <img src="<%=portraitMale%>" class="<%=portraitClass%>"
+		                                style="<%=portraitStyle%>" />
+		                        </c:if>
+		                        <c:if test="<%= Validator.isNull(portraitMale) %>">
+		                           <span class="icon icon-user" style="font-size: 50px;"></span>
+		                        </c:if> 
+                            </c:when>
+                            <c:otherwise>
+		                        <c:if test="<%= Validator.isNotNull(portrait) %>">
+		                            <img src="<%=portrait%>" class="<%=portraitClass%>"
+		                                style="<%=portraitStyle%>" />
+		                        </c:if>
+		                        <c:if test="<%= Validator.isNull(portrait) %>">
+		                           <span class="icon icon-user" style="font-size: 50px;"></span>
+		                        </c:if> 
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+                    <c:when test='<%= "group".equals(contact_.getKind()) %>'>
+                        <c:if test="<%= Validator.isNotNull(portraitGroup) %>">
+                            <img src="<%=portraitGroup%>" class="<%=portraitClass%>"
+                                style="<%=portraitStyle%>" />
+                        </c:if>
+                        <c:if test="<%= Validator.isNull(portraitGroup) %>">
+	                       <span class="icon icon-group" style="font-size: 50px;"></span>
+                        </c:if>                        
+                    </c:when>
+                    <c:when test='<%= "org".equals(contact_.getKind()) %>'>
+                        <c:if test="<%= Validator.isNotNull(portraitOrganization) %>">
+                            <img src="<%=portraitOrganization%>" class="<%=portraitClass%>"
+                                style="<%=portraitStyle%>" />
+                        </c:if>
+                        <c:if test="<%= Validator.isNull(portraitOrganization) %>">
+                           <span class="icon icon-building" style="font-size: 50px;"></span>
+                        </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <c:if test="<%= Validator.isNotNull(portrait) %>">
+                            <img src="<%=portrait%>" class="<%=portraitClass%>"
+                                style="<%=portraitStyle%>" />
+                        </c:if>
+                        <c:if test="<%= Validator.isNull(portrait) %>">
+                           <span class="icon icon-user" style="font-size: 50px;"></span>
+                        </c:if> 
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
+        </c:choose>
+    </liferay-ui:search-container-column-text>
+</c:if>
+<c:if test='<%="status".equals(column)%>'>
+    <liferay-ui:search-container-column-status property="status" />
+</c:if>
+<c:if test='<%="user-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="userName"
+        name="user-name" orderable="true" href="<%=detailURL%>"
+        orderableProperty="userName" />
+</c:if>
+<%
+	}
+%>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
+<!-- 
+    liferay-portlet.xml: Main configuration file of the 
+    social-media portlet.
+    
+    Created:    2015-08-19 23:17 by Christian Berndt
+    Modified:   2015-10-10 22:07 by Christian Berndt
+    Version:    1.0.4
+ -->
+
+<liferay-portlet-app>
+    <portlet>
+        <portlet-name>social-media-portlet</portlet-name>
+        <icon>/icon.png</icon>
+        <configuration-action-class>ch.inofix.portlet.socialmedia.action.ConfigurationActionImpl</configuration-action-class>
+        <layout-cacheable>true</layout-cacheable>
+        <header-portlet-css>/css/main.css</header-portlet-css>
+        <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+    </portlet>
+    <!-- Include the required shariff.css and shariff.js into every layout -->
+    <portlet>
+        <portlet-name>include-portlet</portlet-name>
+        <use-default-template>false</use-default-template>
+        <layout-cacheable>true</layout-cacheable>
+        <system>true</system>
+    </portlet>
+    <role-mapper>
+        <role-name>administrator</role-name>
+        <role-link>Administrator</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>guest</role-name>
+        <role-link>Guest</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>power-user</role-name>
+        <role-link>Power User</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>user</role-name>
+        <role-link>User</role-link>
+    </role-mapper>
+</liferay-portlet-app>

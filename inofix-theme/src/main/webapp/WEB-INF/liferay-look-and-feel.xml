@@ -6,19 +6,21 @@
     default theme.
     
     Created:    2015-07-26 16:27 by Christian Berndt
-    Modified:   2015-08-02 13:20 by Christian Berndt
-    Version:    1.0.1   
+    Modified:   2015-12-11 18:04 by Christian Berndt
+    Version:    1.0.3 
  -->
 <look-and-feel>
     <compatibility>
         <version>6.2.3+</version>
     </compatibility>
-    <theme id="inofix" name="inofix-theme">
+
+    <theme id="inofix" name="inofix-theme" >
+        <template-extension>ftl</template-extension>
         <settings>
             <setting key="brand" configurable="true" type="text"
                 value="Your Brand" />
-            <setting key="default-font" configurable="true"
-                type="text" value="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" />
+            <setting key="services-layout-uuid" configurable="true" type="text"
+                value=""/>                
             <setting key="portlet-setup-show-borders-default"
                 value="false" />
         </settings>
