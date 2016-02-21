@@ -2,12 +2,11 @@
  * main.css: The social-media portlet's css configuration
  *
  * Created:     2015-08-19 22:22 by Christian Berndt
- * Modified:    2015-08-19 22:22 by Christian Berndt
- * Version:     1.0.1
+ * Modified:    2016-02-22 17:47 by Christian Berndt
+ * Version:     1.0.2
  *
  */
 @import "compass";
-@import "mixins";
  
 .aui  {
 	
