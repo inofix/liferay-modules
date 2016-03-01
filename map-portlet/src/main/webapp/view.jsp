@@ -1,27 +1,21 @@
 <%--
-/**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- */
+    view.jsp: Default view of the map-portlet.
+    
+    Created:    2016-03-02 00:07 by Christian Berndt
+    Modified:   2016-03-02 00:07 by Christian Berndt
+    Version:    1.0.0
 --%>
 
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ include file="/html/init.jsp"%>
 
-<portlet:defineObjects />
+<%-- <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %> --%>
+
+<%-- <portlet:defineObjects /> --%>
 
 <div id="map" class="map"></div>
 
 <script>
-	var map = L.map('map').setView([51.505, -0.09], 13);
+	var map = L.map('map').setView(<%= mapCenter %>, <%= mapZoom %>);
 	
 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 	    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
