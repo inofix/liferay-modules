@@ -1,7 +1,11 @@
 package ch.inofix.hook.cachefilter;
 
+import java.util.Enumeration;
+import java.util.Locale;
+
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +21,7 @@ import com.liferay.portal.kernel.servlet.ByteBufferServletResponse;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.struts.LastPath;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -35,6 +40,7 @@ import com.liferay.portal.model.PortletConstants;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.LayoutLocalServiceUtil;
 import com.liferay.portal.service.PortletLocalServiceUtil;
+//import com.liferay.portal.util.CookieKeys;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.util.servlet.filters.CacheResponseData;
@@ -58,6 +64,189 @@ import com.liferay.util.servlet.filters.CacheResponseUtil;
 public class CacheFilter extends BaseFilter {
 
     public static final String SKIP_FILTER = CacheFilter.class + "SKIP_FILTER";
+    
+    public void init(FilterConfig filterConfig) {
+
+        _pattern = GetterUtil.getInteger(filterConfig
+                .getInitParameter("pattern"));
+
+        if ((_pattern != _PATTERN_FRIENDLY) && (_pattern != _PATTERN_LAYOUT)
+                && (_pattern != _PATTERN_RESOURCE)) {
+
+            _log.error("Cache pattern is invalid");
+        }
+    }
+    
+
+    protected String getCacheKey(HttpServletRequest request) {
+        StringBundler sb = new StringBundler(13);
+
+        // Url
+
+        sb.append(HttpUtil.getProtocol(request));
+        sb.append(Http.PROTOCOL_DELIMITER);
+        sb.append(request.getContextPath());
+        sb.append(request.getServletPath());
+        sb.append(request.getPathInfo());
+        sb.append(StringPool.QUESTION);
+
+        String queryString = request.getQueryString();
+
+        if (queryString == null) {
+            queryString = (String) request
+                    .getAttribute(JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING);
+
+            if (queryString == null) {
+                String url = PortalUtil.getCurrentCompleteURL(request);
+
+                int pos = url.indexOf(StringPool.QUESTION);
+
+                if (pos > -1) {
+                    queryString = url.substring(pos + 1);
+                }
+            }
+        }
+
+        if (queryString != null) {
+            
+ // For legacy reasons with the dai-modules, remove obsolete parameters which
+ // were used by the dai-displays.
+
+             String parameter = "p_r_p_1690909578_redirectURL";
+             
+             // Prepend a questionmark in order to use HttpUtil.removeParameter()
+             queryString = "?" + queryString; 
+             
+             if (queryString.indexOf(parameter) >= 0) {
+                 queryString = HttpUtil.removeParameter(queryString,
+                         parameter);
+             }
+             
+             String pathInfo = ""; 
+             
+             if (request.getPathInfo() != null) {
+                 pathInfo = request.getPathInfo(); 
+             }
+
+             if (pathInfo.indexOf("article-display") > 0
+                     || queryString.indexOf("articledisplay") > 0
+                     || pathInfo.indexOf("event-display") > 0
+                     || queryString.indexOf("eventdisplay") > 0
+                     || pathInfo.indexOf("organization-display") > 0
+                     || queryString.indexOf("organizationdisplay") > 0
+                     || pathInfo.indexOf("person-display") > 0
+                     || queryString.indexOf("persondisplay") > 0
+                     || pathInfo.indexOf("project-display") > 0
+                     || queryString.indexOf("projectdisplay") > 0) {
+                 
+                 parameter = "p_p_auth";
+                 
+                 if (queryString.indexOf(parameter) >= 0) {
+                     queryString = HttpUtil.removeParameter(queryString,
+                             parameter);
+                 }
+                 
+                 parameter = "p_auth";
+                 
+                 if (queryString.indexOf(parameter) >= 0) {
+                     queryString = HttpUtil.removeParameter(queryString,
+                             parameter);
+                 }
+
+             }
+             
+             // remove the the first questionmark from the queryString
+             if (queryString.indexOf("?") == 0) {
+                 queryString = queryString.substring(1); 
+             }
+                         
+ // end customization            
+            
+            sb.append(queryString);
+        }
+
+        // Language
+
+        sb.append(StringPool.POUND);
+        
+        String languageId = null;
+
+        // User previously set their preferred language
+        
+        Cookie[] cookies = request.getCookies(); 
+
+        if (cookies != null) {        
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(CookieKeys.GUEST_LANGUAGE_ID)) {
+                    languageId = cookie.getValue();
+                }
+            }
+        }
+
+        //      String languageId = (String)request.getAttribute(
+        //      WebKeys.I18N_LANGUAGE_ID);
+  
+        if (_log.isDebugEnabled()) {
+            _log.debug("languageId = " + languageId); 
+        } 
+          
+        if (Validator.isNull(languageId)) {
+            
+            // Get locale from the request (from 
+            // com.liferay.portal.events.ServicePreAction)
+            
+            Locale locale = Locale.getDefault();
+            
+            Enumeration<Locale> locales = request.getLocales();
+
+            while (locales.hasMoreElements()) {
+                Locale requestLocale = locales.nextElement();
+
+                if (Validator.isNull(requestLocale.getCountry())) {
+
+                    // Locales must contain a country code
+
+                    requestLocale = LanguageUtil.getLocale(
+                        requestLocale.getLanguage());
+                }
+
+                if (LanguageUtil.isAvailableLocale(requestLocale)) {
+                    locale = requestLocale;
+
+                    break;
+                }
+            }
+            
+            languageId = LanguageUtil.getLanguageId(locale);
+            // languageId = LanguageUtil.getLanguageId(request);
+            
+            // store the languageId as a request attribute
+            // for further processing
+            request.setAttribute("I18N_LANGUAGE_ID", languageId);         
+        }
+        
+        _log.info("languageId = " + languageId);
+
+        sb.append(languageId);
+
+        // User agent
+
+        // TODO: make user-agent processing configurable
+        // String userAgent = GetterUtil.getString(request
+        // .getHeader(HttpHeaders.USER_AGENT));
+        //
+        // _log.info("userAgent = " + userAgent);
+        //
+        // sb.append(StringPool.POUND);
+        // sb.append(userAgent.toLowerCase().hashCode());
+
+        // Gzip compression
+
+        sb.append(StringPool.POUND);
+        sb.append(BrowserSnifferUtil.acceptsGzip(request));
+
+        return sb.toString().trim().toUpperCase();
+    }
 
     @Override
     protected void processFilter(HttpServletRequest request,
@@ -67,11 +256,11 @@ public class CacheFilter extends BaseFilter {
         long userId = PortalUtil.getUserId(request);
         String remoteUser = request.getRemoteUser();
 
-        if (_log.isDebugEnabled()) {
-            _log.debug("Executing processFilter().");
-            _log.debug("userId = " + userId);
-            _log.debug("remoteUser = " + remoteUser);
-        }
+//        if (_log.isDebugEnabled()) {
+//            _log.debug("Executing processFilter().");
+//            _log.debug("userId = " + userId);
+//            _log.debug("remoteUser = " + remoteUser);
+//        }
 
         request.setAttribute(SKIP_FILTER, Boolean.TRUE);
 
@@ -139,22 +328,14 @@ public class CacheFilter extends BaseFilter {
                         cacheResponseData);
 
             }
+        } else {
+            if (_log.isDebugEnabled()) {
+                _log.debug("Returning cached data for " + key);
+            }
         }
 
         CacheResponseUtil.write(response, cacheResponseData);
 
-    }
-
-    public void init(FilterConfig filterConfig) {
-
-        _pattern = GetterUtil.getInteger(filterConfig
-                .getInitParameter("pattern"));
-
-        if ((_pattern != _PATTERN_FRIENDLY) && (_pattern != _PATTERN_LAYOUT)
-                && (_pattern != _PATTERN_RESOURCE)) {
-
-            _log.error("Cache pattern is invalid");
-        }
     }
 
     protected long getPlid(long companyId, String pathInfo, String servletPath,
@@ -229,9 +410,9 @@ public class CacheFilter extends BaseFilter {
                 friendlyURL = pathInfo.substring(pos);
             }
 
-            if (_log.isDebugEnabled()) {
-                _log.debug("friendlyURL = " + friendlyURL);
-            }
+//            if (_log.isDebugEnabled()) {
+//                _log.debug("friendlyURL = " + friendlyURL);
+//            }
         }
 
         if (Validator.isNull(friendlyURL)) {
@@ -267,71 +448,6 @@ public class CacheFilter extends BaseFilter {
         }
     }
 
-    protected String getCacheKey(HttpServletRequest request) {
-        StringBundler sb = new StringBundler(13);
-
-        // Url
-
-        sb.append(HttpUtil.getProtocol(request));
-        sb.append(Http.PROTOCOL_DELIMITER);
-        sb.append(request.getContextPath());
-        sb.append(request.getServletPath());
-        sb.append(request.getPathInfo());
-        sb.append(StringPool.QUESTION);
-
-        String queryString = request.getQueryString();
-
-        if (queryString == null) {
-            queryString = (String) request
-                    .getAttribute(JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING);
-
-            if (queryString == null) {
-                String url = PortalUtil.getCurrentCompleteURL(request);
-
-                int pos = url.indexOf(StringPool.QUESTION);
-
-                if (pos > -1) {
-                    queryString = url.substring(pos + 1);
-                }
-            }
-        }
-
-        if (queryString != null) {
-            sb.append(queryString);
-        }
-
-        // Language
-
-        sb.append(StringPool.POUND);
-
-        String languageId = (String) request.getAttribute("I18N_LANGUAGE_ID");
-        // String languageId = (String)request.getAttribute(
-        // WebKeys.I18N_LANGUAGE_ID);
-
-        if (Validator.isNull(languageId)) {
-            languageId = LanguageUtil.getLanguageId(request);
-        }
-
-        sb.append(languageId);
-
-        // User agent
-
-        // TODO: make user-agent processing configurable
-        // String userAgent = GetterUtil.getString(request
-        // .getHeader(HttpHeaders.USER_AGENT));
-        //
-        // _log.info("userAgent = " + userAgent);
-        //
-        // sb.append(StringPool.POUND);
-        // sb.append(userAgent.toLowerCase().hashCode());
-
-        // Gzip compression
-
-        sb.append(StringPool.POUND);
-        sb.append(BrowserSnifferUtil.acceptsGzip(request));
-
-        return sb.toString().trim().toUpperCase();
-    }
 
     protected boolean isCacheableColumn(long companyId, String columnSettings)
             throws SystemException {
