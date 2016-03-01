@@ -11,7 +11,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>0.9.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -116,11 +116,12 @@
         <module>contact-manager-portlet</module>
         <module>display-page-hook</module>
         <module>inofix-theme</module>
+	    <module>map-portlet</module>
 	    <module>portlettitle-hook</module>
         <module>search-facet-hook</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
-    </modules>
+  </modules>
     
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
