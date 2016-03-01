@@ -115,5 +115,12 @@
 			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
+		
+        <!-- inofix-util support -->
+        <dependency>
+            <groupId>ch.inofix</groupId>
+            <artifactId>taglib-util</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>		
 	</dependencies>
 </project>
