@@ -1,9 +1,9 @@
 <%--
     init.jsp: Common imports and setup code of the contact-manager
     
-    Created:    2015-05-07 15:16 by Christian Berndt
-    Modified:   2015-07-03 19:04 by Christian Berndt
-    Version:    1.1.0
+    Created:    2016-03-01 17:58 by Christian Berndt
+    Modified:   2016-03-02 17:58 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%-- Import required classes --%>
@@ -21,7 +21,7 @@
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
-<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
+<%-- <%@page import="com.liferay.portal.kernel.util.KeyValuePair"%> --%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
@@ -44,8 +44,6 @@
 <theme:defineObjects />
 
 <%
-//     String[] columns = portletPreferences.getValues("columns",
-//             new String[] { "name", "modified-date" });
 
     String currentURL = PortalUtil.getCurrentURL(request);
 
@@ -54,8 +52,9 @@
             renderResponse.getNamespace() + "javax.portlet.action");
 
     String mapCenter = portletPreferences.getValue("mapCenter", "[51.505, -0.09]");
-    String mapZoom = portletPreferences.getValue("mapZoom", "13");
-   
-//     boolean viewByDefault = GetterUtil.getBoolean(portletPreferences
-//              .getValue("view-by-default", "false"));
+    String mapHeight = portletPreferences.getValue("mapHeight", "400px");
+    String mapZoom = portletPreferences.getValue("mapZoom", "10");
+    String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
+    String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
+
 %>
