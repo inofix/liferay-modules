@@ -4,7 +4,7 @@
 	<parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>0.9.4-SNAPSHOT</version>
+        <version>0.9.5-SNAPSHOT</version>
     </parent>
 	<artifactId>inofix-theme</artifactId>
 	<packaging>war</packaging>
