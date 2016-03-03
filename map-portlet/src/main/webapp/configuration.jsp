@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-03-02 17:57 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-03-03 10:43 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -43,11 +43,47 @@
                         
         </liferay-ui:panel>
         
-        <%-- 
-        <liferay-ui:panel id="mapportletMiscellaneousPanel" title="miscellaneous" extended="true">
+        <liferay-ui:panel id="mapportletMarkersPanel" title="markers" extended="true">
+        
+			<aui:fieldset id="marker" cssClass="marker">
+			<%
+			    for (int i=0; i<markerLatLongs.length; i++) {
+			%>
+			    <aui:container>
+			
+			        <aui:row>
+			            <div class="lfr-form-row">
 
+			                <legend class="fieldset-legend">
+			                
+			                    <span class="sort-handle"></span>
+
+			                </legend>           
+			            
+			                <div class="row-fields">
+			                                                    
+			                    <aui:col span="6">
+			                    
+			                        <aui:input name="markerLatLongs"
+			                            value="<%= markerLatLongs[i] %>" />
+
+			                    </aui:col>
+			                    <aui:col span="6">
+			                    
+                                    <aui:input name="markerLabels"
+                                        value="<%= markerLabels[i] %>" />
+                                        
+                              </aui:col>
+			                </div>
+			            </div>
+			        </aui:row>
+			
+			    </aui:container>
+			<%
+			    }
+			%>
+			</aui:fieldset>
         </liferay-ui:panel>
-        --%>
 
     </liferay-ui:panel-container>
 
@@ -56,3 +92,20 @@
     </aui:button-row>
 
 </aui:form>
+
+<%-- Configure auto-fields --%>
+<aui:script use="liferay-auto-fields">
+
+    var markerAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />marker',
+        namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+    
+</aui:script>

@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-03-02 17:56
- * @version 1.0.1
+ * @modified 2016-03-03 10:42
+ * @version 1.0.2
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -31,12 +31,16 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
         String mapHeight = ParamUtil.getString(actionRequest, "mapHeight");
         String mapZoom = ParamUtil.getString(actionRequest, "mapZoom");
+        String[] markerLabels = ParamUtil.getParameterValues(actionRequest, "markerLabels");
+        String[] markerLatLongs = ParamUtil.getParameterValues(actionRequest, "markerLatLongs");
         String tilesCopyright = ParamUtil.getString(actionRequest, "tilesCopyright");
         String tilesURL = ParamUtil.getString(actionRequest, "tilesURL");
 
         setPreference(actionRequest, "mapCenter", mapCenter);
         setPreference(actionRequest, "mapHeight", mapHeight);
         setPreference(actionRequest, "mapZoom", mapZoom);
+        setPreference(actionRequest, "markerLabels", markerLabels);
+        setPreference(actionRequest, "markerLatLongs", markerLatLongs);
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
 

@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the contact-manager
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-03-02 17:58 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-03-03 10:44 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%-- Import required classes --%>
@@ -54,6 +54,8 @@
     String mapCenter = portletPreferences.getValue("mapCenter", "[51.505, -0.09]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
     String mapZoom = portletPreferences.getValue("mapZoom", "10");
+    String[] markerLabels = portletPreferences.getValues("markerLabels", new String[] {""});
+    String[] markerLatLongs = portletPreferences.getValues("markerLatLongs", new String[] {""});
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
 
