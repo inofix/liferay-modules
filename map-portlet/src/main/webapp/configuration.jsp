@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-03-14 21:04 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2016-03-14 22:01 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -31,15 +31,24 @@
 
         <liferay-ui:panel id="mapportletMapSettingsPanel" title="map-settings" extended="true">
     
-            <aui:input name="mapCenter" value="<%= mapCenter %>"/>    
-            <aui:input name="mapHeight" value="<%= mapHeight %>"/>    
-            <aui:select name="mapZoom">
+            <aui:input name="mapCenter" value="<%= mapCenter %>" 
+                helpMessage="map-center-help"/>
+                
+            <aui:input name="mapHeight" value="<%= mapHeight %>"
+                helpMessage="map-height-help"/>
+                 
+            <aui:select name="mapZoom" helpMessage="map-zoom-help">
             <% for (int i=0; i<18; i++) { %>
                 <aui:option value="<%= i %>" selected="<%= i == GetterUtil.getInteger(mapZoom) %>"><%= i %></aui:option>
             <% } %>
             </aui:select>
-            <aui:input name="tilesCopyright" cssClass="tiles-copyright" value="<%= tilesCopyright %>"/>   
-            <aui:input name="tilesURL" cssClass="tiles-url" label="tiles-url" value="<%= tilesURL %>"/>    
+            
+            <aui:input name="tilesURL" cssClass="tiles-url"
+                helpMessage="tiles-url-help" label="tiles-url"
+                value="<%= tilesURL %>"/>
+                
+            <aui:input name="tilesCopyright" cssClass="tiles-copyright" 
+                helpMessage="tiles-copyright-help" value="<%= tilesCopyright %>"/>   
                         
         </liferay-ui:panel>
         
@@ -66,6 +75,8 @@
 			                    
 			                        <aui:input name="markerLatLongs"
 			                            cssClass="marker-lat-long"
+			                            helpMessage="marker-lat-long-help"
+			                            label="marker-lat-long"
 			                            value="<%= markerLatLongs[i] %>" />
 
 			                    </aui:col>
@@ -73,6 +84,8 @@
 			                    
                                     <aui:input name="markerLabels"
                                         cssClass="marker-label"
+                                        helpMessage="marker-label-help"
+                                        label="marker-label"
                                         value="<%= markerLabels[i] %>" />
                                         
                               </aui:col>
@@ -89,7 +102,8 @@
         
         <liferay-ui:panel id="mapportletMiscelaneousPanel" title="miscellaneous" extended="true">
     
-            <aui:input name="claim" cssClass="claim" value="<%= claim %>"/>  
+            <aui:input name="claim" cssClass="claim" helpMessage="claim-help" 
+                value="<%= claim %>"/>  
                         
         </liferay-ui:panel>
 
