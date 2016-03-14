@@ -5,8 +5,8 @@
     map portlet.
     
     Created:    2016-03-01 23:59 by Christian Berndt
-    Modified:   2016-03-01 23:59 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-03-14 18:20 by Christian Berndt
+    Version:    1.0.1
  -->
 <liferay-portlet-app>
 	<portlet>
@@ -17,6 +17,7 @@
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<header-portlet-javascript>/js/leaflet.js</header-portlet-javascript>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+        <css-class-wrapper>portlet-map</css-class-wrapper>
 	</portlet>
 	<role-mapper>
 		<role-name>administrator</role-name>

@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-03-03 10:43 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2016-03-14 18:25 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -38,8 +38,8 @@
                 <aui:option value="<%= i %>" selected="<%= i == GetterUtil.getInteger(mapZoom) %>"><%= i %></aui:option>
             <% } %>
             </aui:select>
-            <aui:input name="tilesCopyright" value="<%= tilesCopyright %>"/>   
-            <aui:input name="tilesURL" label="tiles-url" value="<%= tilesURL %>"/>    
+            <aui:input name="tilesCopyright" cssClass="tiles-copyright" value="<%= tilesCopyright %>"/>   
+            <aui:input name="tilesURL" cssClass="tiles-url" label="tiles-url" value="<%= tilesURL %>"/>    
                         
         </liferay-ui:panel>
         
@@ -65,12 +65,14 @@
 			                    <aui:col span="6">
 			                    
 			                        <aui:input name="markerLatLongs"
+			                            cssClass="marker-lat-long"
 			                            value="<%= markerLatLongs[i] %>" />
 
 			                    </aui:col>
 			                    <aui:col span="6">
 			                    
                                     <aui:input name="markerLabels"
+                                        cssClass="marker-label"
                                         value="<%= markerLabels[i] %>" />
                                         
                               </aui:col>
