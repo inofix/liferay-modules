@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>liferay-modules</artifactId>
 		<groupId>ch.inofix</groupId>
-		<version>0.9.4-SNAPSHOT</version>
+		<version>0.9.6-SNAPSHOT</version>
 	</parent>
 	<artifactId>map-portlet</artifactId>
 	<packaging>war</packaging>
@@ -121,6 +121,6 @@
             <groupId>ch.inofix</groupId>
             <artifactId>taglib-util</artifactId>
             <version>0.0.2-SNAPSHOT</version>
-        </dependency>		
+        </dependency>
 	</dependencies>
 </project>
