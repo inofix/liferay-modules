@@ -53,7 +53,7 @@
     String claim = portletPreferences.getValue("claim", "");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
-    String mapZoom = portletPreferences.getValue("mapZoom", "10");
+    String mapZoom = portletPreferences.getValue("mapZoom", "13");
     String[] markerLabels = portletPreferences.getValues("markerLabels", new String[] {""});
     String[] markerLatLongs = portletPreferences.getValues("markerLatLongs", new String[] {""});
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
