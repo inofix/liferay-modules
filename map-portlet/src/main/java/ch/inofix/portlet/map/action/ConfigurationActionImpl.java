@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-03-03 10:42
- * @version 1.0.2
+ * @modified 2016-03-14 21:06
+ * @version 1.0.3
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -28,6 +28,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         ActionResponse actionResponse)
         throws Exception {
 
+        String claim = ParamUtil.getString(actionRequest, "claim");
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
         String mapHeight = ParamUtil.getString(actionRequest, "mapHeight");
         String mapZoom = ParamUtil.getString(actionRequest, "mapZoom");
@@ -36,6 +37,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String tilesCopyright = ParamUtil.getString(actionRequest, "tilesCopyright");
         String tilesURL = ParamUtil.getString(actionRequest, "tilesURL");
 
+        setPreference(actionRequest, "claim", claim);
         setPreference(actionRequest, "mapCenter", mapCenter);
         setPreference(actionRequest, "mapHeight", mapHeight);
         setPreference(actionRequest, "mapZoom", mapZoom);

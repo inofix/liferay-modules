@@ -13,11 +13,27 @@
 	
     .portlet-map {
     
+        .jumbotron {
+        
+            text-align: center;
+            position: absolute;
+            padding: 0; 
+            width: 100%;
+            top: 40%;
+            z-index: 1;
+            
+            h1 {
+                font-size: 70px;
+                line-height: 1;
+            }
+        }
+    
+        input.claim,
         input.marker-label,
         input.marker-lat-long,
         input.tiles-copyright,
         input.tiles-url {
-            width: 98%; /* because of padding */
+            width: 98%; /* not 100% because of padding */
         }	   	   
     } 
 }
