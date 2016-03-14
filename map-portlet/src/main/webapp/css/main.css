@@ -1,0 +1,23 @@
+/**
+ * main.css: Main CSS of the map-portlet
+ * 
+ * Created:     2016-03-14 18:16 by Christian Berndt
+ * Modified:    2016-03-14 18:16 by Christian Berndt
+ * Version:     1.0.0
+ */
+@import "compass";
+
+@import "mixins";
+
+.aui {
+	
+    .portlet-map {
+    
+        input.marker-label,
+        input.marker-lat-long,
+        input.tiles-copyright,
+        input.tiles-url {
+            width: 98%; /* because of padding */
+        }	   	   
+    } 
+}
