@@ -37,7 +37,6 @@
 	
 		L.marker(<%= markerLatLongs[i] %>).addTo(map)
             .bindPopup('<%= markerLabels[i] %>');
-		    // .bindPopup('<%= markerLabels[i] %>').openPopup();
 	
 	<% } %>
 </script>
