@@ -13,6 +13,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+        <resource-bundle>Language</resource-bundle>
 		<portlet-info>
 			<title>map-portlet</title>
 			<short-title>map-portlet</short-title>
