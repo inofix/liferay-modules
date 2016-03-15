@@ -3,8 +3,8 @@
     asset-links tag which provides grouped and sorted asset-links.
         
     Created:    2016-03-14 15:27 by Christian Berndt
-    Modified:   2016-03-14 15:27 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-03-15 13:38 by Christian Berndt
+    Version:    1.0.1
 --%>
 <%--
 /**
@@ -111,49 +111,48 @@ for (AssetLink assetLink : assetLinks) {
         for (String assetRendererGroup : assetRendererMap.keySet()) { 
             
             List<AssetRenderer> groupedAssetRenderers = assetRendererMap.get(assetRendererGroup);
-            if (groupedAssetRenderers != null) {
-                
-            String[] orderByProperties = PropsUtil.getArray("inofix.asset.link." + assetRendererGroup + ".orderby.properties");
-
-            // System.out.println(assetRendererGroup + ".orderByProperties.length = " + orderByProperties.length); 
             
-            if (orderByProperties.length > 0) {
-                PropertyComparator comparator = new PropertyComparator(orderByProperties, true, true);
-                Collections.sort(groupedAssetRenderers, comparator);                    
-            }    
+            if (groupedAssetRenderers != null && !groupedAssetRenderers.isEmpty()) {
+                
+	            String[] orderByProperties = PropsUtil.getArray("inofix.asset.link." + assetRendererGroup + ".orderby.properties");
+		            
+	            if (orderByProperties.length > 0) {
+	                PropertyComparator comparator = new PropertyComparator(orderByProperties, true, true);
+	                Collections.sort(groupedAssetRenderers, comparator);                    
+	            }    
                 
     %>
-        <h2 class="asset-links-title"><liferay-ui:message key='<%= "model.resource." + assetRendererGroup %>' />:</h2>    
-        <ul class="asset-links-list">
-        <% 
-            for (AssetRenderer assetRenderer : groupedAssetRenderers) { 
-                
-                String assetLinkEntryTitle = assetRenderer.getTitle(locale);
-                
-                AssetRendererFactory assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(assetRenderer.getClassName());
-                
-                AssetEntry assetLinkEntry = AssetEntryLocalServiceUtil.getEntry(assetRenderer.getClassName(), assetRenderer.getClassPK());
-                
-                LiferayPortletURL assetPublisherURL = getAssetPublisherURL(assetLinkEntry, 
-                    assetRenderer, assetRendererFactory, currentURL, plid, request, themeDisplay);
-               
-                String viewFullContentURLString = assetPublisherURL.toString();
-
-                viewFullContentURLString = HttpUtil.setParameter(viewFullContentURLString, "redirect", currentURL);
-
-                String urlViewInContext = assetRenderer.getURLViewInContext((LiferayPortletRequest)portletRequest, (LiferayPortletResponse)portletResponse, viewFullContentURLString);
-
-                urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);                
-        %>
-	        <li class="asset-links-list-item">
-	            <liferay-ui:icon
-	                label="<%= true %>"
-	                message="<%= assetLinkEntryTitle %>"
-	                src="<%= assetRenderer.getIconPath(portletRequest) %>"
-	                url="<%= urlViewInContext %>"
-	            />
-	        </li>
-        <%  } %>
+	        <h2 class="asset-links-title"><liferay-ui:message key='<%= "model.resource." + assetRendererGroup %>' />:</h2>    
+	        <ul class="asset-links-list">
+	        <% 
+	            for (AssetRenderer assetRenderer : groupedAssetRenderers) { 
+	                
+	                String assetLinkEntryTitle = assetRenderer.getTitle(locale);
+	                
+	                AssetRendererFactory assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(assetRenderer.getClassName());
+	                
+	                AssetEntry assetLinkEntry = AssetEntryLocalServiceUtil.getEntry(assetRenderer.getClassName(), assetRenderer.getClassPK());
+	                
+	                LiferayPortletURL assetPublisherURL = getAssetPublisherURL(assetLinkEntry, 
+	                    assetRenderer, assetRendererFactory, currentURL, plid, request, themeDisplay);
+	               
+	                String viewFullContentURLString = assetPublisherURL.toString();
+	
+	                viewFullContentURLString = HttpUtil.setParameter(viewFullContentURLString, "redirect", currentURL);
+	
+	                String urlViewInContext = assetRenderer.getURLViewInContext((LiferayPortletRequest)portletRequest, (LiferayPortletResponse)portletResponse, viewFullContentURLString);
+	
+	                urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);                
+	        %>
+		        <li class="asset-links-list-item">
+		            <liferay-ui:icon
+		                label="<%= true %>"
+		                message="<%= assetLinkEntryTitle %>"
+		                src="<%= assetRenderer.getIconPath(portletRequest) %>"
+		                url="<%= urlViewInContext %>"
+		            />
+		        </li>
+	        <%  } %>
         </ul>
     <%      
             }
