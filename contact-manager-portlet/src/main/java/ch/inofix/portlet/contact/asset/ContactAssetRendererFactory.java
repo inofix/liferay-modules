@@ -35,7 +35,6 @@ public class ContactAssetRendererFactory extends BaseAssetRendererFactory {
 	private static Log log = LogFactoryUtil
 			.getLog(ContactAssetRendererFactory.class.getName());
 
-	// TODO: What's the meaning of "TYPE" in this context?
 	public static final String TYPE = "contact";
 
 	@Override
