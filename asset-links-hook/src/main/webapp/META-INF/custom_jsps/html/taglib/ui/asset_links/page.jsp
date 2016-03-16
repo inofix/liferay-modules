@@ -3,8 +3,8 @@
     asset-links tag which provides grouped and sorted asset-links.
         
     Created:    2016-03-14 15:27 by Christian Berndt
-    Modified:   2016-03-15 13:38 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-03-16 11:32 by Christian Berndt
+    Version:    1.0.2
 --%>
 <%--
 /**
@@ -144,7 +144,7 @@ for (AssetLink assetLink : assetLinks) {
 	
 	                urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);                
 	        %>
-		        <li class="asset-links-list-item">
+		        <li class="asset-links-list-item <%= assetRendererFactory.getType() %>">
 		            <liferay-ui:icon
 		                label="<%= true %>"
 		                message="<%= assetLinkEntryTitle %>"
@@ -181,7 +181,7 @@ for (AssetLink assetLink : assetLinks) {
 
             urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);            
             %>
-	        <li class="asset-links-list-item">
+            <li class="asset-links-list-item <%= assetRendererFactory.getType() %>">
 	            <liferay-ui:icon
 	                label="<%= true %>"
 	                message="<%= assetLinkEntryTitle %>"
