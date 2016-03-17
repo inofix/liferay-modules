@@ -31,8 +31,8 @@ import com.liferay.portlet.social.model.SocialActivityConstants;
  * 
  * @author Christian Berndt
  * @created 2015-05-23 21:58
- * @modified 2015-07-04 17:28
- * @version 1.0.3
+ * @modified 2016-03-16 20:52
+ * @version 1.0.4
  *
  */
 public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
@@ -54,7 +54,7 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 
 		long plid = PortalUtil.getPlidFromPortletId(
 				serviceContext.getScopeGroupId(),
-				"contactmanager_WAR_contactmanager");
+				"contactmanagerportlet_WAR_contactmanagerportlet");
 
 		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
 		
@@ -63,7 +63,7 @@ public class ContactActivityInterpreter extends BaseSocialActivityInterpreter {
 
 		PortletURL portletURL = PortletURLFactoryUtil.create(
 				serviceContext.getRequest(),
-				"contactmanager_WAR_contactmanager", plid,
+				"contactmanagerportlet_WAR_contactmanagerportlet", plid,
 				PortletRequest.ACTION_PHASE);
 
 		portletURL.setWindowState(LiferayWindowState.POP_UP);

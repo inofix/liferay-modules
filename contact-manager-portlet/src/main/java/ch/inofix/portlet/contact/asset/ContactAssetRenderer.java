@@ -28,8 +28,8 @@ import com.liferay.portlet.asset.model.BaseAssetRenderer;
 /**
  * @author Christian Berndt
  * @created 2015-05-19 17:25
- * @modified 2016-03-15 14:04
- * @version 1.0.8
+ * @modified 2016-03-16 20:50
+ * @version 1.0.9
  */
 public class ContactAssetRenderer extends BaseAssetRenderer {
 
@@ -82,7 +82,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
         PortletURL portletURL =
             liferayPortletResponse.createLiferayPortletURL(
                 getControlPanelPlid(liferayPortletRequest),
-                "contactmanager_WAR_contactmanager",
+                "contactmanagerportlet_WAR_contactmanagerportlet",
                 PortletRequest.ACTION_PHASE);
 
         String backURL = (String) liferayPortletRequest.getAttribute("backURL");
@@ -126,7 +126,7 @@ public class ContactAssetRenderer extends BaseAssetRenderer {
 
         try {
             PortletURL portletURL =
-                liferayPortletResponse.createActionURL("contactmanager_WAR_contactmanager");
+                liferayPortletResponse.createActionURL("contactmanagerportlet_WAR_contactmanagerportlet");
 
             portletURL.setParameter("mvcPath", "/html/view_contact.jsp");
             portletURL.setParameter(

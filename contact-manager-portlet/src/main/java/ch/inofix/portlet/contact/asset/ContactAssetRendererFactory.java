@@ -26,8 +26,8 @@ import com.liferay.portlet.asset.model.BaseAssetRendererFactory;
  * 
  * @author Christian Berndt
  * @created 2015-05-19 17:12
- * @modified 2015-05-23 14:13
- * @version 1.0.1
+ * @modified 2016-03-16 20:51
+ * @version 1.0.2
  *
  */
 public class ContactAssetRendererFactory extends BaseAssetRendererFactory {
@@ -78,7 +78,7 @@ public class ContactAssetRendererFactory extends BaseAssetRendererFactory {
 
 		PortletURL portletURL = liferayPortletResponse.createLiferayPortletURL(
 				getControlPanelPlid(themeDisplay),
-				"contactmanager_WAR_contactmanager",
+				"contactmanagerportlet_WAR_contactmanagerportlet",
 				PortletRequest.ACTION_PHASE);
 
 		String redirect = PortalUtil.getCurrentURL(liferayPortletRequest);

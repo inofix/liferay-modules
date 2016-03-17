@@ -22,8 +22,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
  * 
  * @author Christian Berndt
  * @created 2015-05-24 22:01
- * @modified 2015-06-29 15:14
- * @version 1.0.4
+ * @modified 2016-03-16 20:51
+ * @version 1.0.5
  *
  */
 public class ContactSearch extends SearchContainer<Contact> {
@@ -118,16 +118,16 @@ public class ContactSearch extends SearchContainer<Contact> {
 			if (Validator.isNotNull(orderByCol)
 					&& Validator.isNotNull(orderByType)) {
 
-				preferences.setValue("contactmanager_WAR_contactmanager",
+				preferences.setValue("contactmanagerportlet_WAR_contactmanagerportlet",
 						"contacts-order-by-col", orderByCol);
-				preferences.setValue("contactmanager_WAR_contactmanager",
+				preferences.setValue("contactmanagerportlet_WAR_contactmanagerportlet",
 						"contacts-order-by-type", orderByType);
 			} else {
 				orderByCol = preferences.getValue(
-						"contactmanager_WAR_contactmanager",
+						"contactmanagerportlet_WAR_contactmanagerportlet",
 						"contacts-order-by-col", "last-name");
 				orderByType = preferences.getValue(
-						"contactmanager_WAR_contactmanager",
+						"contactmanagerportlet_WAR_contactmanagerportlet",
 						"contacts-order-by-type", "asc");
 			}
 
