@@ -3,8 +3,8 @@
     asset-links tag which provides grouped and sorted asset-links.
         
     Created:    2016-03-14 15:27 by Christian Berndt
-    Modified:   2016-03-16 11:32 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-03-18 14:39 by Christian Berndt
+    Version:    1.0.3
 --%>
 <%--
 /**
@@ -22,6 +22,7 @@
  */
 --%>
 
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@ include file="/html/taglib/ui/asset_links/init.jsp" %>
 
 <%@page import="com.liferay.util.PropertyComparator"%>
@@ -114,10 +115,11 @@ for (AssetLink assetLink : assetLinks) {
             
             if (groupedAssetRenderers != null && !groupedAssetRenderers.isEmpty()) {
                 
-	            String[] orderByProperties = PropsUtil.getArray("inofix.asset.link." + assetRendererGroup + ".orderby.properties");
+                String[] orderByProperties = PropsUtil.getArray("inofix.asset.link." + assetRendererGroup + ".orderby.properties");
+                boolean ascending = GetterUtil.getBoolean(PropsUtil.get("inofix.asset.link." + assetRendererGroup + ".orderby.ascending"), true);
 		            
 	            if (orderByProperties.length > 0) {
-	                PropertyComparator comparator = new PropertyComparator(orderByProperties, true, true);
+	                PropertyComparator comparator = new PropertyComparator(orderByProperties, ascending, true);
 	                Collections.sort(groupedAssetRenderers, comparator);                    
 	            }    
                 

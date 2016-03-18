@@ -10,7 +10,7 @@
 	<artifactId>asset-links-hook</artifactId>
 	<packaging>war</packaging>
 	<name>Asset Links Hook</name>
-	<version>0.9.7-SNAPSHOT</version>
+	<version>0.9.8-SNAPSHOT</version>
 	<build>
 		<plugins>
             <!-- Read properties from dev.properties in -->
