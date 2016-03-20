@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-03-19 21:46 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2016-03-20 17:09 by Christian Berndt
+    Version:     1.0.2
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -52,6 +52,7 @@
 <%@page import="ch.inofix.portlet.timetracker.search.TaskRecordSearch"%>
 <%@page import="ch.inofix.portlet.timetracker.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.timetracker.service.permission.TaskRecordPermission"%>
+<%@page import="ch.inofix.portlet.timetracker.service.permission.TimetrackerPortletPermission"%>
 <%@page import="ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil"%>
 <%@page import="ch.inofix.portlet.timetracker.util.CommonFields"%>
 <%@page import="ch.inofix.portlet.timetracker.util.TaskRecordFields"%>
