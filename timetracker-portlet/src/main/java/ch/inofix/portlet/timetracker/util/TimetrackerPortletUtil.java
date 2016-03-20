@@ -1,3 +1,4 @@
+
 package ch.inofix.portlet.timetracker.util;
 
 import java.util.List;
@@ -20,8 +21,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 public class TimetrackerPortletUtil {
 
     // Enable logging for this class.
-    private static final Log _log = LogFactoryUtil
-            .getLog(TimetrackerPortletUtil.class.getName());
+    private static final Log _log =
+        LogFactoryUtil.getLog(TimetrackerPortletUtil.class.getName());
 
     private static TimetrackerPortlet _timetrackerPortlet;
 
@@ -33,8 +34,6 @@ public class TimetrackerPortletUtil {
      * @since 1.2
      */
     public static double getHours(List<TaskRecord> taskRecords) {
-
-        _log.info("Executing getHours().");
 
         return getTimetrackerPortlet().getHours(taskRecords);
     }
@@ -50,32 +49,28 @@ public class TimetrackerPortletUtil {
      *         desc).
      * @since 1.0
      */
-    public static OrderByComparator getOrderByComparator(String orderByCol,
-            String orderByType) {
+    public static OrderByComparator getOrderByComparator(
+        String orderByCol, String orderByType) {
 
-        _log.info("Executing getOrderByComparator().");
-        return getTimetrackerPortlet().getOrderByComparator(orderByCol,
-                orderByType);
+        return getTimetrackerPortlet().getOrderByComparator(
+            orderByCol, orderByType);
     }
 
     /**
-     *
      * @return
      * @since 1.0
      */
     public static TimetrackerPortlet getTimetrackerPortlet() {
 
-        _log.info("Executing getTimetrackerPortlet().");
         return _timetrackerPortlet;
     }
 
     /**
-     * Parse a text for TaskRecords in the form of mic's vim list
-     * =date=
-     * work.package
-     *   start end "comment" [links]
+     * Parse a text for TaskRecords in the form of mic's vim list =date=
+     * work.package start end "comment" [links]
      *
-     * @param the text string
+     * @param the
+     *            text string
      * @return the TaskRecords
      * @since 1.3
      */
@@ -87,13 +82,15 @@ public class TimetrackerPortletUtil {
     /**
      * Parse a subtext for work packages
      *
-     * @param dateString for this date
-     * @param payLoad content to parse
+     * @param dateString
+     *            for this date
+     * @param payLoad
+     *            content to parse
      * @return the list for the day
      * @since 1.3
      */
-    public static List<String[]> parseMicPackage(String dateString,
-                                                            String payLoad) {
+    public static List<String[]> parseMicPackage(
+        String dateString, String payLoad) {
 
         return getTimetrackerPortlet().parseMicPackage(dateString, payLoad);
     }
@@ -101,13 +98,15 @@ public class TimetrackerPortletUtil {
     /**
      * Parse a subtext for a job
      *
-     * @param dateString for this date
-     * @param payLoad content to parse
+     * @param dateString
+     *            for this date
+     * @param payLoad
+     *            content to parse
      * @return the list for the customer / work package for the day
      * @since 1.3
      */
-    public static List<String[]> parseMicWork(String dateString,
-                                                String[] workPackage) {
+    public static List<String[]> parseMicWork(
+        String dateString, String[] workPackage) {
 
         return getTimetrackerPortlet().parseMicWork(dateString, workPackage);
     }
@@ -115,27 +114,28 @@ public class TimetrackerPortletUtil {
     /**
      * Parse a subtext for certain job
      *
-     * @param dateString for this date
-     * @param packageName of the work package
-     * @param job content to parse
+     * @param dateString
+     *            for this date
+     * @param packageName
+     *            of the work package
+     * @param job
+     *            content to parse
      * @return the TaskRecord
      * @since 1.3
      */
-    public static String[] parseMicTaskRecord(String dateString,
-                                        String packageName, String job) {
+    public static String[] parseMicTaskRecord(
+        String dateString, String packageName, String job) {
 
-        return getTimetrackerPortlet().parseMicTaskRecord(dateString,
-                                            packageName, job);
+        return getTimetrackerPortlet().parseMicTaskRecord(
+            dateString, packageName, job);
     }
 
     /**
-     *
      * @param timetrackerPortlet
      * @since 1.0
      */
     public void setTimetrackerPortlet(TimetrackerPortlet timetrackerPortlet) {
 
-        _log.info("Executing setTimetrackerPortlet().");
         _timetrackerPortlet = timetrackerPortlet;
     }
 }
