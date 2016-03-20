@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
@@ -22,6 +23,7 @@ import javax.portlet.ResourceResponse;
 
 import ch.inofix.portlet.timetracker.model.TaskRecord;
 import ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil;
+import ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil;
 import ch.inofix.portlet.timetracker.util.CommonFields;
 import ch.inofix.portlet.timetracker.util.StringPool;
 import ch.inofix.portlet.timetracker.util.TaskRecordFields;
@@ -38,7 +40,6 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.ServiceContext;
@@ -54,8 +55,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2014-10-14
- * @version 1.3
+ * @modified 2016-03-20 18:28
+ * @version 1.0.4
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -68,161 +69,212 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @throws PortalException
      * @throws SystemException
      */
-    public void addOrUpdateTaskRecord(ActionRequest actionRequest,
-            ActionResponse actionResponse) throws PortalException,
-            SystemException {
-
-        _log.info("Executing addOrUpdateTaskRecord().");
+    public void addOrUpdateTaskRecord(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws PortalException, SystemException {
 
         // Create a service context for this request.
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+        ServiceContext serviceContext =
+            ServiceContextFactory.getInstance(
                 TaskRecord.class.getName(), actionRequest);
 
         // Retrieve the user- and groupIds.
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest
-                .getAttribute(WebKeys.THEME_DISPLAY);
+        ThemeDisplay themeDisplay =
+            (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
         long userId = themeDisplay.getUserId();
 
         // Get the parameters from the request.
-        long taskRecordId = ParamUtil.getLong(actionRequest,
-                TaskRecordFields.TASK_RECORD_ID);
-        String workPackage = ParamUtil.getString(actionRequest,
-                TaskRecordFields.WORK_PACKAGE);
-        String description = ParamUtil.getString(actionRequest,
-                TaskRecordFields.DESCRIPTION);
-        String ticketURL = ParamUtil.getString(actionRequest,
-                TaskRecordFields.TICKET_URL);
-        int durationInMinutes = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.DURATION);
+        long taskRecordId =
+            ParamUtil.getLong(actionRequest, TaskRecordFields.TASK_RECORD_ID);
+        String workPackage =
+            ParamUtil.getString(actionRequest, TaskRecordFields.WORK_PACKAGE);
+        String description =
+            ParamUtil.getString(actionRequest, TaskRecordFields.DESCRIPTION);
+        String ticketURL =
+            ParamUtil.getString(actionRequest, TaskRecordFields.TICKET_URL);
+        int durationInMinutes =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.DURATION);
         long duration = durationInMinutes * 60 * 1000;
 
-        int startDateDay = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.DAY);
-        int startDateMonth = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.MONTH);
-        int startDateYear = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.YEAR);
-        int startDateHour = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.HOUR);
-        int startDateMinute = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.MINUTE);
+        int startDateDay =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.DAY);
+        int startDateMonth =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.MONTH);
+        int startDateYear =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.YEAR);
+        int startDateHour =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.HOUR);
+        int startDateMinute =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.MINUTE);
 
         // Create the endDate with the date values of
         // the startDate, because we want the user to
         // have to select only one date.
-        int endDateDay = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.DAY);
-        int endDateMonth = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.MONTH);
-        int endDateYear = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.START_DATE + StringPool.YEAR);
-        int endDateHour = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.END_DATE + StringPool.HOUR);
-        int endDateMinute = ParamUtil.getInteger(actionRequest,
-                TaskRecordFields.END_DATE + StringPool.MINUTE);
+        int endDateDay =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.DAY);
+        int endDateMonth =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.MONTH);
+        int endDateYear =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
+                StringPool.YEAR);
+        int endDateHour =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.END_DATE +
+                StringPool.HOUR);
+        int endDateMinute =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.END_DATE +
+                StringPool.MINUTE);
 
         TaskRecord taskRecord = null;
 
         // TODO: use the remote service instead.
         if (taskRecordId <= 0) {
 
-            taskRecord = TaskRecordLocalServiceUtil.addTaskRecord(userId,
-                    workPackage, description, ticketURL, endDateDay,
+            taskRecord =
+                TaskRecordLocalServiceUtil.addTaskRecord(
+                    userId, workPackage, description, ticketURL, endDateDay,
                     endDateMonth, endDateYear, endDateHour, endDateMinute,
                     startDateDay, startDateMonth, startDateYear, startDateHour,
                     startDateMinute, duration, serviceContext);
 
             // Report the successful add back to the user.
-            SessionMessages.add(actionRequest,
-                    TimetrackerPortletKeys.REQUEST_PROCESSED,
-                    "successfully-added-the-task-record");
+            SessionMessages.add(
+                actionRequest, TimetrackerPortletKeys.REQUEST_PROCESSED,
+                "successfully-added-the-task-record");
 
-        } else {
+        }
+        else {
 
-            taskRecord = TaskRecordLocalServiceUtil.updateTaskRecord(userId,
-                    taskRecordId, workPackage, description, ticketURL,
+            taskRecord =
+                TaskRecordLocalServiceUtil.updateTaskRecord(
+                    userId, taskRecordId, workPackage, description, ticketURL,
                     endDateDay, endDateMonth, endDateYear, endDateHour,
                     endDateMinute, startDateDay, startDateMonth, startDateYear,
                     startDateHour, startDateMinute, duration, serviceContext);
 
             // Report the successful update back to the user.
-            SessionMessages.add(actionRequest,
-                    TimetrackerPortletKeys.REQUEST_PROCESSED,
-                    "successfully-updated-the-task-record");
+            SessionMessages.add(
+                actionRequest, TimetrackerPortletKeys.REQUEST_PROCESSED,
+                "successfully-updated-the-task-record");
 
         }
 
         // Store the added or updated taskRecord as
         // a request attribute.
-        actionRequest.setAttribute(TimetrackerPortletKeys.TASK_RECORD,
-                taskRecord);
+        actionRequest.setAttribute(
+            TimetrackerPortletKeys.TASK_RECORD, taskRecord);
 
         // Retrieve the parameters which have to be passed to the
         // render-phase and store them in the parameter map.
-        String mvcPath = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.MVC_PATH);
+        String mvcPath =
+            ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.REDIRECT_URL);
+        String redirectURL =
+            ParamUtil.getString(
+                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
 
         Map<String, String[]> params = new HashMap<String, String[]>();
 
-        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] { mvcPath });
-        params.put(TaskRecordFields.TASK_RECORD_ID,
-                new String[] { String.valueOf(taskRecordId) });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL,
-                new String[] { String.valueOf(redirectURL) });
+        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
+            mvcPath
+        });
+        params.put(TaskRecordFields.TASK_RECORD_ID, new String[] {
+            String.valueOf(taskRecordId)
+        });
+        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
+            String.valueOf(redirectURL)
+        });
 
         // Pass the relevant parameters to the render phase.
         actionResponse.setRenderParameters(params);
     }
 
     /**
-     *
      * @param actionRequest
      * @param actionResponse
      * @since 1.0
      * @throws PortalException
      * @throws SystemException
      */
-    public void deleteTaskRecord(ActionRequest actionRequest,
-            ActionResponse actionResponse) throws PortalException,
-            SystemException {
+    public void deleteTaskRecord(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws PortalException, SystemException {
 
         _log.info("Executing deleteTaskRecord().");
 
         // Get the parameters from the request.
-        long taskRecordId = ParamUtil.getLong(actionRequest,
-                TaskRecordFields.TASK_RECORD_ID);
+        long taskRecordId =
+            ParamUtil.getLong(actionRequest, TaskRecordFields.TASK_RECORD_ID);
 
         // Delete the requested taskRecord.
         // TODO: Use the remote service instead.
         TaskRecordLocalServiceUtil.deleteTaskRecord(taskRecordId);
 
         // Report the successful deletion to the user.
-        SessionMessages.add(actionRequest,
-                TimetrackerPortletKeys.REQUEST_PROCESSED,
-                "successfully-deleted-the-task-record");
+        SessionMessages.add(
+            actionRequest, TimetrackerPortletKeys.REQUEST_PROCESSED,
+            "successfully-deleted-the-task-record");
 
         // Retrieve the parameters which have to be passed to the
         // render-phase and store them in the parameter map.
-        String mvcPath = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.MVC_PATH);
+        String mvcPath =
+            ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.REDIRECT_URL);
+        String redirectURL =
+            ParamUtil.getString(
+                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
 
         HashMap<String, String[]> params = new HashMap<String, String[]>();
 
-        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] { mvcPath });
-        params.put(TaskRecordFields.TASK_RECORD_ID,
-                new String[] { String.valueOf(taskRecordId) });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL,
-                new String[] { String.valueOf(redirectURL) });
+        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
+            mvcPath
+        });
+        params.put(TaskRecordFields.TASK_RECORD_ID, new String[] {
+            String.valueOf(taskRecordId)
+        });
+        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
+            String.valueOf(redirectURL)
+        });
 
         // Pass the relevant parameters to the render phase.
         actionResponse.setRenderParameters(params);
+    }
+
+    public void editTaskRecord(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws Exception {
+
+        String backURL = ParamUtil.getString(actionRequest, "backURL");
+        long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String redirect = ParamUtil.getString(actionRequest, "redirect");
+        String windowId = ParamUtil.getString(actionRequest, "windowId");
+
+        TaskRecord taskRecord = null;
+
+        if (taskRecordId > 0) {
+            taskRecord = TaskRecordServiceUtil.getTaskRecord(taskRecordId);
+        }
+        else {
+            taskRecord = TaskRecordServiceUtil.createTaskRecord();
+        }
+
+        actionRequest.setAttribute("CONTACT", taskRecord);
+
+        actionResponse.setRenderParameter("backURL", backURL);
+        actionResponse.setRenderParameter(
+            "taskRecordId", String.valueOf(taskRecordId));
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("redirect", redirect);
+        actionResponse.setRenderParameter("windowId", windowId);
+
     }
 
     /**
@@ -232,29 +284,10 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param resourceResponse
      * @since 1.0
      */
-    protected void exportTaskRecords(ResourceRequest resourceRequest,
-            ResourceResponse resourceResponse) {
-
-        _log.info("Executing exportTaskRecords().");
+    protected void exportTaskRecords(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
 
         String format = ParamUtil.getString(resourceRequest, "format");
-        _log.debug("format = " + format);
-
-//        TaskRecord tr = TaskRecordLocalServiceUtil.createTaskRecord(0);
-//
-//        Map<String, Object> attributes = tr.getModelAttributes();
-//        Set<String> keySet = attributes.keySet();
-//
-//        for (String key : keySet) {
-//
-//            _log.debug("key = " + key);
-//
-//        }
-//
-//        Method[] methods = tr.getClass().getMethods();
-//        for (Method method : methods) {
-//            _log.debug("method = " + method);
-//        }
 
         try {
 
@@ -263,35 +296,54 @@ public class TimetrackerPortlet extends MVCPortlet {
             if ("xml".equals(format)) {
 
                 resourceResponse.setContentType(ContentTypes.TEXT_XML);
-                resourceResponse.addProperty(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"TaskRecords.xml\"");
+                resourceResponse.addProperty(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"TaskRecords.xml\"");
 
-                output = getTaskRecords(resourceRequest, resourceResponse, format);
+                output =
+                    getTaskRecords(resourceRequest, resourceResponse, format);
 
-            } else if ("latex".equals(format) || "fulllatex".equals(format)) {
+            }
+            else if ("latex".equals(format) || "fulllatex".equals(format)) {
 
                 resourceResponse.setContentType(ContentTypes.TEXT);
-                resourceResponse.addProperty(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"TaskRecords.tex\"");
+                resourceResponse.addProperty(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"TaskRecords.tex\"");
 
-                output = getTaskRecords(resourceRequest, resourceResponse, format);
+                output =
+                    getTaskRecords(resourceRequest, resourceResponse, format);
 
-            } else {
+            }
+            else {
 
                 // By default, export in csv format.
                 resourceResponse.setContentType(ContentTypes.TEXT_CSV);
-                resourceResponse.addProperty(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"TaskRecords.csv\"");
+                resourceResponse.addProperty(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"TaskRecords.csv\"");
 
-                output = getTaskRecords(resourceRequest, resourceResponse, null);
+                output =
+                    getTaskRecords(resourceRequest, resourceResponse, null);
             }
 
             PrintWriter writer = resourceResponse.getWriter();
             writer.print(output);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             _log.error(e);
         }
+    }
+
+    /**
+     * Disable the get- / sendRedirect feature of LiferayPortlet.
+     */
+    @Override
+    protected String getRedirect(
+        ActionRequest actionRequest, ActionResponse actionResponse) {
+
+        return null;
     }
 
     /**
@@ -349,7 +401,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         String[] tokens = taskRecord.getWorkPackage().split("\\.");
         _log.debug("tokens.length = " + tokens.length);
 
-        String token = tokens[tokens.length -1];
+        String token = tokens[tokens.length - 1];
 
         sb.append(taskRecord.getUserName());
         sb.append(" & ");
@@ -377,8 +429,9 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @since 1.2
      */
     // After the model of getUserCSV from ExportUsersAction.
-    protected String getTaskRecordFullLaTeX(TaskRecord taskRecord,
-                Map<String,String> userNames, Map<String,String> workTokens) {
+    protected String getTaskRecordFullLaTeX(
+        TaskRecord taskRecord, Map<String, String> userNames,
+        Map<String, String> workTokens) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         DecimalFormat df = new DecimalFormat("0.00");
@@ -389,7 +442,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         String[] tokens = taskRecord.getWorkPackage().split("\\.");
         _log.debug("tokens.length = " + tokens.length);
 
-        String token = tokens[tokens.length -1];
+        String token = tokens[tokens.length - 1];
 
         sb.append(userNames.get(taskRecord.getUserName()));
         sb.append(" & \\textbf{");
@@ -436,54 +489,63 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @throws Exception
      */
     // After the model of getUsersCSV from ExportUsersAction.
-    protected String getTaskRecords(ResourceRequest resourceRequest,
-            ResourceResponse resourceResponse, String format) throws Exception {
+    protected String getTaskRecords(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse,
+        String format)
+        throws Exception {
 
         _log.info("Executing getTaskRecords().");
 
         DecimalFormat df = new DecimalFormat("0.00");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        long companyId = ParamUtil.getLong(resourceRequest,
-                CommonFields.COMPANY_ID);
-        String description = ParamUtil.getString(resourceRequest,
-                TaskRecordFields.DESCRIPTION);
-        long groupId = ParamUtil
-                .getLong(resourceRequest, CommonFields.GROUP_ID);
-        String orderByCol = ParamUtil.getString(resourceRequest,
-                TimetrackerPortletKeys.ORDER_BY_COL);
-        String orderByType = ParamUtil.getString(resourceRequest,
-                TimetrackerPortletKeys.ORDER_BY_TYPE);
-        long userId = ParamUtil.getLong(resourceRequest,
-                TaskRecordFields.USER_ID);
-        String workPackage = ParamUtil.getString(resourceRequest,
-                TaskRecordFields.WORK_PACKAGE);
+        long companyId =
+            ParamUtil.getLong(resourceRequest, CommonFields.COMPANY_ID);
+        String description =
+            ParamUtil.getString(resourceRequest, TaskRecordFields.DESCRIPTION);
+        long groupId =
+            ParamUtil.getLong(resourceRequest, CommonFields.GROUP_ID);
+        String orderByCol =
+            ParamUtil.getString(
+                resourceRequest, TimetrackerPortletKeys.ORDER_BY_COL);
+        String orderByType =
+            ParamUtil.getString(
+                resourceRequest, TimetrackerPortletKeys.ORDER_BY_TYPE);
+        long userId =
+            ParamUtil.getLong(resourceRequest, TaskRecordFields.USER_ID);
+        String workPackage =
+            ParamUtil.getString(resourceRequest, TaskRecordFields.WORK_PACKAGE);
 
         Date startDate = null;
         Date endDate = null;
 
-        int startDateDay = ParamUtil.getInteger(resourceRequest, "startDateDay");
-        int startDateMonth = ParamUtil.getInteger(resourceRequest, "startDateMonth");
-        int startDateYear = ParamUtil.getInteger(resourceRequest, "startDateYear");
+        int startDateDay =
+            ParamUtil.getInteger(resourceRequest, "startDateDay");
+        int startDateMonth =
+            ParamUtil.getInteger(resourceRequest, "startDateMonth");
+        int startDateYear =
+            ParamUtil.getInteger(resourceRequest, "startDateYear");
 
         int endDateDay = ParamUtil.getInteger(resourceRequest, "endDateDay");
-        int endDateMonth = ParamUtil.getInteger(resourceRequest, "endDateMonth");
+        int endDateMonth =
+            ParamUtil.getInteger(resourceRequest, "endDateMonth");
         int endDateYear = ParamUtil.getInteger(resourceRequest, "endDateYear");
 
-        startDate = PortalUtil.getDate(startDateMonth, startDateDay, startDateYear);
+        startDate =
+            PortalUtil.getDate(startDateMonth, startDateDay, startDateYear);
         endDate = PortalUtil.getDate(endDateMonth, endDateDay, endDateYear);
 
-//        if (Validator.isNotNull(ParamUtil.getString(resourceRequest,
-//                TaskRecordFields.START_DATE))) {
-//            startDate = ParamUtil.getDate(resourceRequest,
-//                    TaskRecordFields.START_DATE, sdf);
-//        }
-//
-//        if (Validator.isNotNull(ParamUtil.getString(resourceRequest,
-//                TaskRecordFields.END_DATE))) {
-//            endDate = ParamUtil.getDate(resourceRequest,
-//                    TaskRecordFields.END_DATE, sdf);
-//        }
+        // if (Validator.isNotNull(ParamUtil.getString(resourceRequest,
+        // TaskRecordFields.START_DATE))) {
+        // startDate = ParamUtil.getDate(resourceRequest,
+        // TaskRecordFields.START_DATE, sdf);
+        // }
+        //
+        // if (Validator.isNotNull(ParamUtil.getString(resourceRequest,
+        // TaskRecordFields.END_DATE))) {
+        // endDate = ParamUtil.getDate(resourceRequest,
+        // TaskRecordFields.END_DATE, sdf);
+        // }
 
         int status = WorkflowConstants.STATUS_ANY;
         boolean andOperator = true;
@@ -496,24 +558,28 @@ public class TimetrackerPortlet extends MVCPortlet {
         _log.debug(TaskRecordFields.USER_ID + " = " + userId);
         _log.debug(TaskRecordFields.WORK_PACKAGE + " = " + workPackage);
 
-        int total = TaskRecordLocalServiceUtil.searchCount(companyId, groupId,
-                userId, workPackage, description, startDate, endDate, status,
-                andOperator);
+        int total = 0;
+        // int total = TaskRecordLocalServiceUtil.searchCount(companyId,
+        // groupId,
+        // userId, workPackage, description, startDate, endDate, status,
+        // andOperator);
 
-        OrderByComparator obc = TimetrackerPortletUtil.getOrderByComparator(
-                orderByCol, orderByType);
+        OrderByComparator obc =
+            TimetrackerPortletUtil.getOrderByComparator(orderByCol, orderByType);
 
-        List<TaskRecord> taskRecords = TaskRecordLocalServiceUtil.search(
-                companyId, groupId, userId, workPackage, description,
-                startDate, endDate, status, 0, total, andOperator, obc);
+        List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
 
-        if (taskRecords.isEmpty()) {
-            return "\"No records in selection.\"";
-            // return StringPool.BLANK;
-        }
+        // List<TaskRecord> taskRecords = TaskRecordLocalServiceUtil.search(
+        // companyId, groupId, userId, workPackage, description,
+        // startDate, endDate, status, 0, total, andOperator, obc);
 
-        String exportProgressId = ParamUtil.getString(resourceRequest,
-                "exportProgressId");
+        // if (taskRecords.isEmpty()) {
+        // return "\"No records in selection.\"";
+        // // return StringPool.BLANK;
+        // }
+
+        String exportProgressId =
+            ParamUtil.getString(resourceRequest, "exportProgressId");
 
         // Not working in 6.2.x
         // ProgressTracker progressTracker = new
@@ -532,7 +598,8 @@ public class TimetrackerPortlet extends MVCPortlet {
             sb.append("<taskRecords>");
             sb.append(StringPool.NEW_LINE);
 
-        } else if ("latex".equals(format)) {
+        }
+        else if ("latex".equals(format)) {
 
             // TODO: Process the number of columns dynamically
             sb.append("\\begin{center}");
@@ -540,11 +607,12 @@ public class TimetrackerPortlet extends MVCPortlet {
             sb.append("\\begin{tabular}{ | l | l | p{7cm} | l | l |}");
             sb.append(StringPool.NEW_LINE);
 
-        } else if ("fulllatex".equals(format)) {
+        }
+        else if ("fulllatex".equals(format)) {
 
             sb.append("\\begin{supertabular}{p{0.6cm}|p{12cm}|p{1.8cm}|R|}");
             sb.append(StringPool.NEW_LINE);
-//TODO i18n!!
+            // TODO i18n!!
             sb.append("MA & Beschreibung & Zeitraum & Menge \\\\");
             sb.append(StringPool.NEW_LINE);
             sb.append("\\hline");
@@ -554,13 +622,13 @@ public class TimetrackerPortlet extends MVCPortlet {
         Iterator<TaskRecord> itr = taskRecords.iterator();
 
         // meta data cache (only for 'fulllatex'..)
-        Map<String,String> userNames = Collections.emptyMap();
-        Map<String,String> workTokens = Collections.emptyMap();
+        Map<String, String> userNames = Collections.emptyMap();
+        Map<String, String> workTokens = Collections.emptyMap();
 
         if ("fulllatex".equals(format)) {
 
-            userNames = new HashMap<String,String>();
-            workTokens = new HashMap<String,String>();
+            userNames = new HashMap<String, String>();
+            workTokens = new HashMap<String, String>();
 
             for (int i = 0; itr.hasNext(); i++) {
 
@@ -570,7 +638,7 @@ public class TimetrackerPortlet extends MVCPortlet {
                 String[] theNames = userName.split(" ");
                 String initials = "";
 
-                for (int j=0; j < theNames.length ; j++) {
+                for (int j = 0; j < theNames.length; j++) {
 
                     initials += theNames[j].charAt(0);
                     initials = initials.toLowerCase();
@@ -594,10 +662,10 @@ public class TimetrackerPortlet extends MVCPortlet {
                 String[] tokens = taskRecord.getWorkPackage().split("\\.");
                 String token = tokens[tokens.length - 1];
 
-//                char c = Character.toUpperCase(token.charAt(0));
-//                token = c + token.substring(1);
+                // char c = Character.toUpperCase(token.charAt(0));
+                // token = c + token.substring(1);
 
-//TODO do check whether the short form is unique in the map
+                // TODO do check whether the short form is unique in the map
                 String tokenShort = token.substring(0, 2);
                 workTokens.put(token, tokenShort);
             }
@@ -613,14 +681,17 @@ public class TimetrackerPortlet extends MVCPortlet {
             if ("latex".equals(format)) {
                 sb.append(getTaskRecordLaTeX(taskRecord));
 
-            } else if ("fulllatex".equals(format)) {
-                sb.append(getTaskRecordFullLaTeX(taskRecord, userNames,
-                                                                workTokens));
+            }
+            else if ("fulllatex".equals(format)) {
+                sb.append(getTaskRecordFullLaTeX(
+                    taskRecord, userNames, workTokens));
 
-            } else if ("xml".equals(format)) {
+            }
+            else if ("xml".equals(format)) {
                 sb.append(getTaskRecordXML(taskRecord));
 
-            } else {
+            }
+            else {
                 sb.append(getTaskRecordCSV(taskRecord));
             }
 
@@ -634,10 +705,11 @@ public class TimetrackerPortlet extends MVCPortlet {
         if ("xml".equals(format)) {
             sb.append("</taskRecords>");
 
-        } else if ("latex".equals(format)) {
+        }
+        else if ("latex".equals(format)) {
             sb.append("\\hline");
             sb.append(StringPool.NEW_LINE);
-//TODO i18n!!
+            // TODO i18n!!
             sb.append(" & Periodentotal & & & ");
             sb.append(TimetrackerPortletUtil.getHours(taskRecords));
             sb.append("\\\\");
@@ -646,30 +718,31 @@ public class TimetrackerPortlet extends MVCPortlet {
             sb.append(StringPool.NEW_LINE);
             sb.append("\\end{center}");
 
-        } else if ("fulllatex".equals(format)) {
+        }
+        else if ("fulllatex".equals(format)) {
 
             sb.append("\\hline");
             sb.append(StringPool.NEW_LINE);
-//TODO i18n!!
+            // TODO i18n!!
             sb.append(" & Periodentotal & & ");
             double totalHours = TimetrackerPortletUtil.getHours(taskRecords);
             sb.append(df.format(totalHours));
             sb.append("\\\\");
             sb.append(StringPool.NEW_LINE);
-            double carryOver = ParamUtil.getDouble(
-                                                resourceRequest, "carryOver");
+            double carryOver =
+                ParamUtil.getDouble(resourceRequest, "carryOver");
             _log.debug("carryOver = " + carryOver);
-//TODO i18n!!
+            // TODO i18n!!
             sb.append(" & Übertrag Vorperiode (sep. Abrg) & & ");
             sb.append(df.format(carryOver));
             sb.append("\\\\");
             sb.append(StringPool.NEW_LINE);
             sb.append("\\hline");
             sb.append(StringPool.NEW_LINE);
-//TODO i18n!!
+            // TODO i18n!!
             sb.append(" & Total & & ");
             sb.append(df.format(totalHours + carryOver));
-            sb.append("\\\\"); //TODO calc
+            sb.append("\\\\"); // TODO calc
             sb.append(StringPool.NEW_LINE);
             sb.append("\\hline");
             sb.append(StringPool.NEW_LINE);
@@ -690,7 +763,7 @@ public class TimetrackerPortlet extends MVCPortlet {
             Iterator it = userNames.entrySet().iterator();
             while (it.hasNext()) {
 
-                Map.Entry entry = (Map.Entry)it.next();
+                Map.Entry entry = (Map.Entry) it.next();
                 sb.append(" \\item[");
                 sb.append(entry.getValue());
                 sb.append("] ");
@@ -716,11 +789,11 @@ public class TimetrackerPortlet extends MVCPortlet {
             it = workTokens.entrySet().iterator();
             while (it.hasNext()) {
 
-                Map.Entry<String,String> entry = (Map.Entry)it.next();
+                Map.Entry<String, String> entry = (Map.Entry) it.next();
                 sb.append(" \\item[");
                 sb.append(entry.getValue());
                 sb.append("] ");
-                String s = (String)entry.getKey();
+                String s = (String) entry.getKey();
                 char c = Character.toUpperCase(s.charAt(0));
                 sb.append(c + s.substring(1));
                 sb.append(StringPool.NEW_LINE);
@@ -745,69 +818,85 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @throws PortalException
      * @throws SystemException
      */
-    public void importVimTaskRecords(ActionRequest actionRequest,
-            ActionResponse actionResponse) throws PortalException,
-            SystemException {
+    public void importVimTaskRecords(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws PortalException, SystemException {
 
         _log.info("Executing importVimTaskRecords().");
 
         // Create a service context for this request.
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+        ServiceContext serviceContext =
+            ServiceContextFactory.getInstance(
                 TaskRecord.class.getName(), actionRequest);
 
         // Retrieve the user- and groupIds.
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest
-                .getAttribute(WebKeys.THEME_DISPLAY);
+        ThemeDisplay themeDisplay =
+            (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
         long userId = themeDisplay.getUserId();
 
-        int rowsCount = ParamUtil.getInteger(actionRequest,
-                                        TaskRecordFields.VIM_TEXT + "_rows");
-        int colsCount = ParamUtil.getInteger(actionRequest,
-                                        TaskRecordFields.VIM_TEXT + "_cols");
+        int rowsCount =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                "_rows");
+        int colsCount =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                "_cols");
 
         _log.debug("rows: " + rowsCount + "; cols: " + colsCount);
 
         for (int i = 0; i < rowsCount; i++) {
 
             // Get the parameters from the request.
-            String workPackage = ParamUtil.getString(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_10");
-            String description = ParamUtil.getString(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_11");
-            String ticketURL = ParamUtil.getString(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_12");
+            String workPackage =
+                ParamUtil.getString(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_10");
+            String description =
+                ParamUtil.getString(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_11");
+            String ticketURL =
+                ParamUtil.getString(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_12");
 
-            int startDateDay = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_2");
-            int startDateMonth = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_1");
+            int startDateDay =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_2");
+            int startDateMonth =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_1");
             // We import the month as number, e.g. Jan = 01
             startDateMonth--;
-            int startDateYear = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_0");
-            _log.debug("startDate: " + startDateYear + "-" + startDateMonth
-                            + "-" + startDateDay);
+            int startDateYear =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_0");
+            _log.debug("startDate: " + startDateYear + "-" + startDateMonth +
+                "-" + startDateDay);
 
-            int endDateDay = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_7");
-            int endDateMonth = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_6");
+            int endDateDay =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_7");
+            int endDateMonth =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_6");
             // We import the month as number, e.g. Jan = 01
             endDateMonth--;
-            int endDateYear = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_5");
-            _log.info("endDate: " + endDateYear + "-" + endDateMonth
-                            + "-" + endDateDay);
+            int endDateYear =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_5");
+            _log.info("endDate: " + endDateYear + "-" + endDateMonth + "-" +
+                endDateDay);
 
-            int startDateHour = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_3");
-            int startDateMinute = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_4");
-            int endDateHour = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_8");
-            int endDateMinute = ParamUtil.getInteger(actionRequest,
-                            TaskRecordFields.VIM_TEXT + "_" + i + "_9");
+            int startDateHour =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_3");
+            int startDateMinute =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_4");
+            int endDateHour =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_8");
+            int endDateMinute =
+                ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+                    "_" + i + "_9");
             int durationInMinutes = 0;
             long duration = 0;
 
@@ -817,44 +906,50 @@ public class TimetrackerPortlet extends MVCPortlet {
                 startDateMinute = 0;
                 endDateHour = 0;
                 endDateMinute = 0;
-                durationInMinutes = ParamUtil.getInteger(actionRequest,
-                           TaskRecordFields.VIM_TEXT + "_" + i + "_9");
+                durationInMinutes =
+                    ParamUtil.getInteger(
+                        actionRequest, TaskRecordFields.VIM_TEXT + "_" + i +
+                            "_9");
                 duration = durationInMinutes * 60 * 1000;
             }
 
-            TaskRecordLocalServiceUtil.addTaskRecord(userId,
-                    workPackage, description, ticketURL, endDateDay,
-                    endDateMonth, endDateYear, endDateHour, endDateMinute,
-                    startDateDay, startDateMonth, startDateYear, startDateHour,
-                    startDateMinute, duration, serviceContext);
+            TaskRecordLocalServiceUtil.addTaskRecord(
+                userId, workPackage, description, ticketURL, endDateDay,
+                endDateMonth, endDateYear, endDateHour, endDateMinute,
+                startDateDay, startDateMonth, startDateYear, startDateHour,
+                startDateMinute, duration, serviceContext);
         }
 
         // Report the successful update back to the user.
-        SessionMessages.add(actionRequest,
-                TimetrackerPortletKeys.REQUEST_PROCESSED,
-                "successfully-imported-the-task-records");
+        SessionMessages.add(
+            actionRequest, TimetrackerPortletKeys.REQUEST_PROCESSED,
+            "successfully-imported-the-task-records");
 
         // Retrieve the parameters which have to be passed to the
         // render-phase and store them in the parameter map.
-        String mvcPath = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.MVC_PATH);
+        String mvcPath =
+            ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.REDIRECT_URL);
+        String redirectURL =
+            ParamUtil.getString(
+                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
 
         Map<String, String[]> params = new HashMap<String, String[]>();
 
-        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] { mvcPath });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL,
-                new String[] { String.valueOf(redirectURL) });
+        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
+            mvcPath
+        });
+        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
+            String.valueOf(redirectURL)
+        });
 
         // Pass the relevant parameters to the render phase.
         actionResponse.setRenderParameters(params);
     }
 
     /**
-     * (Just) parse a text for Task Records - the text must follow some
-     * simple rules (see util/TimetrackerPortlet)
+     * (Just) parse a text for Task Records - the text must follow some simple
+     * rules (see util/TimetrackerPortlet)
      *
      * @param actionRequest
      * @param actionResponse
@@ -862,45 +957,50 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @throws PortalException
      * @throws SystemException
      */
-    public void parseVimTaskRecords(ActionRequest actionRequest,
-            ActionResponse actionResponse) throws PortalException,
-            SystemException {
+    public void parseVimTaskRecords(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws PortalException, SystemException {
 
         _log.info("Executing parseVimTaskRecords().");
 
         // Create a service context for this request.
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+        ServiceContext serviceContext =
+            ServiceContextFactory.getInstance(
                 TaskRecord.class.getName(), actionRequest);
 
         // Retrieve the user- and groupIds.
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest
-                .getAttribute(WebKeys.THEME_DISPLAY);
+        ThemeDisplay themeDisplay =
+            (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
         long userId = themeDisplay.getUserId();
 
         // Get the parameters from the request.
-        String vimText = ParamUtil.getString(actionRequest,
-                                                TaskRecordFields.VIM_TEXT);
+        String vimText =
+            ParamUtil.getString(actionRequest, TaskRecordFields.VIM_TEXT);
 
-        List<String[]> taskRecords = TimetrackerPortletUtil
-                                                .parseMicVimport(vimText);
+        List<String[]> taskRecords =
+            TimetrackerPortletUtil.parseMicVimport(vimText);
 
         // Retrieve the parameters which have to be passed to the
         // render-phase and store them in the parameter map.
-        String mvcPath = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.MVC_PATH);
+        String mvcPath =
+            ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL = ParamUtil.getString(actionRequest,
-                                    TimetrackerPortletKeys.REDIRECT_URL);
+        String redirectURL =
+            ParamUtil.getString(
+                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
 
         actionRequest.setAttribute(TaskRecordFields.VIM_TEXT, vimText);
         actionRequest.setAttribute(TaskRecordFields.VIM_LIST, taskRecords);
 
         Map<String, String[]> params = new HashMap<String, String[]>();
 
-        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] { mvcPath });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL,
-                new String[] { String.valueOf(redirectURL) });
+        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
+            mvcPath
+        });
+        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
+            String.valueOf(redirectURL)
+        });
 
         // Pass the relevant parameters to the render phase.
         actionResponse.setRenderParameters(params);
@@ -917,19 +1017,21 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @throws PortletException
      * @since 1.0
      */
-    protected void servePortlet(ResourceRequest resourceRequest,
-            ResourceResponse resourceResponse) throws PortalException,
-            SystemException, PortletException, IOException {
+    protected void servePortlet(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+        throws PortalException, SystemException, PortletException, IOException {
 
         _log.info("Executing servePortlet().");
 
         // Get the parameters from the request
-        long taskRecordId = ParamUtil.getLong(resourceRequest,
-                TaskRecordFields.TASK_RECORD_ID);
-        String mvcPath = ParamUtil.getString(resourceRequest,
-                TimetrackerPortletKeys.MVC_PATH);
-        String historyKey = ParamUtil.getString(resourceRequest,
-                TimetrackerPortletKeys.HISTORY_KEY);
+        long taskRecordId =
+            ParamUtil.getLong(resourceRequest, TaskRecordFields.TASK_RECORD_ID);
+        String mvcPath =
+            ParamUtil.getString(
+                resourceRequest, TimetrackerPortletKeys.MVC_PATH);
+        String historyKey =
+            ParamUtil.getString(
+                resourceRequest, TimetrackerPortletKeys.HISTORY_KEY);
 
         _log.debug("taskRecordId = " + taskRecordId);
         _log.debug("mvcPath = " + mvcPath);
@@ -940,23 +1042,25 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         try {
             taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
-        } catch (SystemException ignore) {
+        }
+        catch (SystemException ignore) {
             _log.debug(ignore);
-        } catch (PortalException ignore) {
+        }
+        catch (PortalException ignore) {
             _log.debug(ignore);
         }
 
         // Store the project as resourceResponse attribute
-        resourceRequest.setAttribute(TimetrackerPortletKeys.TASK_RECORD,
-                taskRecord);
+        resourceRequest.setAttribute(
+            TimetrackerPortletKeys.TASK_RECORD, taskRecord);
 
         PortletConfig portletConfig = getPortletConfig();
 
         PortletContext portletContext = portletConfig.getPortletContext();
 
         // Dispatch the request to the requested jsp-page
-        PortletRequestDispatcher portletRequestDispatcher = portletContext
-                .getRequestDispatcher(mvcPath);
+        PortletRequestDispatcher portletRequestDispatcher =
+            portletContext.getRequestDispatcher(mvcPath);
 
         portletRequestDispatcher.include(resourceRequest, resourceResponse);
 
@@ -974,9 +1078,9 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @throws PortletException
      * @since 1.0
      */
-    public void serveResource(ResourceRequest resourceRequest,
-            ResourceResponse resourceResponse) throws PortletException,
-            IOException {
+    public void serveResource(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+        throws PortletException, IOException {
 
         _log.info("Executing serveResource().");
 
@@ -988,12 +1092,14 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             if ("exportTaskRecords".equals(resourceID)) {
                 exportTaskRecords(resourceRequest, resourceResponse);
-            } else {
+            }
+            else {
                 // By default serve the portlet body.
                 servePortlet(resourceRequest, resourceResponse);
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
             _log.error(e);
             throw new PortletException(e);
@@ -1004,7 +1110,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         _log.debug("Text: " + tex);
 
-        //TODO make this configurable - or at least collect it in a file
+        // TODO make this configurable - or at least collect it in a file
         tex = tex.replaceAll("\\\\", ""); // this is simply forbidden!!
         tex = tex.replaceAll("_", "\\\\_");
         tex = tex.replaceAll("&", "\\\\&");
@@ -1016,54 +1122,57 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     /**
-     *
      * @param actionRequest
      * @param actionResponse
      * @since 1.0
      * @throws PortalException
      * @throws SystemException
      */
-    public void viewTaskRecord(ActionRequest actionRequest,
-            ActionResponse actionResponse) throws PortalException,
-            SystemException {
+    public void viewTaskRecord(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws PortalException, SystemException {
 
         _log.info("Executing viewTaskRecord().");
 
         // Get the parameters from the request.
-        long taskRecordId = ParamUtil.getLong(actionRequest,
-                TaskRecordFields.TASK_RECORD_ID);
+        long taskRecordId =
+            ParamUtil.getLong(actionRequest, TaskRecordFields.TASK_RECORD_ID);
 
         // Retrieve the requested taskRecord and store it
         // as a request attribute.
         // TODO: Use the remote service instead.
-        TaskRecord taskRecord = TaskRecordLocalServiceUtil
-                .getTaskRecord(taskRecordId);
+        TaskRecord taskRecord =
+            TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
 
-        actionRequest.setAttribute(TimetrackerPortletKeys.TASK_RECORD,
-                taskRecord);
+        actionRequest.setAttribute(
+            TimetrackerPortletKeys.TASK_RECORD, taskRecord);
 
         // Retrieve the parameters which have to be passed to the
         // render-phase and store them in the parameter map.
-        String mvcPath = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.MVC_PATH);
+        String mvcPath =
+            ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL = ParamUtil.getString(actionRequest,
-                TimetrackerPortletKeys.REDIRECT_URL);
+        String redirectURL =
+            ParamUtil.getString(
+                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
 
         HashMap<String, String[]> params = new HashMap<String, String[]>();
 
-        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] { mvcPath });
-        params.put(TaskRecordFields.TASK_RECORD_ID,
-                new String[] { String.valueOf(taskRecordId) });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL,
-                new String[] { String.valueOf(redirectURL) });
+        params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
+            mvcPath
+        });
+        params.put(TaskRecordFields.TASK_RECORD_ID, new String[] {
+            String.valueOf(taskRecordId)
+        });
+        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
+            String.valueOf(redirectURL)
+        });
 
         // Pass the relevant parameters to the render phase.
         actionResponse.setRenderParameters(params);
     }
 
     // Enable logging for this class.
-    private static final Log _log = LogFactoryUtil
-            .getLog(TimetrackerPortlet.class.getName());
+    private static final Log _log =
+        LogFactoryUtil.getLog(TimetrackerPortlet.class.getName());
 }
-

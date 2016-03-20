@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE resource-action-mapping PUBLIC "-//Liferay//DTD Resource Action Mapping 6.2.0//EN"
+    "http://www.liferay.com/dtd/liferay-resource-action- mapping_6_2_0.dtd">
+<!--  
+    default.xml: The timetracker portlet's permission configuration.
+    
+    Created:    2016-03-20 17:26 by Christian Berndt
+    Modified:   2015-03-20 17:26 by Christian Berndt
+    Version:    1.0.0
+-->
+<resource-action-mapping>
+
+    <!-- Permissions configuration for -->
+    <!-- the portlet itself. -->
+    <portlet-resource>
+        <portlet-name>timetracker-portlet</portlet-name>
+        <permissions>
+            <supports>
+                <action-key>ACCESS_IN_CONTROL_PANEL</action-key>
+                <action-key>ADD_TO_PAGE</action-key>
+                <action-key>CONFIGURATION</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>VIEW</action-key>
+            </site-member-defaults>
+            <!-- No permissions for GUEST, not even VIEW -->
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>ACCESS_IN_CONTROL_PANEL</action-key>
+                <action-key>ADD_TO_PAGE</action-key>
+                <action-key>CONFIGURATION</action-key>
+            </guest-unsupported>
+        </permissions>
+    </portlet-resource>
+
+    <!-- Permission configuration for -->
+    <!-- a timetracker portlet instance.  -->
+    <model-resource>
+        <model-name>ch.inofix.portlet.timetracker</model-name>
+        <portlet-ref>
+            <portlet-name>timetracker-portlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>ADD_TASK_RECORD</action-key>
+                <action-key>PERMISSIONS</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>ADD_TASK_RECORD</action-key>
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>ADD_TASK_RECORD</action-key>
+                <action-key>PERMISSIONS</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+
+    <!-- Permission configuration for -->
+    <!-- a single task-record object.     -->
+    <model-resource>
+        <model-name>ch.inofix.portlet.timetracker.model.TaskRecord</model-name>
+        <portlet-ref>
+            <portlet-name>timetracker-portlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>VIEW</action-key> 
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+
+</resource-action-mapping>

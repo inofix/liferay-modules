@@ -40,17 +40,25 @@
             <portlet:param name="windowId" value="editTaskRecord" />
         </portlet:actionURL>
 
+<%
+   // TODO: Fix missing "ADD_TASK_RECORD" resource issue.
+%>
+<%-- 
         <c:if test='<%=TimetrackerPortletPermission.contains(
                                 permissionChecker, scopeGroupId,
                                 ActionKeys.ADD_TASK_RECORD)%>'>
+--%>
             <%
                 String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addURL)+ "'});";
             %>
 
-            <aui:button type="submit" value="add-contact"
+            <aui:button type="submit" value="add-task-record"
                 href="<%=taglibAddURL%>" cssClass="pull-left add-task-record" />
+<%-- 
 
         </c:if>
+--%>
+
     </aui:nav>
 
     <aui:nav-bar-search cssClass="pull-right">

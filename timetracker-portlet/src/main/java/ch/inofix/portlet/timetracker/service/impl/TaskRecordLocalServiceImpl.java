@@ -1,60 +1,49 @@
+
 package ch.inofix.portlet.timetracker.service.impl;
 
 import java.util.Date;
-import java.util.List;
-
 import org.joda.time.Duration;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.model.User;
-
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
-
 import ch.inofix.portlet.timetracker.TaskRecordEndDateException;
 import ch.inofix.portlet.timetracker.TaskRecordStartDateException;
 import ch.inofix.portlet.timetracker.model.TaskRecord;
 import ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
-import ch.inofix.portlet.timetracker.service.persistence.TaskRecordFinderUtil;
 
 /**
- * The implementation of the task record local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are
- * added, rerun ServiceBuilder to copy their definitions into the
+ * The implementation of the task record local service. <p> All custom service
+ * methods should be put in this class. Whenever methods are added, rerun
+ * ServiceBuilder to copy their definitions into the
  * {@link ch.inofix.portlet.timetracker.service.TaskRecordLocalService}
- * interface.
- *
- * <p>
- * This is a local service. Methods of this service will not have security
- * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM.
- * </p>
+ * interface. <p> This is a local service. Methods of this service will not have
+ * security checks based on the propagated JAAS credentials because this service
+ * can only be accessed from within the same VM. </p>
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2013-11-09 23:01
- * @version 1.2
- *
+ * @modified 2016-03-20 17:30
+ * @version 1.0.3
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil
  */
 public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
+
     /*
-     * NOTE FOR DEVELOPERS:
-     *
-     * Never reference this interface directly. Always use {@link
-     * ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil} to
-     * access the task record local service.
+     * NOTE FOR DEVELOPERS: Never reference this interface directly. Always use
+     * {@link ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil}
+     * to access the task record local service.
      */
     // Enable logging for this class.
-    private static final Log _log = LogFactoryUtil
-            .getLog(TaskRecordLocalServiceImpl.class.getName());
+    private static final Log _log =
+        LogFactoryUtil.getLog(TaskRecordLocalServiceImpl.class.getName());
 
     /**
      * Add a task record to the database.
@@ -80,13 +69,13 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @throws PortalException
      * @throws SystemException
      */
-    public TaskRecord addTaskRecord(long userId, String workPackage,
-            String description, String ticketURL, int endDateDay, int endDateMonth,
-            int endDateYear, int endDateHour, int endDateMinute,
-            int startDateDay, int startDateMonth, int startDateYear,
-            int startDateHour, int startDateMinute, long duration,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+    public TaskRecord addTaskRecord(
+        long userId, String workPackage, String description, String ticketURL,
+        int endDateDay, int endDateMonth, int endDateYear, int endDateHour,
+        int endDateMinute, int startDateDay, int startDateMonth,
+        int startDateYear, int startDateHour, int startDateMinute,
+        long duration, ServiceContext serviceContext)
+        throws PortalException, SystemException {
 
         _log.info("Executing addTaskRecord().");
 
@@ -94,13 +83,15 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             User user = userPersistence.findByPrimaryKey(userId);
             long groupId = serviceContext.getScopeGroupId();
 
-            Date endDate = PortalUtil.getDate(endDateMonth, endDateDay,
-                    endDateYear, endDateHour, endDateMinute,
-                    TaskRecordEndDateException.class);
+            Date endDate =
+                PortalUtil.getDate(
+                    endDateMonth, endDateDay, endDateYear, endDateHour,
+                    endDateMinute, TaskRecordEndDateException.class);
 
-            Date startDate = PortalUtil.getDate(startDateMonth, startDateDay,
-                    startDateYear, startDateHour, startDateMinute,
-                    TaskRecordStartDateException.class);
+            Date startDate =
+                PortalUtil.getDate(
+                    startDateMonth, startDateDay, startDateYear, startDateHour,
+                    startDateMinute, TaskRecordStartDateException.class);
 
             Date now = new Date();
 
@@ -126,12 +117,14 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
             return doUpdate(taskRecord);
 
-        } catch (PortalException pe) {
+        }
+        catch (PortalException pe) {
 
             _log.error(pe);
             throw new PortalException(pe);
 
-        } catch (SystemException se) {
+        }
+        catch (SystemException se) {
 
             _log.error(se);
             throw new SystemException(se);
@@ -141,62 +134,61 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     /**
      * @since 1.0
      */
-    public void addTaskRecordResources(TaskRecord taskRecord,
-            boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException, SystemException {
-
-        resourceLocalService.addResources(taskRecord.getCompanyId(),
-                taskRecord.getGroupId(), taskRecord.getUserId(),
-                TaskRecord.class.getName(), taskRecord.getTaskRecordId(),
-                false, addGroupPermissions, addGuestPermissions);
-    }
-
-    /**
-     * @since 1.0
-     */
-    public void addTaskRecordResources(TaskRecord taskRecord,
-            String[] groupPermissions, String[] guestPermissions)
-            throws PortalException, SystemException {
-
-        resourceLocalService.addModelResources(taskRecord.getCompanyId(),
-                taskRecord.getGroupId(), taskRecord.getUserId(),
-                TaskRecord.class.getName(), taskRecord.getTaskRecordId(),
-                groupPermissions, guestPermissions);
-    }
+    // public void addTaskRecordResources(TaskRecord taskRecord,
+    // boolean addGroupPermissions, boolean addGuestPermissions)
+    // throws PortalException, SystemException {
+    //
+    // resourceLocalService.addResources(taskRecord.getCompanyId(),
+    // taskRecord.getGroupId(), taskRecord.getUserId(),
+    // TaskRecord.class.getName(), taskRecord.getTaskRecordId(),
+    // false, addGroupPermissions, addGuestPermissions);
+    // }
 
     /**
      * @since 1.0
      */
-    public void addTaskRecordResources(long taskRecordId,
-            boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException, SystemException {
-
-        TaskRecord taskRecord = taskRecordPersistence
-                .findByPrimaryKey(taskRecordId);
-
-        addTaskRecordResources(taskRecord, addGroupPermissions,
-                addGuestPermissions);
-    }
+    // public void addTaskRecordResources(TaskRecord taskRecord,
+    // String[] groupPermissions, String[] guestPermissions)
+    // throws PortalException, SystemException {
+    //
+    // resourceLocalService.addModelResources(taskRecord.getCompanyId(),
+    // taskRecord.getGroupId(), taskRecord.getUserId(),
+    // TaskRecord.class.getName(), taskRecord.getTaskRecordId(),
+    // groupPermissions, guestPermissions);
+    // }
 
     /**
      * @since 1.0
      */
-    public void addTaskRecordResources(long taskRecordId,
-            String[] groupPermissions, String[] guestPermissions)
-            throws PortalException, SystemException {
-
-        TaskRecord taskRecord = taskRecordPersistence
-                .findByPrimaryKey(taskRecordId);
-
-        addTaskRecordResources(taskRecord, groupPermissions, guestPermissions);
-    }
+    // public void addTaskRecordResources(long taskRecordId,
+    // boolean addGroupPermissions, boolean addGuestPermissions)
+    // throws PortalException, SystemException {
+    //
+    // TaskRecord taskRecord = taskRecordPersistence
+    // .findByPrimaryKey(taskRecordId);
+    //
+    // addTaskRecordResources(taskRecord, addGroupPermissions,
+    // addGuestPermissions);
+    // }
 
     /**
-     *
+     * @since 1.0
+     */
+    // public void addTaskRecordResources(long taskRecordId,
+    // String[] groupPermissions, String[] guestPermissions)
+    // throws PortalException, SystemException {
+    //
+    // TaskRecord taskRecord = taskRecordPersistence
+    // .findByPrimaryKey(taskRecordId);
+    //
+    // addTaskRecordResources(taskRecord, groupPermissions, guestPermissions);
+    // }
+
+    /**
      * @since 1.0
      */
     public TaskRecord deleteTaskRecord(TaskRecord taskRecord)
-            throws PortalException, SystemException {
+        throws PortalException, SystemException {
 
         _log.info("Executing deleteTaskRecord(taskRecord).");
 
@@ -209,12 +201,12 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @since 1.0
      */
     public TaskRecord deleteTaskRecord(long taskRecordId)
-            throws PortalException, SystemException {
+        throws PortalException, SystemException {
 
         _log.info("Executing deleteTaskRecord(taskRecordId).");
 
-        TaskRecord taskRecord = taskRecordPersistence
-                .findByPrimaryKey(taskRecordId);
+        TaskRecord taskRecord =
+            taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
         return deleteTaskRecord(taskRecord);
     }
@@ -234,16 +226,16 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @since 1.0
      * @throws SystemException
      */
-    public List<TaskRecord> search(long companyId, long groupId, long userId,
-            String keywords, int status, int start, int end,
-            OrderByComparator obc) throws SystemException {
-
-        _log.info("Executing search().");
-
-        return TaskRecordFinderUtil.findByKeywords(companyId, groupId, userId,
-                keywords, status, start, end, obc);
-
-    }
+    // public List<TaskRecord> search(long companyId, long groupId, long userId,
+    // String keywords, int status, int start, int end,
+    // OrderByComparator obc) throws SystemException {
+    //
+    // _log.info("Executing search().");
+    //
+    // return TaskRecordFinderUtil.findByKeywords(companyId, groupId, userId,
+    // keywords, status, start, end, obc);
+    //
+    // }
 
     /**
      * Return the list of matching task records.
@@ -264,18 +256,18 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @since 1.0
      * @throws SystemException
      */
-    public List<TaskRecord> search(long companyId, long groupId, long userId,
-            String workPackage, String description, Date startDate,
-            Date endDate, int status, int start, int end, boolean andOperator,
-            OrderByComparator obc) throws SystemException {
-
-        _log.info("Executing search(advanced).");
-
-        return TaskRecordFinderUtil.findBy_C_G_U_W_S_E_D_S(companyId, groupId,
-                userId, workPackage, startDate, endDate, description, status,
-                andOperator, start, end, obc);
-
-    }
+    // public List<TaskRecord> search(long companyId, long groupId, long userId,
+    // String workPackage, String description, Date startDate,
+    // Date endDate, int status, int start, int end, boolean andOperator,
+    // OrderByComparator obc) throws SystemException {
+    //
+    // _log.info("Executing search(advanced).");
+    //
+    // return TaskRecordFinderUtil.findBy_C_G_U_W_S_E_D_S(companyId, groupId,
+    // userId, workPackage, startDate, endDate, description, status,
+    // andOperator, start, end, obc);
+    //
+    // }
 
     /**
      * Return the number of task records matching the given keywords.
@@ -289,15 +281,15 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @since 1.0
      * @throws SystemException
      */
-    public int searchCount(long companyId, long groupId, long userId,
-            String keywords, int status) throws SystemException {
-
-        _log.info("Executing searchCount().");
-
-        return TaskRecordFinderUtil.countByKeywords(companyId, groupId, userId,
-                keywords, null, null, status);
-
-    }
+    // public int searchCount(long companyId, long groupId, long userId,
+    // String keywords, int status) throws SystemException {
+    //
+    // _log.info("Executing searchCount().");
+    //
+    // return TaskRecordFinderUtil.countByKeywords(companyId, groupId, userId,
+    // keywords, null, null, status);
+    //
+    // }
 
     /**
      * Return the number of matching task records.
@@ -315,15 +307,100 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @since 1.0
      * @throws SystemException
      */
-    public int searchCount(long companyId, long groupId, long userId,
-            String workPackage, String description, Date startDate,
-            Date endDate, int status, boolean andOperator)
-            throws SystemException {
+    // public int searchCount(long companyId, long groupId, long userId,
+    // String workPackage, String description, Date startDate,
+    // Date endDate, int status, boolean andOperator)
+    // throws SystemException {
+    //
+    // return TaskRecordFinderUtil.countBy_C_G_U_W_S_E_D_S(companyId, groupId,
+    // userId, workPackage, startDate, endDate, description, status,
+    // andOperator);
+    //
+    // }
 
-        return TaskRecordFinderUtil.countBy_C_G_U_W_S_E_D_S(companyId, groupId,
-                userId, workPackage, startDate, endDate, description, status,
-                andOperator);
+    private TaskRecord saveTaskRecord(
+        long userId, long groupId, long taskRecordId, String uid,
+        ServiceContext serviceContext)
+        throws PortalException, SystemException {
 
+        User user = userPersistence.findByPrimaryKey(userId);
+        Date now = new Date();
+        TaskRecord taskRecord = null;
+
+        if (taskRecordId > 0) {
+            taskRecord = taskRecordLocalService.getTaskRecord(taskRecordId);
+        }
+        else {
+            taskRecordId = counterLocalService.increment();
+            taskRecord = taskRecordPersistence.create(taskRecordId);
+            taskRecord.setCompanyId(user.getCompanyId());
+            taskRecord.setGroupId(groupId);
+            taskRecord.setUserId(user.getUserId());
+            taskRecord.setUserName(user.getFullName());
+            taskRecord.setCreateDate(now);
+
+        }
+
+        taskRecord.setModifiedDate(now);
+
+        // TODO
+        // taskRecord.setUid(uid);
+        taskRecord.setExpandoBridgeAttributes(serviceContext);
+
+        taskRecordPersistence.update(taskRecord);
+
+        return taskRecord;
+
+    }
+
+    public void updateAsset(
+        long userId, TaskRecord taskRecord, long[] assetCategoryIds,
+        String[] assetTagNames, long[] assetLinkEntryIds)
+        throws PortalException, SystemException {
+
+        boolean visible = true;
+        // boolean visible = false;
+
+        // if (taskRecord.isApproved()) {
+        // visible = true;
+        // }
+
+        // TODO: What's the classTypeId?
+        long classTypeId = 0;
+        Date startDate = null;
+        Date endDate = null;
+        Date expirationDate = null;
+        // TODO: Is vcard the correct mime-type?
+//        String mimeType = "text/vcard";
+//        String title = taskRecord.getFullName(true);
+//        String description = taskRecord.getFormattedName();
+//        String summary =
+//            HtmlUtil.extractText(StringUtil.shorten(
+//                taskRecord.getFormattedName(), 500));
+        // TODO: What does url mean in this context?
+        String url = null;
+        // TODO: What does layoutUuid mean in this context?
+        String layoutUuid = null;
+        int height = 0;
+        int width = 0;
+        Integer priority = null;
+        boolean sync = false;
+
+//        AssetEntry assetEntry =
+//            assetEntryLocalService.updateEntry(
+//                userId, taskRecord.getGroupId(), taskRecord.getCreateDate(),
+//                taskRecord.getModifiedDate(), TaskRecord.class.getName(),
+//                taskRecord.getTaskRecordId(), taskRecord.getUuid(), classTypeId,
+//                assetCategoryIds, assetTagNames, visible, startDate, endDate,
+//                expirationDate, mimeType, title, description, summary, url,
+//                layoutUuid, height, width, priority, sync);
+//
+//        assetLinkLocalService.updateLinks(
+//            userId, assetEntry.getEntryId(), assetLinkEntryIds,
+//            AssetLinkConstants.TYPE_RELATED);
+
+        Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(TaskRecord.class);
+        indexer.reindex(taskRecord);
     }
 
     /**
@@ -351,27 +428,28 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @throws PortalException
      * @throws SystemException
      */
-    public TaskRecord updateTaskRecord(long userId, long taskRecordId,
-            String workPackage, String description, String ticketURL,
-            int endDateDay, int endDateMonth, int endDateYear, int endDateHour,
-            int endDateMinute, int startDateDay, int startDateMonth,
-            int startDateYear, int startDateHour, int startDateMinute,
-            long duration, ServiceContext serviceContext)
-            throws PortalException, SystemException {
-
-        _log.info("Executing updateTaskRecord().");
+    public TaskRecord updateTaskRecord(
+        long userId, long taskRecordId, String workPackage, String description,
+        String ticketURL, int endDateDay, int endDateMonth, int endDateYear,
+        int endDateHour, int endDateMinute, int startDateDay,
+        int startDateMonth, int startDateYear, int startDateHour,
+        int startDateMinute, long duration, ServiceContext serviceContext)
+        throws PortalException, SystemException {
 
         try {
 
-            Date endDate = PortalUtil.getDate(endDateMonth, endDateDay,
-                    endDateYear, endDateHour, endDateMinute,
-                    TaskRecordEndDateException.class);
+            Date endDate =
+                PortalUtil.getDate(
+                    endDateMonth, endDateDay, endDateYear, endDateHour,
+                    endDateMinute, TaskRecordEndDateException.class);
 
-            Date startDate = PortalUtil.getDate(startDateMonth, startDateDay,
-                    startDateYear, startDateHour, startDateMinute,
-                    TaskRecordStartDateException.class);
+            Date startDate =
+                PortalUtil.getDate(
+                    startDateMonth, startDateDay, startDateYear, startDateHour,
+                    startDateMinute, TaskRecordStartDateException.class);
 
-            Duration diff = new Duration(startDate.getTime(), endDate.getTime());
+            Duration diff =
+                new Duration(startDate.getTime(), endDate.getTime());
 
             if (duration == 0) {
                 duration = diff.getMillis();
@@ -382,11 +460,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             // workPackage: required
             // task: required
 
-
-
-
-            TaskRecord taskRecord = taskRecordPersistence
-                    .fetchByPrimaryKey(taskRecordId);
+            TaskRecord taskRecord =
+                taskRecordPersistence.fetchByPrimaryKey(taskRecordId);
 
             // Update the record with the new values.
             taskRecord.setModifiedDate(serviceContext.getModifiedDate(null));
@@ -400,7 +475,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
             return doUpdate(taskRecord);
 
-        } catch (SystemException se) {
+        }
+        catch (SystemException se) {
 
             _log.error(se);
             throw new SystemException(se);
@@ -409,8 +485,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     /**
-     * Perform the actual update, perform input validation
-     * and return the updated taskRecord.
+     * Perform the actual update, perform input validation and return the
+     * updated taskRecord.
      *
      * @param taskRecord
      * @return the updated taskRecord.
@@ -419,9 +495,9 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @throws SystemException
      */
     protected TaskRecord doUpdate(TaskRecord taskRecord)
-            throws PortalException, SystemException {
+        throws PortalException, SystemException {
 
-        _log.debug("Executing doUpdate().");
+        // _log.debug("Executing doUpdate().");
 
         // TODO: Implement input validation.
         // either startDate / endDate or duration in milliseconds
