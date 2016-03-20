@@ -40,8 +40,6 @@ public class TimetrackerPortletImpl implements TimetrackerPortlet {
      */
     public double getHours(List<TaskRecord> taskRecords) {
 
-        _log.info("Executing getHours().");
-
         long minutes = 0;
 
         for (TaskRecord taskRecord : taskRecords) {
@@ -71,10 +69,6 @@ public class TimetrackerPortletImpl implements TimetrackerPortlet {
     public OrderByComparator getOrderByComparator(String orderByCol,
             String orderByType) {
 
-        _log.info("Executing getOrderByComparator().");
-        _log.info("Returning an OrderByComparator for orderbyCol = "
-                + orderByCol + " and orderByType = " + orderByType + ".");
-
         boolean orderByAsc = false;
 
         if (StringPool.ASC.equalsIgnoreCase(orderByType)) {
@@ -87,51 +81,34 @@ public class TimetrackerPortletImpl implements TimetrackerPortlet {
         if (CommonFields.CREATE_DATE.equalsIgnoreCase(orderByCol)) {
 
             obc = new CreateDateComparator(orderByAsc);
-            _log.debug("orderByAsc = " + orderByAsc);
-            _log.debug(obc.getClass().getName());
 
         } else if (TaskRecordFields.DURATION.equalsIgnoreCase(orderByCol)) {
 
             obc = new DurationComparator(orderByAsc);
-            _log.debug("orderByAsc = " + orderByAsc);
-            _log.debug(obc.getClass().getName());
 
         } else if (CommonFields.END_DATE.equalsIgnoreCase(orderByCol)) {
 
             obc = new EndDateComparator(orderByAsc);
-            _log.debug("orderByAsc = " + orderByAsc);
-            _log.debug(obc.getClass().getName());
 
         } else if (TaskRecordFields.START_DATE.equalsIgnoreCase(orderByCol)) {
 
             obc = new StartDateComparator(orderByAsc);
-            _log.debug("orderByAsc = " + orderByAsc);
-            _log.debug(obc.getClass().getName());
 
         } else if (CommonFields.USER_NAME.equalsIgnoreCase(orderByCol)) {
 
             obc = new UserNameComparator(orderByAsc);
-            _log.debug("orderByAsc = " + orderByAsc);
-            _log.debug(obc.getClass().getName());
 
         } else if (TaskRecordFields.WORK_PACKAGE.equalsIgnoreCase(orderByCol)) {
 
             obc = new WorkPackageComparator(orderByAsc);
-            _log.debug("orderByAsc = " + orderByAsc);
-            _log.debug(obc.getClass().getName());
 
         } else {
 
             // By default sort projects descending
             // by their last modification.
             obc = new ModifiedDateComparator(orderByAsc);
-            _log.debug("orderByAsc = " + orderByAsc);
-            _log.debug(obc.getClass().getName());
 
         }
-
-        _log.debug("orderByAsc = " + orderByAsc);
-        _log.debug(obc.getClass().getName());
 
         return obc;
     }
@@ -209,7 +186,6 @@ public class TimetrackerPortletImpl implements TimetrackerPortlet {
 
         if (dateString == null || "".equals(dateString) || workPackage == null
                 || workPackage.length <= 0 || workPackage[0] == null ) {
-//                || "".equals(workPackage[0])) {
 
             System.out.println("ERROR parseWork(s,s)");
             //throw some exception

@@ -19,8 +19,6 @@ public class TaskRecordSearchTerms extends TaskRecordDisplayTerms {
 
 		super(portletRequest);
 
-		_log.info("Constructing TaskRecordSearchTerms.");
-
 		// Translate the request parameters into
 		// SQL compatible values (or vice versa?)
 		workPackage = DAOParamUtil
