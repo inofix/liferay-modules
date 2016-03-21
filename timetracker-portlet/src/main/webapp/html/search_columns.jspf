@@ -141,5 +141,7 @@
     orderableProperty="<%= CommonFields.USER_NAME %>"
 />
 
+<%-- 
 <liferay-ui:search-container-column-jsp
     path="/task_record_action.jsp"/>
+--%>
