@@ -137,75 +137,75 @@
         <liferay-ui:search-container-results>
         <%
         
-            if (displayTerms.isAdvancedSearch()) {
+//             if (displayTerms.isAdvancedSearch()) {
                         
-                total = TaskRecordLocalServiceUtil.searchCount(
-                        companyId, groupId,
-                        searchTerms.getUserId(),
-                        searchTerms.getWorkPackage(),
-                        searchTerms.getDescription(), 
-                        startDateParam, 
-                        endDateParam,
-                        searchTerms.getStatus(),
-                        searchTerms.isAndOperator());
+//                 total = TaskRecordLocalServiceUtil.searchCount(
+//                         companyId, groupId,
+//                         searchTerms.getUserId(),
+//                         searchTerms.getWorkPackage(),
+//                         searchTerms.getDescription(), 
+//                         startDateParam, 
+//                         endDateParam,
+//                         searchTerms.getStatus(),
+//                         searchTerms.isAndOperator());
 
-                results = TaskRecordLocalServiceUtil.search(
-                        companyId, groupId,
-                        searchTerms.getUserId(),
-                        searchTerms.getWorkPackage(),
-                        searchTerms.getDescription(),
-                        startDateParam, 
-                        endDateParam,
-                        searchTerms.getStatus(),
-                        searchContainer.getStart(),
-                        searchContainer.getEnd(),
-                        searchTerms.isAndOperator(),
-                        searchContainer.getOrderByComparator());
+//                 results = TaskRecordLocalServiceUtil.search(
+//                         companyId, groupId,
+//                         searchTerms.getUserId(),
+//                         searchTerms.getWorkPackage(),
+//                         searchTerms.getDescription(),
+//                         startDateParam, 
+//                         endDateParam,
+//                         searchTerms.getStatus(),
+//                         searchContainer.getStart(),
+//                         searchContainer.getEnd(),
+//                         searchTerms.isAndOperator(),
+//                         searchContainer.getOrderByComparator());
                 
-                List<TaskRecord> all = TaskRecordLocalServiceUtil.search(
-                        companyId, groupId,
-                        searchTerms.getUserId(),
-                        searchTerms.getWorkPackage(),
-                        searchTerms.getDescription(),
-                        startDateParam, 
-                        endDateParam,
-                        searchTerms.getStatus(),
-                        0,
-                        total,
-                        searchTerms.isAndOperator(),
-                        searchContainer.getOrderByComparator());
+//                 List<TaskRecord> all = TaskRecordLocalServiceUtil.search(
+//                         companyId, groupId,
+//                         searchTerms.getUserId(),
+//                         searchTerms.getWorkPackage(),
+//                         searchTerms.getDescription(),
+//                         startDateParam, 
+//                         endDateParam,
+//                         searchTerms.getStatus(),
+//                         0,
+//                         total,
+//                         searchTerms.isAndOperator(),
+//                         searchContainer.getOrderByComparator());
                 
-                hours = TimetrackerPortletUtil.getHours(all); 
+//                 hours = TimetrackerPortletUtil.getHours(all); 
 
-            } else {
+//             } else {
 
-                // TODO: Enable the proper remote service search methods.
-                total = TaskRecordLocalServiceUtil.searchCount(
-                        companyId, groupId,
-                        searchTerms.getUserId(),
-                        searchTerms.getKeywords(),
-                        searchTerms.getStatus());
+//                 // TODO: Enable the proper remote service search methods.
+//                 total = TaskRecordLocalServiceUtil.searchCount(
+//                         companyId, groupId,
+//                         searchTerms.getUserId(),
+//                         searchTerms.getKeywords(),
+//                         searchTerms.getStatus());
 
-                results = TaskRecordLocalServiceUtil.search(
-                        companyId, groupId,
-                        searchTerms.getUserId(),
-                        searchTerms.getKeywords(),
-                        searchTerms.getStatus(),
-                        searchContainer.getStart(),
-                        searchContainer.getEnd(),
-                        searchContainer.getOrderByComparator());
+//                 results = TaskRecordLocalServiceUtil.search(
+//                         companyId, groupId,
+//                         searchTerms.getUserId(),
+//                         searchTerms.getKeywords(),
+//                         searchTerms.getStatus(),
+//                         searchContainer.getStart(),
+//                         searchContainer.getEnd(),
+//                         searchContainer.getOrderByComparator());
                 
-                List<TaskRecord> all = TaskRecordLocalServiceUtil.search(
-                        companyId, groupId,
-                        searchTerms.getUserId(),
-                        searchTerms.getKeywords(),
-                        searchTerms.getStatus(),
-                        0,
-                        total,
-                        searchContainer.getOrderByComparator());                
+//                 List<TaskRecord> all = TaskRecordLocalServiceUtil.search(
+//                         companyId, groupId,
+//                         searchTerms.getUserId(),
+//                         searchTerms.getKeywords(),
+//                         searchTerms.getStatus(),
+//                         0,
+//                         total,
+//                         searchContainer.getOrderByComparator());                
                 
-                hours = TimetrackerPortletUtil.getHours(all); 
-            }
+//                 hours = TimetrackerPortletUtil.getHours(all); 
+//             }
         
             orderByCol = searchContainer.getOrderByCol(); 
             orderByType = searchContainer.getOrderByType(); 
