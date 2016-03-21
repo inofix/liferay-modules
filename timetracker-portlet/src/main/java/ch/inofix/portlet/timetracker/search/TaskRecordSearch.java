@@ -20,106 +20,100 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 /**
- * 
  * @author Christian Berndt
  * @created 2013-10-06 18:26
  * @modified 2013-10-06 18:26
  * @version 1.0
- * 
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
-	// Enable logging for this class.
-	public static final Log _log = LogFactoryUtil.getLog(TaskRecordSearch.class
-			.getName());
+    // Enable logging for this class.
+    public static final Log _log =
+        LogFactoryUtil.getLog(TaskRecordSearch.class.getName());
 
-	// Default configuration for column headers
-	// and orderable column headers
-	static List<String> headerNames = new ArrayList<String>();
-	static Map<String, String> orderableHeaders = new HashMap<String, String>();
+    // Default configuration for column headers
+    // and orderable column headers
+    static List<String> headerNames = new ArrayList<String>();
+    static Map<String, String> orderableHeaders = new HashMap<String, String>();
 
-	static {
-		headerNames.add(TaskRecordFields.TASK_RECORD_ID);
-		headerNames.add(TaskRecordFields.WORK_PACKAGE);
-		headerNames.add(TaskRecordFields.DESCRIPTION);
-		headerNames.add(TaskRecordFields.START_DATE);
-		headerNames.add(TaskRecordFields.END_DATE);
-		headerNames.add(TaskRecordFields.DURATION);
+    static {
+        headerNames.add(TaskRecordFields.TASK_RECORD_ID);
+        headerNames.add(TaskRecordFields.WORK_PACKAGE);
+        headerNames.add(TaskRecordFields.DESCRIPTION);
+        headerNames.add(TaskRecordFields.START_DATE);
+        headerNames.add(TaskRecordFields.END_DATE);
+        headerNames.add(TaskRecordFields.DURATION);
 
-		orderableHeaders.put(TaskRecordFields.TASK_RECORD_ID,
-				TaskRecordFields.TASK_RECORD_ID);
-		orderableHeaders.put(TaskRecordFields.WORK_PACKAGE, TaskRecordFields.WORK_PACKAGE);
-		orderableHeaders.put(TaskRecordFields.DESCRIPTION, TaskRecordFields.DESCRIPTION);
-		orderableHeaders.put(TaskRecordFields.START_DATE,
-				TaskRecordFields.START_DATE);
-		orderableHeaders.put(TaskRecordFields.END_DATE,
-				TaskRecordFields.END_DATE);
-		orderableHeaders.put(TaskRecordFields.DURATION,
-				TaskRecordFields.DURATION);
-	}
+        orderableHeaders.put(
+            TaskRecordFields.TASK_RECORD_ID, TaskRecordFields.TASK_RECORD_ID);
+        orderableHeaders.put(
+            TaskRecordFields.WORK_PACKAGE, TaskRecordFields.WORK_PACKAGE);
+        orderableHeaders.put(
+            TaskRecordFields.DESCRIPTION, TaskRecordFields.DESCRIPTION);
+        orderableHeaders.put(
+            TaskRecordFields.START_DATE, TaskRecordFields.START_DATE);
+        orderableHeaders.put(
+            TaskRecordFields.END_DATE, TaskRecordFields.END_DATE);
+        orderableHeaders.put(
+            TaskRecordFields.DURATION, TaskRecordFields.DURATION);
+    }
 
-	/**
-	 * Call the constructor with the default parameter for the current page
-	 * value ("cur").
-	 * 
-	 * @param portletRequest
-	 *            the portletRequest.
-	 * @param iteratorURL
-	 *            the iteratorURL.
-	 */
-	public TaskRecordSearch(PortletRequest portletRequest,
-			PortletURL iteratorURL) {
+    /**
+     * Call the constructor with the default parameter for the current page
+     * value ("cur").
+     * 
+     * @param portletRequest
+     *            the portletRequest.
+     * @param iteratorURL
+     *            the iteratorURL.
+     */
+    public TaskRecordSearch(
+        PortletRequest portletRequest, PortletURL iteratorURL) {
 
-		this(portletRequest, DEFAULT_CUR_PARAM, iteratorURL);
-	}
+        this(portletRequest, DEFAULT_CUR_PARAM, iteratorURL);
+    }
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param portletRequest
-	 *            the request.
-	 * @param curParam
-	 *            parameter for the current page value ("cur").
-	 * @param iteratorURL
-	 *            the URL of the portlet.
-	 */
-	public TaskRecordSearch(PortletRequest portletRequest, String curParam,
-			PortletURL iteratorURL) {
+    /**
+     * Constructor.
+     * 
+     * @param portletRequest
+     *            the request.
+     * @param curParam
+     *            parameter for the current page value ("cur").
+     * @param iteratorURL
+     *            the URL of the portlet.
+     */
+    public TaskRecordSearch(
+        PortletRequest portletRequest, String curParam, PortletURL iteratorURL) {
 
-		// Pass the constructor parameters to the superclass.
-		super(portletRequest, new TaskRecordDisplayTerms(portletRequest),
-				new TaskRecordSearchTerms(portletRequest), curParam,
-				DEFAULT_DELTA, iteratorURL, headerNames,
-				"no-task-records-found");
+        // Pass the constructor parameters to the superclass.
+        super(portletRequest, new TaskRecordDisplayTerms(portletRequest), new TaskRecordSearchTerms(
+            portletRequest), curParam, DEFAULT_DELTA, iteratorURL, headerNames, "no-task-records-found");
 
-		_log.info("Creating a new TaskRecordSearch object.");
+        // Get the orderByCol and orderByType either from
+        // the request or from the portlet's preferences.
+        try {
 
-		// Get the orderByCol and orderByType either from
-		// the request or from the portlet's preferences.
-		try {
+            String orderByCol =
+                ParamUtil.getString(
+                    portletRequest, TimetrackerPortletKeys.ORDER_BY_COL);
+            String orderByType =
+                ParamUtil.getString(
+                    portletRequest, TimetrackerPortletKeys.ORDER_BY_TYPE);
 
-			String orderByCol = ParamUtil.getString(portletRequest,
-					TimetrackerPortletKeys.ORDER_BY_COL);
-			String orderByType = ParamUtil.getString(portletRequest,
-					TimetrackerPortletKeys.ORDER_BY_TYPE);
+            OrderByComparator obc =
+                TimetrackerPortletUtil.getOrderByComparator(
+                    orderByCol, orderByType);
 
-			_log.info("Retrieving an OrderByComparator object with the "
-					+ "timetracker portlet's utility class.");
+            // Pass the orderBy parameter to the super class.
+            super.setOrderByCol(orderByCol);
+            super.setOrderByType(orderByType);
+            super.setOrderByComparator(obc);
 
-			_log.debug("orderByCol = " + orderByCol);
-			_log.debug("orderByType = " + orderByType);
-
-			OrderByComparator obc = TimetrackerPortletUtil
-					.getOrderByComparator(orderByCol, orderByType);
-
-			// Pass the orderBy parameter to the super class.
-			super.setOrderByCol(orderByCol);
-			super.setOrderByType(orderByType);
-			super.setOrderByComparator(obc);
-
-		} catch (Exception e) {
-			_log.error(e);
-		}
-	}
+        }
+        catch (Exception e) {
+            _log.error(e);
+        }
+    }
 
 }
