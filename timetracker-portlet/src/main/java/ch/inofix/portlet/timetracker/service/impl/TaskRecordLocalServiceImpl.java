@@ -1,4 +1,3 @@
-
 package ch.inofix.portlet.timetracker.service.impl;
 
 import java.util.Date;
@@ -34,8 +33,8 @@ import ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-03-20 17:30
- * @version 1.0.3
+ * @modified 2016-03-21 21:38
+ * @version 1.0.4
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -82,53 +81,35 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         int startDateMinute, long duration, ServiceContext serviceContext)
         throws PortalException, SystemException {
 
-        _log.info("addTaskRecord().");
-        
-        TaskRecord taskRecord = null; 
+        Date endDate =
+            PortalUtil.getDate(
+                endDateMonth, endDateDay, endDateYear, endDateHour,
+                endDateMinute, TaskRecordEndDateException.class);
 
-        try {
-            
-            _log.info("endDateMonth = " + endDateMonth);
-            _log.info("endDateDay = " + endDateDay);
-            _log.info("endDateYear = " + endDateYear);
-            _log.info("endDateHour = " + endDateHour);
-            _log.info("endDateMinute = " + endDateMinute);
+        Date startDate =
+            PortalUtil.getDate(
+                startDateMonth, startDateDay, startDateYear, startDateHour,
+                startDateMinute, TaskRecordStartDateException.class);
 
-            Date endDate =
-                PortalUtil.getDate(
-                    endDateMonth, endDateDay, endDateYear, endDateHour,
-                    endDateMinute, TaskRecordEndDateException.class);
+        // TODO
+        int status = WorkflowConstants.STATUS_APPROVED;
 
-            Date startDate =
-                PortalUtil.getDate(
-                    startDateMonth, startDateDay, startDateYear, startDateHour,
-                    startDateMinute, TaskRecordStartDateException.class);
+        TaskRecord taskRecord =
+            saveTaskRecord(
+                userId, groupId, 0, description, duration, endDate, startDate,
+                status, workPackage, serviceContext);
 
-            // TODO
-            int status = WorkflowConstants.STATUS_APPROVED;
+        // Asset
 
-            taskRecord = 
-//            TaskRecord taskRecord =
-                saveTaskRecord(
-                    userId, groupId, 0, description, duration, endDate,
-                    startDate, status, workPackage, serviceContext);
+        resourceLocalService.addResources(
+            taskRecord.getCompanyId(), groupId, userId,
+            TaskRecord.class.getName(), taskRecord.getTaskRecordId(), false,
+            true, true);
 
-            // Asset
-
-            resourceLocalService.addResources(
-                taskRecord.getCompanyId(), groupId, userId,
-                TaskRecord.class.getName(), taskRecord.getTaskRecordId(),
-                false, true, true);
-
-            updateAsset(
-                userId, taskRecord, serviceContext.getAssetCategoryIds(),
-                serviceContext.getAssetTagNames(),
-                serviceContext.getAssetLinkEntryIds());
-
-        }
-        catch (Exception e) {
-            _log.error(e);
-        }
+        updateAsset(
+            userId, taskRecord, serviceContext.getAssetCategoryIds(),
+            serviceContext.getAssetTagNames(),
+            serviceContext.getAssetLinkEntryIds());
 
         return taskRecord;
 
@@ -151,8 +132,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public TaskRecord deleteTaskRecord(long taskRecordId)
         throws PortalException, SystemException {
 
-        _log.info("Executing deleteTaskRecord(taskRecordId).");
-
         TaskRecord taskRecord =
             taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
@@ -174,9 +153,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         long duration, Date endDate, Date startDate, int status,
         String workPackage, ServiceContext serviceContext)
         throws PortalException, SystemException {
-
-        _log.info("saveTaskRecord().");
-        _log.info("groupId = " + groupId);
 
         User user = userPersistence.findByPrimaryKey(userId);
         Date now = new Date();
