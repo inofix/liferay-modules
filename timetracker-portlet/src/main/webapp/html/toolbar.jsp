@@ -16,7 +16,7 @@
             id="actionsButtonContainer" label="actions">
 
             <%
-                String downloadTaskRecordsURL = "javascript:" + renderResponse.getNamespace() + "downloadVCards();";
+                String downloadTaskRecordsURL = "javascript:" + renderResponse.getNamespace() + "downloadTaskRecords();";
             %>
 
             <aui:nav-item href="<%=downloadTaskRecordsURL%>" iconCssClass="icon-download"

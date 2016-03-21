@@ -27,7 +27,7 @@ import ch.inofix.portlet.timetracker.service.permission.TimetrackerPortletPermis
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil
  * @created 2015-05-07 23:50
- * @modified 2016-03-20 18:24
+ * @modified 2016-03-21 20:31
  * @version 1.0.0
  */
 public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
@@ -45,29 +45,26 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     /**
      * Return the added taskRecord.
      * 
-     * @param userId
-     * @param groupId
-     * @param card
-     *            the vCard string
-     * @param uid
-     *            the vCard's uid
-     * @return the added taskRecord
      * @since 1.0.0
      * @throws PortalException
      * @throws SystemException
      */
     public TaskRecord addTaskRecord(
-        long userId, long groupId, String card, String uid,
-        ServiceContext serviceContext)
+        long userId, long groupId, String workPackage, String description,
+        String ticketURL, int endDateDay, int endDateMonth, int endDateYear,
+        int endDateHour, int endDateMinute, int startDateDay,
+        int startDateMonth, int startDateYear, int startDateHour,
+        int startDateMinute, long duration, ServiceContext serviceContext)
         throws PortalException, SystemException {
 
         TimetrackerPortletPermission.check(
             getPermissionChecker(), groupId, ActionKeys.ADD_TASK_RECORD);
 
-        // TODO
-        return null;
-        // return TaskRecordLocalServiceUtil.addTaskRecord(
-        // userId, groupId, card, uid, serviceContext);
+        return taskRecordLocalService.addTaskRecord(
+            userId, groupId, workPackage, description, ticketURL, endDateDay,
+            endDateMonth, endDateYear, endDateHour, endDateMinute,
+            startDateDay, startDateMonth, startDateYear, startDateHour,
+            startDateMinute, duration, serviceContext);
 
     }
 
@@ -127,30 +124,27 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     }
 
     /**
-     * @param userId
-     * @param groupId
-     * @param taskRecordId
-     * @param card
-     * @param uid
-     * @param serviceContext
      * @return
      * @since 1.0.2
      * @throws PortalException
      * @throws SystemException
      */
     public TaskRecord updateTaskRecord(
-        long userId, long groupId, long taskRecordId, String card, String uid,
-        ServiceContext serviceContext)
+        long userId, long groupId, long taskRecordId, String workPackage, String description,
+        String ticketURL, int endDateDay, int endDateMonth, int endDateYear,
+        int endDateHour, int endDateMinute, int startDateDay,
+        int startDateMonth, int startDateYear, int startDateHour,
+        int startDateMinute, long duration, ServiceContext serviceContext)
         throws PortalException, SystemException {
 
         TaskRecordPermission.check(
             getPermissionChecker(), taskRecordId, ActionKeys.UPDATE);
 
-        // TODO
-        // return TaskRecordLocalServiceUtil.updateTaskRecord(
-        // userId, groupId, taskRecordId, card, uid, serviceContext);
-
-        return null;
+        return taskRecordLocalService.updateTaskRecord(
+            userId, groupId, taskRecordId, workPackage, description, ticketURL,
+            endDateDay, endDateMonth, endDateYear, endDateHour, endDateMinute,
+            startDateDay, startDateMonth, startDateYear, startDateHour,
+            startDateMinute, duration, serviceContext);
 
     }
 }

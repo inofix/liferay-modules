@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-03-20 17:09 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2016-03-21 20:42 by Christian Berndt
+    Version:     1.0.3
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -64,6 +64,7 @@
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="/WEB-INF/tld/inofix-util.tld" prefix="iu"%>
 <%@ taglib uri="/inofix-util" prefix="ifx-util" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>

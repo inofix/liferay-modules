@@ -6,6 +6,7 @@
     Version:     1.0.5
  --%>
  
+<%@page import="ch.inofix.portlet.timetracker.search.TaskRecordChecker"%>
 <%@ include file="/html/init.jsp"%>
  
 <%-- Import required classes --%>
@@ -92,6 +93,9 @@
         }       
     }
     
+    TaskRecordChecker rowChecker = new TaskRecordChecker(liferayPortletResponse); 
+    rowChecker.setCssClass("entry-selector");
+    
 %>
 
 <div id="<portlet:namespace />timetrackerContainer">
@@ -113,15 +117,16 @@
 
 		<c:otherwise>
 
-			<liferay-ui:app-view-toolbar includeDisplayStyle="<%=true%>"
-				includeSelectAll="<%=true%>">
-				
-                <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/toolbar.jsp" />   				
-				
-			</liferay-ui:app-view-toolbar>
+            <liferay-ui:app-view-toolbar                 
+                includeDisplayStyle="<%=true%>"
+                includeSelectAll="<%=true%>">
+                
+                <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/toolbar.jsp" />   
+                            
+            </liferay-ui:app-view-toolbar>
 			
 			
-	         <portlet:actionURL name="editSet" var="editSetURL">
+	        <portlet:actionURL name="editSet" var="editSetURL">
             </portlet:actionURL>
 
             <aui:form action="<%= editSetURL %>" name="fm" 
@@ -182,14 +187,14 @@
                                 <portlet:param name="redirect" value="<%= currentURL %>" />
                                 <portlet:param name="taskRecordId"
                                     value="<%= String.valueOf(taskRecord.getTaskRecordId()) %>" />
-                                <portlet:param name="mvcPath" value="/html/view_taskRecord.jsp" />
+                                <portlet:param name="mvcPath" value="/html/view_task_record.jsp" />
                                 <portlet:param name="windowId" value="viewTaskRecord" />
                             </portlet:actionURL>
         
                             <%
                             
-                                String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
-                                String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
+//                                 String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+//                                 String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
                             
                                 boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker,
                                         taskRecord.getTaskRecordId(), ActionKeys.DELETE);   
@@ -203,9 +208,11 @@
                                 String detailURL = null;
         
                                 if (hasUpdatePermission) {                                    
-                                    detailURL = taglibEditURL;                                     
+                                    detailURL = editURL;                                     
+//                                     detailURL = taglibEditURL;                                     
                                 } else if (hasViewPermission) {
-                                    detailURL = taglibViewURL;  
+                                    detailURL = viewURL;  
+//                                     detailURL = taglibViewURL;  
                                 }
                             %>
         
@@ -216,13 +223,15 @@
                                 <liferay-ui:icon-menu>
         
                                     <c:if test="<%= hasUpdatePermission %>">
-                                        <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" />
+                                        <liferay-ui:icon image="edit" url="<%=editURL%>" />
+<%--                                         <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" /> --%>
                                     </c:if>
                                     <c:if test="<%= hasPermissionsPermission %>">
                                         <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
                                     </c:if>
                                     <c:if test="<%= hasViewPermission %>">
-                                        <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
+                                        <liferay-ui:icon image="view" url="<%=viewURL%>" />
+<%--                                         <liferay-ui:icon image="view" url="<%=taglibViewURL%>" /> --%>
                                     </c:if>
                                     <c:if test="<%= hasViewPermission %>">
                                         <liferay-ui:icon image="download" url="<%= downloadVCardURL %>" />
@@ -242,6 +251,29 @@
                     </liferay-ui:search-container>
 	            </div>           
             </aui:form>
+            
+            <aui:script use="timetracker-navigation">
+            
+                new Liferay.Portlet.TimetrackerNavigation(
+                    {
+                        displayStyle: '<%= HtmlUtil.escapeJS(displayStyle) %>',
+                        namespace: '<portlet:namespace />',
+                        portletId: '<%= portletDisplay.getId() %>',
+                        rowIds: '<%= RowChecker.ROW_IDS %>',
+                        select: {
+            
+                           <%
+                           String[] escapedDisplayViews = new String[displayViews.length];
+            
+                           for (int i = 0; i < displayViews.length; i++) {
+                               escapedDisplayViews[i] = HtmlUtil.escapeJS(displayViews[i]);
+                           }
+                           %>
+            
+                           displayViews: ['<%= StringUtil.merge(escapedDisplayViews, "','") %>']
+                       }
+                    }); 
+            </aui:script>            
             
             <aui:script>
                 Liferay.provide(window, '<portlet:namespace />editSet', 
