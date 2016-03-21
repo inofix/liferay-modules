@@ -6,10 +6,11 @@
     Version:     1.0.5
  --%>
  
-<%@page import="ch.inofix.portlet.timetracker.search.TaskRecordChecker"%>
 <%@ include file="/html/init.jsp"%>
  
 <%-- Import required classes --%>
+
+<%@page import="ch.inofix.portlet.timetracker.search.TaskRecordChecker"%>
 
 <%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%>
 <%@page import="com.liferay.portal.kernel.exception.SystemException"%>
