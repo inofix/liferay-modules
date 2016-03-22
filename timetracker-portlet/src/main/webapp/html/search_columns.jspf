@@ -3,25 +3,15 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2016-03-20 16:48 by Christian Berndt
-    Version:     1.0.8
+    Modified:    2016-03-22 09:54 by Christian Berndt
+    Version:     1.0.9
 --%>
 
-<%@ include file="/init.jsp" %>
-
 <%
-    //         ResultRow resultRow = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
-//     TaskRecord taskRecord = (TaskRecord)row.getObject();
+    String dateFormatPattern =
+        ((SimpleDateFormat) (DateFormat.getDateTimeInstance(
+            DateFormat.MEDIUM, DateFormat.SHORT, locale))).toPattern();
 
-    String taskRecordId =  String.valueOf(taskRecord.getTaskRecordId());
-
-    String duration = String.valueOf(taskRecord.getDuration() / (60 * 1000));
-
-    String dateFormatPattern = ((SimpleDateFormat) (DateFormat
-        .getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale))).toPattern();
-
-    Date createDate = taskRecord.getCreateDate();
-    Date modifiedDate = taskRecord.getModifiedDate();
     Date endDate = taskRecord.getEndDate();
     Date startDate = taskRecord.getStartDate();
 
@@ -29,119 +19,79 @@
     String endDateString = "not available";
 
     if (startDate != null) {
-        startDateString = DateUtil.getDate(startDate,
-        dateFormatPattern, locale);
+        startDateString =
+            DateUtil.getDate(startDate, dateFormatPattern, locale);
     }
 
     if (endDate != null) {
-        endDateString = DateUtil.getDate(endDate,
-        dateFormatPattern, locale);
+        endDateString =
+            DateUtil.getDate(endDate, dateFormatPattern, locale);
     }
-
-    String createDateString = DateUtil.getDate(createDate,
-        dateFormatPattern, locale);
-
-    String modifiedDateString = DateUtil.getDate(modifiedDate,
-            dateFormatPattern, locale);
 %>
 
 <%
     // Crop workpackages if they are too long
-    int maxLength = 35;
-    String workPackageString = taskRecord.getWorkPackage();
-    if (Validator.isNotNull(workPackageString)) {
+//     int maxLength = 35;
+//     String workPackageString = taskRecord.getWorkPackage();
+//     if (Validator.isNotNull(workPackageString)) {
 
-        // TODO: Make the preferred workpackage
-        // display length configurable.
-        if (workPackageString.length() > maxLength) {
-            workPackageString = workPackageString.substring(0,
-                    maxLength) + " ...";
-        }
-    }
+//         // TODO: Make the preferred workpackage
+//         // display length configurable.
+//         if (workPackageString.length() > maxLength) {
+//             workPackageString = workPackageString.substring(0,
+//                     maxLength) + " ...";
+//         }
+//     }
 
-    // Compose the string used as title attribute
-    String title = taskRecord.getWorkPackage() + ": "
-            + taskRecord.getDescription();
+//     // Compose the string used as title attribute
+//     String title = taskRecord.getWorkPackage() + ": "
+//             + taskRecord.getDescription();
 %>
 
 <%
-    // TODO: Make the displayed rows configurable.
+    for (String column : columns) {
 %>
 
-<liferay-ui:search-container-column-text
-    cssClass="id"
-    name="id"
-    value="<%= taskRecordId %>"
-    href="<%= detailURL %>"
-/>
-
-<liferay-ui:search-container-column-text
-    cssClass="work-package"
-    name="work-package"
-    title="<%= title %>"
-    value="<%= workPackageString %>"
-    href="<%= detailURL %>"
-    orderable="<%= true %>"
-    orderableProperty="<%= TaskRecordFields.WORK_PACKAGE %>"
-
-/>
-
-<liferay-ui:search-container-column-text
-    cssClass="date"
-    name="date"
-    value="<%= startDateString %>"
-    href="<%= detailURL %>"
-    orderable="<%= true %>"
-    orderableProperty="<%= TaskRecordFields.START_DATE %>"
-/>
-
-<%--
-<liferay-ui:search-container-column-text
-    title="end-date"
-    name="<%= TaskRecordFields.END_DATE %>"
-    value="<%= endDateString %>"
-    href="<%= detailURL %>"
-    orderable="<%= true %>"
-/>
---%>
-
-<liferay-ui:search-container-column-text
-    cssClass="duration"
-    name="duration"
-    value="<%= duration %>"
-    href="<%= detailURL %>"
-    orderable="<%= true %>"
-    orderableProperty="<%= TaskRecordFields.DURATION %>"
-/>
-
-<liferay-ui:search-container-column-text
-    cssClass="create-date"
-    name="create-date"
-    value="<%= createDateString %>"
-    href="<%= detailURL %>"
-    orderable="<%= true %>"
-    orderableProperty="<%= CommonFields.CREATE_DATE %>"
-/>
-
-<liferay-ui:search-container-column-text
-    cssClass="modified-date"
-    name="modified-date"
-    value="<%= modifiedDateString %>"
-    href="<%= detailURL %>"
-    orderable="<%= true %>"
-    orderableProperty="<%= CommonFields.MODIFIED_DATE %>"
-/>
-
-<liferay-ui:search-container-column-text
-    cssClass="user-name"
-    name="user-name"
-    value="<%= taskRecord.getUserName() %>"
-    href="<%= detailURL %>"
-    orderable="<%= true %>"
-    orderableProperty="<%= CommonFields.USER_NAME %>"
-/>
-
-<%-- 
-<liferay-ui:search-container-column-jsp
-    path="/task_record_action.jsp"/>
---%>
+<c:if test='<%="create-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="createDate"
+        name="create-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="createDate" />
+</c:if>
+<c:if test='<%="duration".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="duration"
+        name="duration" orderable="true" href="<%=detailURL%>"
+        orderableProperty="duration" />
+</c:if>
+<c:if test='<%="end-date".equals(column)%>'>
+    <liferay-ui:search-container-column-text value="<%= endDateString %>"
+        name="end-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="endDate" />
+</c:if>
+<c:if test='<%="modified-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="modifiedDate"
+        name="modified-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="modifiedDate"  />
+</c:if>
+<c:if test='<%="start-date".equals(column)%>'>
+    <liferay-ui:search-container-column-text value="<%= startDateString %>"
+        name="start-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="startDate" />
+</c:if>
+<c:if test='<%="task-record-id".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="taskRecordId"
+        name="task-record-id" orderable="true" href="<%=detailURL%>"
+        orderableProperty="taskRecordId" />
+</c:if>
+<c:if test='<%="user-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="userName"
+        name="user-name" orderable="true" href="<%=detailURL%>"
+        orderableProperty="userName" />
+</c:if>
+<c:if test='<%="work-package".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="workPackage"
+        name="work-package" orderable="true" href="<%=detailURL%>"
+        orderableProperty="workPackage" />
+</c:if>
+<%
+    }
+%>
