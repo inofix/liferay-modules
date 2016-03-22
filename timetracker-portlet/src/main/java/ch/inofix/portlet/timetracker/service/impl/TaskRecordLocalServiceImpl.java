@@ -1,6 +1,8 @@
+
 package ch.inofix.portlet.timetracker.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.joda.time.Duration;
 
@@ -33,8 +35,8 @@ import ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-03-21 21:38
- * @version 1.0.4
+ * @modified 2016-03-22 13:57
+ * @version 1.0.5
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -127,7 +129,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     /**
-     * @since 1.0
+     * @since 1.0.0
      */
     public TaskRecord deleteTaskRecord(long taskRecordId)
         throws PortalException, SystemException {
@@ -136,6 +138,20 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
         return deleteTaskRecord(taskRecord);
+    }
+
+    /**
+     * 
+     * @param groupId
+     * @return
+     * @since 1.0.5
+     * @throws PortalException
+     * @throws SystemException
+     */
+    public List<TaskRecord> getTaskRecords(long groupId)
+        throws PortalException, SystemException {
+
+        return taskRecordPersistence.findByGroupId(groupId);
     }
 
     /**

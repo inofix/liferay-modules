@@ -114,8 +114,22 @@
 
 	<c:choose>
 
-		<c:when test='<%= tabs1.equals("import-export") %>'>
-			<%@include file="/html/import.jspf"%>
+		<c:when test='<%=tabs1.equals("import-export")%>'>
+            <c:if test='<%=TimetrackerPortletPermission.contains(
+                            permissionChecker, scopeGroupId,
+                            ActionKeys.ADD_TASK_RECORD)%>'>		
+				<%@include file="/html/import.jspf"%>
+			</c:if>
+            <c:if test='<%=TimetrackerPortletPermission.contains(
+                            permissionChecker, scopeGroupId,
+                            ActionKeys.EXPORT)%>'>     
+	            <%@include file="/html/export.jspf"%>
+            </c:if>
+			<c:if test='<%=TimetrackerPortletPermission.contains(
+                            permissionChecker, scopeGroupId,
+                            ActionKeys.DELETE)%>'>
+				<%@include file="/html/delete_task_records.jspf"%>
+			</c:if>
 		</c:when>
 
 		<c:otherwise>
@@ -127,21 +141,23 @@
                 <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/toolbar.jsp" />   
                             
             </liferay-ui:app-view-toolbar>
-			
-			
+						
 	        <portlet:actionURL name="editSet" var="editSetURL">
             </portlet:actionURL>
 
             <aui:form action="<%= editSetURL %>" name="fm" 
                 onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
                 
+                <aui:input name="cmd" type="hidden" value="view"/>                
+                
                 <div id="<portlet:namespace />entriesContainer">
                     <liferay-ui:search-container
                         searchContainer="<%= new TaskRecordSearch(renderRequest, portletURL) %>"
-                        var="taskRecordSearchContainer" rowChecker="<%= rowChecker %>"
+                        var="taskRecordSearchContainer" 
+                        rowChecker="<%= rowChecker %>"
                         >    
                         
-                        <liferay-ui:search-container-results results="<%= taskRecords %>"
+                        <liferay-ui:search-container-results results="<%= taskRecords %>"                           
                             total="<%= hits.getLength() %>" />
         
                         <liferay-ui:search-container-row
@@ -154,13 +170,13 @@
                                 <portlet:param name="backURL" value="<%= currentURL %>" />
                                 <portlet:param name="mvcPath" value="/html/view.jsp" />
                             </portlet:actionURL>
-        
-                            <portlet:resourceURL var="downloadVCardURL" id="serveVCard">
-                                <portlet:param name="taskRecordId"
-                                    value="<%= String.valueOf(taskRecord.getTaskRecordId()) %>" />
-                            </portlet:resourceURL>
-        
-                            <portlet:actionURL var="editURL" name="editTaskRecord"
+
+							<portlet:resourceURL var="downloadTaskRecordURL" id="serveTaskRecord">
+								<portlet:param name="taskRecordId"
+									value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
+							</portlet:resourceURL>
+
+							<portlet:actionURL var="editURL" name="editTaskRecord"
                                 windowState="<%= LiferayWindowState.POP_UP.toString() %>">
                                 <portlet:param name="redirect" value="<%= currentURL %>" />
                                 <portlet:param name="taskRecordId"
@@ -210,8 +226,14 @@
         
                                 String detailURL = null;
         
-                                if (hasUpdatePermission) {                                    
-                                    detailURL = taglibEditURL;                                     
+                                if (hasUpdatePermission) {
+                                    
+                                    if (!viewByDefault) {
+                                        detailURL = taglibEditURL; 
+                                    } else {
+                                        detailURL = taglibViewURL;                                  
+                                    }
+                                    
                                 } else if (hasViewPermission) {
                                     detailURL = taglibViewURL;  
                                 }
@@ -231,12 +253,10 @@
                                     </c:if>
                                     <c:if test="<%= hasViewPermission %>">
                                         <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
-                                    </c:if>
-                                    <%-- 
-                                    <c:if test="<%= hasViewPermission %>">
-                                        <liferay-ui:icon image="download" url="<%= downloadVCardURL %>" />
-                                    </c:if>
-                                    --%>
+                                    </c:if> 
+                                    <%-- <c:if test="<%= hasViewPermission %>">
+                                        <liferay-ui:icon image="download" url="<%= downloadTaskRecordURL %>" />
+                                    </c:if> --%>                                   
                                     <c:if test="<%= hasDeletePermission %>">
                                         <liferay-ui:icon-delete url="<%=deleteURL%>" />
                                     </c:if>
@@ -252,6 +272,30 @@
                     </liferay-ui:search-container>
 	            </div>           
             </aui:form>
+            
+            <aui:script>
+                Liferay.provide(
+                    window,
+                    '<portlet:namespace />toggleActionsButton',
+                    function() {
+                        var A = AUI();
+            
+                        var actionsButton = A.one('#<portlet:namespace />actionsButtonContainer');
+            
+                        var hide = (Liferay.Util.listCheckedExcept(document.<portlet:namespace />fm, '<portlet:namespace /><%= RowChecker.ALL_ROW_IDS %>Checkbox').length == 0);
+                        
+                        if (actionsButton) {
+                                            
+                            actionsButton.toggle(!hide);
+                            
+                        }
+                    },
+                    ['liferay-util-list-fields']
+                );
+            
+                <portlet:namespace />toggleActionsButton();
+                
+            </aui:script>
             
             <aui:script use="timetracker-navigation">
             
