@@ -3,8 +3,8 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2016-03-22 09:54 by Christian Berndt
-    Version:     1.0.9
+    Modified:    2016-03-22 20:42 by Christian Berndt
+    Version:     1.1.0
 --%>
 
 <%
@@ -57,6 +57,11 @@
         name="create-date" orderable="true" href="<%=detailURL%>"
         orderableProperty="createDate" />
 </c:if>
+<c:if test='<%="description".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="description"
+        name="description" orderable="true" href="<%=detailURL%>"
+        orderableProperty="description" />
+</c:if>
 <c:if test='<%="duration".equals(column)%>'>
     <liferay-ui:search-container-column-text property="duration"
         name="duration" orderable="true" href="<%=detailURL%>"
@@ -81,6 +86,11 @@
     <liferay-ui:search-container-column-text property="taskRecordId"
         name="task-record-id" orderable="true" href="<%=detailURL%>"
         orderableProperty="taskRecordId" />
+</c:if>
+<c:if test='<%="ticket-url".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="ticketURL"
+        name="ticket-url" orderable="true" href="<%=detailURL%>"
+        orderableProperty="ticketURL" />
 </c:if>
 <c:if test='<%="user-name".equals(column)%>'>
     <liferay-ui:search-container-column-text property="userName"
