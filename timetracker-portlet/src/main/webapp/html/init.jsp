@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-03-22 09:33 by Christian Berndt
-    Version:     1.0.4
+    Modified:    2016-03-22 10:43 by Christian Berndt
+    Version:     1.0.5
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -92,5 +92,8 @@
 
     // Remove any actionParameters from the currentURL
     currentURL = HttpUtil.removeParameter(currentURL,
-            renderResponse.getNamespace() + "javax.portlet.action");   
+            renderResponse.getNamespace() + "javax.portlet.action");
+    
+    boolean viewByDefault = GetterUtil.getBoolean(portletPreferences
+        .getValue("view-by-default", "false"));
 %>

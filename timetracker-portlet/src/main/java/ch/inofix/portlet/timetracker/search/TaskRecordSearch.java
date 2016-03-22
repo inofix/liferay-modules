@@ -88,7 +88,7 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
         // Pass the constructor parameters to the superclass.
         super(portletRequest, new TaskRecordDisplayTerms(portletRequest), new TaskRecordSearchTerms(
-            portletRequest), curParam, DEFAULT_DELTA, iteratorURL, headerNames, "no-task-records-found");
+            portletRequest), curParam, DEFAULT_DELTA, iteratorURL, headerNames, "there-are-no-results");
 
         // Get the orderByCol and orderByType either from
         // the request or from the portlet's preferences.

@@ -1,0 +1,17 @@
+<%--
+    export.jspf: Export task records to a file
+    
+    Created:    2016-03-22 12:09 by Christian Berndt
+    Modified:   2016-03-22 12:09 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<portlet:resourceURL var="serveTaskRecordsURL" id="exportCSV">
+</portlet:resourceURL>
+
+<aui:fieldset label="export">
+    <aui:button-row>
+        <aui:button href="<%=serveTaskRecordsURL%>" value="export-task-records"
+            cssClass="btn-primary" />
+    </aui:button-row>
+</aui:fieldset>

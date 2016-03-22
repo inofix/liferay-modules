@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 import ch.inofix.portlet.timetracker.model.TaskRecord;
+import ch.inofix.portlet.timetracker.model.impl.TaskRecordImpl;
 import ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil;
 import ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil;
 import ch.inofix.portlet.timetracker.util.CommonFields;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -67,10 +70,45 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-03-22 11:39
- * @version 1.0.6
+ * @modified 2016-03-22 13:54
+ * @version 1.0.8
  */
 public class TimetrackerPortlet extends MVCPortlet {
+
+    /**
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.8
+     * @throws Exception
+     */
+    public void deleteAllTaskRecords(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws Exception {
+
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
+        ServiceContext serviceContext =
+            ServiceContextFactory.getInstance(
+                TaskRecord.class.getName(), actionRequest);
+
+        // TODO: use remote service
+        List<TaskRecord> taskRecords =
+            TaskRecordLocalServiceUtil.getTaskRecords(serviceContext.getScopeGroupId());
+
+        for (TaskRecord taskRecord : taskRecords) {
+
+            // TODO: Add try-catch and count failed deletions
+            taskRecord =
+                TaskRecordServiceUtil.deleteTaskRecord(taskRecord.getTaskRecordId());
+
+        }
+
+        SessionMessages.add(
+            actionRequest, "request_processed",
+            PortletUtil.translate("successfully-deleted-x-task-records"));
+
+        actionResponse.setRenderParameter("tabs1", tabs1);
+    }
 
     /**
      * @param actionRequest
@@ -203,6 +241,38 @@ public class TimetrackerPortlet extends MVCPortlet {
         actionResponse.setRenderParameter("mvcPath", mvcPath);
         actionResponse.setRenderParameter("redirect", redirect);
         actionResponse.setRenderParameter("windowId", windowId);
+
+    }
+
+    protected void exportCSV(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+        throws PortalException, SystemException, IOException {
+
+        _log.info("exportCSV().");
+
+        // TODO: Move this to an exportTaskRecords() method in
+        // TaskRecordServiceImpl and check for the export permission
+        List<TaskRecord> taskRecords =
+            TaskRecordLocalServiceUtil.getTaskRecords(0, Integer.MAX_VALUE);
+
+        StringBuilder sb = new StringBuilder();
+        Field[] fields = TaskRecordImpl.class.getFields();
+
+        for (Field field : fields) {
+            _log.info(field.getName());
+        }
+
+        for (TaskRecord taskRecord : taskRecords) {
+
+            // sb.append(taskRecord.getCard());
+            // sb.append("\n");
+        }
+
+        String export = sb.toString();
+
+        PortletResponseUtil.sendFile(
+            resourceRequest, resourceResponse, "list.csv", export.getBytes(),
+            ContentTypes.TEXT_PLAIN_UTF8);
 
     }
 
@@ -797,11 +867,11 @@ public class TimetrackerPortlet extends MVCPortlet {
                         duration, serviceContext);
             }
 
-            String message = PortletUtil.translate("no-task-records-found");
+            String message = PortletUtil.translate("there-are-no-results");
 
             // ServiceContext serviceContext =
             // ServiceContextFactory.getInstance(
-            // Contact.class.getName(), uploadPortletRequest);
+            // TaskRecord.class.getName(), uploadPortletRequest);
             //
             // if (vCards.size() > 0) {
             //
@@ -1209,9 +1279,12 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             String resourceID = resourceRequest.getResourceID();
 
-            _log.debug("resourceId = " + resourceRequest.getResourceID());
+            _log.info("resourceId = " + resourceRequest.getResourceID());
 
-            if ("exportTaskRecords".equals(resourceID)) {
+            if ("exportCSV".equals(resourceID)) {
+                exportCSV(resourceRequest, resourceResponse);
+            }
+            else if ("exportTaskRecords".equals(resourceID)) {
                 exportTaskRecords(resourceRequest, resourceResponse);
             }
             else {
