@@ -2,8 +2,8 @@
  * main.css: css specific to the timetracker-portlet.
  *
  * Created: 	2013-10-09 22:44 by Christian Berndt
- * Modified: 	2016-03-22 11:00 by Christian Berndt
- * Version:		1.0.6
+ * Modified: 	2016-03-23 00:26 by Christian Berndt
+ * Version:		1.0.7
  * 
  */
 
@@ -34,24 +34,38 @@
     /** fit the select all-entries button into the header row */
     .lfr-header-row-content  {
        padding: 0;
-    }    
-    
-    /**
-     * Override the default settings 
-     * for the aui-select width
-     */
-/*     input, */
-/*     select, */
-/*     .taglib-search-toggle button { */
-/*         width: 178px; */
-/*         margin-right: 5px; */
-/*     } */
+    }
 
     .navbar {
-        .btn.add-task-record {
-            margin-top: 8px;
-            margin-left: 8px;
-        }        
+        
+        .btn {
+        
+            margin-top: auto;
+            
+            &.add-task-record {
+                margin-top: 8px;       
+                margin-left: 8px;       
+            }
+            
+            &.clear-btn {
+                margin-left: 8px;
+            }      
+        }
+    }
+    
+    .popover {
+            
+        .control-group {
+            margin-bottom: 5px;
+        }
+        
+        .fieldset {
+            margin-top: 5px;
+        }
+        
+        select {
+            margin-bottom: 0; 
+        }
     } 
     
     select.time-picker-select {
@@ -64,23 +78,26 @@
      * custom.css
      */
     .taglib-search-toggle {
-        background: #E8EAEB;
-        border: 1px solid #979798;
-        border-color: #979798 #FAFAFB #FAFAFB #BDBDBE;
     
-        padding: 5px 5px 2px;
+        float: left; 
+        
+/*         background: #E8EAEB; */
+/*         border: 1px solid #979798; */
+/*         border-color: #979798 #FAFAFB #FAFAFB #BDBDBE; */
     
-        border-radius: 4px;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
+/*         padding: 5px 5px 2px; */
+    
+/*         border-radius: 4px; */
+/*         -webkit-border-radius: 4px; */
+/*         -moz-border-radius: 4px; */
         
-        -moz-box-shadow: inset 0 0 8px #CECECE;
-        -webkit-box-shadow: inset 0 0 8px #CECECE;
-        -o-box-shadow: inset 0 0 8px #CECECE;
-        box-shadow: inset 0 0 8px #CECECE;
+/*         -moz-box-shadow: inset 0 0 8px #CECECE; */
+/*         -webkit-box-shadow: inset 0 0 8px #CECECE; */
+/*         -o-box-shadow: inset 0 0 8px #CECECE; */
+/*         box-shadow: inset 0 0 8px #CECECE; */
         
-        margin-bottom: 5px;
-        padding-bottom: 5px;
+/*         margin-bottom: 5px; */
+/*         padding-bottom: 5px; */
         
         button {
             margin-top: -5px;

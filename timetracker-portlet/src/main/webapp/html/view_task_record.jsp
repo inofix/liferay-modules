@@ -2,15 +2,13 @@
     view_task_record.jsp: view a single task-record.. 
     
     Created:    2016-03-22 09:16 by Christian Berndt
-    Modified:   2016-03-22 09:16 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-03-23 00:27 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@include file="/html/init.jsp"%>
 
 <%-- Import required classes --%>
-<%@page import="javax.portlet.WindowState"%>
-
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 
 <%@page import="com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil"%>
