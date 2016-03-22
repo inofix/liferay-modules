@@ -67,8 +67,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-03-21 15:35
- * @version 1.0.5
+ * @modified 2016-03-22 11:39
+ * @version 1.0.6
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -83,20 +83,17 @@ public class TimetrackerPortlet extends MVCPortlet {
         ActionRequest actionRequest, ActionResponse actionResponse)
         throws PortalException, SystemException {
 
-        _log.info("Executing deleteTaskRecord().");
-
         // Get the parameters from the request.
         long taskRecordId =
             ParamUtil.getLong(actionRequest, TaskRecordFields.TASK_RECORD_ID);
 
         // Delete the requested taskRecord.
-        // TODO: Use the remote service instead.
-        TaskRecordLocalServiceUtil.deleteTaskRecord(taskRecordId);
+        TaskRecordServiceUtil.deleteTaskRecord(taskRecordId);
 
         // Report the successful deletion to the user.
         SessionMessages.add(
             actionRequest, TimetrackerPortletKeys.REQUEST_PROCESSED,
-            "successfully-deleted-the-task-record");
+            PortletUtil.translate("successfully-deleted-the-task-record"));
 
         // Retrieve the parameters which have to be passed to the
         // render-phase and store them in the parameter map.
@@ -126,6 +123,44 @@ public class TimetrackerPortlet extends MVCPortlet {
     /**
      * @param actionRequest
      * @param actionResponse
+     * @since 1.0.6
+     * @throws Exception
+     */
+    protected void doDeleteTaskRecords(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws Exception {
+
+        long[] taskRecordIds = ParamUtil.getLongValues(actionRequest, "rowIds");
+
+        if (taskRecordIds.length > 0) {
+
+            int i = 0;
+            for (long taskRecordId : taskRecordIds) {
+
+                try {
+                    TaskRecordServiceUtil.deleteTaskRecord(taskRecordId);
+                    i++;
+                }
+                catch (Exception e) {
+                    _log.error(e);
+                }
+            }
+
+            SessionMessages.add(
+                actionRequest, "request_processed", PortletUtil.translate(
+                    "successfully-deleted-x-task-records", String.valueOf(i)));
+
+        }
+        else {
+            SessionMessages.add(
+                actionRequest, "request_processed",
+                PortletUtil.translate("no-task-record-selected"));
+        }
+    }
+
+    /**
+     * @param actionRequest
+     * @param actionResponse
      * @throws Exception
      * @since 1.1.9
      */
@@ -136,9 +171,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         String cmd = ParamUtil.getString(actionRequest, "cmd");
 
         if ("delete".equals(cmd)) {
-            // TODO
-            _log.warn("delete method not yet implemented.");
-            // doDeleteContacts(actionRequest, actionResponse);
+            doDeleteTaskRecords(actionRequest, actionResponse);
         }
 
     }
@@ -731,11 +764,11 @@ public class TimetrackerPortlet extends MVCPortlet {
             Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
             for (CSVRecord record : records) {
 
-                String taskRecordId = record.get(0); 
+                String taskRecordId = record.get(0);
                 // String startDate = record.get("startDate");
                 String description = record.get(3);
-                String ticketURL = ""; 
-//                String ticketURL = record.get("ticketURL");
+                String ticketURL = "";
+                // String ticketURL = record.get("ticketURL");
                 String workPackage = record.get(2);
                 long duration = GetterUtil.getLong(record.get(4));
 
@@ -780,7 +813,8 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
         else {
 
-            SessionErrors.add(actionRequest, "file-not-found");
+            SessionErrors.add(
+                actionRequest, PortletUtil.translate("file-not-found"));
 
         }
 
@@ -891,7 +925,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         // Report the successful update back to the user.
         SessionMessages.add(
             actionRequest, TimetrackerPortletKeys.REQUEST_PROCESSED,
-            "successfully-imported-the-task-records");
+            PortletUtil.translate("successfully-imported-the-task-records"));
 
         // Retrieve the parameters which have to be passed to the
         // render-phase and store them in the parameter map.
