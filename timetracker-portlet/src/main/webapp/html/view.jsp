@@ -194,8 +194,8 @@
         
                             <%
                             
-//                                 String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
-//                                 String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
+                                String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+                                String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
                             
                                 boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker,
                                         taskRecord.getTaskRecordId(), ActionKeys.DELETE);   
@@ -209,11 +209,9 @@
                                 String detailURL = null;
         
                                 if (hasUpdatePermission) {                                    
-                                    detailURL = editURL;                                     
-//                                     detailURL = taglibEditURL;                                     
+                                    detailURL = taglibEditURL;                                     
                                 } else if (hasViewPermission) {
-                                    detailURL = viewURL;  
-//                                     detailURL = taglibViewURL;  
+                                    detailURL = taglibViewURL;  
                                 }
                             %>
         
@@ -224,19 +222,19 @@
                                 <liferay-ui:icon-menu>
         
                                     <c:if test="<%= hasUpdatePermission %>">
-                                        <liferay-ui:icon image="edit" url="<%=editURL%>" />
-<%--                                         <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" /> --%>
+                                        <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" />
                                     </c:if>
                                     <c:if test="<%= hasPermissionsPermission %>">
                                         <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
                                     </c:if>
                                     <c:if test="<%= hasViewPermission %>">
-                                        <liferay-ui:icon image="view" url="<%=viewURL%>" />
-<%--                                         <liferay-ui:icon image="view" url="<%=taglibViewURL%>" /> --%>
+                                        <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
                                     </c:if>
+                                    <%-- 
                                     <c:if test="<%= hasViewPermission %>">
                                         <liferay-ui:icon image="download" url="<%= downloadVCardURL %>" />
                                     </c:if>
+                                    --%>
                                     <c:if test="<%= hasDeletePermission %>">
                                         <liferay-ui:icon-delete url="<%=deleteURL%>" />
                                     </c:if>
