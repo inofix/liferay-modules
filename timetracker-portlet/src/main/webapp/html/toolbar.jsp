@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2016-03-20 16:58 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-03-22 12:04 by Christian Berndt
+    Version:    1.0.1
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -19,8 +19,8 @@
                 String downloadTaskRecordsURL = "javascript:" + renderResponse.getNamespace() + "downloadTaskRecords();";
             %>
 
-            <aui:nav-item href="<%=downloadTaskRecordsURL%>" iconCssClass="icon-download"
-                label="download-selected-task-records" />
+            <%-- <aui:nav-item href="<%=downloadTaskRecordsURL%>" iconCssClass="icon-download"
+                label="download-selected-task-records" /> --%>
             
             <%
                 String deleteTaskRecordsURL = "javascript:" + renderResponse.getNamespace() + "editSet('delete');";
@@ -40,9 +40,6 @@
             <portlet:param name="windowId" value="editTaskRecord" />
         </portlet:actionURL>
 
-<%
-   // TODO: Fix missing "ADD_TASK_RECORD" resource issue.
-%>
     <c:if test='<%=TimetrackerPortletPermission.contains(
                             permissionChecker, scopeGroupId,
                             ActionKeys.ADD_TASK_RECORD)%>'>
