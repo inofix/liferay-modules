@@ -2,11 +2,21 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2016-03-22 12:04 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-03-23 00:27 by Christian Berndt
+    Version:    1.0.2
  --%>
 
 <%@ include file="/html/init.jsp"%>
+
+<%
+    PortletURL portletURL = liferayPortletResponse.createRenderURL();
+
+    TaskRecordSearch searchContainer =
+        new TaskRecordSearch(liferayPortletRequest, portletURL);
+
+    TaskRecordDisplayTerms displayTerms =
+        (TaskRecordDisplayTerms) searchContainer.getDisplayTerms();
+%>
 
 <aui:nav-bar>
 
@@ -56,31 +66,33 @@
 
     <aui:nav-bar-search cssClass="pull-right">
 
-        <%
-            // TODO: Move to search.jsp
-        %>
-        <portlet:renderURL var="clearURL" />
+		<liferay-portlet:renderURL varImpl="searchURL"/>
+		
+		<aui:form action="<%= searchURL %>" method="get" name="fm">
+		
+		    <liferay-portlet:renderURLParams varImpl="searchURL" />
+			
+			<liferay-ui:search-toggle 
+			    buttonLabel="search"
+				displayTerms="<%=displayTerms%>"
+				id="toggle_id_timetracker_search"
+				>
+				
+				<aui:fieldset>
+                    <aui:input name="<%= TaskRecordSearchTerms.WORK_PACKAGE %>" value="<%= displayTerms.getWorkPackage() %>"/>
+                    <aui:input name="<%= TaskRecordSearchTerms.DESCRIPTION %>" value="<%= displayTerms.getDescription() %>"/>
+                    <aui:input name="<%= TaskRecordSearchTerms.FROM %>" value="<%= displayTerms.getFrom() %>"/>
+                    <aui:input name="<%= TaskRecordSearchTerms.UNTIL %>" value="<%= displayTerms.getUntil() %>"/>
+				</aui:fieldset>
+				
+			</liferay-ui:search-toggle>
+			
+	        <portlet:renderURL var="clearURL" />
+			
+            <aui:button value="reset" href="<%=clearURL%>" cssClass="clear-btn" />
+            
+		</aui:form>
 
-        <liferay-portlet:renderURL varImpl="searchURL">
-            <portlet:param name="mvcPath" value="/html/view.jsp" />
-        </liferay-portlet:renderURL>
-
-        <div class="form-search">
-            <aui:form action="<%=searchURL%>" method="get" name="fm1"
-                cssClass="pull-right">
-                <liferay-portlet:renderURLParams varImpl="searchURL" />
-
-                <div class="search-form task-record-search">
-                    <span class="aui-search-bar"> <aui:input
-                            inlineField="<%=true%>" label="" name="keywords" size="30"
-                            title="search-task-records" type="text" /> <aui:button type="submit"
-                            value="search" /> <aui:button value="clear"
-                            href="<%=clearURL%>" />
-                    </span>
-                </div>
-            </aui:form>
-        </div>
-
-    </aui:nav-bar-search>
+	</aui:nav-bar-search>
 
 </aui:nav-bar>

@@ -2,8 +2,8 @@
     view.jsp: Default view of the timetracker-portlet.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2016-03-19 21:40 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2016-03-23 00:28 by Christian Berndt
+    Version:     1.0.6
  --%>
  
 <%@ include file="/html/init.jsp"%>
@@ -28,6 +28,7 @@
 <%@page import="ch.inofix.portlet.timetracker.search.TaskRecordChecker"%>
 
 <%
+	boolean advancedSearch = ParamUtil.getBoolean(liferayPortletRequest, TaskRecordDisplayTerms.ADVANCED_SEARCH);
     String backURL = ParamUtil.getString(request, "backURL");
     int delta = ParamUtil.getInteger(request, "delta", 20); 
     String displayStyle = ParamUtil.getString(request, "displayStyle", "list");
@@ -60,7 +61,11 @@
 
     Sort sort = new Sort(orderByCol, reverse);
 
-    searchContext.setKeywords(keywords);
+    if (advancedSearch) {
+        
+    } else {
+        searchContext.setKeywords(keywords);        
+    }
     searchContext.setAttribute("paginationType", "more");
     searchContext.setStart(start);
     searchContext.setEnd(end);
@@ -101,6 +106,8 @@
     rowChecker.setCssClass("entry-selector");
 %>
 
+advancedSearch = <%= advancedSearch %>
+
 <div id="<portlet:namespace />timetrackerContainer">
 
     <liferay-ui:header backURL="<%=backURL%>" title="timetracker" />
@@ -136,7 +143,8 @@
 
             <liferay-ui:app-view-toolbar                 
                 includeDisplayStyle="<%=true%>"
-                includeSelectAll="<%=true%>">
+                includeSelectAll="<%=true%>"
+                >
                 
                 <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/toolbar.jsp" />   
                             
@@ -151,11 +159,12 @@
                 <aui:input name="cmd" type="hidden" value="view"/>                
                 
                 <div id="<portlet:namespace />entriesContainer">
+                
                     <liferay-ui:search-container
                         searchContainer="<%= new TaskRecordSearch(renderRequest, portletURL) %>"
                         var="taskRecordSearchContainer" 
                         rowChecker="<%= rowChecker %>"
-                        >    
+                        >                        
                         
                         <liferay-ui:search-container-results results="<%= taskRecords %>"                           
                             total="<%= hits.getLength() %>" />

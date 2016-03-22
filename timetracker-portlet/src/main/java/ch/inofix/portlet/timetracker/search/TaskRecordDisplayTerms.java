@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 /**
  * @author Christian Berndt
  * @created 2013-10-06 17:34
- * @modified 2016-03-19 22:15
- * @version 1.0.1
+ * @modified 2016-03-22 23:40
+ * @version 1.0.2
  */
 public class TaskRecordDisplayTerms extends DisplayTerms {
 
@@ -25,10 +25,12 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     public static final String DESCRIPTION = "description";
     public static final String DURATION = "duration";
     public static final String END_DATE = "endDate";
+    public static final String FROM = "from";
     public static final String MODIFIED_DATE = "modifiedDate";
     public static final String START_DATE = "startDate";
     public static final String TASK_RECORD_ID = "taskRecordId";
     public static final String WORK_PACKAGE = "workPackage";
+    public static final String UNTIL = "until";
     public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
 
@@ -73,6 +75,11 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         return endDate;
     }
 
+    public String getFrom() {
+
+        return from;
+    }
+
     public long getGroupId() {
 
         return groupId;
@@ -96,6 +103,11 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     public long getTaskRecordId() {
 
         return taskRecordId;
+    }
+
+    public String getUntil() {
+
+        return until;
     }
 
     public long getUserId() {
@@ -133,6 +145,11 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.endDate = endDate;
     }
 
+    public void setFrom(String from) {
+
+        this.from = from;
+    }
+
     public void setGroupId(long groupId) {
 
         this.groupId = groupId;
@@ -158,6 +175,11 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.taskRecordId = taskRecordId;
     }
 
+    public void setUntil(String until) {
+
+        this.until = until;
+    }
+
     public void setUserId(long userId) {
 
         this.userId = userId;
@@ -177,11 +199,13 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     protected String description = null;
     protected String duration = null;
     protected String endDate = null;
+    protected String from = null;
     protected long groupId = 0;
     protected String modifiedDate = null;
     protected String startDate = null;
     protected int status = 0;
     protected long taskRecordId = 0;
+    protected String until = null;
     protected long userId = 0;
     protected String userName = null;
     protected String workPackage = null;
