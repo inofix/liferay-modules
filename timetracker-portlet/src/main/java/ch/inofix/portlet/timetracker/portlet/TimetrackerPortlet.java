@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 import ch.inofix.portlet.timetracker.model.TaskRecord;
-import ch.inofix.portlet.timetracker.model.impl.TaskRecordImpl;
 import ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil;
 import ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil;
 import ch.inofix.portlet.timetracker.util.CommonFields;
@@ -248,31 +246,23 @@ public class TimetrackerPortlet extends MVCPortlet {
         ResourceRequest resourceRequest, ResourceResponse resourceResponse)
         throws PortalException, SystemException, IOException {
 
-        _log.info("exportCSV().");
-
         // TODO: Move this to an exportTaskRecords() method in
         // TaskRecordServiceImpl and check for the export permission
         List<TaskRecord> taskRecords =
             TaskRecordLocalServiceUtil.getTaskRecords(0, Integer.MAX_VALUE);
 
-        StringBuilder sb = new StringBuilder();
-        Field[] fields = TaskRecordImpl.class.getFields();
-
-        for (Field field : fields) {
-            _log.info(field.getName());
-        }
-
+        StringBuffer sb = new StringBuffer();
         for (TaskRecord taskRecord : taskRecords) {
 
-            // sb.append(taskRecord.getCard());
-            // sb.append("\n");
+            sb.append(toCSV(taskRecord));
+            sb.append("\n");
         }
 
         String export = sb.toString();
 
         PortletResponseUtil.sendFile(
-            resourceRequest, resourceResponse, "list.csv", export.getBytes(),
-            ContentTypes.TEXT_PLAIN_UTF8);
+            resourceRequest, resourceResponse, "TaskRecords.csv",
+            export.getBytes(), ContentTypes.TEXT_PLAIN_UTF8);
 
     }
 
@@ -1302,8 +1292,6 @@ public class TimetrackerPortlet extends MVCPortlet {
 
     private String text2tex(String tex) {
 
-        _log.debug("Text: " + tex);
-
         // TODO make this configurable - or at least collect it in a file
         tex = tex.replaceAll("\\\\", ""); // this is simply forbidden!!
         tex = tex.replaceAll("_", "\\\\_");
@@ -1311,8 +1299,51 @@ public class TimetrackerPortlet extends MVCPortlet {
         tex = tex.replaceAll("%", "\\\\%");
         tex = tex.replaceAll("\"", "''");
 
-        _log.debug("TeX: " + tex);
         return tex;
+    }
+
+    private String toCSV(TaskRecord taskRecord) {
+
+        String COMMA = ",";
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(taskRecord.getCompanyId());
+        sb.append(COMMA);
+        sb.append(taskRecord.getCreateDate().getTime());
+        sb.append(COMMA);
+        sb.append(StringPool.QUOTE);
+        sb.append(taskRecord.getDescription());
+        sb.append(StringPool.QUOTE);
+        sb.append(COMMA);
+        sb.append(taskRecord.getDuration());
+        sb.append(COMMA);
+        sb.append(taskRecord.getEndDate().getTime());
+        sb.append(COMMA);
+        sb.append(taskRecord.getGroupId());
+        sb.append(COMMA);
+        sb.append(taskRecord.getStartDate().getTime());
+        sb.append(COMMA);
+        sb.append(taskRecord.getStatus());
+        sb.append(COMMA);
+        sb.append(taskRecord.getTaskRecordId());
+        sb.append(COMMA);
+        sb.append(StringPool.QUOTE);
+        sb.append(taskRecord.getTicketURL());
+        sb.append(StringPool.QUOTE);
+        sb.append(COMMA);
+        sb.append(taskRecord.getUserId());
+        sb.append(COMMA);
+        sb.append(StringPool.QUOTE);
+        sb.append(taskRecord.getUserName());
+        sb.append(StringPool.QUOTE);
+        sb.append(COMMA);
+        sb.append(StringPool.QUOTE);
+        sb.append(taskRecord.getWorkPackage());
+        sb.append(StringPool.QUOTE);
+
+        return sb.toString();
+
     }
 
     /**
