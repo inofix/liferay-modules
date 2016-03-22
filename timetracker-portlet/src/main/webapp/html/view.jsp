@@ -10,8 +10,6 @@
  
 <%-- Import required classes --%>
 
-<%@page import="ch.inofix.portlet.timetracker.search.TaskRecordChecker"%>
-
 <%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%>
 <%@page import="com.liferay.portal.kernel.exception.SystemException"%>
 <%@page import="com.liferay.portal.kernel.exception.PortalException"%>
@@ -26,6 +24,8 @@
 <%@page import="com.liferay.portal.kernel.util.PrefsParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
+
+<%@page import="ch.inofix.portlet.timetracker.search.TaskRecordChecker"%>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
@@ -45,7 +45,6 @@
 %>
 
 <%
-
     Log log = LogFactoryUtil.getLog("docroot.html.view.jsp");
 
     if (idx > 0) {
@@ -53,11 +52,11 @@
     }
     int start = delta * idx;
     int end = delta * idx + delta;
-    
-    SearchContext searchContext = SearchContextFactory
-                    .getInstance(request);
-            
-    boolean reverse = "desc".equals(orderByType); 
+
+    SearchContext searchContext =
+        SearchContextFactory.getInstance(request);
+
+    boolean reverse = "desc".equals(orderByType);
 
     Sort sort = new Sort(orderByCol, reverse);
 
@@ -66,7 +65,7 @@
     searchContext.setStart(start);
     searchContext.setEnd(end);
     searchContext.setSorts(sort);
-    
+
     Indexer indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
 
     Hits hits = indexer.search(searchContext);
@@ -76,27 +75,30 @@
     for (int i = 0; i < hits.getDocs().length; i++) {
         Document doc = hits.doc(i);
 
-        long taskRecordId = GetterUtil.getLong(doc
-                .get(Field.ENTRY_CLASS_PK));
+        long taskRecordId =
+            GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
 
         TaskRecord taskRecord = null;
 
         try {
-            taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
-        } catch (PortalException pe) {
+            taskRecord =
+                TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+        }
+        catch (PortalException pe) {
             log.error(pe.getLocalizedMessage());
-        } catch (SystemException se) {
+        }
+        catch (SystemException se) {
             log.error(se.getLocalizedMessage());
         }
 
         if (taskRecord != null) {
             taskRecords.add(taskRecord);
-        }       
+        }
     }
-    
-    TaskRecordChecker rowChecker = new TaskRecordChecker(liferayPortletResponse); 
+
+    TaskRecordChecker rowChecker =
+        new TaskRecordChecker(liferayPortletResponse);
     rowChecker.setCssClass("entry-selector");
-    
 %>
 
 <div id="<portlet:namespace />timetrackerContainer">
@@ -136,7 +138,7 @@
                 <div id="<portlet:namespace />entriesContainer">
                     <liferay-ui:search-container
                         searchContainer="<%= new TaskRecordSearch(renderRequest, portletURL) %>"
-                        var="taskRecordSearchContainer"
+                        var="taskRecordSearchContainer" rowChecker="<%= rowChecker %>"
                         >    
                         
                         <liferay-ui:search-container-results results="<%= taskRecords %>"
