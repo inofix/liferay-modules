@@ -23,6 +23,7 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
 
     public static final String CREATE_DATE = "createDate";
     public static final String DESCRIPTION = "description";
+    public static final String DURATION = "duration";
     public static final String END_DATE = "endDate";
     public static final String MODIFIED_DATE = "modifiedDate";
     public static final String START_DATE = "startDate";
@@ -37,22 +38,34 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
 
         // Retrieve the parameter values
         // from the request.
-        workPackage = ParamUtil.getString(portletRequest, WORK_PACKAGE);
+        createDate = ParamUtil.getString(portletRequest, CREATE_DATE);
+        description = ParamUtil.getString(portletRequest, DESCRIPTION);
+        duration = ParamUtil.getString(portletRequest, DURATION);
         endDate = ParamUtil.getString(portletRequest, END_DATE);
         groupId = ParamUtil.getLong(portletRequest, CommonFields.GROUP_ID);
+        modifiedDate = ParamUtil.getString(portletRequest, MODIFIED_DATE);
         startDate = ParamUtil.getString(portletRequest, START_DATE);
         status = ParamUtil.getInteger(portletRequest, CommonFields.STATUS);
-        description = ParamUtil.getString(portletRequest, DESCRIPTION);
+        userId = ParamUtil.getLong(portletRequest, USER_ID);
+        userName = ParamUtil.getString(portletRequest, USER_NAME);
+        workPackage = ParamUtil.getString(portletRequest, WORK_PACKAGE);
     }
 
-    // Getters and setters for them form fiels.
+    // Getters and setters for them form fields.
 
-    // Search-form fields.
-    protected String description = null;
+    public String getCreateDate() {
+
+        return createDate;
+    }
 
     public String getDescription() {
 
         return description;
+    }
+
+    public String getDuration() {
+
+        return duration;
     }
 
     public String getEndDate() {
@@ -65,6 +78,11 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         return groupId;
     }
 
+    public String getModifiedDate() {
+
+        return modifiedDate;
+    }
+
     public String getStartDate() {
 
         return startDate;
@@ -75,9 +93,19 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         return status;
     }
 
+    public long getTaskRecordId() {
+
+        return taskRecordId;
+    }
+
     public long getUserId() {
 
         return userId;
+    }
+
+    public String getUserName() {
+
+        return userName;
     }
 
     public String getWorkPackage() {
@@ -85,9 +113,19 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         return workPackage;
     }
 
+    public void setCreateDate(String createDate) {
+
+        this.createDate = createDate;
+    }
+
     public void setDescription(String description) {
 
         this.description = description;
+    }
+
+    public void setDuration(String duration) {
+
+        this.duration = duration;
     }
 
     public void setEndDate(String endDate) {
@@ -100,6 +138,11 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.groupId = groupId;
     }
 
+    public void setModifiedDate(String modifiedDate) {
+
+        this.modifiedDate = modifiedDate;
+    }
+
     public void setStartDate(String startDate) {
 
         this.startDate = startDate;
@@ -110,9 +153,19 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.status = status;
     }
 
+    public void setTaskRecordId(long taskRecordId) {
+
+        this.taskRecordId = taskRecordId;
+    }
+
     public void setUserId(long userId) {
 
         this.userId = userId;
+    }
+
+    public void setUserName(String userName) {
+
+        this.userName = userName;
     }
 
     public void setWorkPackage(String workPackage) {
@@ -120,11 +173,17 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.workPackage = workPackage;
     }
 
+    protected String createDate = null;
+    protected String description = null;
+    protected String duration = null;
     protected String endDate = null;
     protected long groupId = 0;
+    protected String modifiedDate = null;
     protected String startDate = null;
     protected int status = 0;
+    protected long taskRecordId = 0;
     protected long userId = 0;
+    protected String userName = null;
     protected String workPackage = null;
 
 }

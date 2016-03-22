@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -33,6 +35,11 @@ import com.liferay.portal.security.permission.PermissionChecker;
  * @version 1.0.0
  */
 public class TaskRecordIndexer extends BaseIndexer {
+
+    // Enable logging for this class.
+
+    private static final Log _log =
+        LogFactoryUtil.getLog(TaskRecordIndexer.class.getName());
 
     public static final String[] CLASS_NAMES = {
         TaskRecord.class.getName()
@@ -86,18 +93,23 @@ public class TaskRecordIndexer extends BaseIndexer {
         Document document = getBaseModelDocument(PORTLET_ID, taskRecord);
 
         // Set document field values (in alphabetical order)
+        document.addDate(
+            TaskRecordSearchTerms.CREATE_DATE, taskRecord.getCreateDate());
         document.addKeyword(
             TaskRecordSearchTerms.DESCRIPTION, taskRecord.getDescription());
+        document.addNumber(
+            TaskRecordSearchTerms.DURATION, taskRecord.getDuration());
         document.addDate(
             TaskRecordSearchTerms.END_DATE, taskRecord.getEndDate());
         document.addKeyword(
             Field.GROUP_ID, getSiteGroupId(taskRecord.getGroupId()));
+        document.addDate(Field.MODIFIED_DATE, taskRecord.getModifiedDate());
         document.addKeyword(Field.SCOPE_GROUP_ID, taskRecord.getGroupId());
         document.addDate(
             TaskRecordSearchTerms.START_DATE, taskRecord.getStartDate());
         document.addKeyword(
             TaskRecordSearchTerms.TASK_RECORD_ID, taskRecord.getTaskRecordId());
-        document.addDate(Field.MODIFIED_DATE, taskRecord.getModifiedDate());
+        document.addText(Field.TITLE, taskRecord.getWorkPackage());
         document.addKeyword(
             TaskRecordSearchTerms.USER_ID, taskRecord.getUserId());
         document.addKeyword(
