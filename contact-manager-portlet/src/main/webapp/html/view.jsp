@@ -47,58 +47,60 @@
 %>
 
 <%
+    Log log = LogFactoryUtil.getLog("docroot.html.view.jsp");
 
-	Log log = LogFactoryUtil.getLog("docroot.html.view.jsp");
+    if (idx > 0) {
+        idx = idx - 1;
+    }
+    int start = delta * idx;
+    int end = delta * idx + delta;
 
-	if (idx > 0) {
-		idx = idx - 1;
-	}
-	int start = delta * idx;
-	int end = delta * idx + delta;
+    SearchContext searchContext =
+        SearchContextFactory.getInstance(request);
 
-	SearchContext searchContext = SearchContextFactory
-			.getInstance(request);
-	
-	boolean reverse = "desc".equals(orderByType); 
+    boolean reverse = "desc".equals(orderByType);
 
-	Sort sort = new Sort(orderByCol, reverse);
+    Sort sort = new Sort(orderByCol, reverse);
 
-	searchContext.setKeywords(keywords);
-	searchContext.setAttribute("paginationType", "more");
-	searchContext.setStart(start);
-	searchContext.setEnd(end);
-	searchContext.setSorts(sort);
+    searchContext.setKeywords(keywords);
+    searchContext.setAttribute("paginationType", "more");
+    searchContext.setStart(start);
+    searchContext.setEnd(end);
+    searchContext.setSorts(sort);
 
-	Indexer indexer = IndexerRegistryUtil.getIndexer(Contact.class);
+    Indexer indexer = IndexerRegistryUtil.getIndexer(Contact.class);
 
-	Hits hits = indexer.search(searchContext);
+    Hits hits = indexer.search(searchContext);
 
-	List<Contact> contacts = new ArrayList<Contact>();
+    List<Contact> contacts = new ArrayList<Contact>();
 
-	for (int i = 0; i < hits.getDocs().length; i++) {
-		Document doc = hits.doc(i);
+    for (int i = 0; i < hits.getDocs().length; i++) {
+        Document doc = hits.doc(i);
 
-		long contactId = GetterUtil.getLong(doc
-				.get(Field.ENTRY_CLASS_PK));
+        long contactId =
+            GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
 
-		Contact contact_ = null;
+        Contact contact_ = null;
 
-		try {
-			contact_ = ContactLocalServiceUtil.getContact(contactId);
-		} catch (PortalException pe) {
-			log.error(pe.getLocalizedMessage());
-		} catch (SystemException se) {
-			log.error(se.getLocalizedMessage());
-		}
+        try {
+            contact_ = ContactLocalServiceUtil.getContact(contactId);
+        }
+        catch (PortalException pe) {
+            log.error(pe.getLocalizedMessage());
+        }
+        catch (SystemException se) {
+            log.error(se.getLocalizedMessage());
+        }
 
-		if (contact_ != null) {
-			contacts.add(contact_);
-		}
-		
-	}
-	
-    ContactChecker rowChecker = new ContactChecker(liferayPortletResponse); 
-    rowChecker.setCssClass("entry-selector"); 
+        if (contact_ != null) {
+            contacts.add(contact_);
+        }
+
+    }
+
+    ContactChecker rowChecker =
+        new ContactChecker(liferayPortletResponse);
+    rowChecker.setCssClass("entry-selector");
 %>
 
 <div class="portlet-contact-manager" id="<portlet:namespace />contactManagerContainer">
