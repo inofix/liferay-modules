@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-03-21 20:42 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2016-03-22 09:33 by Christian Berndt
+    Version:     1.0.4
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -85,10 +85,12 @@
 <theme:defineObjects />
 
 <%
+	String[] columns = portletPreferences.getValues("columns",
+	    new String[] { "task-record-id", "work-package", "start-date", "duration", "create-date", "modified-date", "user-name" });
+
     String currentURL = PortalUtil.getCurrentURL(request);
 
     // Remove any actionParameters from the currentURL
     currentURL = HttpUtil.removeParameter(currentURL,
-            renderResponse.getNamespace() + "javax.portlet.action");
-    
+            renderResponse.getNamespace() + "javax.portlet.action");   
 %>
