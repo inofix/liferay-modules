@@ -31,8 +31,8 @@ import com.liferay.portal.security.permission.PermissionChecker;
 /**
  * @author Christian Berndt
  * @created 2016-03-19 21:55
- * @modified 2016-03-19 21:55
- * @version 1.0.0
+ * @modified 2016-03-23 10:46
+ * @version 1.0.1
  */
 public class TaskRecordIndexer extends BaseIndexer {
 
@@ -103,7 +103,8 @@ public class TaskRecordIndexer extends BaseIndexer {
             TaskRecordSearchTerms.END_DATE, taskRecord.getEndDate());
         document.addKeyword(
             Field.GROUP_ID, getSiteGroupId(taskRecord.getGroupId()));
-        document.addDate(Field.MODIFIED_DATE, taskRecord.getModifiedDate());
+        document.addDate(
+            TaskRecordSearchTerms.MODIFIED_DATE, taskRecord.getModifiedDate());
         document.addKeyword(Field.SCOPE_GROUP_ID, taskRecord.getGroupId());
         document.addDate(
             TaskRecordSearchTerms.START_DATE, taskRecord.getStartDate());

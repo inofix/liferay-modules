@@ -1,12 +1,10 @@
 package ch.inofix.portlet.timetracker.util;
 
 /**
- *
- * @author         Christian Berndt
- * @created        2013-10-06 18:45
- * @modified    2013-10-18 11:39
- * @version        1.1
- *
+ * @author Christian Berndt
+ * @created 2013-10-06 18:45
+ * @modified 2016-03-23 10:36
+ * @version 1.0.2
  */
 public class TimetrackerPortletKeys {
 
