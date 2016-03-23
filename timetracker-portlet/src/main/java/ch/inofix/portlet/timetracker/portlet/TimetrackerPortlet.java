@@ -68,8 +68,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-03-23 10:36
- * @version 1.0.9
+ * @modified 2016-03-23 11:33
+ * @version 1.1.0
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -136,10 +136,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         String mvcPath =
             ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL =
-            ParamUtil.getString(
-                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
-
         HashMap<String, String[]> params = new HashMap<String, String[]>();
 
         params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
@@ -147,9 +143,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         });
         params.put(TaskRecordFields.TASK_RECORD_ID, new String[] {
             String.valueOf(taskRecordId)
-        });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
-            String.valueOf(redirectURL)
         });
 
         // Pass the relevant parameters to the render phase.
@@ -557,28 +550,6 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
 
-        // List<TaskRecord> taskRecords = TaskRecordLocalServiceUtil.search(
-        // companyId, groupId, userId, workPackage, description,
-        // startDate, endDate, status, 0, total, andOperator, obc);
-
-        // if (taskRecords.isEmpty()) {
-        // return "\"No records in selection.\"";
-        // // return StringPool.BLANK;
-        // }
-
-        String exportProgressId =
-            ParamUtil.getString(resourceRequest, "exportProgressId");
-
-        // Not working in 6.2.x
-        // ProgressTracker progressTracker = new
-        // ProgressTracker(resourceRequest,
-        // exportProgressId);
-
-        // progressTracker.start();
-
-        int percentage = 10;
-        // progressTracker.updateProgress(percentage);
-
         StringBundler sb = new StringBundler(taskRecords.size() * 4);
 
         if ("xml".equals(format)) {
@@ -683,12 +654,7 @@ public class TimetrackerPortlet extends MVCPortlet {
                 sb.append(getTaskRecordCSV(taskRecord));
             }
 
-            percentage = Math.min(10 + (i * 90) / total, 99);
-
-            // progressTracker.updateProgress(percentage);
         }
-
-        // progressTracker.finish();
 
         if ("xml".equals(format)) {
             sb.append("</taskRecords>");
@@ -993,17 +959,10 @@ public class TimetrackerPortlet extends MVCPortlet {
         String mvcPath =
             ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL =
-            ParamUtil.getString(
-                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
-
         Map<String, String[]> params = new HashMap<String, String[]>();
 
         params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
             mvcPath
-        });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
-            String.valueOf(redirectURL)
         });
 
         // Pass the relevant parameters to the render phase.
@@ -1167,10 +1126,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         String mvcPath =
             ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL =
-            ParamUtil.getString(
-                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
-
         actionRequest.setAttribute(TaskRecordFields.VIM_TEXT, vimText);
         actionRequest.setAttribute(TaskRecordFields.VIM_LIST, taskRecords);
 
@@ -1178,9 +1133,6 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
             mvcPath
-        });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
-            String.valueOf(redirectURL)
         });
 
         // Pass the relevant parameters to the render phase.
@@ -1202,8 +1154,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         ResourceRequest resourceRequest, ResourceResponse resourceResponse)
         throws PortalException, SystemException, PortletException, IOException {
 
-        _log.info("Executing servePortlet().");
-
         // Get the parameters from the request
         long taskRecordId =
             ParamUtil.getLong(resourceRequest, TaskRecordFields.TASK_RECORD_ID);
@@ -1213,10 +1163,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         String historyKey =
             ParamUtil.getString(
                 resourceRequest, TimetrackerPortletKeys.HISTORY_KEY);
-
-        _log.debug("taskRecordId = " + taskRecordId);
-        _log.debug("mvcPath = " + mvcPath);
-        _log.debug("historyKey = " + historyKey);
 
         // Load the requested project
         TaskRecord taskRecord = null;
@@ -1263,13 +1209,9 @@ public class TimetrackerPortlet extends MVCPortlet {
         ResourceRequest resourceRequest, ResourceResponse resourceResponse)
         throws PortletException, IOException {
 
-        _log.info("Executing serveResource().");
-
         try {
 
             String resourceID = resourceRequest.getResourceID();
-
-            _log.info("resourceId = " + resourceRequest.getResourceID());
 
             if ("exportCSV".equals(resourceID)) {
                 exportCSV(resourceRequest, resourceResponse);
@@ -1357,8 +1299,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         ActionRequest actionRequest, ActionResponse actionResponse)
         throws PortalException, SystemException {
 
-        _log.info("Executing viewTaskRecord().");
-
         // Get the parameters from the request.
         long taskRecordId =
             ParamUtil.getLong(actionRequest, TaskRecordFields.TASK_RECORD_ID);
@@ -1377,10 +1317,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         String mvcPath =
             ParamUtil.getString(actionRequest, TimetrackerPortletKeys.MVC_PATH);
 
-        String redirectURL =
-            ParamUtil.getString(
-                actionRequest, TimetrackerPortletKeys.REDIRECT_URL);
-
         HashMap<String, String[]> params = new HashMap<String, String[]>();
 
         params.put(TimetrackerPortletKeys.MVC_PATH, new String[] {
@@ -1388,9 +1324,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         });
         params.put(TaskRecordFields.TASK_RECORD_ID, new String[] {
             String.valueOf(taskRecordId)
-        });
-        params.put(TimetrackerPortletKeys.REDIRECT_URL, new String[] {
-            String.valueOf(redirectURL)
         });
 
         // Pass the relevant parameters to the render phase.

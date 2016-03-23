@@ -2,8 +2,8 @@
     edit_taks_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2016-03-21 20:46 by Christian Berndt
-    Version:     1.0.4
+    Modified:    2016-03-23 11:11 by Christian Berndt
+    Version:     1.0.5
 
 --%>
 
@@ -54,9 +54,6 @@
             preferences, renderRequest,
             TimetrackerPortletKeys.TIME_FORMAT, TimeFormat.FROM_UNTIL);
 
-    // Retrieve the "redirectURL" parameter from the request.
-    String redirectURL = ParamUtil.getString(request, "redirectURL");
-
     // Retrieve the task record from the request
     // (Stored there by the MVC Controller portlet).
     TaskRecord taskRecord =
@@ -91,7 +88,6 @@
             endDateHour = endDate.getHours();
             endDateMinute = endDate.getMinutes();
         }
-
     }
 %>
 
@@ -103,13 +99,13 @@
 
 <div class="timetracker-portlet">
 
-	<liferay-ui:header title="timetracker" backURL="<%= redirectURL %>"
-		showBackURL="<%= true %>" />
+	<liferay-ui:header title="timetracker" backURL="<%=backURL%>"
+		showBackURL="<%=true%>" />
 
-	<aui:form method="post" action="<%= saveTaskRecordURL %>" name="fm">
+	<aui:form method="post" action="<%=saveTaskRecordURL%>" name="fm">
 
-		<aui:input name="<%= CommonFields.USER_ID %>"
-			value="<%= String.valueOf(themeDisplay.getUserId()) %>" type="hidden" />
+		<aui:input name="<%=CommonFields.USER_ID%>"
+			value="<%=String.valueOf(themeDisplay.getUserId())%>" type="hidden" />
 
 		<aui:fieldset>
 
@@ -117,37 +113,40 @@
 			<aui:model-context bean="<%=taskRecord%>"
 				model="<%=TaskRecord.class%>" />
 
-			<aui:input name="<%= TaskRecordFields.END_DATE %>" type="hidden" />
-			<aui:input name="<%= TaskRecordFields.TASK_RECORD_ID %>"
-				type="hidden" />
+			<aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+			<aui:input name="<%=TaskRecordFields.END_DATE%>" type="hidden" />
+			<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
+			<aui:input name="<%=TaskRecordFields.TASK_RECORD_ID%>" type="hidden" />
 
-			<aui:input name="<%= TaskRecordFields.WORK_PACKAGE %>"
+			<aui:input name="<%=TaskRecordFields.WORK_PACKAGE%>"
 				helpMessage="work-package-help" cssClass="timetracker-input" />
-			<aui:input name="<%= TaskRecordFields.TICKET_URL %>" label="ticket-url"
+			<aui:input name="<%=TaskRecordFields.TICKET_URL%>" label="ticket-url"
 				helpMessage="ticket-url-help" cssClass="timetracker-input" />
-			<aui:input name="<%= TaskRecordFields.DESCRIPTION %>" />
-			<aui:input name="<%= TaskRecordFields.START_DATE %>" label="date" />
+			<aui:input name="<%=TaskRecordFields.DESCRIPTION%>" />
+			<aui:input name="<%=TaskRecordFields.START_DATE%>" label="date" />
 
 			<c:if
-				test="<%= Validator.equals(TimeFormat.FROM_UNTIL, timeFormat) %>">
+				test="<%=Validator.equals(
+                            TimeFormat.FROM_UNTIL, timeFormat)%>">
 				<aui:field-wrapper name="from-until">
-					<iu:time-picker deltaMinutes="<%= 15 %>" firstHour="<%= 0 %>"
-						hour="<%= startDateHour %>" minute="<%= startDateMinute %>"
-						nullable="<%= false %>" prefix="<%= startDatePrefix %>" />
+					<iu:time-picker deltaMinutes="<%=15%>" firstHour="<%=0%>"
+						hour="<%=startDateHour%>" minute="<%=startDateMinute%>"
+						nullable="<%=false%>" prefix="<%=startDatePrefix%>" />
                     --
-                    <iu:time-picker deltaMinutes="<%= 15 %>"
-						firstHour="<%= 0 %>" hour="<%= endDateHour %>"
-						minute="<%= endDateMinute %>" nullable="<%= false %>"
-						prefix="<%=  endDatePrefix %>" />
+                    <iu:time-picker deltaMinutes="<%=15%>"
+						firstHour="<%=0%>" hour="<%=endDateHour%>"
+						minute="<%=endDateMinute%>" nullable="<%=false%>"
+						prefix="<%=endDatePrefix%>" />
 
 				</aui:field-wrapper>
 			</c:if>
 			<c:if
-				test="<%= !Validator.equals(TimeFormat.FROM_UNTIL, timeFormat) %>">
-				<aui:field-wrapper label="<%= TaskRecordFields.DURATION %>"
+				test="<%=!Validator.equals(
+                            TimeFormat.FROM_UNTIL, timeFormat)%>">
+				<aui:field-wrapper label="<%=TaskRecordFields.DURATION%>"
 					helpMessage="duration-help">
 					<input name="<portlet:namespace/>duration"
-						value="<%= durationInMinutes %>"
+						value="<%=durationInMinutes%>"
 						class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" />
 				</aui:field-wrapper>
 			</c:if>
