@@ -2,8 +2,8 @@
  * main.css: css specific to the timetracker-portlet.
  *
  * Created: 	2013-10-09 22:44 by Christian Berndt
- * Modified: 	2016-03-23 00:26 by Christian Berndt
- * Version:		1.0.7
+ * Modified: 	2016-03-23 10:30 by Christian Berndt
+ * Version:		1.0.8
  * 
  */
 
@@ -56,7 +56,7 @@
     .popover {
             
         .control-group {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
         
         .fieldset {
