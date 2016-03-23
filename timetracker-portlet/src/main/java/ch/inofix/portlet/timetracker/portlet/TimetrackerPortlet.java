@@ -68,8 +68,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-03-22 13:54
- * @version 1.0.8
+ * @modified 2016-03-23 10:36
+ * @version 1.0.9
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -231,7 +231,8 @@ public class TimetrackerPortlet extends MVCPortlet {
             taskRecord = TaskRecordServiceUtil.createTaskRecord();
         }
 
-        actionRequest.setAttribute("CONTACT", taskRecord);
+        actionRequest.setAttribute(
+            TimetrackerPortletKeys.TASK_RECORD, taskRecord);
 
         actionResponse.setRenderParameter("backURL", backURL);
         actionResponse.setRenderParameter(
@@ -1031,7 +1032,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         TaskRecord taskRecord = null;
 
-        // Get the taskRecords attributes from them request (alphabetical)
+        // Get the taskRecord's attributes from them request (alphabetical)
         String description =
             ParamUtil.getString(actionRequest, TaskRecordFields.DESCRIPTION);
         long duration =
@@ -1109,8 +1110,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
         else {
 
-            _log.info("adding new taskRecord.");
-
             taskRecord =
                 TaskRecordServiceUtil.addTaskRecord(
                     userId, groupId, workPackage, description, ticketURL,
@@ -1124,7 +1123,8 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
 
         // Store the updated or added taskRecord as a request attribute
-        actionRequest.setAttribute("TASK_RECORD", taskRecord);
+        actionRequest.setAttribute(
+            TimetrackerPortletKeys.TASK_RECORD, taskRecord);
 
     }
 
