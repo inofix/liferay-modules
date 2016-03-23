@@ -1,9 +1,9 @@
 <%--
-    view_task_record.jsp: view a single task-record.. 
+    view_task_record.jsp: view a single task-record. 
     
     Created:    2016-03-22 09:16 by Christian Berndt
-    Modified:   2016-03-23 00:27 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-03-23 10:35 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -20,7 +20,7 @@
 <%
     String redirect = ParamUtil.getString(request, "redirect");
     String backURL = ParamUtil.getString(request, "backURL", redirect);
-    TaskRecord taskRecord = (TaskRecord) request.getAttribute("TASK_RECORD");
+    TaskRecord taskRecord = (TaskRecord) request.getAttribute(TimetrackerPortletKeys.TASK_RECORD);
     String windowId = ParamUtil.getString(request, "windowId");
 
     // Close the popup, if we are in popup mode and a redirect was provided.
