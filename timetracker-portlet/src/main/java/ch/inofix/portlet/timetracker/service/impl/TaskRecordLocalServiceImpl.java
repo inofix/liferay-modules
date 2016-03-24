@@ -35,8 +35,8 @@ import ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-03-22 13:57
- * @version 1.0.5
+ * @modified 2016-03-24 10:43
+ * @version 1.0.6
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -173,6 +173,10 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         User user = userPersistence.findByPrimaryKey(userId);
         Date now = new Date();
         TaskRecord taskRecord = null;
+        
+        if (duration <= 0) {
+            duration = endDate.getTime() - startDate.getTime(); 
+        }
 
         if (taskRecordId > 0) {
             taskRecord = taskRecordLocalService.getTaskRecord(taskRecordId);
