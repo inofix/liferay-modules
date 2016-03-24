@@ -13,10 +13,10 @@
 
     <!-- The Timetracker portlet's utility class beans. -->
     <bean id="ch.inofix.portlet.timetracker.util.TimetrackerPortlet"
-          class="ch.inofix.portlet.timetracker.util.TimetrackerPortletImpl" />
+        class="ch.inofix.portlet.timetracker.util.TimetrackerPortletImpl" />
     <bean id="ch.inofix.portlet.timetracker.util.TimetrackerPortletUtil"
-          class="ch.inofix.portlet.timetracker.util.TimetrackerPortletUtil">
+        class="ch.inofix.portlet.timetracker.util.TimetrackerPortletUtil">
         <property name="TimetrackerPortlet"
-                  ref="ch.inofix.portlet.timetracker.util.TimetrackerPortlet" />
+            ref="ch.inofix.portlet.timetracker.util.TimetrackerPortlet" />
     </bean>
    </beans>
