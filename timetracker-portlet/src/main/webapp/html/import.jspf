@@ -2,8 +2,8 @@
     import.jspf: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2016-03-21 21:51 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-03-24 15:05 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <portlet:actionURL var="importCSVFileURL" name="importCSVFile" />
@@ -28,8 +28,10 @@
 
         <aui:input name="file" type="file" inlineField="true" label="" />
 
-        <aui:input name="updateExisting" label="update-existing-task-records" type="checkbox" inlineField="true" />
-
+        <%-- 
+	        <aui:input name="updateExisting" label="update-existing-task-records" type="checkbox" inlineField="true" />
+		--%>
+		
         <aui:button name="import" type="submit" value="import" disabled="true" />
         <aui:button href="<%=browseURL%>" type="cancel" />
 
