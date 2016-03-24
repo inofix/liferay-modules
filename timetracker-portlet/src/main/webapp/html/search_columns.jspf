@@ -3,8 +3,8 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2016-03-22 20:42 by Christian Berndt
-    Version:     1.1.0
+    Modified:    2016-03-24 10:29 by Christian Berndt
+    Version:     1.1.2
 --%>
 
 <%
@@ -27,6 +27,8 @@
         endDateString =
             DateUtil.getDate(endDate, dateFormatPattern, locale);
     }
+    
+    String durationInMinutes = String.valueOf(taskRecord.getDuration() / (60 * 1000)); 
 %>
 
 <%
@@ -63,7 +65,7 @@
         orderableProperty="description" />
 </c:if>
 <c:if test='<%="duration".equals(column)%>'>
-    <liferay-ui:search-container-column-text property="duration"
+    <liferay-ui:search-container-column-text value="<%= durationInMinutes %>"
         name="duration" orderable="true" href="<%=detailURL%>"
         orderableProperty="duration" />
 </c:if>

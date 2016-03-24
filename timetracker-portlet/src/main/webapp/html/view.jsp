@@ -2,8 +2,8 @@
     view.jsp: Default view of the timetracker-portlet.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2016-03-23 10:00 by Christian Berndt
-    Version:     1.0.7
+    Modified:    2016-03-23 20:50 by Christian Berndt
+    Version:     1.0.8
  --%>
  
 <%@ include file="/html/init.jsp"%>
@@ -38,7 +38,6 @@
     String orderByCol = ParamUtil.getString(request, "orderByCol", "name"); 
     String orderByType = ParamUtil.getString(request, "orderByType", "asc"); 
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
-    String workPackage = ParamUtil.getString(request, "workPackage"); 
     
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1);
@@ -62,11 +61,7 @@
 
     Sort sort = new Sort(orderByCol, reverse);
 
-    if (advancedSearch) {
-        searchContext.setAttribute("workPackage", workPackage);
-    } else {
-        searchContext.setKeywords(keywords);        
-    }
+	searchContext.setKeywords(keywords);        
     searchContext.setAttribute("paginationType", "more");
     searchContext.setStart(start);
     searchContext.setEnd(end);
@@ -106,9 +101,6 @@
         new TaskRecordChecker(liferayPortletResponse);
     rowChecker.setCssClass("entry-selector");
 %>
-
-advancedSearch = <%= advancedSearch %><br/>
-workPackage = <%= workPackage %><br/>
 
 <div id="<portlet:namespace />timetrackerContainer">
 
