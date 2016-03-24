@@ -21,7 +21,9 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -36,8 +38,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-19 21:55
- * @modified 2016-03-24 10:44
- * @version 1.0.2
+ * @modified 2016-03-24 16:27
+ * @version 1.0.3
  */
 public class TaskRecordIndexer extends BaseIndexer {
 
@@ -88,6 +90,24 @@ public class TaskRecordIndexer extends BaseIndexer {
         addSearchTerm(searchQuery, searchContext, "workPackage", false);
         addSearchTerm(searchQuery, searchContext, "userId", false);
 
+        // Set expando parameters
+        LinkedHashMap<String, Object> params =
+            (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+
+        if (params != null) {
+            String expandoAttributes = (String) params.get("expandoAttributes");
+
+            if (Validator.isNotNull(expandoAttributes)) {
+                addSearchExpando(searchQuery, searchContext, expandoAttributes);
+            }
+        }
+    }
+
+    @Override
+    protected void postProcessFullQuery(
+        BooleanQuery fullQuery, SearchContext searchContext)
+        throws Exception {
+
         // end- and start-date
         boolean ignoreEndDate =
             GetterUtil.getBoolean(
@@ -131,20 +151,13 @@ public class TaskRecordIndexer extends BaseIndexer {
             max = endDate.getTime();
         }
 
-        searchQuery.addNumericRangeTerm("startDate_sortable", min, max);
+        BooleanQuery booleanQuery =
+            BooleanQueryFactoryUtil.create(searchContext);
 
-        // Set expando parameters
-        LinkedHashMap<String, Object> params =
-            (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+        booleanQuery.addNumericRangeTerm("startDate_sortable", min, max);
+        fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
 
-        if (params != null) {
-            String expandoAttributes = (String) params.get("expandoAttributes");
-
-            if (Validator.isNotNull(expandoAttributes)) {
-                addSearchExpando(searchQuery, searchContext, expandoAttributes);
-            }
-        }
-    }
+    };
 
     @Override
     protected void doDelete(Object obj)
