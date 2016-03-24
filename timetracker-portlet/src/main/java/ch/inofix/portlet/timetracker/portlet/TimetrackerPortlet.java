@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +33,6 @@ import org.apache.commons.csv.CSVRecord;
 import ch.inofix.portlet.timetracker.model.TaskRecord;
 import ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil;
 import ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil;
-import ch.inofix.portlet.timetracker.util.CommonFields;
 import ch.inofix.portlet.timetracker.util.StringPool;
 import ch.inofix.portlet.timetracker.util.TaskRecordFields;
 import ch.inofix.portlet.timetracker.util.TimetrackerPortletKeys;
@@ -49,12 +49,10 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -478,43 +476,43 @@ public class TimetrackerPortlet extends MVCPortlet {
         throws Exception {
 
         DecimalFormat df = new DecimalFormat("0.00");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        long companyId =
-            ParamUtil.getLong(resourceRequest, CommonFields.COMPANY_ID);
-        String description =
-            ParamUtil.getString(resourceRequest, TaskRecordFields.DESCRIPTION);
-        long groupId =
-            ParamUtil.getLong(resourceRequest, CommonFields.GROUP_ID);
-        String orderByCol =
-            ParamUtil.getString(
-                resourceRequest, TimetrackerPortletKeys.ORDER_BY_COL);
-        String orderByType =
-            ParamUtil.getString(
-                resourceRequest, TimetrackerPortletKeys.ORDER_BY_TYPE);
-        long userId =
-            ParamUtil.getLong(resourceRequest, TaskRecordFields.USER_ID);
-        String workPackage =
-            ParamUtil.getString(resourceRequest, TaskRecordFields.WORK_PACKAGE);
+//        long companyId =
+//            ParamUtil.getLong(resourceRequest, CommonFields.COMPANY_ID);
+//        String description =
+//            ParamUtil.getString(resourceRequest, TaskRecordFields.DESCRIPTION);
+//        long groupId =
+//            ParamUtil.getLong(resourceRequest, CommonFields.GROUP_ID);
+//        String orderByCol =
+//            ParamUtil.getString(
+//                resourceRequest, TimetrackerPortletKeys.ORDER_BY_COL);
+//        String orderByType =
+//            ParamUtil.getString(
+//                resourceRequest, TimetrackerPortletKeys.ORDER_BY_TYPE);
+//        long userId =
+//            ParamUtil.getLong(resourceRequest, TaskRecordFields.USER_ID);
+//        String workPackage =
+//            ParamUtil.getString(resourceRequest, TaskRecordFields.WORK_PACKAGE);
 
-        Date startDate = null;
-        Date endDate = null;
+//        Date startDate = null;
+//        Date endDate = null;
 
-        int startDateDay =
-            ParamUtil.getInteger(resourceRequest, "startDateDay");
-        int startDateMonth =
-            ParamUtil.getInteger(resourceRequest, "startDateMonth");
-        int startDateYear =
-            ParamUtil.getInteger(resourceRequest, "startDateYear");
+//        int startDateDay =
+//            ParamUtil.getInteger(resourceRequest, "startDateDay");
+//        int startDateMonth =
+//            ParamUtil.getInteger(resourceRequest, "startDateMonth");
+//        int startDateYear =
+//            ParamUtil.getInteger(resourceRequest, "startDateYear");
+//
+//        int endDateDay = ParamUtil.getInteger(resourceRequest, "endDateDay");
+//        int endDateMonth =
+//            ParamUtil.getInteger(resourceRequest, "endDateMonth");
+//        int endDateYear = ParamUtil.getInteger(resourceRequest, "endDateYear");
 
-        int endDateDay = ParamUtil.getInteger(resourceRequest, "endDateDay");
-        int endDateMonth =
-            ParamUtil.getInteger(resourceRequest, "endDateMonth");
-        int endDateYear = ParamUtil.getInteger(resourceRequest, "endDateYear");
-
-        startDate =
-            PortalUtil.getDate(startDateMonth, startDateDay, startDateYear);
-        endDate = PortalUtil.getDate(endDateMonth, endDateDay, endDateYear);
+//        startDate =
+//            PortalUtil.getDate(startDateMonth, startDateDay, startDateYear);
+//        endDate = PortalUtil.getDate(endDateMonth, endDateDay, endDateYear);
 
         // if (Validator.isNotNull(ParamUtil.getString(resourceRequest,
         // TaskRecordFields.START_DATE))) {
@@ -528,25 +526,25 @@ public class TimetrackerPortlet extends MVCPortlet {
         // TaskRecordFields.END_DATE, sdf);
         // }
 
-        int status = WorkflowConstants.STATUS_ANY;
-        boolean andOperator = true;
+//        int status = WorkflowConstants.STATUS_ANY;
+//        boolean andOperator = true;
 
-        _log.debug(CommonFields.COMPANY_ID + " = " + companyId);
-        _log.debug(TaskRecordFields.DESCRIPTION + " = " + description);
-        _log.debug(CommonFields.GROUP_ID + " = " + groupId);
-        _log.debug(TimetrackerPortletKeys.ORDER_BY_COL + " = " + orderByCol);
-        _log.debug(TimetrackerPortletKeys.ORDER_BY_TYPE + " = " + orderByType);
-        _log.debug(TaskRecordFields.USER_ID + " = " + userId);
-        _log.debug(TaskRecordFields.WORK_PACKAGE + " = " + workPackage);
-
-        int total = 0;
+//        _log.debug(CommonFields.COMPANY_ID + " = " + companyId);
+//        _log.debug(TaskRecordFields.DESCRIPTION + " = " + description);
+//        _log.debug(CommonFields.GROUP_ID + " = " + groupId);
+//        _log.debug(TimetrackerPortletKeys.ORDER_BY_COL + " = " + orderByCol);
+//        _log.debug(TimetrackerPortletKeys.ORDER_BY_TYPE + " = " + orderByType);
+//        _log.debug(TaskRecordFields.USER_ID + " = " + userId);
+//        _log.debug(TaskRecordFields.WORK_PACKAGE + " = " + workPackage);
+//
+//        int total = 0;
         // int total = TaskRecordLocalServiceUtil.searchCount(companyId,
         // groupId,
         // userId, workPackage, description, startDate, endDate, status,
         // andOperator);
 
-        OrderByComparator obc =
-            TimetrackerPortletUtil.getOrderByComparator(orderByCol, orderByType);
+//        OrderByComparator obc =
+//            TimetrackerPortletUtil.getOrderByComparator(orderByCol, orderByType);
 
         List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
 
@@ -770,20 +768,11 @@ public class TimetrackerPortlet extends MVCPortlet {
         UploadPortletRequest uploadPortletRequest =
             PortalUtil.getUploadPortletRequest(actionRequest);
 
-        HttpServletRequest request =
-            PortalUtil.getHttpServletRequest(actionRequest);
-
-        ThemeDisplay themeDisplay =
-            (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-
         ServiceContext serviceContext =
             ServiceContextFactory.getInstance(
                 TaskRecord.class.getName(), actionRequest);
 
         File file = uploadPortletRequest.getFile("file");
-
-        long userId = themeDisplay.getUserId();
-        long groupId = themeDisplay.getScopeGroupId();
 
         if (Validator.isNotNull(file)) {
 
@@ -791,29 +780,40 @@ public class TimetrackerPortlet extends MVCPortlet {
             Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
             for (CSVRecord record : records) {
 
-                String taskRecordId = record.get(0);
-                // String startDate = record.get("startDate");
-                String description = record.get(3);
-                String ticketURL = "";
-                // String ticketURL = record.get("ticketURL");
-                String workPackage = record.get(2);
-                long duration = GetterUtil.getLong(record.get(4));
+                long companyId = GetterUtil.getLong(record.get(0));
+                long createDateTime = GetterUtil.getLong(record.get(1));
+                String description = record.get(2);
+                long duration = GetterUtil.getLong(record.get(3));
+                long endDateTime = GetterUtil.getLong(record.get(4));
+                long groupId = GetterUtil.getLong(record.get(5));
+                long startDateTime = GetterUtil.getLong(record.get(6));
+                int status = GetterUtil.getInteger(record.get(7));
+                long taskRecordId = GetterUtil.getLong(record.get(8));
+                String ticketURL = record.get(9);
+                long userId = GetterUtil.getLong(record.get(10));
+                String userName = record.get(11);
+                String workPackage = record.get(12);
 
-                // TODO: add to export
-                Date endDate = new Date();
-                Date startDate = new Date();
+                Date endDate = new Date(endDateTime);
+                Date startDate = new Date(startDateTime);
 
-                int endDateDay = endDate.getDay();
-                int endDateMonth = endDate.getMonth();
-                int endDateYear = endDate.getYear();
-                int endDateHour = endDate.getHours();
-                int endDateMinute = endDate.getMinutes();
+                Calendar cal = Calendar.getInstance();
 
-                int startDateDay = startDate.getDay();
-                int startDateMonth = startDate.getMonth();
-                int startDateYear = startDate.getYear();
-                int startDateHour = startDate.getHours();
-                int startDateMinute = startDate.getMinutes();
+                cal.setTime(endDate);
+
+                int endDateDay = cal.get(Calendar.DAY_OF_MONTH);
+                int endDateMonth = cal.get(Calendar.MONTH);
+                int endDateYear = cal.get(Calendar.YEAR);
+                int endDateHour = cal.get(Calendar.HOUR_OF_DAY);
+                int endDateMinute = cal.get(Calendar.MINUTE);
+
+                cal.setTime(startDate);
+
+                int startDateDay = cal.get(Calendar.DAY_OF_MONTH);
+                int startDateMonth = cal.get(Calendar.MONTH);
+                int startDateYear = cal.get(Calendar.YEAR);
+                int startDateHour = cal.get(Calendar.HOUR_OF_DAY);
+                int startDateMinute = cal.get(Calendar.MINUTE);
 
                 TaskRecord taskRecord =
                     TaskRecordServiceUtil.addTaskRecord(
@@ -824,7 +824,8 @@ public class TimetrackerPortlet extends MVCPortlet {
                         duration, serviceContext);
             }
 
-            String message = PortletUtil.translate("there-are-no-results");
+            String message =
+                PortletUtil.translate("successfully-added-x-records");
 
             // ServiceContext serviceContext =
             // ServiceContextFactory.getInstance(
@@ -874,9 +875,9 @@ public class TimetrackerPortlet extends MVCPortlet {
         int rowsCount =
             ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
                 "_rows");
-        int colsCount =
-            ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
-                "_cols");
+//        int colsCount =
+//            ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
+//                "_cols");
 
         for (int i = 0; i < rowsCount; i++) {
 
@@ -1104,15 +1105,15 @@ public class TimetrackerPortlet extends MVCPortlet {
         _log.info("Executing parseVimTaskRecords().");
 
         // Create a service context for this request.
-        ServiceContext serviceContext =
-            ServiceContextFactory.getInstance(
-                TaskRecord.class.getName(), actionRequest);
+//        ServiceContext serviceContext =
+//            ServiceContextFactory.getInstance(
+//                TaskRecord.class.getName(), actionRequest);
 
         // Retrieve the user- and groupIds.
-        ThemeDisplay themeDisplay =
-            (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+//        ThemeDisplay themeDisplay =
+//            (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-        long userId = themeDisplay.getUserId();
+//        long userId = themeDisplay.getUserId();
 
         // Get the parameters from the request.
         String vimText =
@@ -1160,9 +1161,9 @@ public class TimetrackerPortlet extends MVCPortlet {
         String mvcPath =
             ParamUtil.getString(
                 resourceRequest, TimetrackerPortletKeys.MVC_PATH);
-        String historyKey =
-            ParamUtil.getString(
-                resourceRequest, TimetrackerPortletKeys.HISTORY_KEY);
+//        String historyKey =
+//            ParamUtil.getString(
+//                resourceRequest, TimetrackerPortletKeys.HISTORY_KEY);
 
         // Load the requested project
         TaskRecord taskRecord = null;
