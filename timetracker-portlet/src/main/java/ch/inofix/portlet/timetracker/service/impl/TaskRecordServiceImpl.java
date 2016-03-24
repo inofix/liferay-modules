@@ -39,7 +39,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
      */
 
     // Enable logging for this class
-    private static Log log =
+    private static Log _log =
         LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 
     /**
@@ -130,9 +130,9 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
      * @throws SystemException
      */
     public TaskRecord updateTaskRecord(
-        long userId, long groupId, long taskRecordId, String workPackage, String description,
-        String ticketURL, int endDateDay, int endDateMonth, int endDateYear,
-        int endDateHour, int endDateMinute, int startDateDay,
+        long userId, long groupId, long taskRecordId, String workPackage,
+        String description, String ticketURL, int endDateDay, int endDateMonth,
+        int endDateYear, int endDateHour, int endDateMinute, int startDateDay,
         int startDateMonth, int startDateYear, int startDateHour,
         int startDateMinute, long duration, ServiceContext serviceContext)
         throws PortalException, SystemException {
