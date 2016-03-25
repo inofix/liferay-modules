@@ -43,6 +43,14 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchContextFactory;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -66,8 +74,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-03-23 11:33
- * @version 1.1.0
+ * @modified 2016-03-25 12:21
+ * @version 1.1.1
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -448,10 +456,7 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @return a taskRecord in xml format.
      * @since 1.1
      */
-    // After the model of getUserCSV from ExportUsersAction.
     protected String getTaskRecordXML(TaskRecord taskRecord) {
-
-        _log.info("Executing getTaskRecordXML().");
 
         XStream xs = new XStream();
 
@@ -476,77 +481,55 @@ public class TimetrackerPortlet extends MVCPortlet {
         throws Exception {
 
         DecimalFormat df = new DecimalFormat("0.00");
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-//        long companyId =
-//            ParamUtil.getLong(resourceRequest, CommonFields.COMPANY_ID);
-//        String description =
-//            ParamUtil.getString(resourceRequest, TaskRecordFields.DESCRIPTION);
-//        long groupId =
-//            ParamUtil.getLong(resourceRequest, CommonFields.GROUP_ID);
-//        String orderByCol =
-//            ParamUtil.getString(
-//                resourceRequest, TimetrackerPortletKeys.ORDER_BY_COL);
-//        String orderByType =
-//            ParamUtil.getString(
-//                resourceRequest, TimetrackerPortletKeys.ORDER_BY_TYPE);
-//        long userId =
-//            ParamUtil.getLong(resourceRequest, TaskRecordFields.USER_ID);
-//        String workPackage =
-//            ParamUtil.getString(resourceRequest, TaskRecordFields.WORK_PACKAGE);
+        HttpServletRequest request =
+            PortalUtil.getHttpServletRequest(resourceRequest);
 
-//        Date startDate = null;
-//        Date endDate = null;
+        String keywords = ParamUtil.getString(request, "keywords");
+        String orderByCol = ParamUtil.getString(request, "orderByCol", "name");
+        String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 
-//        int startDateDay =
-//            ParamUtil.getInteger(resourceRequest, "startDateDay");
-//        int startDateMonth =
-//            ParamUtil.getInteger(resourceRequest, "startDateMonth");
-//        int startDateYear =
-//            ParamUtil.getInteger(resourceRequest, "startDateYear");
-//
-//        int endDateDay = ParamUtil.getInteger(resourceRequest, "endDateDay");
-//        int endDateMonth =
-//            ParamUtil.getInteger(resourceRequest, "endDateMonth");
-//        int endDateYear = ParamUtil.getInteger(resourceRequest, "endDateYear");
+        SearchContext searchContext = SearchContextFactory.getInstance(request);
 
-//        startDate =
-//            PortalUtil.getDate(startDateMonth, startDateDay, startDateYear);
-//        endDate = PortalUtil.getDate(endDateMonth, endDateDay, endDateYear);
+        boolean reverse = "desc".equals(orderByType);
 
-        // if (Validator.isNotNull(ParamUtil.getString(resourceRequest,
-        // TaskRecordFields.START_DATE))) {
-        // startDate = ParamUtil.getDate(resourceRequest,
-        // TaskRecordFields.START_DATE, sdf);
-        // }
-        //
-        // if (Validator.isNotNull(ParamUtil.getString(resourceRequest,
-        // TaskRecordFields.END_DATE))) {
-        // endDate = ParamUtil.getDate(resourceRequest,
-        // TaskRecordFields.END_DATE, sdf);
-        // }
+        Sort sort = new Sort(orderByCol, reverse);
 
-//        int status = WorkflowConstants.STATUS_ANY;
-//        boolean andOperator = true;
+        searchContext.setKeywords(keywords);
+        searchContext.setAttribute("paginationType", "more");
+        searchContext.setStart(0);
+        searchContext.setEnd(Integer.MAX_VALUE);
+        searchContext.setSorts(sort);
 
-//        _log.debug(CommonFields.COMPANY_ID + " = " + companyId);
-//        _log.debug(TaskRecordFields.DESCRIPTION + " = " + description);
-//        _log.debug(CommonFields.GROUP_ID + " = " + groupId);
-//        _log.debug(TimetrackerPortletKeys.ORDER_BY_COL + " = " + orderByCol);
-//        _log.debug(TimetrackerPortletKeys.ORDER_BY_TYPE + " = " + orderByType);
-//        _log.debug(TaskRecordFields.USER_ID + " = " + userId);
-//        _log.debug(TaskRecordFields.WORK_PACKAGE + " = " + workPackage);
-//
-//        int total = 0;
-        // int total = TaskRecordLocalServiceUtil.searchCount(companyId,
-        // groupId,
-        // userId, workPackage, description, startDate, endDate, status,
-        // andOperator);
+        Indexer indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
 
-//        OrderByComparator obc =
-//            TimetrackerPortletUtil.getOrderByComparator(orderByCol, orderByType);
+        Hits hits = indexer.search(searchContext);
 
         List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
+
+        for (int i = 0; i < hits.getDocs().length; i++) {
+            Document doc = hits.doc(i);
+
+            long taskRecordId =
+                GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+
+            TaskRecord taskRecord = null;
+
+            try {
+                taskRecord =
+                    TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+            }
+            catch (PortalException pe) {
+                _log.error(pe.getLocalizedMessage());
+            }
+            catch (SystemException se) {
+                _log.error(se.getLocalizedMessage());
+            }
+
+            if (taskRecord != null) {
+                taskRecords.add(taskRecord);
+            }
+        }
 
         StringBundler sb = new StringBundler(taskRecords.size() * 4);
 
@@ -827,15 +810,6 @@ public class TimetrackerPortlet extends MVCPortlet {
             String message =
                 PortletUtil.translate("successfully-added-x-records");
 
-            // ServiceContext serviceContext =
-            // ServiceContextFactory.getInstance(
-            // TaskRecord.class.getName(), uploadPortletRequest);
-            //
-            // if (vCards.size() > 0) {
-            //
-            // message = PortletUtil.importVcards(vCards, serviceContext);
-            // }
-
             SessionMessages.add(actionRequest, "request_processed", message);
 
         }
@@ -875,9 +849,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         int rowsCount =
             ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
                 "_rows");
-//        int colsCount =
-//            ParamUtil.getInteger(actionRequest, TaskRecordFields.VIM_TEXT +
-//                "_cols");
 
         for (int i = 0; i < rowsCount; i++) {
 
@@ -1102,19 +1073,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         ActionRequest actionRequest, ActionResponse actionResponse)
         throws PortalException, SystemException {
 
-        _log.info("Executing parseVimTaskRecords().");
-
-        // Create a service context for this request.
-//        ServiceContext serviceContext =
-//            ServiceContextFactory.getInstance(
-//                TaskRecord.class.getName(), actionRequest);
-
-        // Retrieve the user- and groupIds.
-//        ThemeDisplay themeDisplay =
-//            (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-//        long userId = themeDisplay.getUserId();
-
         // Get the parameters from the request.
         String vimText =
             ParamUtil.getString(actionRequest, TaskRecordFields.VIM_TEXT);
@@ -1158,12 +1116,10 @@ public class TimetrackerPortlet extends MVCPortlet {
         // Get the parameters from the request
         long taskRecordId =
             ParamUtil.getLong(resourceRequest, TaskRecordFields.TASK_RECORD_ID);
+
         String mvcPath =
             ParamUtil.getString(
                 resourceRequest, TimetrackerPortletKeys.MVC_PATH);
-//        String historyKey =
-//            ParamUtil.getString(
-//                resourceRequest, TimetrackerPortletKeys.HISTORY_KEY);
 
         // Load the requested project
         TaskRecord taskRecord = null;
