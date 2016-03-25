@@ -243,8 +243,8 @@
                             %>
         
                             <%@ include file="/html/search_columns.jspf"%>
-        
-                            <liferay-ui:search-container-column-text align="right">
+
+							<liferay-ui:search-container-column-text align="right">
         
                                 <liferay-ui:icon-menu>
         
