@@ -2,8 +2,8 @@
  * main.css: css specific to the timetracker-portlet.
  *
  * Created: 	2013-10-09 22:44 by Christian Berndt
- * Modified: 	2016-03-23 10:30 by Christian Berndt
- * Version:		1.0.8
+ * Modified: 	2016-03-25 12:11 by Christian Berndt
+ * Version:		1.1.0
  * 
  */
 
@@ -29,6 +29,46 @@
     
     dl.build-info dfn {
         margin-right: 20px;
+    }
+    
+    .dropdown-menu {
+    
+        a.taglib-icon {
+        
+            color: #333333;
+            
+            &:focus .taglib-text, 
+            &:hover .taglib-text {
+                text-decoration: none; 
+            }
+                
+            img {
+                width: 11px;
+            }  
+        }      
+    
+        > li > span {
+            display: block;
+            padding: 3px 20px;
+            clear: both;
+            font-weight: normal;
+            line-height: 20px;
+            color: #333333;
+            white-space: nowrap;
+            
+            &:hover, 
+            &:hover .taglib-text, 
+            &:focus,
+            &:focus .taglib-text {
+                text-decoration: none;
+                color: white;
+                background-color: #0db5e7;
+            }
+        }    
+    }
+    
+    input.timetracker-input {
+        width: 500px;
     }
     
     /** fit the select all-entries button into the header row */
@@ -79,32 +119,30 @@
      */
     .taglib-search-toggle {
     
-        float: left; 
-        
-/*         background: #E8EAEB; */
-/*         border: 1px solid #979798; */
-/*         border-color: #979798 #FAFAFB #FAFAFB #BDBDBE; */
-    
-/*         padding: 5px 5px 2px; */
-    
-/*         border-radius: 4px; */
-/*         -webkit-border-radius: 4px; */
-/*         -moz-border-radius: 4px; */
-        
-/*         -moz-box-shadow: inset 0 0 8px #CECECE; */
-/*         -webkit-box-shadow: inset 0 0 8px #CECECE; */
-/*         -o-box-shadow: inset 0 0 8px #CECECE; */
-/*         box-shadow: inset 0 0 8px #CECECE; */
-        
-/*         margin-bottom: 5px; */
-/*         padding-bottom: 5px; */
+        float: left;
         
         button {
             margin-top: -5px;
         }        
     }
     
-    input.timetracker-input {
-        width: 500px;
+    #toggle_id_timetracker_searchadvanced {
+        
+        &.popover {
+            max-width: none; 
+        }
+        
+        /* hide the and-or selector - code below is correct, but the */
+        /* select field's legend is misplaced and must be fixed first */
+/*        #toggle_id_timetracker_searchadvancedBodyNode > .control-group { */
+/*             display: none;  */
+/*         } */
+        
+        fieldset {
+            .control-group-inline {
+                width: 220px; 
+                margin-right: 10px;
+            }
+        }  
     }
 }
