@@ -74,8 +74,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-03-25 12:21
- * @version 1.1.1
+ * @modified 2016-03-25 12:45
+ * @version 1.1.2
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -341,35 +341,40 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param taskRecord
      * @return a taskRecord in CSV format.
      * @since 1.0
+     * @deprecated replace export formatters with a (freemarker-) template based
+     *             solution.
      */
-    // After the model of getUserCSV from ExportUsersAction.
     protected String getTaskRecordCSV(TaskRecord taskRecord) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         StringBundler sb = new StringBundler();
 
-        sb.append(taskRecord.getTaskRecordId());
-        sb.append(",");
-        sb.append(sdf.format(taskRecord.getStartDate()));
-        sb.append(",");
-        sb.append(StringPool.QUOTE);
-        sb.append(taskRecord.getWorkPackage());
-        sb.append(StringPool.QUOTE);
-        sb.append(",");
-        sb.append(StringPool.QUOTE);
-        sb.append(taskRecord.getDescription());
-        sb.append(StringPool.QUOTE);
-        sb.append(",");
-        sb.append(taskRecord.getDurationInMinutes());
-        sb.append(",");
-        sb.append(StringPool.QUOTE);
-        sb.append(taskRecord.getUserName());
-        sb.append(StringPool.QUOTE);
+        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //
+        //
+        // sb.append(taskRecord.getTaskRecordId());
+        // sb.append(",");
+        // sb.append(sdf.format(taskRecord.getStartDate()));
+        // sb.append(",");
+        // sb.append(StringPool.QUOTE);
+        // sb.append(taskRecord.getWorkPackage());
+        // sb.append(StringPool.QUOTE);
+        // sb.append(",");
+        // sb.append(StringPool.QUOTE);
+        // sb.append(taskRecord.getDescription());
+        // sb.append(StringPool.QUOTE);
+        // sb.append(",");
+        // sb.append(taskRecord.getDurationInMinutes());
+        // sb.append(",");
+        // sb.append(StringPool.QUOTE);
+        // sb.append(taskRecord.getUserName());
+        // sb.append(StringPool.QUOTE);
+        //
 
+        sb.append(toCSV(taskRecord));
         sb.append(StringPool.NEW_LINE);
 
         return sb.toString();
+
     }
 
     /**
@@ -378,8 +383,9 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param taskRecord
      * @return a taskRecord as a LaTeX table row.
      * @since 1.1
+     * @deprecated replace export formatters with a (freemarker-) template based
+     *             solution.
      */
-    // After the model of getUserCSV from ExportUsersAction.
     protected String getTaskRecordLaTeX(TaskRecord taskRecord) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -416,8 +422,9 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param workTokens
      * @return a taskRecord as a LaTeX report table row.
      * @since 1.2
+     * @deprecated replace export formatters with a (freemarker-) template based
+     *             solution.
      */
-    // After the model of getUserCSV from ExportUsersAction.
     protected String getTaskRecordFullLaTeX(
         TaskRecord taskRecord, Map<String, String> userNames,
         Map<String, String> workTokens) {
