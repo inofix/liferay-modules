@@ -20,7 +20,7 @@
 <liferay-portlet:renderURL portletConfiguration="true"
     var="configurationRenderURL" />
 
-<aui:form action="<%=configurationActionURL%>" method="post" name="fm">
+<aui:form action="<%=configurationActionURL%>" enctype="multipart/form-data" method="post" name="fm">
     
     <aui:input name="<%=Constants.CMD%>" type="hidden"
         value="<%=Constants.UPDATE%>" />
@@ -54,6 +54,12 @@
         
         <liferay-ui:panel id="mapportletMarkersPanel" title="markers" extended="true">
         
+			<aui:fieldset>
+                <aui:input name="file" type="file" inlineField="true"
+                    label="import-markers-from-file" inlineLabel="true"
+                    helpMessage="import-markers-from-file-help" />
+            </aui:fieldset>
+        
 			<aui:fieldset id="marker" cssClass="marker">
 			<%
 			    for (int i=0; i<markerLatLongs.length; i++) {
@@ -82,11 +88,18 @@
 			                    </aui:col>
 			                    <aui:col span="6">
 			                    
+			                        <%
+			                             String label = ""; 
+			                             if (markerLabels.length > i) {
+			                                 label = markerLabels[i]; 
+			                             }
+			                        %>
+			                    
                                     <aui:input name="markerLabels"
                                         cssClass="marker-label"
                                         helpMessage="marker-label-help"
                                         label="marker-label"
-                                        value="<%= markerLabels[i] %>" />
+                                        value="<%= label %>" />
                                         
                               </aui:col>
 			                </div>
@@ -98,7 +111,8 @@
 			    }
 			%>
 			</aui:fieldset>
-        </liferay-ui:panel>
+
+		</liferay-ui:panel>
         
         <liferay-ui:panel id="mapportletMiscelaneousPanel" title="miscellaneous" extended="true">
     
