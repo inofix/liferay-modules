@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-03-14 18:16 by Christian Berndt
- * Version:     1.0.0
+ * Modified:    2016-03-26 15:41 by Christian Berndt
+ * Version:     1.0.1
  */
 @import "compass";
 
@@ -12,6 +12,23 @@
 .aui {
 	
     .portlet-map {
+    
+        fieldset {
+            .container-fluid {
+                padding: 0; 
+            }
+        }
+    
+        input.claim,
+        input.marker-label,
+        input.marker-lat-long,
+        input.tiles-copyright,
+        input.tiles-url {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            height: 30px;
+        }    
     
         .jumbotron {
         
@@ -26,14 +43,6 @@
                 font-size: 70px;
                 line-height: 1;
             }
-        }
-    
-        input.claim,
-        input.marker-label,
-        input.marker-lat-long,
-        input.tiles-copyright,
-        input.tiles-url {
-            width: 98%; /* not 100% because of padding */
-        }	   	   
+        }  	   
     } 
 }
