@@ -25,7 +25,7 @@
 
 <div id="map" class="map"></div>
 
-<script>
+<script type="text/javascript">
 
 	var map = L.map('map').setView(<%= mapCenter %>, <%= mapZoom %>);
 	
