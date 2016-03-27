@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2016-03-23 09:53 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-03-27 19:42 by Christian Berndt
+    Version:    1.0.4
  --%>
 
 <%@page import="javax.portlet.ResourceURL"%>
@@ -126,13 +126,12 @@
 			</aui:nav-item>
 		</aui:nav-item>
 	</aui:nav>
-	
 
 	<aui:nav-bar-search cssClass="pull-right">
 
 		<liferay-portlet:renderURL varImpl="searchURL" />
 
-		<aui:form action="<%=searchURL%>" method="get" name="fm">
+		<aui:form action="<%=searchURL%>" method="get" name="fm1">
 
 			<liferay-portlet:renderURLParams varImpl="searchURL" />
 
@@ -142,7 +141,7 @@
 
 				<aui:fieldset>
 					<aui:input name="<%=TaskRecordSearchTerms.WORK_PACKAGE%>"
-						value="<%=displayTerms.getWorkPackage()%>" inlineField="true"/>
+						value="<%=displayTerms.getWorkPackage()%>" inlineField="true" />
 					<aui:input name="<%=TaskRecordSearchTerms.DESCRIPTION%>"
 						value="<%=displayTerms.getDescription()%>" inlineField="true" />
 
@@ -164,9 +163,7 @@
 					</aui:select>
 
 				</aui:fieldset>
-
 			</liferay-ui:search-toggle>
-
 			<portlet:renderURL var="clearURL" />
 
 			<aui:button value="reset" href="<%=clearURL%>" cssClass="clear-btn" />
