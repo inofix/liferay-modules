@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<model-hints>
+    <model name="ch.inofix.referencemanager.model.Reference">
+        <field name="uuid" type="String" />
+        <field name="referenceId" type="long" />
+        <field name="groupId" type="long" />
+        <field name="companyId" type="long" />
+        <field name="userId" type="long" />
+        <field name="userName" type="String" />
+        <field name="createDate" type="Date" />
+        <field name="modifiedDate" type="Date" />
+        <field name="bibtex" type="String">
+            <hint name="max-length">5000</hint>
+        </field>
+        <field name="status" type="int" />
+    </model>
+</model-hints>
