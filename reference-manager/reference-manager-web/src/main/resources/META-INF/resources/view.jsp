@@ -2,19 +2,23 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-01-20 22:58 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-03-29 14:42 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
-	String backURL = ParamUtil.getString(request, "backURL");
-	String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+// 	String backURL = ParamUtil.getString(request, "backURL");
+// 	String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
 %>
 
 <div class="reference-manager-portlet">
 
+
+    <b>0.1.7</b>
+
+<%-- 
 	<liferay-ui:header backURL="<%=backURL%>" title="reference-manager" />
 
 	<liferay-ui:error exception="<%= PrincipalException.class %>"
@@ -79,14 +83,12 @@
 						</div>
 					</liferay-ui:search-container-column-text>
 
-					<%--
 				
 						<liferay-ui:search-container-column-text
 							property="field2"
 							valign="top"
 						/>
 				
-						--%>
 
 					<liferay-ui:search-container-column-jsp cssClass="entry-action"
 						path="/reference_action.jsp" valign="top" />
@@ -98,4 +100,6 @@
 			</liferay-ui:search-container>
 		</c:otherwise>
 	</c:choose>
+ --%>
+ 
 </div>
