@@ -2,8 +2,8 @@
     export.jsp: The export-gui of the reference manager portlet.
     
     Created:    2016-01-10 23:33 by Christian Berndt
-    Modified:   2016-01-16 00:37 by Christian Berndt
-    Version:    0.0.2
+    Modified:   2016-03-29 22:57 by Christian Berndt
+    Version:    0.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -25,8 +25,8 @@
     </c:if>
     --%>
 
-    <liferay-ui:error exception="<%= FileExtensionException.class %>" message="please-upload-a-file-with-a-valid-extension-jar-lpkg-or-war" />
-    <liferay-ui:error exception="<%= UploadException.class %>" message="an-unexpected-error-occurred-while-uploading-your-file" />
+<%--     <liferay-ui:error exception="<%= FileExtensionException.class %>" message="please-upload-a-file-with-a-valid-extension-jar-lpkg-or-war" /> --%>
+<%--     <liferay-ui:error exception="<%= UploadException.class %>" message="an-unexpected-error-occurred-while-uploading-your-file" /> --%>
 
     <%-- 
     <liferay-ui:success key="pluginDownloaded" message="the-plugin-was-downloaded-successfully-and-is-now-being-installed" />

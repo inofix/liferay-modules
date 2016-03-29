@@ -56,9 +56,9 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-//import ch.inofix.referencemanager.model.Reference;
-//import ch.inofix.referencemanager.service.ReferenceLocalService;
-//import ch.inofix.referencemanager.util.BibTeXUtil;
+import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.ReferenceLocalService;
+import ch.inofix.referencemanager.util.BibTeXUtil;
 
 @Component(immediate = true, property = { "com.liferay.portlet.display-category=category.sample",
         "com.liferay.portlet.instanceable=false", "javax.portlet.security-role-ref=power-user,user",
@@ -68,8 +68,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 /**
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-03-29 14:43
- * @version 0.1.3
+ * @modified 2016-03-29 22:56
+ * @version 0.1.4
  */
 public class JSPPortlet extends MVCPortlet {
 
@@ -85,15 +85,15 @@ public class JSPPortlet extends MVCPortlet {
             String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
             String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
-            // if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-            // updateReference(actionRequest);
-            // } else if (cmd.equals("importBibtexFile")) {
-            // importBibtexFile(actionRequest);
-            // } else if (cmd.equals("deleteAllReferences")) {
-            // deleteAllReferences(actionRequest);
-            // } else if (cmd.equals(Constants.DELETE)) {
-            // deleteReference(actionRequest);
-            // }
+            if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
+                updateReference(actionRequest);
+            } else if (cmd.equals("importBibtexFile")) {
+                importBibtexFile(actionRequest);
+            } else if (cmd.equals("deleteAllReferences")) {
+                deleteAllReferences(actionRequest);
+            } else if (cmd.equals(Constants.DELETE)) {
+                deleteReference(actionRequest);
+            }
 
             if (Validator.isNotNull(cmd)) {
                 if (SessionErrors.isEmpty(actionRequest)) {
@@ -114,8 +114,7 @@ public class JSPPortlet extends MVCPortlet {
         _log.info("render().");
 
         // set service bean
-        // request.setAttribute("referenceLocalService",
-        // getReferenceLocalService());
+        request.setAttribute("referenceLocalService", getReferenceLocalService());
 
         super.render(request, response);
     }
@@ -124,20 +123,19 @@ public class JSPPortlet extends MVCPortlet {
 
         _log.info("Executing deleteAllReferences().");
 
-        // List<Reference> references =
-        // getReferenceLocalService().getReferences(0, Integer.MAX_VALUE);
-        //
-        // for (Reference reference : references) {
-        //
-        // getReferenceLocalService().deleteReference(reference);
-        // }
+        List<Reference> references = getReferenceLocalService().getReferences(0, Integer.MAX_VALUE);
+
+        for (Reference reference : references) {
+
+            getReferenceLocalService().deleteReference(reference);
+        }
     }
 
     protected void deleteReference(ActionRequest actionRequest) throws Exception {
 
         long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
 
-        // getReferenceLocalService().deleteReference(referenceId);
+        getReferenceLocalService().deleteReference(referenceId);
     }
 
     protected void importBibtexFile(ActionRequest actionRequest) throws Exception {
@@ -173,20 +171,18 @@ public class JSPPortlet extends MVCPortlet {
 
             for (BibTeXEntry bibTeXEntry : entries) {
 
-                // Reference reference =
-                // getReferenceLocalService().createReference(0);
-                //
-                // String bibTeX = BibTeXUtil.format(bibTeXEntry);
-                //
-                // reference.setBibtex(bibTeX);
-                //
-                // reference.isNew();
-                //
-                // // TODO: check whether a reference with the same uid has
-                // alread
-                // // been uploaded
-                //
-                // getReferenceLocalService().addReferenceWithoutId(reference);
+                Reference reference = getReferenceLocalService().createReference(0);
+
+                String bibTeX = BibTeXUtil.format(bibTeXEntry);
+
+                reference.setBibtex(bibTeX);
+
+                reference.isNew();
+
+                // TODO: check whether a reference with the same uid has
+                // already been uploaded
+
+                getReferenceLocalService().addReferenceWithoutId(reference);
 
             }
 
@@ -224,35 +220,34 @@ public class JSPPortlet extends MVCPortlet {
 
         String bibtex = ParamUtil.getString(actionRequest, "bibtex");
 
-        // if (referenceId <= 0) {
-        // Reference reference = getReferenceLocalService().createReference(0);
-        //
-        // reference.setBibtex(bibtex);
-        //
-        // reference.isNew();
-        // getReferenceLocalService().addReferenceWithoutId(reference);
-        // } else {
-        // Reference reference =
-        // getReferenceLocalService().fetchReference(referenceId);
-        // reference.setReferenceId(referenceId);
-        // reference.setBibtex(bibtex);
-        //
-        // getReferenceLocalService().updateReference(reference);
-        // }
+        if (referenceId <= 0) {
+            Reference reference = getReferenceLocalService().createReference(0);
+
+            reference.setBibtex(bibtex);
+
+            reference.isNew();
+            getReferenceLocalService().addReferenceWithoutId(reference);
+        } else {
+            Reference reference = getReferenceLocalService().fetchReference(referenceId);
+            reference.setReferenceId(referenceId);
+            reference.setBibtex(bibtex);
+
+            getReferenceLocalService().updateReference(reference);
+        }
     }
 
-    // public ReferenceLocalService getReferenceLocalService() {
-    //
-    // return _referenceLocalService;
-    // }
-    //
+    public ReferenceLocalService getReferenceLocalService() {
+
+        return _referenceLocalService;
+    }
+
     // @org.osgi.service.component.annotations.Reference
     // public void setReferenceLocalService(ReferenceLocalService
     // referenceLocalService) {
     //
     // this._referenceLocalService = referenceLocalService;
     // }
-    //
-    // private ReferenceLocalService _referenceLocalService;
+
+    private ReferenceLocalService _referenceLocalService;
 
 }
