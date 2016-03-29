@@ -28,6 +28,10 @@ import aQute.bnd.annotation.ProviderType;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @author Christian Berndt
+ * @created 2016-03-29 14:43
+ * @modified 2016-03-29 14:43
+ * @version 0.1.0
  */
 @ProviderType
 public class ReferenceImpl extends ReferenceBaseImpl {
