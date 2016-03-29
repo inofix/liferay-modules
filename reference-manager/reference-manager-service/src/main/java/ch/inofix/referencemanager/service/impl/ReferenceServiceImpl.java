@@ -15,6 +15,7 @@
 package ch.inofix.referencemanager.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
+
 import ch.inofix.referencemanager.service.base.ReferenceServiceBaseImpl;
 
 /**
@@ -33,21 +34,23 @@ import ch.inofix.referencemanager.service.base.ReferenceServiceBaseImpl;
  *
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
+ * @created 2016-03-28 17:08
+ * @modified 2016-03-28 17:08
+ * @version 0.1.0
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
- * @version 0.0.1
  */
 @ProviderType
 public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 * 
-	 * Never reference this class directly. Always use {@link
-	 * ch.inofix.referencemanager.service.ReferenceServiceUtil} to access the
-	 * reference remote service.
-	 */
+    /*
+     * NOTE FOR DEVELOPERS:
+     *
+     * Never reference this class directly. Always use {@link
+     * ch.inofix.referencemanager.service.ReferenceServiceUtil} to access the
+     * reference remote service.
+     */
 
-	public String referenceRemote() {
-		return "referenceRemote";
-	}
+    public String referenceRemote() {
+        return "referenceRemote";
+    }
 }
