@@ -1,4 +1,3 @@
-
 package ch.inofix.referencemanager.util;
 
 import java.util.Map;

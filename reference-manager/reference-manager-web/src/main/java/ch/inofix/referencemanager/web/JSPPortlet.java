@@ -30,17 +30,14 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.apache.commons.fileupload.FileUploadBase;
+// There is an issue with the dependency resolution via osgi
+//import org.apache.commons.fileupload.FileUploadBase;
 import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXEntry;
 import org.jbibtex.BibTeXParser;
 import org.osgi.service.component.annotations.Component;
-//import org.osgi.service.component.annotations.Reference;
 
-import ch.inofix.referencemanager.model.Reference;
-import ch.inofix.referencemanager.service.ReferenceLocalService;
-import ch.inofix.referencemanager.util.BibTeXUtil;
-
+import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -51,22 +48,41 @@ import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.documentlibrary.FileSizeException;
 
-@Component(immediate = true, property = {
-    "com.liferay.portlet.display-category=category.osgi",
-    "com.liferay.portlet.instanceable=true",
-    "javax.portlet.security-role-ref=power-user,user",
-    "javax.portlet.init-param.template-path=/",
-    "javax.portlet.init-param.view-template=/view.jsp",
-    "javax.portlet.resource-bundle=content.Language"
-}, service = Portlet.class)
+import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.ReferenceLocalService;
+import ch.inofix.referencemanager.util.BibTeXUtil;
+
+@Component(
+        immediate = true,
+        property = {
+            "com.liferay.portlet.display-category=category.sample",
+            "com.liferay.portlet.instanceable=true",
+            "javax.portlet.security-role-ref=power-user,user",
+            "javax.portlet.init-param.template-path=/",
+            "javax.portlet.init-param.view-template=/view.jsp",
+            "javax.portlet.resource-bundle=content.Language"
+        },
+        service = Portlet.class
+    )
+
+
+//@Component(immediate = true, 
+//    property = { 
+//            "com.liferay.portlet.display-category=category.osgi",
+//        "com.liferay.portlet.instanceable=true", 
+//        "javax.portlet.security-role-ref=power-user,user",
+//        "javax.portlet.init-param.template-path=/", 
+//        "javax.portlet.init-param.view-template=/view.jsp",
+//        "javax.portlet.resource-bundle=content.Language" 
+//        }, 
+//    service = Portlet.class)
 
 /**
  * @author Christian Berndt
@@ -77,9 +93,8 @@ public class JSPPortlet extends MVCPortlet {
     private static Log _log = LogFactoryUtil.getLog(JSPPortlet.class.getName());
 
     @Override
-    public void processAction(
-        ActionRequest actionRequest, ActionResponse actionResponse)
-        throws IOException, PortletException {
+    public void processAction(ActionRequest actionRequest, ActionResponse actionResponse)
+            throws IOException, PortletException {
 
         try {
             String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
@@ -87,14 +102,11 @@ public class JSPPortlet extends MVCPortlet {
 
             if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
                 updateReference(actionRequest);
-            }
-            else if (cmd.equals("importBibtexFile")) {
+            } else if (cmd.equals("importBibtexFile")) {
                 importBibtexFile(actionRequest);
-            }
-            else if (cmd.equals("deleteAllReferences")) {
+            } else if (cmd.equals("deleteAllReferences")) {
                 deleteAllReferences(actionRequest);
-            }
-            else if (cmd.equals(Constants.DELETE)) {
+            } else if (cmd.equals(Constants.DELETE)) {
                 deleteReference(actionRequest);
             }
 
@@ -106,30 +118,25 @@ public class JSPPortlet extends MVCPortlet {
                 actionResponse.setRenderParameter("tabs1", tabs1);
 
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new PortletException(e);
         }
     }
 
     @Override
-    public void render(RenderRequest request, RenderResponse response)
-        throws IOException, PortletException {
+    public void render(RenderRequest request, RenderResponse response) throws IOException, PortletException {
 
         // set service bean
-        request.setAttribute(
-            "referenceLocalService", getReferenceLocalService());
+        request.setAttribute("referenceLocalService", getReferenceLocalService());
 
         super.render(request, response);
     }
 
-    protected void deleteAllReferences(ActionRequest actionRequest)
-        throws Exception {
+    protected void deleteAllReferences(ActionRequest actionRequest) throws Exception {
 
         _log.info("Executing deleteAllReferences().");
 
-        List<Reference> references =
-            getReferenceLocalService().getReferences(0, Integer.MAX_VALUE);
+        List<Reference> references = getReferenceLocalService().getReferences(0, Integer.MAX_VALUE);
 
         for (Reference reference : references) {
 
@@ -137,19 +144,16 @@ public class JSPPortlet extends MVCPortlet {
         }
     }
 
-    protected void deleteReference(ActionRequest actionRequest)
-        throws Exception {
+    protected void deleteReference(ActionRequest actionRequest) throws Exception {
 
         long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
 
         getReferenceLocalService().deleteReference(referenceId);
     }
 
-    protected void importBibtexFile(ActionRequest actionRequest)
-        throws Exception {
+    protected void importBibtexFile(ActionRequest actionRequest) throws Exception {
 
-        UploadPortletRequest uploadPortletRequest =
-            PortalUtil.getUploadPortletRequest(actionRequest);
+        UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
 
         String sourceFileName = uploadPortletRequest.getFileName("file");
 
@@ -168,22 +172,19 @@ public class JSPPortlet extends MVCPortlet {
 
             inputStream = uploadPortletRequest.getFileAsStream("file");
 
-            BufferedReader bufferedReader =
-                new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
             BibTeXParser bibtexParser = new BibTeXParser();
 
             BibTeXDatabase database = bibtexParser.parse(bufferedReader);
 
-            _log.info("database.getEntries().size() = " +
-                database.getEntries().size());
+            _log.info("database.getEntries().size() = " + database.getEntries().size());
 
             Collection<BibTeXEntry> entries = database.getEntries().values();
 
             for (BibTeXEntry bibTeXEntry : entries) {
 
-                Reference reference =
-                    getReferenceLocalService().createReference(0);
+                Reference reference = getReferenceLocalService().createReference(0);
 
                 String bibTeX = BibTeXUtil.format(bibTeXEntry);
 
@@ -198,23 +199,22 @@ public class JSPPortlet extends MVCPortlet {
 
             }
 
-        }
-        catch (Exception e) {
-            UploadException uploadException =
-                (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
+        } catch (Exception e) {
+            UploadException uploadException = (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
 
-            if ((uploadException != null) &&
-                (uploadException.getCause() instanceof FileUploadBase.IOFileUploadException)) {
-
-                // Cancelled a temporary upload
-
-            }
-            else if ((uploadException != null) &&
-                uploadException.isExceededSizeLimit()) {
+            // if ((uploadException != null) &&
+            // (uploadException.getCause() instanceof
+            // FileUploadBase.IOFileUploadException)) {
+            //
+            // // Cancelled a temporary upload
+            //
+            // }
+            // else if ((uploadException != null) &&
+            if ((uploadException != null) 
+                    && uploadException.isExceededSizeLimit()) {
 
                 throw new FileSizeException(uploadException.getCause());
-            }
-            else {
+            } else {
 
                 // TODO: What else can go wrong?
                 // - the uploaded file is not BibTeX-Database
@@ -222,15 +222,13 @@ public class JSPPortlet extends MVCPortlet {
 
                 throw e;
             }
-        }
-        finally {
+        } finally {
             StreamUtil.cleanUp(inputStream);
         }
 
     }
 
-    protected void updateReference(ActionRequest actionRequest)
-        throws Exception {
+    protected void updateReference(ActionRequest actionRequest) throws Exception {
 
         long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
 
@@ -243,10 +241,8 @@ public class JSPPortlet extends MVCPortlet {
 
             reference.isNew();
             getReferenceLocalService().addReferenceWithoutId(reference);
-        }
-        else {
-            Reference reference =
-                getReferenceLocalService().fetchReference(referenceId);
+        } else {
+            Reference reference = getReferenceLocalService().fetchReference(referenceId);
             reference.setReferenceId(referenceId);
             reference.setBibtex(bibtex);
 
@@ -260,8 +256,7 @@ public class JSPPortlet extends MVCPortlet {
     }
 
     @org.osgi.service.component.annotations.Reference
-    public void setReferenceLocalService(
-        ReferenceLocalService referenceLocalService) {
+    public void setReferenceLocalService(ReferenceLocalService referenceLocalService) {
 
         this._referenceLocalService = referenceLocalService;
     }

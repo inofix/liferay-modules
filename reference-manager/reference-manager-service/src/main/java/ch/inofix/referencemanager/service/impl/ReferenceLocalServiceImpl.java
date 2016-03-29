@@ -34,26 +34,28 @@ import ch.inofix.referencemanager.service.base.ReferenceLocalServiceBaseImpl;
  *
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
+ * @created 2016-03-28 17:08
+ * @modified 2016-03-28 17:08
+ * @version 0.1.0
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
- * @version 0.0.1
  */
 @ProviderType
 public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 * 
-	 * Never reference this class directly. Always use {@link
-	 * ch.inofix.referencemanager.service.ReferenceLocalServiceUtil} to access
-	 * the reference local service.
-	 */
-	public Reference addReferenceWithoutId(Reference reference) {
-		long resourcePrimKey = counterLocalService.increment();
-		reference.setReferenceId(resourcePrimKey);
-		return addReference(reference);
-	}
+    /*
+     * NOTE FOR DEVELOPERS:
+     * 
+     * Never reference this class directly. Always use {@link
+     * ch.inofix.referencemanager.service.ReferenceLocalServiceUtil} to access
+     * the reference local service.
+     */
+    public Reference addReferenceWithoutId(Reference reference) {
+        long resourcePrimKey = counterLocalService.increment();
+        reference.setReferenceId(resourcePrimKey);
+        return addReference(reference);
+    }
 
-	public String referenceLocal() {
-		return "referenceLocal";
-	}
+    public String referenceLocal() {
+        return "referenceLocal";
+    }
 }

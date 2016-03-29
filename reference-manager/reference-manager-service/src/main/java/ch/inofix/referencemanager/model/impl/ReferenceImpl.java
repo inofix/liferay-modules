@@ -17,21 +17,27 @@ package ch.inofix.referencemanager.model.impl;
 import aQute.bnd.annotation.ProviderType;
 
 /**
- * The extended model implementation for the Reference service. Represents a row in the &quot;Reference&quot; database table, with each column mapped to a property of this class.
+ * The extended model implementation for the Reference service. Represents a row
+ * in the &quot;Reference&quot; database table, with each column mapped to a
+ * property of this class.
  *
  * <p>
- * Helper methods and all application logic should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link ch.inofix.referencemanager.model.Reference} interface.
+ * Helper methods and all application logic should be put in this class.
+ * Whenever methods are added, rerun ServiceBuilder to copy their definitions
+ * into the {@link ch.inofix.referencemanager.model.Reference} interface.
  * </p>
  *
  * @author Brian Wing Shun Chan
  */
 @ProviderType
 public class ReferenceImpl extends ReferenceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. All methods that expect a reference model instance should use the {@link ch.inofix.referencemanager.model.Reference} interface instead.
-	 */
-	public ReferenceImpl() {
-	}
+    /*
+     * NOTE FOR DEVELOPERS:
+     *
+     * Never reference this class directly. All methods that expect a reference
+     * model instance should use the {@link
+     * ch.inofix.referencemanager.model.Reference} interface instead.
+     */
+    public ReferenceImpl() {
+    }
 }
