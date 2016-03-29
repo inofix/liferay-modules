@@ -2,28 +2,27 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-03-29 14:42 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-03-29 22:58 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
-// 	String backURL = ParamUtil.getString(request, "backURL");
-// 	String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+	String backURL = ParamUtil.getString(request, "backURL");
+	String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
 %>
 
 <div class="reference-manager-portlet">
 
 
-    <b>0.1.7</b>
+    <b>0.3.1</b>
 
-<%-- 
 	<liferay-ui:header backURL="<%=backURL%>" title="reference-manager" />
 
 	<liferay-ui:error exception="<%= PrincipalException.class %>"
 		message="you-dont-have-the-required-permissions" />
-
+  
 	<liferay-ui:tabs names="browse,import,export,manage" param="tabs1"
 		url="<%=portletURL.toString()%>" />
 
@@ -52,6 +51,7 @@
 				<aui:button href="<%= editReferenceURL %>" value="add-reference" />
 			</aui:button-row>
 
+<%-- 
 			<liferay-ui:search-container
 				total="<%= referenceLocalService.getReferencesCount() %>">
 
@@ -98,8 +98,8 @@
 				<liferay-ui:search-iterator />
 				
 			</liferay-ui:search-container>
+--%>
 		</c:otherwise>
 	</c:choose>
- --%>
  
 </div>
