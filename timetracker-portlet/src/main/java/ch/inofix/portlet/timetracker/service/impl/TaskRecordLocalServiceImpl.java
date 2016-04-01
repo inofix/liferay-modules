@@ -35,8 +35,8 @@ import ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-03-24 10:43
- * @version 1.0.6
+ * @modified 2016-04-01 21:57
+ * @version 1.0.7
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -80,7 +80,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         String ticketURL, int endDateDay, int endDateMonth, int endDateYear,
         int endDateHour, int endDateMinute, int startDateDay,
         int startDateMonth, int startDateYear, int startDateHour,
-        int startDateMinute, long duration, ServiceContext serviceContext)
+        int startDateMinute, int status, long duration,
+        ServiceContext serviceContext)
         throws PortalException, SystemException {
 
         Date endDate =
@@ -92,9 +93,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             PortalUtil.getDate(
                 startDateMonth, startDateDay, startDateYear, startDateHour,
                 startDateMinute, TaskRecordStartDateException.class);
-
-        // TODO
-        int status = WorkflowConstants.STATUS_APPROVED;
 
         TaskRecord taskRecord =
             saveTaskRecord(
@@ -141,7 +139,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     /**
-     * 
      * @param groupId
      * @return
      * @since 1.0.5
@@ -173,9 +170,9 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         User user = userPersistence.findByPrimaryKey(userId);
         Date now = new Date();
         TaskRecord taskRecord = null;
-        
+
         if (duration <= 0) {
-            duration = endDate.getTime() - startDate.getTime(); 
+            duration = endDate.getTime() - startDate.getTime();
         }
 
         if (taskRecordId > 0) {
@@ -286,7 +283,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         String description, String ticketURL, int endDateDay, int endDateMonth,
         int endDateYear, int endDateHour, int endDateMinute, int startDateDay,
         int startDateMonth, int startDateYear, int startDateHour,
-        int startDateMinute, long duration, ServiceContext serviceContext)
+        int startDateMinute, int status, long duration,
+        ServiceContext serviceContext)
         throws PortalException, SystemException {
 
         Date endDate =
@@ -309,9 +307,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         // either startDate / endDate or duration in milliseconds
         // workPackage: required
         // task: required
-
-        // TODO
-        int status = WorkflowConstants.STATUS_APPROVED;
 
         TaskRecord taskRecord =
             saveTaskRecord(

@@ -27,8 +27,8 @@ import ch.inofix.portlet.timetracker.service.permission.TimetrackerPortletPermis
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil
  * @created 2015-05-07 23:50
- * @modified 2016-03-21 20:31
- * @version 1.0.0
+ * @modified 2016-04-01 22:35
+ * @version 1.0.1
  */
 public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
@@ -54,7 +54,8 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         String ticketURL, int endDateDay, int endDateMonth, int endDateYear,
         int endDateHour, int endDateMinute, int startDateDay,
         int startDateMonth, int startDateYear, int startDateHour,
-        int startDateMinute, long duration, ServiceContext serviceContext)
+        int startDateMinute, int status, long duration,
+        ServiceContext serviceContext)
         throws PortalException, SystemException {
 
         TimetrackerPortletPermission.check(
@@ -64,7 +65,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
             userId, groupId, workPackage, description, ticketURL, endDateDay,
             endDateMonth, endDateYear, endDateHour, endDateMinute,
             startDateDay, startDateMonth, startDateYear, startDateHour,
-            startDateMinute, duration, serviceContext);
+            startDateMinute, status, duration, serviceContext);
 
     }
 
@@ -134,7 +135,8 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         String description, String ticketURL, int endDateDay, int endDateMonth,
         int endDateYear, int endDateHour, int endDateMinute, int startDateDay,
         int startDateMonth, int startDateYear, int startDateHour,
-        int startDateMinute, long duration, ServiceContext serviceContext)
+        int startDateMinute, int status, long duration,
+        ServiceContext serviceContext)
         throws PortalException, SystemException {
 
         TaskRecordPermission.check(
@@ -144,7 +146,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
             userId, groupId, taskRecordId, workPackage, description, ticketURL,
             endDateDay, endDateMonth, endDateYear, endDateHour, endDateMinute,
             startDateDay, startDateMonth, startDateYear, startDateHour,
-            startDateMinute, duration, serviceContext);
+            startDateMinute, status, duration, serviceContext);
 
     }
 }

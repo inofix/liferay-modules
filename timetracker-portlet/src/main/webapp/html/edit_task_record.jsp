@@ -2,8 +2,8 @@
     edit_taks_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2016-03-23 11:11 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2016-04-01 17:54 by Christian Berndt
+    Version:     1.0.6
 
 --%>
 
@@ -150,6 +150,16 @@
 						class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" />
 				</aui:field-wrapper>
 			</c:if>
+			
+			<aui:select name="status">
+                 <aui:option value="<%= WorkflowConstants.STATUS_APPROVED %>" selected="<%= WorkflowConstants.STATUS_APPROVED == taskRecord.getStatus() %>"><liferay-ui:message key="approved"/></aui:option>
+                 <aui:option value="<%= WorkflowConstants.STATUS_DENIED %>" selected="<%= WorkflowConstants.STATUS_DENIED == taskRecord.getStatus() %>"><liferay-ui:message key="denied"/></aui:option>
+                 <aui:option value="<%= WorkflowConstants.STATUS_DRAFT %>" selected="<%= WorkflowConstants.STATUS_DRAFT == taskRecord.getStatus() %>"><liferay-ui:message key="draft"/></aui:option>
+                 <aui:option value="<%= WorkflowConstants.STATUS_INACTIVE %>" selected="<%= WorkflowConstants.STATUS_INACTIVE == taskRecord.getStatus() %>"><liferay-ui:message key="inactive"/></aui:option>
+                 <aui:option value="<%= WorkflowConstants.STATUS_INCOMPLETE %>" selected="<%= WorkflowConstants.STATUS_INCOMPLETE == taskRecord.getStatus() %>"><liferay-ui:message key="incomplete"/></aui:option>
+                 <aui:option value="<%= WorkflowConstants.STATUS_PENDING %>" selected="<%= WorkflowConstants.STATUS_PENDING == taskRecord.getStatus() %>"><liferay-ui:message key="pending"/></aui:option>
+			</aui:select>
+			
 		</aui:fieldset>
 
 		<aui:button-row>

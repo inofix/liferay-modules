@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -74,8 +75,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-03-25 12:45
- * @version 1.1.2
+ * @modified 2016-04-01 22:18
+ * @version 1.1.3
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -810,7 +811,7 @@ public class TimetrackerPortlet extends MVCPortlet {
                         userId, groupId, workPackage, description, ticketURL,
                         endDateDay, endDateMonth, endDateYear, endDateHour,
                         endDateMinute, startDateDay, startDateMonth,
-                        startDateYear, startDateHour, startDateMinute,
+                        startDateYear, startDateHour, startDateMinute, status,
                         duration, serviceContext);
             }
 
@@ -921,11 +922,15 @@ public class TimetrackerPortlet extends MVCPortlet {
                 duration = durationInMinutes * 60 * 1000;
             }
 
+            // TODO
+            int status = WorkflowConstants.STATUS_APPROVED;
+
             TaskRecordLocalServiceUtil.addTaskRecord(
                 userId, duration, workPackage, description, ticketURL,
                 endDateDay, endDateMonth, endDateYear, endDateHour,
                 endDateMinute, startDateDay, startDateMonth, startDateYear,
-                startDateHour, startDateMinute, duration, serviceContext);
+                startDateHour, startDateMinute, status, duration,
+                serviceContext);
         }
 
         // Report the successful update back to the user.
@@ -993,8 +998,8 @@ public class TimetrackerPortlet extends MVCPortlet {
                 StringPool.MINUTE);
 
         // Create the endDate with the date values of
-        // the startDate, because we want the user to
-        // have to select only one date.
+        // the startDate, so that the user only has to
+        // select the date once.
         int endDateDay =
             ParamUtil.getInteger(actionRequest, TaskRecordFields.START_DATE +
                 StringPool.DAY);
@@ -1010,6 +1015,9 @@ public class TimetrackerPortlet extends MVCPortlet {
         int endDateMinute =
             ParamUtil.getInteger(actionRequest, TaskRecordFields.END_DATE +
                 StringPool.MINUTE);
+
+        int status =
+            ParamUtil.getInteger(actionRequest, TaskRecordFields.STATUS);
 
         String ticketURL =
             ParamUtil.getString(actionRequest, TaskRecordFields.TICKET_URL);
@@ -1039,8 +1047,8 @@ public class TimetrackerPortlet extends MVCPortlet {
                     userId, groupId, taskRecordId, workPackage, description,
                     ticketURL, endDateDay, endDateMonth, endDateYear,
                     endDateHour, endDateMinute, startDateDay, startDateMonth,
-                    startDateYear, startDateHour, startDateMinute, duration,
-                    serviceContext);
+                    startDateYear, startDateHour, startDateMinute, status,
+                    duration, serviceContext);
 
             SessionMessages.add(
                 actionRequest, "request_processed",
@@ -1053,7 +1061,8 @@ public class TimetrackerPortlet extends MVCPortlet {
                     userId, groupId, workPackage, description, ticketURL,
                     endDateDay, endDateMonth, endDateYear, endDateHour,
                     endDateMinute, startDateDay, startDateMonth, startDateYear,
-                    startDateHour, startDateMinute, duration, serviceContext);
+                    startDateHour, startDateMinute, status, duration,
+                    serviceContext);
 
             SessionMessages.add(
                 actionRequest, "request_processed",
@@ -1269,9 +1278,8 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         // Retrieve the requested taskRecord and store it
         // as a request attribute.
-        // TODO: Use the remote service instead.
         TaskRecord taskRecord =
-            TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+            TaskRecordServiceUtil.getTaskRecord(taskRecordId);
 
         actionRequest.setAttribute(
             TimetrackerPortletKeys.TASK_RECORD, taskRecord);
