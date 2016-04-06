@@ -3,8 +3,8 @@
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0">
 	<portlet>
 		<portlet-name>proxy-portlet</portlet-name>
-		<display-name>proxy-portlet</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<display-name>Proxy Portlet</display-name>
+		<portlet-class>ch.inofix.portlet.proxy.portlet.ProxyPortlet</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/view.jsp</value>
@@ -14,9 +14,9 @@
 			<mime-type>text/html</mime-type>
 		</supports>
 		<portlet-info>
-			<title>proxy-portlet</title>
-			<short-title>proxy-portlet</short-title>
-			<keywords>proxy-portlet</keywords>
+			<title>Proxy Portlet</title>
+			<short-title>Proxy Portlet</short-title>
+			<keywords>Proxy Portlet</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>
