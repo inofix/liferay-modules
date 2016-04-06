@@ -5,9 +5,12 @@
     <portlet>
         <portlet-name>proxy-portlet</portlet-name>
         <icon>/icon.png</icon>
+        <use-default-template>false</use-default-template>
+        <layout-cacheable>true</layout-cacheable>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <header-portlet-javascript>/js/jquery-1.12.1.min.js</header-portlet-javascript>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+        <system>true</system>
     </portlet>
     <role-mapper>
         <role-name>administrator</role-name>
