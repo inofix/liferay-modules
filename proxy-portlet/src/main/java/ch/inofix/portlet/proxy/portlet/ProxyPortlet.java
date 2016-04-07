@@ -18,8 +18,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 /**
  * @author Christian Berndt
  * @created 2016-04-06 15:39
- * @modified 2016-04-06 15:39
- * @version 1.0.0
+ * @modified 2016-04-07 09:04
+ * @version 1.0.1
  */
 public class ProxyPortlet extends MVCPortlet {
 
@@ -31,20 +31,18 @@ public class ProxyPortlet extends MVCPortlet {
     public void serveResource(ResourceRequest request, ResourceResponse response)
         throws PortletException, IOException {
 
-        _log.info("serveResource() v. 2");
+        String embedURL = ParamUtil.getString(request, "embedURL");
 
-        String url = ParamUtil.getString(request, "url");
+        embedURL = HttpUtil.decodeURL(embedURL);
 
-        url = HttpUtil.decodeURL(url);
-
-        _log.info("url = " + url);
+        _log.info("embedURL = " + embedURL);
 
         String str = "";
 
-        if (Validator.isNotNull(url)) {
+        if (Validator.isNotNull(embedURL)) {
 
             // TODO: check for allowed hosts
-            str = HttpUtil.URLtoString(url);
+            str = HttpUtil.URLtoString(embedURL);
         }
 
         _log.info("str = " + str);
