@@ -27,14 +27,7 @@
             <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.liferay</groupId>
-            <artifactId>com.liferay.portal.spring.extender</artifactId>
-            <version>1.0.2</version>
-            <scope>provided</scope>
-        </dependency>
--->
+        
         <dependency>
             <groupId>ch.inofix</groupId>
             <artifactId>reference-manager-api</artifactId>
@@ -57,9 +50,6 @@
                             ch.inofix.referencemanager.service.persistence.impl
                         </Private-Package>
                         <Import-Package>*</Import-Package>
-<!--
-                        <Import-Package>ch.inofix.referencemanager.*,com.liferay.portal.service;version="7.0.0",org.osgi.framework;version="[1.7,2)",*</Import-Package>
--->
                         <_dsannotations>*</_dsannotations>
                         <Liferay-Service>true</Liferay-Service>
                         <Liferay-Spring-Context>META-INF/spring</Liferay-Spring-Context>
