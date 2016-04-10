@@ -1,5 +1,5 @@
 /**
- * Copyright 2016-present Inofix GmbH, Luzern
+ * Copyright 2000-present Liferay, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package ch.inofix.referencemanager.web;
 
 import java.io.BufferedReader;
@@ -29,16 +30,13 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-//// There is an issue with the dependency resolution via osgi
-////import org.apache.commons.fileupload.FileUploadBase;
 import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXEntry;
 import org.jbibtex.BibTeXParser;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.document.library.kernel.exception.FileSizeException;
-//
-//import com.liferay.document.library.kernel.exception.FileSizeException;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -49,27 +47,24 @@ import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StreamUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceLocalService;
-import ch.inofix.referencemanager.util.BibTeXUtil;
 
-@Component(immediate = true, property = { "com.liferay.portlet.display-category=category.sample",
-        "com.liferay.portlet.instanceable=false", "javax.portlet.security-role-ref=power-user,user",
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StreamUtil;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
+
+@Component(immediate = true, property = { "com.liferay.portlet.display-category=category.osgi",
+        "com.liferay.portlet.instanceable=true", "javax.portlet.security-role-ref=power-user,user",
         "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
         "javax.portlet.resource-bundle=content.Language" }, service = Portlet.class)
 
 /**
- * @author Christian Berndt
- * @created 2016-03-29 14:43
- * @modified 2016-03-29 22:56
- * @version 0.1.4
+ * @author Andy Wu
  */
 public class JSPPortlet extends MVCPortlet {
 
@@ -173,7 +168,9 @@ public class JSPPortlet extends MVCPortlet {
 
                 Reference reference = getReferenceLocalService().createReference(0);
 
-                String bibTeX = BibTeXUtil.format(bibTeXEntry);
+                String bibTeX = "BibTeX";
+
+                // String bibTeX = BibTeXUtil.format(bibTeXEntry);
 
                 reference.setBibtex(bibTeX);
 
@@ -241,12 +238,11 @@ public class JSPPortlet extends MVCPortlet {
         return _referenceLocalService;
     }
 
-    // @org.osgi.service.component.annotations.Reference
-    // public void setReferenceLocalService(ReferenceLocalService
-    // referenceLocalService) {
-    //
-    // this._referenceLocalService = referenceLocalService;
-    // }
+    @org.osgi.service.component.annotations.Reference
+    public void setReferenceLocalService(ReferenceLocalService referenceLocalService) {
+
+        this._referenceLocalService = referenceLocalService;
+    }
 
     private ReferenceLocalService _referenceLocalService;
 
