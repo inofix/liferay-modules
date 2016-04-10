@@ -1,12 +1,5 @@
--dsannotations: *
--sources: true
-Bundle-Version: 0.1.2-${tstamp}
-Service-Component: *
-Import-Package: \
-    javax.portlet;version='[2.0,3)',\
-    javax.servlet;version='[2.5,4)',\
-    *
--includeresource:\
-    META-INF/resources=src/main/resources/META-INF/resources
+Bundle-Version: 0.1.3
 -jsp: *.jsp,*.jspf
+-plugin.bundle: com.liferay.ant.bnd.resource.bundle.ResourceBundleLoaderAnalyzerPlugin
 -plugin.jsp: com.liferay.ant.bnd.jsp.JspAnalyzerPlugin
+-sources: true

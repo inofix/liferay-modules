@@ -16,7 +16,7 @@
 <div class="reference-manager-portlet">
 
 
-    <b>0.3.1</b>
+    <b>0.3.3</b>
 
 	<liferay-ui:header backURL="<%=backURL%>" title="reference-manager" />
 
@@ -51,7 +51,6 @@
 				<aui:button href="<%= editReferenceURL %>" value="add-reference" />
 			</aui:button-row>
 
-<%-- 
 			<liferay-ui:search-container
 				total="<%= referenceLocalService.getReferencesCount() %>">
 
@@ -83,7 +82,7 @@
 						</div>
 					</liferay-ui:search-container-column-text>
 
-				
+				<%--
 						<liferay-ui:search-container-column-text
 							property="field2"
 							valign="top"
@@ -92,13 +91,13 @@
 
 					<liferay-ui:search-container-column-jsp cssClass="entry-action"
 						path="/reference_action.jsp" valign="top" />
+                    --%>
 
 				</liferay-ui:search-container-row>
 
 				<liferay-ui:search-iterator />
 				
 			</liferay-ui:search-container>
---%>
 		</c:otherwise>
 	</c:choose>
  
