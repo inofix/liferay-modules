@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-03-29 22:54 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-04-10 14:18 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -13,6 +13,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@ page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
 <%@ page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
 <%@ page import="com.liferay.portal.kernel.upload.UploadException"%>
 <%@ page import="com.liferay.portal.kernel.util.Constants"%>
@@ -21,8 +22,6 @@
 <%@ page import="com.liferay.portal.kernel.util.WebKeys"%>
 
 <%-- <%@ page import="com.liferay.portlet.documentlibrary.FileExtensionException"%> --%>
-
-<%-- <%@ page import="com.liferay.taglib.search.ResultRow"%> --%>
 
 <%@ page import="javax.portlet.PortletURL"%>
 
@@ -37,7 +36,7 @@
 	PortletURL portletURL = renderResponse.createRenderURL();
 
 	String currentURL = portletURL.toString();
-
+ 
 	//get service bean
 	ReferenceLocalService referenceLocalService = (ReferenceLocalService) request
 			.getAttribute("referenceLocalService");	

@@ -18,6 +18,7 @@
 <liferay-ui:icon-menu icon="<%=StringPool.BLANK%>"
 	message="<%=StringPool.BLANK%>" showExpanded="<%=row == null%>"
 	showWhenSingleIcon="<%=row == null%>">
+ 
 	<portlet:renderURL var="editURL">
 		<portlet:param name="mvcPath" value="/edit_reference.jsp" />
 		<portlet:param name="redirect" value="<%=currentURL%>" />
@@ -42,4 +43,5 @@
 	</portlet:actionURL>
 
 	<liferay-ui:icon-delete url="<%=deleteURL%>" />
+ 
 </liferay-ui:icon-menu>

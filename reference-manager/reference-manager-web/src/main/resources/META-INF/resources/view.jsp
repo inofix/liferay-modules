@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-03-29 22:58 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-04-10 14:11 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -14,9 +14,6 @@
 %>
 
 <div class="reference-manager-portlet">
-
-
-    <b>0.3.3</b>
 
 	<liferay-ui:header backURL="<%=backURL%>" title="reference-manager" />
 
@@ -87,11 +84,11 @@
 							property="field2"
 							valign="top"
 						/>
+                    --%>
 				
 
 					<liferay-ui:search-container-column-jsp cssClass="entry-action"
 						path="/reference_action.jsp" valign="top" />
-                    --%>
 
 				</liferay-ui:search-container-row>
 
