@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-present Liferay, Inc.
+ * Copyright 2016-present Inofix GmbH, Luzern.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,13 +58,24 @@ import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 
-@Component(immediate = true, property = { "com.liferay.portlet.display-category=category.osgi",
-        "com.liferay.portlet.instanceable=true", "javax.portlet.security-role-ref=power-user,user",
-        "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
-        "javax.portlet.resource-bundle=content.Language" }, service = Portlet.class)
+@Component(
+    immediate = true, 
+    property = { 
+        "com.liferay.portlet.display-category=category.osgi",
+        "com.liferay.portlet.instanceable=true", 
+        "javax.portlet.security-role-ref=power-user,user",
+        "javax.portlet.init-param.template-path=/", 
+        "javax.portlet.init-param.view-template=/view.jsp",
+        "javax.portlet.resource-bundle=content.Language" 
+    }, 
+    service = Portlet.class
+)
 
 /**
- * @author Andy Wu
+ * @author Christian Berndt
+ * @created 2016-04-10 22:32
+ * @modified 2016-04-10 22:32
+ * @version 1.0.0
  */
 public class JSPPortlet extends MVCPortlet {
 

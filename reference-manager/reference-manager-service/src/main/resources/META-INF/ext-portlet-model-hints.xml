@@ -11,7 +11,7 @@
         <field name="createDate" type="Date" />
         <field name="modifiedDate" type="Date" />
         <field name="bibtex" type="String">
-            <hint name="max-length">5000</hint>
+<!--             <hint name="max-length">5000</hint> -->
         </field>
         <field name="status" type="int" />
     </model>
