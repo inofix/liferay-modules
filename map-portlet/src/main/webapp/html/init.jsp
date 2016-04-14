@@ -1,5 +1,5 @@
 <%--
-    init.jsp: Common imports and setup code of the contact-manager
+    init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
     Modified:   2016-03-14 21:14 by Christian Berndt
