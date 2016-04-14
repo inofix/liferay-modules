@@ -4,6 +4,7 @@ package ch.inofix.portlet.proxy.portlet;
 import java.io.IOException;
 
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
@@ -18,8 +19,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 /**
  * @author Christian Berndt
  * @created 2016-04-06 15:39
- * @modified 2016-04-07 09:04
- * @version 1.0.1
+ * @modified 2016-04-14 13:34
+ * @version 1.0.2
  */
 public class ProxyPortlet extends MVCPortlet {
 
@@ -28,26 +29,43 @@ public class ProxyPortlet extends MVCPortlet {
         LogFactoryUtil.getLog(ProxyPortlet.class.getName());
 
     @Override
-    public void serveResource(ResourceRequest request, ResourceResponse response)
+    public void serveResource(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse)
         throws PortletException, IOException {
 
-        String embedURL = ParamUtil.getString(request, "embedURL");
+        PortletPreferences portletPreferences =
+            resourceRequest.getPreferences();
+
+        String[] hosts = portletPreferences.getValues("hosts", new String[] {});
+
+        String embedURL = ParamUtil.getString(resourceRequest, "embedURL");
 
         embedURL = HttpUtil.decodeURL(embedURL);
-
-        _log.info("embedURL = " + embedURL);
 
         String str = "";
 
         if (Validator.isNotNull(embedURL)) {
 
-            // TODO: check for allowed hosts
-            str = HttpUtil.URLtoString(embedURL);
+            boolean allowed = false;
+
+            for (String host : hosts) {
+
+                if (embedURL.contains(host)) {
+                    allowed = true;
+                }
+            }
+
+            if (allowed) {
+                str = HttpUtil.URLtoString(embedURL);
+            }
+            else {
+                _log.error("Access to " + embedURL +
+                    " is not allowed. Check your Proxy Portlet configuration.");
+            }
+
         }
 
-        _log.info("str = " + str);
-
-        PortletResponseUtil.write(response, str);
+        PortletResponseUtil.write(resourceResponse, str);
 
     }
 
