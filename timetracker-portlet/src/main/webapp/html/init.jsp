@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-03-25 11:15 by Christian Berndt
-    Version:     1.0.7
+    Modified:    2016-04-15 12:54 by Christian Berndt
+    Version:     1.0.8
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -45,7 +45,7 @@
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
 <%@page import="com.liferay.portlet.PortletPreferencesFactoryUtil"%>
-
+<%@page import="com.liferay.portlet.documentlibrary.FileExtensionException"%>
 
 <%@page import="ch.inofix.portlet.timetracker.model.TaskRecord"%>
 <%@page import="ch.inofix.portlet.timetracker.search.TaskRecordSearchTerms"%>

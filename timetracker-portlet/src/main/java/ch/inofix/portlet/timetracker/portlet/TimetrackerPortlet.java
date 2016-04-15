@@ -30,7 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
+import ch.inofix.portlet.timetracker.NoSuchTaskRecordException;
 import ch.inofix.portlet.timetracker.model.TaskRecord;
+import ch.inofix.portlet.timetracker.model.impl.TaskRecordImpl;
 import ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil;
 import ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil;
 import ch.inofix.portlet.timetracker.util.StringPool;
@@ -38,6 +40,7 @@ import ch.inofix.portlet.timetracker.util.TaskRecordFields;
 import ch.inofix.portlet.timetracker.util.TimetrackerPortletKeys;
 import ch.inofix.portlet.timetracker.util.TimetrackerPortletUtil;
 
+import com.liferay.portal.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -62,8 +65,12 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.xml.Node;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -75,8 +82,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-04-01 22:18
- * @version 1.1.3
+ * @modified 2016-04-14 22:57
+ * @version 1.1.4
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -752,6 +759,9 @@ public class TimetrackerPortlet extends MVCPortlet {
         return sb.toString();
     }
 
+    /**
+     * @deprecated use instead the xml-import
+     */
     public void importCSVFile(
         ActionRequest actionRequest, ActionResponse actionResponse)
         throws Exception {
@@ -836,6 +846,7 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param actionRequest
      * @param actionResponse
      * @since 1.3
+     * @deprecated use instead the xml import
      * @throws PortalException
      * @throws SystemException
      */
@@ -951,6 +962,105 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         // Pass the relevant parameters to the render phase.
         actionResponse.setRenderParameters(params);
+    }
+
+    /**
+     * @since 1.1.4
+     * @param actionRequest
+     * @param actionResponse
+     */
+    public void importXML(
+        ActionRequest actionRequest, ActionResponse actionResponse)
+        throws Exception {
+
+        UploadPortletRequest uploadPortletRequest =
+            PortalUtil.getUploadPortletRequest(actionRequest);
+
+        File file = uploadPortletRequest.getFile("file");
+
+        if (Validator.isNotNull(file)) {
+
+            com.liferay.portal.kernel.xml.Document document =
+                SAXReaderUtil.read(file);
+
+            List<Node> nodes =
+                document.selectNodes("/taskRecords/" +
+                    TaskRecordImpl.class.getName());
+
+            XStream xstream = new XStream();
+
+            ThemeDisplay themeDisplay =
+                (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+            long groupId = themeDisplay.getScopeGroupId();
+            long userId = themeDisplay.getUserId();
+            User user = UserLocalServiceUtil.getUser(userId);
+            String userName = user.getFullName();
+
+            int numRecords = 0;
+
+            for (Node node : nodes) {
+
+                String xml = node.asXML();
+
+                TaskRecord taskRecord = (TaskRecord) xstream.fromXML(xml);
+
+                long taskRecordId = taskRecord.getTaskRecordId();
+                long companyId = PortalUtil.getCompanyId(actionRequest);
+
+                _log.info(groupId);
+                _log.info(taskRecord.getGroupId());
+
+                if (companyId != taskRecord.getCompanyId()) {
+
+                    // Data is not from this portal instance
+                    taskRecord.setCompanyId(companyId);
+                }
+
+                if (groupId != taskRecord.getGroupId()) {
+
+                    // Data is not from this group
+                    taskRecord.setGroupId(groupId);
+                }
+
+                User recordUser = null;
+                try {
+                    recordUser =
+                        UserLocalServiceUtil.getUser(taskRecord.getUserId());
+                }
+                catch (NoSuchUserException ignore) {
+                }
+
+                if (recordUser == null) {
+
+                    // The indicated user does not exist in this system.
+                    // Use the current user's id and userName instead.
+                    taskRecord.setUserId(userId);
+                    taskRecord.setUserName(userName);
+                }
+
+                try {
+                    TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+                }
+                catch (NoSuchTaskRecordException nstre) {
+                    // insert as new
+                    TaskRecordLocalServiceUtil.addTaskRecord(taskRecord);
+                }
+
+                numRecords++;
+            }
+
+            // Report the successful update back to the user.
+            SessionMessages.add(
+                actionRequest, TimetrackerPortletKeys.REQUEST_PROCESSED,
+                PortletUtil.translate(
+                    "successfully-imported-x-task-records", numRecords));
+        }
+        else {
+            SessionErrors.add(
+                actionRequest, PortletUtil.translate("file-not-found"));
+        }
+
     }
 
     public void saveTaskRecord(
