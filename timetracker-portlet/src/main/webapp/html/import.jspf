@@ -2,25 +2,20 @@
     import.jspf: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2016-03-24 15:05 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-04-14 22:52 by Christian Berndt
+    Version:    1.0.2
 --%>
 
-<portlet:actionURL var="importCSVFileURL" name="importCSVFile" />
+<portlet:actionURL var="importXMLURL" name="importXML" />
 
 <portlet:renderURL var="browseURL" />
 
-<aui:form action="<%=importCSVFileURL%>" enctype="multipart/form-data"
+<aui:form action="<%=importXMLURL%>" enctype="multipart/form-data"
     method="post" name="fm" cssClass="import-form">
 
     <%
         // TODO: Add error handling
     %>
-    <%-- 
-       <liferay-ui:error exception="<%= FileExtensionException.class %>">
-   
-       </liferay-ui:error>
-       --%>
 
     <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
 
