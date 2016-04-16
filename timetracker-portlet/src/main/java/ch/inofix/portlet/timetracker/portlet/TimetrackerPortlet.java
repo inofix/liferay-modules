@@ -1008,9 +1008,6 @@ public class TimetrackerPortlet extends MVCPortlet {
                 long taskRecordId = taskRecord.getTaskRecordId();
                 long companyId = PortalUtil.getCompanyId(actionRequest);
 
-                _log.info(groupId);
-                _log.info(taskRecord.getGroupId());
-
                 if (companyId != taskRecord.getCompanyId()) {
 
                     // Data is not from this portal instance
@@ -1033,7 +1030,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
                 if (recordUser == null) {
 
-                    // The indicated user does not exist in this system.
+                    // The record's user does not exist in this system.
                     // Use the current user's id and userName instead.
                     taskRecord.setUserId(userId);
                     taskRecord.setUserName(userName);
