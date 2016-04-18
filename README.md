@@ -29,6 +29,10 @@ Wrap the vocabulary-title of Liferay's asset-categories-summary tag into a span 
 The Asset Display Hook adds custom display styles to Liferay's Asset Publisher Portlet. The hook currently comprises the following styles
 
 * ifx-abstract: A slight modification of Liferay's abstracts style where the metadata-section is displayed BEFORE title and summary (instead of after).
+* 
+### CKEditor Hook
+
+The CKEditor Hook provides a patch for https://issues.liferay.com/browse/LPS-43513.
 
 ### Contact Manager
 
