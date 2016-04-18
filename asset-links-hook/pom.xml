@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-    <artifactId>liferay-modules</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>liferay-modules</artifactId>
+        <groupId>ch.inofix</groupId>
+        <version>0.9.8-SNAPSHOT</version>
+    </parent>
     <groupId>ch.inofix</groupId>
-    <version>0.9.6-SNAPSHOT</version>
-  </parent>
-	<groupId>ch.inofix</groupId>
-	<artifactId>asset-links-hook</artifactId>
-	<packaging>war</packaging>
-	<name>Asset Links Hook</name>
-	<version>0.9.8-SNAPSHOT</version>
+    <artifactId>asset-links-hook</artifactId>
+    <packaging>war</packaging>
+    <name>Asset Links Hook</name>
+    <version>0.9.8-SNAPSHOT</version>
 	<build>
 		<plugins>
             <!-- Read properties from dev.properties in -->
