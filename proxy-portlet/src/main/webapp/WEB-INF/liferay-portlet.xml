@@ -14,7 +14,8 @@
         <preferences-owned-by-group>true</preferences-owned-by-group> 
         <layout-cacheable>true</layout-cacheable>
         <header-portlet-css>/css/main.css</header-portlet-css>
-        <header-portlet-javascript>/js/jquery-1.12.1.min.js</header-portlet-javascript>
+        <!--  We assume jquery to be present, e.g. included by a theme. -->
+<!--         <header-portlet-javascript>/js/jquery-1.12.1.min.js</header-portlet-javascript> -->
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
         <add-default-resource>true</add-default-resource>
         <system>true</system>
