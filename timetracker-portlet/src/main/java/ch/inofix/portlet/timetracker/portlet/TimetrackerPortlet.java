@@ -973,6 +973,10 @@ public class TimetrackerPortlet extends MVCPortlet {
         ActionRequest actionRequest, ActionResponse actionResponse)
         throws Exception {
 
+        ServiceContext serviceContext =
+            ServiceContextFactory.getInstance(
+                TaskRecord.class.getName(), actionRequest);
+
         UploadPortletRequest uploadPortletRequest =
             PortalUtil.getUploadPortletRequest(actionRequest);
 
@@ -1003,45 +1007,78 @@ public class TimetrackerPortlet extends MVCPortlet {
 
                 String xml = node.asXML();
 
-                TaskRecord taskRecord = (TaskRecord) xstream.fromXML(xml);
+                TaskRecord importRecord = (TaskRecord) xstream.fromXML(xml);
 
-                long taskRecordId = taskRecord.getTaskRecordId();
+                long taskRecordId = importRecord.getTaskRecordId();
                 long companyId = PortalUtil.getCompanyId(actionRequest);
 
-                if (companyId != taskRecord.getCompanyId()) {
+                if (companyId != importRecord.getCompanyId()) {
 
                     // Data is not from this portal instance
-                    taskRecord.setCompanyId(companyId);
+                    importRecord.setCompanyId(companyId);
                 }
 
-                if (groupId != taskRecord.getGroupId()) {
+                if (groupId != importRecord.getGroupId()) {
 
                     // Data is not from this group
-                    taskRecord.setGroupId(groupId);
+                    importRecord.setGroupId(groupId);
                 }
 
-                User recordUser = null;
+                User systemUser = null;
                 try {
-                    recordUser =
-                        UserLocalServiceUtil.getUser(taskRecord.getUserId());
+                    systemUser =
+                        UserLocalServiceUtil.getUser(importRecord.getUserId());
                 }
-                catch (NoSuchUserException ignore) {
+                catch (NoSuchUserException nsue) {
+                    _log.warn(nsue.getMessage());
                 }
 
-                if (recordUser == null) {
+                if (systemUser == null) {
 
                     // The record's user does not exist in this system.
                     // Use the current user's id and userName instead.
-                    taskRecord.setUserId(userId);
-                    taskRecord.setUserName(userName);
+                    importRecord.setUserId(userId);
+                    importRecord.setUserName(userName);
+
+                }
+                else {
+
+                    // Update the record with the system user's userName
+                    importRecord.setUserName(systemUser.getFullName());
                 }
 
+                TaskRecord existingRecord = null;
+
                 try {
-                    TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+                    existingRecord =
+                        TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
                 }
-                catch (NoSuchTaskRecordException nstre) {
-                    // insert as new
-                    TaskRecordLocalServiceUtil.addTaskRecord(taskRecord);
+                catch (NoSuchTaskRecordException ignore) {
+                }
+
+                if (existingRecord == null) {
+
+                    if (importRecord.getTaskRecordId() == 0) {
+
+                        // Insert the imported record as new
+                        TaskRecordServiceUtil.addTaskRecord(
+                            importRecord.getUserId(),
+                            importRecord.getGroupId(),
+                            importRecord.getWorkPackage(),
+                            importRecord.getDescription(),
+                            importRecord.getTicketURL(),
+                            importRecord.getEndDate(),
+                            importRecord.getStartDate(),
+                            importRecord.getStatus(),
+                            importRecord.getDuration(), serviceContext);
+                    }
+                    else {
+
+                        // Record already has an id but does not exist in this
+                        // System. 
+                        TaskRecordLocalServiceUtil.addTaskRecord(importRecord);
+                    }
+
                 }
 
                 numRecords++;

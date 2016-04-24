@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
@@ -35,8 +34,8 @@ import ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-04-01 21:57
- * @version 1.0.7
+ * @modified 2016-04-24 22:08
+ * @version 1.0.8
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -71,7 +70,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @param duration
      * @param serviceContext
      * @return the added TaskRecord.
-     * @since 1.0
+     * @since 1.0.0
      * @throws PortalException
      * @throws SystemException
      */
@@ -93,6 +92,34 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             PortalUtil.getDate(
                 startDateMonth, startDateDay, startDateYear, startDateHour,
                 startDateMinute, TaskRecordStartDateException.class);
+
+        return addTaskRecord(
+            userId, groupId, workPackage, description, ticketURL, endDate,
+            startDate, status, duration, serviceContext);
+
+    }
+
+    /**
+     * @param userId
+     * @param groupId
+     * @param workPackage
+     * @param description
+     * @param ticketURL
+     * @param endDate
+     * @param startDate
+     * @param status
+     * @param duration
+     * @param serviceContext
+     * @return the added record
+     * @since 1.0.8
+     * @throws PortalException
+     * @throws SystemException
+     */
+    public TaskRecord addTaskRecord(
+        long userId, long groupId, String workPackage, String description,
+        String ticketURL, Date endDate, Date startDate, int status,
+        long duration, ServiceContext serviceContext)
+        throws PortalException, SystemException {
 
         TaskRecord taskRecord =
             saveTaskRecord(
