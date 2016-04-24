@@ -1,6 +1,8 @@
 
 package ch.inofix.portlet.timetracker.service.impl;
 
+import java.util.Date;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -27,8 +29,8 @@ import ch.inofix.portlet.timetracker.service.permission.TimetrackerPortletPermis
  * @see ch.inofix.portlet.timetracker.service.base.TaskRecordServiceBaseImpl
  * @see ch.inofix.portlet.timetracker.service.TaskRecordServiceUtil
  * @created 2015-05-07 23:50
- * @modified 2016-04-01 22:35
- * @version 1.0.1
+ * @modified 2016-04-24 22:14
+ * @version 1.0.2
  */
 public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
@@ -66,6 +68,38 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
             endDateMonth, endDateYear, endDateHour, endDateMinute,
             startDateDay, startDateMonth, startDateYear, startDateHour,
             startDateMinute, status, duration, serviceContext);
+
+    }
+
+    /**
+     * 
+     * @param userId
+     * @param groupId
+     * @param workPackage
+     * @param description
+     * @param ticketURL
+     * @param endDate
+     * @param startDate
+     * @param status
+     * @param duration
+     * @param serviceContext
+     * @return the added record
+     * @since 1.0.8
+     * @throws PortalException
+     * @throws SystemException
+     */
+    public TaskRecord addTaskRecord(
+        long userId, long groupId, String workPackage, String description,
+        String ticketURL, Date endDate, Date startDate, int status,
+        long duration, ServiceContext serviceContext)
+        throws PortalException, SystemException {
+
+        TimetrackerPortletPermission.check(
+            getPermissionChecker(), groupId, ActionKeys.ADD_TASK_RECORD);
+
+        return taskRecordLocalService.addTaskRecord(
+            userId, groupId, workPackage, description, ticketURL, endDate,
+            startDate, status, duration, serviceContext);
 
     }
 
