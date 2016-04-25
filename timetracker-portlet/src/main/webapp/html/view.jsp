@@ -273,8 +273,40 @@
                         <liferay-ui:search-iterator />                         
                         
                     </liferay-ui:search-container>
+       
+                    <liferay-ui:message key="sum"/> = <strong><span id="sum"></span></strong>                 
+                    
 	            </div>           
             </aui:form>
+            
+			<aui:script use="aui-io-request">
+			
+            <%
+	            ResourceURL resourceURL =
+	                        liferayPortletResponse.createResourceURL();
+	        
+	            resourceURL.setResourceID("exportSum");
+	            
+	            // Copy render parameters to resourceRequest
+	            resourceURL.setParameters(renderRequest.getParameterMap());
+    
+            %>			
+				AUI().ready('aui-io-request',
+			        function (A) {
+			            A.io.request(
+		                    '<%= resourceURL.toString() %>',
+		                    {
+		                      on: {
+		                        success: function() {
+		                          var data = this.get('responseData');
+		                          A.one('#sum').setHTML(data); 
+		                        }
+		                      }
+		                    }
+		                );
+			         }
+			     );
+            </aui:script>
             
             <aui:script>
                 Liferay.provide(
