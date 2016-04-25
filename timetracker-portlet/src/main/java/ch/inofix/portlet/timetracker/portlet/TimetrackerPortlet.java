@@ -82,8 +82,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-04-14 22:57
- * @version 1.1.4
+ * @modified 2016-04-24 23:51
+ * @version 1.1.5
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -271,6 +271,21 @@ public class TimetrackerPortlet extends MVCPortlet {
         PortletResponseUtil.sendFile(
             resourceRequest, resourceResponse, "TaskRecords.csv",
             export.getBytes(), ContentTypes.TEXT_PLAIN_UTF8);
+
+    }
+
+    /**
+     * @param resourceRequest
+     * @param resourceResponse
+     * @throws IOException
+     * @since 1.1.5
+     */
+    protected void exportSum(ResourceRequest resourceRequest, 
+        ResourceResponse resourceResponse) throws IOException {
+
+        _log.info("exportSum()");
+        
+        PortletResponseUtil.write(resourceResponse, "TODO: Sum");
 
     }
 
@@ -1075,7 +1090,7 @@ public class TimetrackerPortlet extends MVCPortlet {
                     else {
 
                         // Record already has an id but does not exist in this
-                        // System. 
+                        // System.
                         TaskRecordLocalServiceUtil.addTaskRecord(importRecord);
                     }
 
@@ -1335,6 +1350,9 @@ public class TimetrackerPortlet extends MVCPortlet {
             }
             else if ("exportTaskRecords".equals(resourceID)) {
                 exportTaskRecords(resourceRequest, resourceResponse);
+            }
+            else if ("exportSum".equals(resourceID)) {
+                exportSum(resourceRequest, resourceResponse);
             }
             else {
                 // By default serve the portlet body.

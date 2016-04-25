@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-04-15 12:54 by Christian Berndt
-    Version:     1.0.8
+    Modified:    2016-04-25 00:00 by Christian Berndt
+    Version:     1.0.9
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -15,6 +15,7 @@
 
 <%@page import="javax.portlet.PortletPreferences"%>
 <%@page import="javax.portlet.PortletURL"%>
+<%@page import="javax.portlet.ResourceURL"%>
 <%@page import="javax.portlet.WindowState"%>
 
 <%@page import="com.liferay.portal.kernel.dao.search.ResultRow"%>

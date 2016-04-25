@@ -2,11 +2,9 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2016-03-27 19:42 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-04-25 00:01 by Christian Berndt
+    Version:    1.0.5
  --%>
-
-<%@page import="javax.portlet.ResourceURL"%>
 
 <%@ include file="/html/init.jsp"%>
 
