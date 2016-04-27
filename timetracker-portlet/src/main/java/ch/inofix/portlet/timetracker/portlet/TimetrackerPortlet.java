@@ -1,3 +1,4 @@
+
 package ch.inofix.portlet.timetracker.portlet;
 
 import java.io.File;
@@ -15,15 +16,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
-import javax.portlet.PortletResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -280,16 +280,18 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param resourceRequest
      * @param resourceResponse
      * @throws IOException
-     * @throws SearchException 
+     * @throws SearchException
      * @since 1.1.5
      */
     protected void exportSum(
         ResourceRequest resourceRequest, ResourceResponse resourceResponse)
         throws IOException, SearchException {
 
-        List<TaskRecord> taskRecords =
-            getTaskRecords(resourceRequest, resourceResponse);
-        
+        HttpServletRequest request =
+            PortalUtil.getHttpServletRequest(resourceRequest);
+
+        List<TaskRecord> taskRecords = getTaskRecords(request);
+
         long minutes = 0;
 
         for (TaskRecord taskRecord : taskRecords) {
@@ -387,28 +389,6 @@ public class TimetrackerPortlet extends MVCPortlet {
     protected String getTaskRecordCSV(TaskRecord taskRecord) {
 
         StringBundler sb = new StringBundler();
-
-        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        //
-        //
-        // sb.append(taskRecord.getTaskRecordId());
-        // sb.append(",");
-        // sb.append(sdf.format(taskRecord.getStartDate()));
-        // sb.append(",");
-        // sb.append(StringPool.QUOTE);
-        // sb.append(taskRecord.getWorkPackage());
-        // sb.append(StringPool.QUOTE);
-        // sb.append(",");
-        // sb.append(StringPool.QUOTE);
-        // sb.append(taskRecord.getDescription());
-        // sb.append(StringPool.QUOTE);
-        // sb.append(",");
-        // sb.append(taskRecord.getDurationInMinutes());
-        // sb.append(",");
-        // sb.append(StringPool.QUOTE);
-        // sb.append(taskRecord.getUserName());
-        // sb.append(StringPool.QUOTE);
-        //
 
         sb.append(toCSV(taskRecord));
         sb.append(StringPool.NEW_LINE);
@@ -520,36 +500,40 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @since 1.1.6
      * @throws SearchException
      */
-    protected List<TaskRecord> getTaskRecords(
-        PortletRequest portletRequest, PortletResponse portletResponse)
+    protected List<TaskRecord> getTaskRecords(HttpServletRequest request)
         throws SearchException {
-        
-        _log.info("getTaskRecords()."); 
-
-        HttpServletRequest request =
-            PortalUtil.getHttpServletRequest(portletRequest);
-
-        String keywords = ParamUtil.getString(request, "keywords");
-        String orderByCol = ParamUtil.getString(request, "orderByCol", "name");
-        String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 
         SearchContext searchContext = SearchContextFactory.getInstance(request);
+
+        // For some undiscovered reason, auto-setting of attributes with method
+        // above does not work. The parameters are transferred, but not the
+        // values.
+
+        Set<String> keys = request.getParameterMap().keySet();
+
+        for (String key : keys) {
+            searchContext.setAttribute(key, request.getParameter(key));
+        }
+
+        String keywords = ParamUtil.getString(request, "keywords");
+        String orderByCol =
+            ParamUtil.getString(request, "orderByCol", "modified-date");
+        String orderByType =
+            ParamUtil.getString(request, "orderByType", "desc");
 
         boolean reverse = "desc".equals(orderByType);
 
         Sort sort = new Sort(orderByCol, reverse);
 
         searchContext.setKeywords(keywords);
-//        searchContext.setAttribute("paginationType", "more");
         searchContext.setStart(0);
         searchContext.setEnd(Integer.MAX_VALUE);
         searchContext.setSorts(sort);
+        searchContext.setAttribute("paginationType", "more");
 
         Indexer indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
 
         Hits hits = indexer.search(searchContext);
-        
-        _log.info("hits.getLength() = " + hits.getLength()); 
 
         List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
 
@@ -597,60 +581,10 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         DecimalFormat df = new DecimalFormat("0.00");
 
-        List<TaskRecord> taskRecords =
-            getTaskRecords(resourceRequest, resourceResponse);
+        HttpServletRequest request =
+            PortalUtil.getHttpServletRequest(resourceRequest);
 
-        // HttpServletRequest request =
-        // PortalUtil.getHttpServletRequest(resourceRequest);
-        //
-        // String keywords = ParamUtil.getString(request, "keywords");
-        // String orderByCol = ParamUtil.getString(request, "orderByCol",
-        // "name");
-        // String orderByType = ParamUtil.getString(request, "orderByType",
-        // "asc");
-        //
-        // SearchContext searchContext =
-        // SearchContextFactory.getInstance(request);
-        //
-        // boolean reverse = "desc".equals(orderByType);
-        //
-        // Sort sort = new Sort(orderByCol, reverse);
-        //
-        // searchContext.setKeywords(keywords);
-        // searchContext.setAttribute("paginationType", "more");
-        // searchContext.setStart(0);
-        // searchContext.setEnd(Integer.MAX_VALUE);
-        // searchContext.setSorts(sort);
-        //
-        // Indexer indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
-        //
-        // Hits hits = indexer.search(searchContext);
-        //
-        // List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
-        //
-        // for (int i = 0; i < hits.getDocs().length; i++) {
-        // Document doc = hits.doc(i);
-        //
-        // long taskRecordId =
-        // GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
-        //
-        // TaskRecord taskRecord = null;
-        //
-        // try {
-        // taskRecord =
-        // TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
-        // }
-        // catch (PortalException pe) {
-        // _log.error(pe.getLocalizedMessage());
-        // }
-        // catch (SystemException se) {
-        // _log.error(se.getLocalizedMessage());
-        // }
-        //
-        // if (taskRecord != null) {
-        // taskRecords.add(taskRecord);
-        // }
-        // }
+        List<TaskRecord> taskRecords = getTaskRecords(request);
 
         StringBundler sb = new StringBundler(taskRecords.size() * 4);
 
@@ -691,7 +625,7 @@ public class TimetrackerPortlet extends MVCPortlet {
             userNames = new HashMap<String, String>();
             workTokens = new HashMap<String, String>();
 
-            for (int i = 0; itr.hasNext(); i++) {
+            for (; itr.hasNext();) {
 
                 TaskRecord taskRecord = itr.next();
 
@@ -735,7 +669,7 @@ public class TimetrackerPortlet extends MVCPortlet {
             itr = taskRecords.iterator();
         }
 
-        for (int i = 0; itr.hasNext(); i++) {
+        for (; itr.hasNext();) {
 
             TaskRecord taskRecord = itr.next();
 
@@ -845,11 +779,12 @@ public class TimetrackerPortlet extends MVCPortlet {
             it = workTokens.entrySet().iterator();
             while (it.hasNext()) {
 
-                Map.Entry<String, String> entry = (Map.Entry) it.next();
+                Map.Entry<String, String> entry =
+                    (Map.Entry<String, String>) it.next();
                 sb.append(" \\item[");
                 sb.append(entry.getValue());
                 sb.append("] ");
-                String s = (String) entry.getKey();
+                String s = entry.getKey();
                 char c = Character.toUpperCase(s.charAt(0));
                 sb.append(c + s.substring(1));
                 sb.append(StringPool.NEW_LINE);
@@ -887,18 +822,18 @@ public class TimetrackerPortlet extends MVCPortlet {
             Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
             for (CSVRecord record : records) {
 
-                long companyId = GetterUtil.getLong(record.get(0));
-                long createDateTime = GetterUtil.getLong(record.get(1));
+                GetterUtil.getLong(record.get(0));
+                GetterUtil.getLong(record.get(1));
                 String description = record.get(2);
                 long duration = GetterUtil.getLong(record.get(3));
                 long endDateTime = GetterUtil.getLong(record.get(4));
                 long groupId = GetterUtil.getLong(record.get(5));
                 long startDateTime = GetterUtil.getLong(record.get(6));
                 int status = GetterUtil.getInteger(record.get(7));
-                long taskRecordId = GetterUtil.getLong(record.get(8));
+                GetterUtil.getLong(record.get(8));
                 String ticketURL = record.get(9);
                 long userId = GetterUtil.getLong(record.get(10));
-                String userName = record.get(11);
+                record.get(11);
                 String workPackage = record.get(12);
 
                 Date endDate = new Date(endDateTime);
@@ -922,13 +857,12 @@ public class TimetrackerPortlet extends MVCPortlet {
                 int startDateHour = cal.get(Calendar.HOUR_OF_DAY);
                 int startDateMinute = cal.get(Calendar.MINUTE);
 
-                TaskRecord taskRecord =
-                    TaskRecordServiceUtil.addTaskRecord(
-                        userId, groupId, workPackage, description, ticketURL,
-                        endDateDay, endDateMonth, endDateYear, endDateHour,
-                        endDateMinute, startDateDay, startDateMonth,
-                        startDateYear, startDateHour, startDateMinute, status,
-                        duration, serviceContext);
+                TaskRecordServiceUtil.addTaskRecord(
+                    userId, groupId, workPackage, description, ticketURL,
+                    endDateDay, endDateMonth, endDateYear, endDateHour,
+                    endDateMinute, startDateDay, startDateMonth, startDateYear,
+                    startDateHour, startDateMinute, status, duration,
+                    serviceContext);
             }
 
             String message =
