@@ -1,3 +1,4 @@
+
 package ch.inofix.portlet.timetracker.search;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
 /**
  * @author Christian Berndt
  * @created 2013-10-06 18:26
- * @modified 2016-04-27 19:50
- * @version 1.0.1
+ * @modified 2016-04-27 22:07
+ * @version 1.0.2
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
@@ -75,10 +76,32 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         iteratorURL.setParameter(
             TaskRecordDisplayTerms.END_DATE, displayTerms.getEndDate());
         iteratorURL.setParameter(
+            TaskRecordDisplayTerms.END_DATE_DAY, displayTerms.getEndDateDay());
+        iteratorURL.setParameter(
+            TaskRecordDisplayTerms.END_DATE_MONTH,
+            displayTerms.getEndDateMonth());
+        iteratorURL.setParameter(
+            TaskRecordDisplayTerms.END_DATE_YEAR, displayTerms.getEndDateYear());
+        iteratorURL.setParameter(
+            TaskRecordDisplayTerms.IGNORE_END_DATE,
+            String.valueOf(displayTerms.ignoreEndDate));
+        iteratorURL.setParameter(
+            TaskRecordDisplayTerms.IGNORE_START_DATE,
+            String.valueOf(displayTerms.ignoreStartDate));
+        iteratorURL.setParameter(
             TaskRecordDisplayTerms.MODIFIED_DATE,
             displayTerms.getModifiedDate());
         iteratorURL.setParameter(
             TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());
+        iteratorURL.setParameter(
+            TaskRecordDisplayTerms.START_DATE_DAY,
+            displayTerms.getStartDateDay());
+        iteratorURL.setParameter(
+            TaskRecordDisplayTerms.START_DATE_MONTH,
+            displayTerms.getStartDateMonth());
+        iteratorURL.setParameter(
+            TaskRecordDisplayTerms.START_DATE_YEAR,
+            displayTerms.getStartDateYear());
         iteratorURL.setParameter(
             TaskRecordDisplayTerms.TASK_RECORD_ID,
             String.valueOf(displayTerms.getTaskRecordId()));
