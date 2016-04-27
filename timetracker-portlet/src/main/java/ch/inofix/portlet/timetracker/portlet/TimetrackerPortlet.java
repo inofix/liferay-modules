@@ -1,4 +1,3 @@
-
 package ch.inofix.portlet.timetracker.portlet;
 
 import java.io.File;
@@ -22,7 +21,9 @@ import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
+import javax.portlet.PortletResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchContextFactory;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -82,8 +84,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-04-24 23:51
- * @version 1.1.5
+ * @modified 2016-04-25 23:39
+ * @version 1.1.6
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -278,14 +280,29 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param resourceRequest
      * @param resourceResponse
      * @throws IOException
+     * @throws SearchException 
      * @since 1.1.5
      */
-    protected void exportSum(ResourceRequest resourceRequest, 
-        ResourceResponse resourceResponse) throws IOException {
+    protected void exportSum(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+        throws IOException, SearchException {
 
-        _log.info("exportSum()");
+        List<TaskRecord> taskRecords =
+            getTaskRecords(resourceRequest, resourceResponse);
         
-        PortletResponseUtil.write(resourceResponse, "TODO: Sum");
+        long minutes = 0;
+
+        for (TaskRecord taskRecord : taskRecords) {
+            minutes = minutes + taskRecord.getDurationInMinutes();
+        }
+
+        double hours = 0;
+
+        if (minutes > 0) {
+            hours = ((double) minutes) / 60;
+        }
+
+        PortletResponseUtil.write(resourceResponse, String.valueOf(hours));
 
     }
 
@@ -497,23 +514,20 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     /**
-     * Return the list of taskRecords in the selected format.
-     *
      * @param resourceRequest
      * @param resourceResponse
-     * @return the list of taskRecords in CSV format.
-     * @throws Exception
+     * @return
+     * @since 1.1.6
+     * @throws SearchException
      */
-    // After the model of getUsersCSV from ExportUsersAction.
-    protected String getTaskRecords(
-        ResourceRequest resourceRequest, ResourceResponse resourceResponse,
-        String format)
-        throws Exception {
-
-        DecimalFormat df = new DecimalFormat("0.00");
+    protected List<TaskRecord> getTaskRecords(
+        PortletRequest portletRequest, PortletResponse portletResponse)
+        throws SearchException {
+        
+        _log.info("getTaskRecords()."); 
 
         HttpServletRequest request =
-            PortalUtil.getHttpServletRequest(resourceRequest);
+            PortalUtil.getHttpServletRequest(portletRequest);
 
         String keywords = ParamUtil.getString(request, "keywords");
         String orderByCol = ParamUtil.getString(request, "orderByCol", "name");
@@ -526,7 +540,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         Sort sort = new Sort(orderByCol, reverse);
 
         searchContext.setKeywords(keywords);
-        searchContext.setAttribute("paginationType", "more");
+//        searchContext.setAttribute("paginationType", "more");
         searchContext.setStart(0);
         searchContext.setEnd(Integer.MAX_VALUE);
         searchContext.setSorts(sort);
@@ -534,6 +548,8 @@ public class TimetrackerPortlet extends MVCPortlet {
         Indexer indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
 
         Hits hits = indexer.search(searchContext);
+        
+        _log.info("hits.getLength() = " + hits.getLength()); 
 
         List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
 
@@ -560,6 +576,81 @@ public class TimetrackerPortlet extends MVCPortlet {
                 taskRecords.add(taskRecord);
             }
         }
+
+        return taskRecords;
+
+    }
+
+    /**
+     * Return the list of taskRecords in the selected format.
+     *
+     * @param resourceRequest
+     * @param resourceResponse
+     * @return the list of taskRecords in CSV format.
+     * @throws Exception
+     */
+    // After the model of getUsersCSV from ExportUsersAction.
+    protected String getTaskRecords(
+        ResourceRequest resourceRequest, ResourceResponse resourceResponse,
+        String format)
+        throws Exception {
+
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        List<TaskRecord> taskRecords =
+            getTaskRecords(resourceRequest, resourceResponse);
+
+        // HttpServletRequest request =
+        // PortalUtil.getHttpServletRequest(resourceRequest);
+        //
+        // String keywords = ParamUtil.getString(request, "keywords");
+        // String orderByCol = ParamUtil.getString(request, "orderByCol",
+        // "name");
+        // String orderByType = ParamUtil.getString(request, "orderByType",
+        // "asc");
+        //
+        // SearchContext searchContext =
+        // SearchContextFactory.getInstance(request);
+        //
+        // boolean reverse = "desc".equals(orderByType);
+        //
+        // Sort sort = new Sort(orderByCol, reverse);
+        //
+        // searchContext.setKeywords(keywords);
+        // searchContext.setAttribute("paginationType", "more");
+        // searchContext.setStart(0);
+        // searchContext.setEnd(Integer.MAX_VALUE);
+        // searchContext.setSorts(sort);
+        //
+        // Indexer indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
+        //
+        // Hits hits = indexer.search(searchContext);
+        //
+        // List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
+        //
+        // for (int i = 0; i < hits.getDocs().length; i++) {
+        // Document doc = hits.doc(i);
+        //
+        // long taskRecordId =
+        // GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+        //
+        // TaskRecord taskRecord = null;
+        //
+        // try {
+        // taskRecord =
+        // TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+        // }
+        // catch (PortalException pe) {
+        // _log.error(pe.getLocalizedMessage());
+        // }
+        // catch (SystemException se) {
+        // _log.error(se.getLocalizedMessage());
+        // }
+        //
+        // if (taskRecord != null) {
+        // taskRecords.add(taskRecord);
+        // }
+        // }
 
         StringBundler sb = new StringBundler(taskRecords.size() * 4);
 

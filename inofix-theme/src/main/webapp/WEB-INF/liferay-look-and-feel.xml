@@ -6,8 +6,8 @@
     default theme.
     
     Created:    2015-07-26 16:27 by Christian Berndt
-    Modified:   2015-12-11 18:04 by Christian Berndt
-    Version:    1.0.3 
+    Modified:   2016-04-27 12:12 by Christian Berndt
+    Version:    1.0.4 
  -->
 <look-and-feel>
     <compatibility>
@@ -20,7 +20,9 @@
             <setting key="brand" configurable="true" type="text"
                 value="Your Brand" />
             <setting key="services-layout-uuid" configurable="true" type="text"
-                value=""/>                
+                value=""/> 
+            <setting key="piwik-opt-out-url" configurable="true" type="text"
+                value=""/>                  
             <setting key="portlet-setup-show-borders-default"
                 value="false" />
         </settings>

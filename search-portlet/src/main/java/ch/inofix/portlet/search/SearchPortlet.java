@@ -10,6 +10,7 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
@@ -27,8 +28,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 /**
  * @author Christian Berndt
  * @created 2015-04-25 16:02
- * @modified 2015-04-25 16:02
- * @version 1.0.0
+ * @modified 2015-04-26 13:45
+ * @version 1.0.1
  */
 public class SearchPortlet extends MVCPortlet {
 
@@ -67,8 +68,12 @@ public class SearchPortlet extends MVCPortlet {
             _log.info("hits.getLength() = " + hits.getLength());
 
             documents = hits.toList();
+            
+            ObjectMapper objectMapper = new ObjectMapper(); 
 
             for (Document document : documents) {
+                
+                _log.info(objectMapper.writeValueAsString(document));
                 _log.info(document.toString());
                 sb.append(document); 
             }

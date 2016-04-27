@@ -24,8 +24,7 @@
 This is the <b>search-portlet</b>.
 
 <portlet:resourceURL var="resourceURL" id="search">
-    <portlet:param name="className" value="<%= DLFileEntry.class.getName() %>"/>
-    <portlet:param name="keywords" value="+pool" />
+    <portlet:param name="className" value="<%= JournalArticle.class.getName() %>"/>
 </portlet:resourceURL>
 
 <a href="<%= resourceURL %>" target="_blank">Display results</a>

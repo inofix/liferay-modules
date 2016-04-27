@@ -2,8 +2,8 @@
     view.jsp: Default view of the timetracker-portlet.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2016-03-23 20:50 by Christian Berndt
-    Version:     1.0.8
+    Modified:    2016-04-27 20:26 by Christian Berndt
+    Version:     1.0.9
  --%>
  
 <%@ include file="/html/init.jsp"%>
@@ -35,9 +35,9 @@
     String[] displayViews = StringUtil.split(PrefsParamUtil.getString(portletPreferences, liferayPortletRequest, "displayViews", "descriptive,icon,list"));
     int idx = ParamUtil.getInteger(request, "cur");
     String keywords = ParamUtil.getString(request, "keywords"); 
-    String orderByCol = ParamUtil.getString(request, "orderByCol", "name"); 
-    String orderByType = ParamUtil.getString(request, "orderByType", "asc"); 
-    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified-date"); 
+    String orderByType = ParamUtil.getString(request, "orderByType", "desc");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");  
     
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1);

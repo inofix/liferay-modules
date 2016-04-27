@@ -2,14 +2,15 @@
 <#-- portal_normal.ftl: Main template of the inofix theme   -->
 <#--                                                        -->
 <#-- Created:     2015-11-26 22:31 by Christian Berndt      -->
-<#-- Modified:    2016-02-14 15:11 by Christian Berndt      -->
-<#-- Version:     1.0.7                                     -->
+<#-- Modified:    2016-04-27 12:28 by Christian Berndt      -->
+<#-- Version:     1.0.8                                     -->
 <#--                                                        -->
 
 <!DOCTYPE html>
 
 <#include init />
 
+<#assign piwik_opt_out_url = theme_display.getThemeSetting('piwik-opt-out-url') />
 <#assign services_layout_uuid = theme_display.getThemeSetting('services-layout-uuid') />
 <#assign virtualhost = layout.getLayoutSet().getVirtualHostname() />
 
@@ -122,6 +123,10 @@ ${theme.include(body_top_include)}
 ${theme.include(body_bottom_include)}
 
 ${theme.include(bottom_include)}
+
+<#if piwik_opt_out_url?has_content>
+    <iframe style="border: 0; width: 100%;"  src="${piwik_opt_out_url}"></iframe>
+</#if>
 
 </body>
 

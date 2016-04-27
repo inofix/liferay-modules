@@ -14,7 +14,7 @@
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->
-            <!-- the parent project directory.          -->
+            <!-- the parent project directory. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
@@ -32,7 +32,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>           
+            </plugin>
             <plugin>
                 <groupId>com.liferay.maven.plugins</groupId>
                 <artifactId>liferay-maven-plugin</artifactId>
@@ -115,5 +115,12 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.6.3</version>
+        </dependency>
+
     </dependencies>
 </project>

@@ -107,6 +107,8 @@ public class TaskRecordIndexer extends BaseIndexer {
     protected void postProcessFullQuery(
         BooleanQuery fullQuery, SearchContext searchContext)
         throws Exception {
+        
+        _log.info("postProcessFullQuery");
 
         // end- and start-date
         boolean ignoreEndDate =
