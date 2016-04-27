@@ -9,6 +9,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 
 import ch.inofix.portlet.timetracker.model.TaskRecord;
+
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -20,17 +21,17 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
 /**
  * @author Christian Berndt
  * @created 2013-10-06 18:26
- * @modified 2013-10-06 18:26
- * @version 1.0
+ * @modified 2016-04-27 19:50
+ * @version 1.0.1
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
+
+    public static final String EMPTY_RESULTS_MESSAGE = "there-are-no-results";
 
     // Enable logging for this class.
     public static final Log _log =
         LogFactoryUtil.getLog(TaskRecordSearch.class.getName());
 
-    // Default configuration for column headers
-    // and orderable column headers
     static List<String> headerNames = new ArrayList<String>();
     static Map<String, String> orderableHeaders = new HashMap<String, String>();
 
@@ -56,73 +57,43 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         orderableHeaders.put("work-package", "work-package");
     }
 
-    /**
-     * Call the constructor with the default parameter for the current page
-     * value ("cur").
-     * 
-     * @param portletRequest
-     *            the portletRequest.
-     * @param iteratorURL
-     *            the iteratorURL.
-     */
     public TaskRecordSearch(
         PortletRequest portletRequest, PortletURL iteratorURL) {
 
-        this(portletRequest, DEFAULT_CUR_PARAM, iteratorURL);
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param portletRequest
-     *            the request.
-     * @param curParam
-     *            parameter for the current page value ("cur").
-     * @param iteratorURL
-     *            the URL of the portlet.
-     */
-    public TaskRecordSearch(
-        PortletRequest portletRequest, String curParam, PortletURL iteratorURL) {
-
-        // Pass the constructor parameters to the superclass.
         super(portletRequest, new TaskRecordDisplayTerms(portletRequest), new TaskRecordSearchTerms(
-            portletRequest), curParam, DEFAULT_DELTA, iteratorURL, headerNames, "there-are-no-results");
+            portletRequest), DEFAULT_CUR_PARAM, DEFAULT_DELTA, iteratorURL, null, EMPTY_RESULTS_MESSAGE);
 
         TaskRecordDisplayTerms displayTerms =
             (TaskRecordDisplayTerms) getDisplayTerms();
 
         iteratorURL.setParameter(
-            displayTerms.CREATE_DATE,
-            String.valueOf(displayTerms.getCreateDate()));
+            TaskRecordDisplayTerms.CREATE_DATE, displayTerms.getCreateDate());
         iteratorURL.setParameter(
-            displayTerms.DESCRIPTION,
-            String.valueOf(displayTerms.getDescription()));
+            TaskRecordDisplayTerms.DESCRIPTION, displayTerms.getDescription());
         iteratorURL.setParameter(
-            displayTerms.DURATION,
-            String.valueOf(displayTerms.getDescription()));
+            TaskRecordDisplayTerms.DURATION, displayTerms.getDuration());
         iteratorURL.setParameter(
-            displayTerms.END_DATE,
-            String.valueOf(displayTerms.getDescription()));
+            TaskRecordDisplayTerms.END_DATE, displayTerms.getEndDate());
         iteratorURL.setParameter(
-            displayTerms.MODIFIED_DATE,
-            String.valueOf(displayTerms.getDescription()));
+            TaskRecordDisplayTerms.MODIFIED_DATE,
+            displayTerms.getModifiedDate());
         iteratorURL.setParameter(
-            displayTerms.START_DATE,
-            String.valueOf(displayTerms.getDescription()));
+            TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());
         iteratorURL.setParameter(
-            displayTerms.TASK_RECORD_ID,
-            String.valueOf(displayTerms.getDescription()));
+            TaskRecordDisplayTerms.TASK_RECORD_ID,
+            String.valueOf(displayTerms.getTaskRecordId()));
         iteratorURL.setParameter(
-            displayTerms.USER_ID, String.valueOf(displayTerms.getUserId()));
+            TaskRecordDisplayTerms.USER_ID, displayTerms.getUserName());
         iteratorURL.setParameter(
-            displayTerms.USER_NAME, String.valueOf(displayTerms.getUserName()));
+            TaskRecordDisplayTerms.USER_NAME, displayTerms.getUserName());
         iteratorURL.setParameter(
-            displayTerms.WORK_PACKAGE,
-            String.valueOf(displayTerms.getWorkPackage()));
+            TaskRecordDisplayTerms.WORK_PACKAGE, displayTerms.getWorkPackage());
 
         try {
             PortalPreferences preferences =
                 PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);
+
+            String portletId = "timetrackerportlet_WAR_timetrackerportlet";
 
             String orderByCol =
                 ParamUtil.getString(portletRequest, "orderByCol");
@@ -133,31 +104,25 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
                 Validator.isNotNull(orderByType)) {
 
                 preferences.setValue(
-                    "timetrackerportlerportlet_WAR_timetrackerportlerportlet",
-                    "timetracker-order-by-col", orderByCol);
+                    portletId, "task-records-order-by-col", orderByCol);
                 preferences.setValue(
-                    "timetrackerportlerportlet_WAR_timetrackerportlerportlet",
-                    "timetracker-order-by-type", orderByType);
+                    portletId, "task-records-order-by-type", orderByType);
             }
             else {
                 orderByCol =
                     preferences.getValue(
-                        "timetrackerportlerportlet_WAR_timetrackerportlerportlet",
-                        "timetracker-order-by-col", "create-date");
+                        portletId, "task-records-order-by-col", "modified-date");
                 orderByType =
                     preferences.getValue(
-                        "timetrackerportlerportlet_WAR_timetrackerportlerportlet",
-                        "timetracker-order-by-type", "desc");
+                        portletId, "task-records-order-by-type", "desc");
             }
 
             setOrderableHeaders(orderableHeaders);
             setOrderByCol(orderByCol);
             setOrderByType(orderByType);
-
         }
         catch (Exception e) {
             _log.error(e);
         }
     }
-
 }

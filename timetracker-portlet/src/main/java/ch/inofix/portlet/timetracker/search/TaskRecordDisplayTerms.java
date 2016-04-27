@@ -1,19 +1,22 @@
-
 package ch.inofix.portlet.timetracker.search;
 
 import javax.portlet.PortletRequest;
 
 import ch.inofix.portlet.timetracker.util.CommonFields;
+
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
  * @author Christian Berndt
  * @created 2013-10-06 17:34
- * @modified 2016-03-22 23:40
- * @version 1.0.2
+ * @modified 2016-04-27 19:57
+ * @version 1.0.3
  */
 public class TaskRecordDisplayTerms extends DisplayTerms {
 
@@ -25,12 +28,11 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     public static final String DESCRIPTION = "description";
     public static final String DURATION = "duration";
     public static final String END_DATE = "endDate";
-    public static final String FROM = "from";
     public static final String MODIFIED_DATE = "modifiedDate";
     public static final String START_DATE = "startDate";
+    public static final String STATUS = "status";
     public static final String TASK_RECORD_ID = "taskRecordId";
     public static final String WORK_PACKAGE = "workPackage";
-    public static final String UNTIL = "until";
     public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
 
@@ -38,8 +40,12 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
 
         super(portletRequest);
 
-        // Retrieve the parameter values
-        // from the request.
+        String statusString = ParamUtil.getString(portletRequest, STATUS);
+
+        if (Validator.isNotNull(statusString)) {
+            status = GetterUtil.getInteger(statusString);
+        }
+
         createDate = ParamUtil.getString(portletRequest, CREATE_DATE);
         description = ParamUtil.getString(portletRequest, DESCRIPTION);
         duration = ParamUtil.getString(portletRequest, DURATION);
@@ -47,7 +53,7 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         groupId = ParamUtil.getLong(portletRequest, CommonFields.GROUP_ID);
         modifiedDate = ParamUtil.getString(portletRequest, MODIFIED_DATE);
         startDate = ParamUtil.getString(portletRequest, START_DATE);
-        status = ParamUtil.getInteger(portletRequest, CommonFields.STATUS);
+        status = ParamUtil.getInteger(portletRequest, STATUS);
         userId = ParamUtil.getLong(portletRequest, USER_ID);
         userName = ParamUtil.getString(portletRequest, USER_NAME);
         workPackage = ParamUtil.getString(portletRequest, WORK_PACKAGE);
@@ -75,11 +81,6 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         return endDate;
     }
 
-    public String getFrom() {
-
-        return from;
-    }
-
     public long getGroupId() {
 
         return groupId;
@@ -103,11 +104,6 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     public long getTaskRecordId() {
 
         return taskRecordId;
-    }
-
-    public String getUntil() {
-
-        return until;
     }
 
     public long getUserId() {
@@ -145,11 +141,6 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.endDate = endDate;
     }
 
-    public void setFrom(String from) {
-
-        this.from = from;
-    }
-
     public void setGroupId(long groupId) {
 
         this.groupId = groupId;
@@ -175,11 +166,6 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.taskRecordId = taskRecordId;
     }
 
-    public void setUntil(String until) {
-
-        this.until = until;
-    }
-
     public void setUserId(long userId) {
 
         this.userId = userId;
@@ -195,17 +181,25 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.workPackage = workPackage;
     }
 
+    public boolean isActive() {
+
+        if (status == WorkflowConstants.STATUS_APPROVED) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     protected String createDate = null;
     protected String description = null;
     protected String duration = null;
     protected String endDate = null;
-    protected String from = null;
     protected long groupId = 0;
     protected String modifiedDate = null;
     protected String startDate = null;
     protected int status = 0;
     protected long taskRecordId = 0;
-    protected String until = null;
     protected long userId = 0;
     protected String userName = null;
     protected String workPackage = null;
