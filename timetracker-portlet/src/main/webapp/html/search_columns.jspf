@@ -3,8 +3,8 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2016-03-25 11:13 by Christian Berndt
-    Version:     1.1.3
+    Modified:    2016-04-27 21:18 by Christian Berndt
+    Version:     1.1.4
 --%>
 
 <%
@@ -33,21 +33,22 @@
 
 <%
     // Crop workpackages if they are too long
-//     int maxLength = 35;
-//     String workPackageString = taskRecord.getWorkPackage();
-//     if (Validator.isNotNull(workPackageString)) {
+    
+    // TODO: Make the preferred workpackage
+    // display length configurable.
+    int maxLength = 35;
+    
+    String workPackageString = taskRecord.getWorkPackage();
+    
+    if (Validator.isNotNull(workPackageString)) {
+        
+        workPackageString = StringUtil.shorten(workPackageString, maxLength, " ..."); 
 
-//         // TODO: Make the preferred workpackage
-//         // display length configurable.
-//         if (workPackageString.length() > maxLength) {
-//             workPackageString = workPackageString.substring(0,
-//                     maxLength) + " ...";
-//         }
-//     }
+    } 
 
-//     // Compose the string used as title attribute
-//     String title = taskRecord.getWorkPackage() + ": "
-//             + taskRecord.getDescription();
+    // Compose the string used as title attribute
+    String title = taskRecord.getWorkPackage() + ": "
+            + taskRecord.getDescription();
 %>
 
 <%
@@ -59,11 +60,11 @@
         name="create-date" orderable="true" href="<%=detailURL%>"
         orderableProperty="createDate" />
 </c:if>
-<c:if test='<%="description".equals(column)%>'>
-    <liferay-ui:search-container-column-text property="description"
-        name="description" orderable="true" href="<%=detailURL%>"
-        orderableProperty="description" />
-</c:if>
+<c:if test='<%="create-date".equals(column)%>'>
+	<liferay-ui:search-container-column-text property="description"
+	    name="description" orderable="true" href="<%=detailURL%>"
+	    orderableProperty="description" value="<%= workPackageString %>" />
+</c:if>                         
 <c:if test='<%="duration".equals(column)%>'>
     <liferay-ui:search-container-column-text value="<%= durationInMinutes %>"
         name="duration" orderable="true" href="<%=detailURL%>"
