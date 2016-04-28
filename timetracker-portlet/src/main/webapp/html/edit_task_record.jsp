@@ -49,10 +49,10 @@
                 request, portletResource);
     }
 
-    String timeFormat =
-        PrefsParamUtil.getString(
-            preferences, renderRequest,
-            TimetrackerPortletKeys.TIME_FORMAT, TimeFormat.FROM_UNTIL);
+//     String timeFormat =
+//         PrefsParamUtil.getString(
+//             preferences, renderRequest,
+//             TimetrackerPortletKeys.TIME_FORMAT, TimeFormat.FROM_UNTIL);
 
     // Retrieve the task record from the request
     // (Stored there by the MVC Controller portlet).
