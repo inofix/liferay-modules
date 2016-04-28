@@ -22,8 +22,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
 /**
  * @author Christian Berndt
  * @created 2013-10-06 18:26
- * @modified 2016-04-27 22:07
- * @version 1.0.2
+ * @modified 2016-04-28 18:58
+ * @version 1.0.3
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
@@ -106,7 +106,8 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
             TaskRecordDisplayTerms.TASK_RECORD_ID,
             String.valueOf(displayTerms.getTaskRecordId()));
         iteratorURL.setParameter(
-            TaskRecordDisplayTerms.USER_ID, displayTerms.getUserName());
+            TaskRecordDisplayTerms.USER_ID,
+            String.valueOf(displayTerms.getUserId()));
         iteratorURL.setParameter(
             TaskRecordDisplayTerms.USER_NAME, displayTerms.getUserName());
         iteratorURL.setParameter(
