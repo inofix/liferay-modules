@@ -3,8 +3,8 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2016-04-27 21:18 by Christian Berndt
-    Version:     1.1.4
+    Modified:    2016-04-28 18:01 by Christian Berndt
+    Version:     1.1.5
 --%>
 
 <%
@@ -34,16 +34,16 @@
 <%
     // Crop workpackages if they are too long
     
-    // TODO: Make the preferred workpackage
-    // display length configurable.
-    int maxLength = 35;
-    
     String workPackageString = taskRecord.getWorkPackage();
     
     if (Validator.isNotNull(workPackageString)) {
         
-        workPackageString = StringUtil.shorten(workPackageString, maxLength, " ..."); 
-
+        // TODO: Make the preferred workpackage
+        // display length configurable.
+        if (workPackageString.length() > maxLength) {
+            workPackageString = workPackageString.substring(0,
+                    maxLength) + " ...";
+        }
     } 
 
     // Compose the string used as title attribute
@@ -60,10 +60,10 @@
         name="create-date" orderable="true" href="<%=detailURL%>"
         orderableProperty="createDate" />
 </c:if>
-<c:if test='<%="create-date".equals(column)%>'>
+<c:if test='<%="description".equals(column)%>'>
 	<liferay-ui:search-container-column-text property="description"
 	    name="description" orderable="true" href="<%=detailURL%>"
-	    orderableProperty="description" value="<%= workPackageString %>" />
+	    orderableProperty="description" />
 </c:if>                         
 <c:if test='<%="duration".equals(column)%>'>
     <liferay-ui:search-container-column-text value="<%= durationInMinutes %>"
@@ -105,9 +105,9 @@
         orderableProperty="userName" />
 </c:if>
 <c:if test='<%="work-package".equals(column)%>'>
-    <liferay-ui:search-container-column-text property="workPackage"
+    <liferay-ui:search-container-column-text 
         name="work-package" orderable="true" href="<%=detailURL%>"
-        orderableProperty="workPackage" />
+        orderableProperty="workPackage" value="<%= workPackageString %>"/>
 </c:if>
 <%
     }

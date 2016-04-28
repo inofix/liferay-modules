@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-04-25 00:00 by Christian Berndt
-    Version:     1.0.9
+    Modified:    2016-04-28 18:11 by Christian Berndt
+    Version:     1.1.0
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -87,15 +87,25 @@
 <theme:defineObjects />
 
 <%
-	String[] columns = portletPreferences.getValues("columns",
-	    new String[] { "task-record-id", "work-package", "start-date", "duration", "create-date", "modified-date", "user-name", "status" });
+    String[] columns =
+        portletPreferences.getValues("columns", new String[] {
+            "task-record-id", "work-package", "start-date", "duration",
+            "create-date", "modified-date", "user-name", "status"
+        });
 
     String currentURL = PortalUtil.getCurrentURL(request);
 
     // Remove any actionParameters from the currentURL
-    currentURL = HttpUtil.removeParameter(currentURL,
-            renderResponse.getNamespace() + "javax.portlet.action");
-    
-    boolean viewByDefault = GetterUtil.getBoolean(portletPreferences
-        .getValue("view-by-default", "false"));
+    currentURL = HttpUtil.removeParameter(
+            currentURL, renderResponse.getNamespace() +
+                "javax.portlet.action");
+
+    int maxLength = GetterUtil.getInteger(portletPreferences.getValue(
+            "max-length", "35"));
+
+    String timeFormat = portletPreferences.getValue(
+            TimetrackerPortletKeys.TIME_FORMAT, TimeFormat.FROM_UNTIL);
+
+    boolean viewByDefault = GetterUtil.getBoolean(portletPreferences.getValue(
+            "view-by-default", "false"));
 %>
