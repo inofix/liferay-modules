@@ -38,8 +38,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-19 21:55
- * @modified 2016-03-24 16:27
- * @version 1.0.3
+ * @modified 2016-03-29 19:34
+ * @version 1.0.4
  */
 public class TaskRecordIndexer extends BaseIndexer {
 
@@ -87,6 +87,7 @@ public class TaskRecordIndexer extends BaseIndexer {
         throws Exception {
 
         // Set advanced search parameters
+        addSearchTerm(searchQuery, searchContext, "description", false);
         addSearchTerm(searchQuery, searchContext, "workPackage", false);
         addSearchTerm(searchQuery, searchContext, "userId", false);
 
@@ -180,7 +181,7 @@ public class TaskRecordIndexer extends BaseIndexer {
         // Set document field values (in alphabetical order)
         document.addDate(
             TaskRecordSearchTerms.CREATE_DATE, taskRecord.getCreateDate());
-        document.addKeyword(
+        document.addText(
             TaskRecordSearchTerms.DESCRIPTION, taskRecord.getDescription());
         document.addNumber(
             TaskRecordSearchTerms.DURATION, taskRecord.getDuration());
