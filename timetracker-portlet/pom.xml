@@ -10,7 +10,7 @@
 	<artifactId>timetracker-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>Timetracker Portlet</name>
-	<version>0.2.3-SNAPSHOT</version>
+	<version>0.2.4-SNAPSHOT</version>
 	<build>
         <plugins>
             <!-- Read properties from dev.properties in -->
