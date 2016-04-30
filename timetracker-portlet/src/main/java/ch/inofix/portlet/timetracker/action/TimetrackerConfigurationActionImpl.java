@@ -1,8 +1,10 @@
+
 package ch.inofix.portlet.timetracker.action;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
@@ -14,8 +16,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
  * 
  * @author Christian Berndt
  * @created 2013-10-18 11:37
- * @modified 2016-04-28 18:29
- * @version 1.0.1
+ * @modified 2016-04-30 00:02
+ * @version 1.0.2
  */
 public class TimetrackerConfigurationActionImpl
     extends DefaultConfigurationAction {
@@ -30,28 +32,17 @@ public class TimetrackerConfigurationActionImpl
         ActionResponse actionResponse)
         throws Exception {
 
+        String[] columns =
+            ParamUtil.getParameterValues(actionRequest, "columns");
         String maxLength = ParamUtil.getString(actionRequest, "max-length");
-
         String timeFormat =
             ParamUtil.getString(actionRequest, "time-format", "from-until");
 
+        setPreference(actionRequest, "columns", columns);
         setPreference(actionRequest, "max-length", maxLength);
         setPreference(actionRequest, "time-format", timeFormat);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
 
     }
-
-//    @Override
-//    public String render(
-//        PortletConfig portletConfig, RenderRequest renderRequest,
-//        RenderResponse renderResponse)
-//        throws Exception {
-//
-//        _log.info("Executing render().");
-//
-//        return TimetrackerPortletKeys.CONFIG_JSP;
-//
-//    }
-
 }
