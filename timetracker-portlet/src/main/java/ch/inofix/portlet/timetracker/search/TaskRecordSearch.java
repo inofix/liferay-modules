@@ -22,8 +22,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
 /**
  * @author Christian Berndt
  * @created 2013-10-06 18:26
- * @modified 2016-04-28 18:58
- * @version 1.0.3
+ * @modified 2016-04-30 13:15
+ * @version 1.0.4
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
@@ -62,7 +62,7 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         PortletRequest portletRequest, PortletURL iteratorURL) {
 
         super(portletRequest, new TaskRecordDisplayTerms(portletRequest), new TaskRecordSearchTerms(
-            portletRequest), DEFAULT_CUR_PARAM, DEFAULT_DELTA, iteratorURL, null, EMPTY_RESULTS_MESSAGE);
+            portletRequest), DEFAULT_CUR_PARAM, DEFAULT_DELTA, iteratorURL, headerNames, EMPTY_RESULTS_MESSAGE);
 
         TaskRecordDisplayTerms displayTerms =
             (TaskRecordDisplayTerms) getDisplayTerms();
