@@ -38,8 +38,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-19 21:55
- * @modified 2016-03-29 19:34
- * @version 1.0.4
+ * @modified 2016-05-02 11:34
+ * @version 1.0.5
  */
 public class TaskRecordIndexer extends BaseIndexer {
 
@@ -133,7 +133,7 @@ public class TaskRecordIndexer extends BaseIndexer {
         long max = Long.MAX_VALUE;
         long min = Long.MIN_VALUE;
 
-        if (!ignoreStartDate && startDateDay > 0 && startDateMonth > 0 &&
+        if (!ignoreStartDate && startDateDay > 0 && startDateMonth >= 0 &&
             startDateYear > 0) {
 
             Date startDate =
@@ -143,7 +143,7 @@ public class TaskRecordIndexer extends BaseIndexer {
 
         }
 
-        if (!ignoreEndDate && endDateDay > 0 && endDateMonth > 0 &&
+        if (!ignoreEndDate && endDateDay > 0 && endDateMonth >= 0 &&
             endDateYear > 0) {
 
             Date endDate =
@@ -291,5 +291,4 @@ public class TaskRecordIndexer extends BaseIndexer {
             getSearchEngineId(), companyId, documents);
 
     }
-
 }
