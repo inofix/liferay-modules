@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2016-04-25 00:01 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2016-05-03 10:17 by Christian Berndt
+    Version:    1.0.6
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -114,7 +114,7 @@
 			</aui:nav-item>
 	
 			<aui:nav-item>
-	            <liferay-ui:icon url='<%= HttpUtil.addParameter(exportURL, ns + "format", "latex") %>'
+	            <liferay-ui:icon url='<%= HttpUtil.addParameter(exportURL, ns + "format", "fulllatex") %>'
 					iconCssClass="icon-download-alt" label="true" message="export-latex" />
 			</aui:nav-item>
 	
