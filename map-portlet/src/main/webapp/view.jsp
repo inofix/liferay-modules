@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-03-14 22:47 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-05-04 21:25 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -33,11 +33,21 @@
 	    attribution: '<%= tilesCopyright %>'
 	}).addTo(map);
 	
+	var markerIcon = new L.Icon.Default();
+	
+	<% if (Validator.isNotNull(markerIconConfig)) { %>
+	    markerIcon = L.icon(<%= markerIconConfig %>); 
+	<% } %>
+	
+    <% if (useDivIcon) { %>
+       markerIcon = L.divIcon(); 
+    <% } %>
+	
 	<% 
 	   for (int i=0; i<markerLatLongs.length; i++) { 
 	       if (Validator.isNotNull(markerLatLongs[i])) {
 	%>
-		L.marker(<%= markerLatLongs[i] %>).addTo(map)
+		L.marker(<%= markerLatLongs[i] %>, {icon: markerIcon}).addTo(map)
             .bindPopup('<%= markerLabels[i] %>');	
 	<%     
 	       }

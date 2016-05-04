@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-03-14 21:14 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-05-04 21:23 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%-- Import required classes --%>
@@ -43,7 +43,6 @@
 <theme:defineObjects />
 
 <%
-
     String currentURL = PortalUtil.getCurrentURL(request);
 
     // Remove any actionParameters from the currentURL
@@ -54,9 +53,11 @@
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
     String mapZoom = portletPreferences.getValue("mapZoom", "13");
+    String markerIconConfig = portletPreferences.getValue("markerIconConfig", "");
     String[] markerLabels = portletPreferences.getValues("markerLabels", new String[] {""});
     String[] markerLatLongs = portletPreferences.getValues("markerLatLongs", new String[] {""});
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
+    boolean useDivIcon = GetterUtil.getBoolean(portletPreferences.getValue("useDivIcon", "false"));
 
 %>

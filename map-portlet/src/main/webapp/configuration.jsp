@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-03-14 22:01 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2016-05-04 21:42 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -117,8 +117,14 @@
         <liferay-ui:panel id="mapportletMiscelaneousPanel" title="miscellaneous" extended="true">
     
             <aui:input name="claim" cssClass="claim" helpMessage="claim-help" 
-                value="<%= claim %>"/>  
-                        
+                value="<%= claim %>"/>
+                
+            <aui:input name="markerIconConfig" type="textarea" value="<%= markerIconConfig %>"
+                helpMessage="marker-icon-config-help" />
+                
+            <aui:input name="useDivIcon" type="checkbox" checked="<%= useDivIcon %>" 
+                helpMessage="use-div-icon"/>  
+                       
         </liferay-ui:panel>
 
     </liferay-ui:panel-container>
