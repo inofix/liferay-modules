@@ -2,16 +2,14 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>reference-manager-api</artifactId>
     <name>Reference Manager API</name>
-    <version>0.1.3-SNAPSHOT</version>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <parent>
-        <artifactId>reference-manager</artifactId>
-        <version>0.1.3-SNAPSHOT</version>
         <groupId>ch.inofix</groupId>
+        <artifactId>reference-manager</artifactId>
+        <version>0.1.5-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -19,6 +17,18 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>5.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>com.liferay.portal.kernel</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>biz.aQute.bnd.annotation</artifactId>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -35,43 +45,4 @@
         </dependency>
     </dependencies>
 
-<!--
-    <dependencies>
-        <dependency>
-            <groupId>com.liferay</groupId>
-            <artifactId>com.liferay.osgi.util</artifactId>
-            <version>2.0.4</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
--->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Export-Package>ch.inofix.referencemanager.*</Export-Package>
-                        <Import-Package>*</Import-Package>
-                        <_dsannotations>*</_dsannotations>
-                        <_sources>true</_sources>
-                    </instructions>
-                </configuration>
-            </plugin>
-<!--
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Export-Package>ch.inofix.referencemanager.*</Export-Package>
-                        <Import-Package>com.liferay.portal.service;version="7.0.0",org.osgi.framework;version="[1.7,2)",*</Import-Package>
-                        <_dsannotations>*</_dsannotations>
-                    </instructions>
-                </configuration>
-            </plugin>
--->
-        </plugins>
-    </build>
 </project>

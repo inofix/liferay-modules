@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
-
+<!--
+    ext-portlet-model-hints.xml are only meant as a reminder
+    of the still unresolved issue with overwritten 
+    portlet-model-hints.xml. 
+-->
 <model-hints>
+
     <model name="ch.inofix.referencemanager.model.Reference">
         <field name="uuid" type="String" />
         <field name="referenceId" type="long" />
@@ -11,7 +16,7 @@
         <field name="createDate" type="Date" />
         <field name="modifiedDate" type="Date" />
         <field name="bibtex" type="String">
-<!--             <hint name="max-length">5000</hint> -->
+            <hint name="max-length">5000</hint>
         </field>
         <field name="status" type="int" />
     </model>

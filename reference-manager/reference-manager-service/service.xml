@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
+	"http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 <!-- 
     service.xml: ORM Configuration of the reference manager. 
 
@@ -8,7 +9,7 @@
     Version:    1.0.0
 -->
 <service-builder package-path="ch.inofix.referencemanager">
-	<namespace>Inofix</namespace>
+	<namespace>RM</namespace>
     <entity name="Reference" uuid="true" local-service="true"
         remote-service="true">
 
