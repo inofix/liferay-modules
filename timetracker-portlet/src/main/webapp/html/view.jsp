@@ -2,8 +2,8 @@
     view.jsp: Default view of the timetracker-portlet.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2016-05-08 12:17 by Christian Berndt
-    Version:     1.1.0
+    Modified:    2016-05-08 13:20 by Christian Berndt
+    Version:     1.1.1
  --%>
  
 <%@ include file="/html/init.jsp"%>
@@ -121,11 +121,13 @@
                             ActionKeys.ADD_TASK_RECORD)%>'>		
 				<%@include file="/html/import.jspf"%>
 			</c:if>
+			<%-- 
             <c:if test='<%=TimetrackerPortletPermission.contains(
                             permissionChecker, scopeGroupId,
                             ActionKeys.EXPORT)%>'>     
 	            <%@include file="/html/export.jspf"%>
             </c:if>
+            --%>
 			<c:if test='<%=TimetrackerPortletPermission.contains(
                             permissionChecker, scopeGroupId,
                             ActionKeys.DELETE)%>'>
