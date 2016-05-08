@@ -36,7 +36,8 @@
         ParamUtil.getBoolean(request, "ignoreEndDate", true);
     boolean ignoreStartDate =
         ParamUtil.getBoolean(request, "ignoreStartDate", true);
-    int status = ParamUtil.getInteger(request, "status", 0);    
+    int status = ParamUtil.getInteger(request, "status", 
+        WorkflowConstants.STATUS_ANY);    
 %>
 
 <aui:nav-bar>
@@ -152,7 +153,7 @@
 						disabled="<%=ignoreEndDate%>" formName="fm" name="endDate"
 						model="<%=TaskRecord.class%>" inlineField="true" />
 
-					<aui:select name="userId" inlineField="true" last="true">
+					<aui:select name="userId" inlineField="true">
 						<aui:option value="-1">
 							<liferay-ui:message key="any-user" />
 						</aui:option>
@@ -161,8 +162,9 @@
 						</c:forEach>
 					</aui:select>
 					
-					<aui:select name="status">
-						<aui:option value="<%= WorkflowConstants.STATUS_APPROVED %>" selected="<%= WorkflowConstants.STATUS_APPROVED == status %>"><liferay-ui:message key="approved"/></aui:option>
+					<aui:select name="status" inlineField="true"  last="true">
+                        <aui:option value="<%= WorkflowConstants.STATUS_ANY %>" selected="<%= WorkflowConstants.STATUS_ANY == status %>"><liferay-ui:message key="any"/></aui:option>
+                        <aui:option value="<%= WorkflowConstants.STATUS_APPROVED %>" selected="<%= WorkflowConstants.STATUS_APPROVED == status %>"><liferay-ui:message key="approved"/></aui:option>
 						<aui:option value="<%= WorkflowConstants.STATUS_DENIED %>" selected="<%= WorkflowConstants.STATUS_DENIED == status %>"><liferay-ui:message key="denied"/></aui:option>
 						<aui:option value="<%= WorkflowConstants.STATUS_DRAFT %>" selected="<%= WorkflowConstants.STATUS_DRAFT == status %>"><liferay-ui:message key="draft"/></aui:option>
 						<aui:option value="<%= WorkflowConstants.STATUS_INACTIVE %>" selected="<%= WorkflowConstants.STATUS_INACTIVE == status %>"><liferay-ui:message key="inactive"/></aui:option>

@@ -11,12 +11,13 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
  * @author Christian Berndt
  * @created 2013-10-06 17:34
- * @modified 2016-04-27 21:34
- * @version 1.0.4
+ * @modified 2016-05-08 13:14
+ * @version 1.0.5
  */
 public class TaskRecordDisplayTerms extends DisplayTerms {
 
@@ -270,7 +271,7 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     protected String startDateDay = "";
     protected String startDateMonth = "";
     protected String startDateYear = "";
-    protected int status = 0;
+    protected int status = WorkflowConstants.STATUS_ANY;
     protected long taskRecordId = 0;
     protected long userId = 0;
     protected String userName = null;

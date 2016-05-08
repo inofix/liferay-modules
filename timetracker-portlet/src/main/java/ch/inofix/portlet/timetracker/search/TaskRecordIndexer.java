@@ -80,6 +80,14 @@ public class TaskRecordIndexer extends BaseIndexer {
         return TaskRecordPermission.contains(
             permissionChecker, entryClassPK, ActionKeys.VIEW);
     }
+    
+    @Override
+    public void postProcessContextQuery(
+            BooleanQuery contextQuery, SearchContext searchContext)
+        throws Exception {
+
+        addStatus(contextQuery, searchContext);
+    }
 
     @Override
     public void postProcessSearchQuery(
@@ -88,7 +96,6 @@ public class TaskRecordIndexer extends BaseIndexer {
 
         // Set advanced search parameters
         addSearchTerm(searchQuery, searchContext, "description", false);
-        addSearchTerm(searchQuery, searchContext, "status", false);
         addSearchTerm(searchQuery, searchContext, "userId", false);
         addSearchTerm(searchQuery, searchContext, "workPackage", false);
 
