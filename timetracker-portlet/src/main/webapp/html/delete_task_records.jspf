@@ -18,7 +18,7 @@
     <aui:button-row>
         <liferay-ui:icon-delete
             url="<%=deleteAllTaskRecordsURL.toString()%>"
-            cssClass="btn btn-primary" message="delete-all-task-records"
+            cssClass="btn btn-primary delete" message="delete-all-task-records"
             label="true" />
     </aui:button-row>
 </aui:fieldset>

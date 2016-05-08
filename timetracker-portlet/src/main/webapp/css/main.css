@@ -2,12 +2,15 @@
  * main.css: css specific to the timetracker-portlet.
  *
  * Created: 	2013-10-09 22:44 by Christian Berndt
- * Modified: 	2016-03-25 12:11 by Christian Berndt
- * Version:		1.1.0
+ * Modified: 	2016-05-08 13:23 by Christian Berndt
+ * Version:		1.1.1
  * 
  */
-
 .aui {
+    
+    .btn.delete a {
+        color: white;
+    }
     
     /**
      * The right element, but overriden by the settings in aui.css.
