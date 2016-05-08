@@ -22,8 +22,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
 /**
  * @author Christian Berndt
  * @created 2013-10-06 18:26
- * @modified 2016-04-30 13:15
- * @version 1.0.4
+ * @modified 2016-05-08 12:44
+ * @version 1.0.5
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
@@ -103,6 +103,9 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
             TaskRecordDisplayTerms.START_DATE_YEAR,
             displayTerms.getStartDateYear());
         iteratorURL.setParameter(
+            TaskRecordDisplayTerms.STATUS,
+            String.valueOf(displayTerms.getStatus()));        
+        iteratorURL.setParameter(
             TaskRecordDisplayTerms.TASK_RECORD_ID,
             String.valueOf(displayTerms.getTaskRecordId()));
         iteratorURL.setParameter(
@@ -135,7 +138,7 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
             else {
                 orderByCol =
                     preferences.getValue(
-                        portletId, "task-records-order-by-col", "modified-date");
+                        portletId, "task-records-order-by-col", "modifiedDate");
                 orderByType =
                     preferences.getValue(
                         portletId, "task-records-order-by-type", "desc");

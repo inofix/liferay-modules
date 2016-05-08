@@ -84,8 +84,8 @@ import com.thoughtworks.xstream.XStream;
  * @author Christian Berndt
  * @author Michael Lustenberger
  * @created 2013-10-07 10:47
- * @modified 2016-04-25 23:39
- * @version 1.1.6
+ * @modified 2016-05-08 12:54
+ * @version 1.1.7
  */
 public class TimetrackerPortlet extends MVCPortlet {
 
@@ -517,7 +517,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         String keywords = ParamUtil.getString(request, "keywords");
         String orderByCol =
-            ParamUtil.getString(request, "orderByCol", "modified-date");
+            ParamUtil.getString(request, "orderByCol", "modifiedDate");
         String orderByType =
             ParamUtil.getString(request, "orderByType", "desc");
 

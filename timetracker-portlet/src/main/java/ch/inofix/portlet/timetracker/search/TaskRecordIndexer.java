@@ -38,8 +38,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-19 21:55
- * @modified 2016-05-02 11:34
- * @version 1.0.5
+ * @modified 2016-05-08 12:30
+ * @version 1.0.6
  */
 public class TaskRecordIndexer extends BaseIndexer {
 
@@ -88,8 +88,9 @@ public class TaskRecordIndexer extends BaseIndexer {
 
         // Set advanced search parameters
         addSearchTerm(searchQuery, searchContext, "description", false);
-        addSearchTerm(searchQuery, searchContext, "workPackage", false);
+        addSearchTerm(searchQuery, searchContext, "status", false);
         addSearchTerm(searchQuery, searchContext, "userId", false);
+        addSearchTerm(searchQuery, searchContext, "workPackage", false);
 
         // Set expando parameters
         LinkedHashMap<String, Object> params =
@@ -194,6 +195,7 @@ public class TaskRecordIndexer extends BaseIndexer {
         document.addKeyword(Field.SCOPE_GROUP_ID, taskRecord.getGroupId());
         document.addDate(
             TaskRecordSearchTerms.START_DATE, taskRecord.getStartDate());
+        document.addNumber(TaskRecordSearchTerms.STATUS, taskRecord.getStatus());
         document.addKeyword(
             TaskRecordSearchTerms.TASK_RECORD_ID, taskRecord.getTaskRecordId());
         document.addText(Field.TITLE, taskRecord.getWorkPackage());
@@ -291,4 +293,5 @@ public class TaskRecordIndexer extends BaseIndexer {
             getSearchEngineId(), companyId, documents);
 
     }
+
 }

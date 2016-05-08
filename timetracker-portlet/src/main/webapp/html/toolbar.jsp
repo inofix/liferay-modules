@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2016-05-03 10:17 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-05-08 12:36 by Christian Berndt
+    Version:    1.0.7
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -36,6 +36,7 @@
         ParamUtil.getBoolean(request, "ignoreEndDate", true);
     boolean ignoreStartDate =
         ParamUtil.getBoolean(request, "ignoreStartDate", true);
+    int status = ParamUtil.getInteger(request, "status", 0);    
 %>
 
 <aui:nav-bar>
@@ -158,6 +159,15 @@
 						<c:forEach items="<%=documents%>" var="document">
 							<aui:option value="${document.get('userId')}">${document.get('fullName')}</aui:option>
 						</c:forEach>
+					</aui:select>
+					
+					<aui:select name="status">
+						<aui:option value="<%= WorkflowConstants.STATUS_APPROVED %>" selected="<%= WorkflowConstants.STATUS_APPROVED == status %>"><liferay-ui:message key="approved"/></aui:option>
+						<aui:option value="<%= WorkflowConstants.STATUS_DENIED %>" selected="<%= WorkflowConstants.STATUS_DENIED == status %>"><liferay-ui:message key="denied"/></aui:option>
+						<aui:option value="<%= WorkflowConstants.STATUS_DRAFT %>" selected="<%= WorkflowConstants.STATUS_DRAFT == status %>"><liferay-ui:message key="draft"/></aui:option>
+						<aui:option value="<%= WorkflowConstants.STATUS_INACTIVE %>" selected="<%= WorkflowConstants.STATUS_INACTIVE == status %>"><liferay-ui:message key="inactive"/></aui:option>
+						<aui:option value="<%= WorkflowConstants.STATUS_INCOMPLETE %>" selected="<%= WorkflowConstants.STATUS_INCOMPLETE == status %>"><liferay-ui:message key="incomplete"/></aui:option>
+						<aui:option value="<%= WorkflowConstants.STATUS_PENDING %>" selected="<%= WorkflowConstants.STATUS_PENDING == status %>"><liferay-ui:message key="pending"/></aui:option>
 					</aui:select>
 
 				</aui:fieldset>
