@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-04 21:42 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2016-05-09 22:09 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -123,7 +123,10 @@
                 helpMessage="marker-icon-config-help" />
                 
             <aui:input name="useDivIcon" type="checkbox" checked="<%= useDivIcon %>" 
-                helpMessage="use-div-icon"/>  
+                helpMessage="use-div-icon-help"/>  
+                
+            <aui:input name="showTable" type="checkbox" checked="<%= showTable %>" 
+                helpMessage="show-table-help"/>                 
                        
         </liferay-ui:panel>
 

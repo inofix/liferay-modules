@@ -5,8 +5,8 @@
     map portlet.
     
     Created:    2016-03-01 23:59 by Christian Berndt
-    Modified:   2016-03-14 18:20 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-05-09 22:58 by Christian Berndt
+    Version:    1.0.2
  -->
 <liferay-portlet-app>
 	<portlet>
@@ -15,7 +15,9 @@
 		<configuration-action-class>ch.inofix.portlet.map.action.ConfigurationActionImpl</configuration-action-class>
 		<header-portlet-css>/css/leaflet.css</header-portlet-css>
 		<header-portlet-css>/css/main.css</header-portlet-css>
-		<header-portlet-javascript>/js/leaflet.js</header-portlet-javascript>
+<!--         <header-portlet-javascript>/js/jquery-1.11.3.min.js</header-portlet-javascript> -->
+        <header-portlet-javascript>/js/leaflet.js</header-portlet-javascript>
+        <footer-portlet-javascript>/js/jquery.dataTables.min.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
         <css-class-wrapper>portlet-map</css-class-wrapper>
 	</portlet>
