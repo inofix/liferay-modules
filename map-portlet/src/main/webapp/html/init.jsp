@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-05-04 21:23 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-05-09 22:54 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%-- Import required classes --%>
@@ -56,6 +56,7 @@
     String markerIconConfig = portletPreferences.getValue("markerIconConfig", "");
     String[] markerLabels = portletPreferences.getValues("markerLabels", new String[] {""});
     String[] markerLatLongs = portletPreferences.getValues("markerLatLongs", new String[] {""});
+    boolean showTable = GetterUtil.getBoolean(portletPreferences.getValue("showTable", "false"));
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
     boolean useDivIcon = GetterUtil.getBoolean(portletPreferences.getValue("useDivIcon", "false"));

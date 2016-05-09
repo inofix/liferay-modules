@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-05-04 21:19
- * @version 1.0.5
+ * @modified 2016-05-09 22:14
+ * @version 1.0.6
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -79,6 +79,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             ParamUtil.getParameterValues(actionRequest, "markerLabels");
         String[] markerLatLongs =
             actionRequest.getParameterValues("markerLatLongs");
+        String showTable = ParamUtil.getString(actionRequest, "showTable");
         String tilesCopyright =
             ParamUtil.getString(actionRequest, "tilesCopyright");
         String tilesURL = ParamUtil.getString(actionRequest, "tilesURL");
@@ -97,6 +98,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "markerIconConfig", markerIconConfig);
         setPreference(actionRequest, "markerLabels", markerLabels);
         setPreference(actionRequest, "markerLatLongs", markerLatLongs);
+        setPreference(actionRequest, "showTable", showTable);
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
         setPreference(actionRequest, "useDivIcon", useDivIcon);
