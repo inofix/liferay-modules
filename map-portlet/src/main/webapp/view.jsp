@@ -20,6 +20,18 @@
 <c:if test="<%= showTable %>">
 	<div class="row">
 		<div class="span6">
+			<form id="filter">
+				<fieldset>
+					<!-- <label>Keyword</label>-->
+					<input class="keyword" type="text" placeholder="Search ...">
+					<!-- <span class="help-block">Example block-level help text here.</span> -->
+				</fieldset>
+				<!--
+		          <fieldset>
+		            <button type="submit" class="btn">Search</button>
+		          </fieldset>
+		          -->
+			</form>
 			<table id="table" class="display">
 				<thead>
 					<tr>
