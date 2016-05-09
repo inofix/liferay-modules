@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-03-26 15:41 by Christian Berndt
- * Version:     1.0.1
+ * Modified:    2016-05-09 23:30 by Christian Berndt
+ * Version:     1.0.2
  */
 @import "compass";
 
@@ -43,6 +43,11 @@
                 font-size: 70px;
                 line-height: 1;
             }
-        }  	   
+        } 
+        
+        table.dataTable thead th,
+        .dataTables_wrapper.no-footer .dataTables_scrollBody {
+            border-bottom: none;
+        } 	   
     } 
 }
