@@ -45,6 +45,10 @@
             }
         } 
         
+        #filter {
+            padding-top: 30px;
+        }
+        
         table.dataTable thead th,
         .dataTables_wrapper.no-footer .dataTables_scrollBody {
             border-bottom: none;

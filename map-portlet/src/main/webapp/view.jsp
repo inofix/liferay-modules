@@ -18,8 +18,8 @@
 
 
 <c:if test="<%= showTable %>">
-	<div class="row">
-		<div class="span6">
+	<div>
+		<div style="width: 50%; float: left;">
 			<form id="filter">
 				<fieldset>
 					<!-- <label>Keyword</label>-->
