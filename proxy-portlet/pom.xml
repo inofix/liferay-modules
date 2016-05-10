@@ -5,12 +5,12 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>0.9.7-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
     </parent>
     <artifactId>proxy-portlet</artifactId>
     <packaging>war</packaging>
     <name>Proxy Portlet</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->

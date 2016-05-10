@@ -31,18 +31,17 @@ function restoreOriginalNames(event) {
 /**
  * jQuery plugins
  */
-/**
- * jQuery plugins
- */
 $(document).ready(function() {
 
     var wh = $(window).height();
     var ww = $(window).width();
 
-    var bodyOffset = 40;
-    var filterHeight = 90;
-    var headHeight = 73;
-
+    var bodyOffset = $('#site-navigation').height();
+    var filterHeight = $('#filter').height();
+    var headHeight = $('#site-navigation').height();
+    
+    console.log(filterHeight); 
+    
     // setup the datatable
     var table = $("#table").DataTable({
         "ajax" : "/map-portlet/data/locations.txt",  // load data via ajax
@@ -151,10 +150,9 @@ $(document).ready(function() {
     $("#map").css("height", wh - bodyOffset);
     var margin = 0;
     if (ww >= 1200) {
-        margin = (ww - 1170) / 2;
+         margin = (ww - 1170) / 2;
     }
-    $("#filter, #table_info, tbody h3").css("padding-left",
-            margin);
+    $("#filter, #table_info, tbody h3").css("padding-left", margin);
     // $(".map-wrapper").css("margin-right", mapMargin);
 
     map.invalidateSize(true);
@@ -199,4 +197,3 @@ $(document).ready(function() {
         }
     }
 });
-
