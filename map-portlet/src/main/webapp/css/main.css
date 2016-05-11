@@ -2,11 +2,11 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-05-09 23:30 by Christian Berndt
- * Version:     1.0.2
+ * Modified:    2016-05-11 20:57 by Christian Berndt
+ * Version:     1.0.3
  */
+ 
 @import "compass";
-
 @import "mixins";
 
 .aui {
@@ -19,9 +19,10 @@
             }
         }
     
+        input.address-resolver-url,
         input.claim,
         input.marker-label,
-        input.marker-lat-long,
+        input.marker-location,
         input.tiles-copyright,
         input.tiles-url {
             width: 100%;

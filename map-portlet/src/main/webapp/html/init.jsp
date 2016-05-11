@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-05-09 22:54 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-05-11 21:03 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%-- Import required classes --%>
@@ -49,13 +49,14 @@
     currentURL = HttpUtil.removeParameter(currentURL,
             renderResponse.getNamespace() + "javax.portlet.action");
 
+    String addressResolverURL = portletPreferences.getValue("addressResolverURL", "//nominatim.openstreetmap.org/?format=json&addressdetails=1&format=json&limit=1&q=");
     String claim = portletPreferences.getValue("claim", "");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
     String mapZoom = portletPreferences.getValue("mapZoom", "13");
     String markerIconConfig = portletPreferences.getValue("markerIconConfig", "");
     String[] markerLabels = portletPreferences.getValues("markerLabels", new String[] {""});
-    String[] markerLatLongs = portletPreferences.getValues("markerLatLongs", new String[] {""});
+    String[] markerLocations = portletPreferences.getValues("markerLocations", new String[] {""});
     boolean showTable = GetterUtil.getBoolean(portletPreferences.getValue("showTable", "false"));
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
