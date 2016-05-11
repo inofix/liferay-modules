@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-05-09 23:18 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-05-11 20:39 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -46,6 +46,9 @@
 		    <div id="map" class="map"></div>
 		</div>		
 	</div>
+	
+	<script type="text/javascript" src="/map-portlet/js/locations.js" ></script>
+	
 </c:if>
 
 <c:if test="<%=!showTable%>">
@@ -59,7 +62,7 @@
     <div id="map" class="map"></div>
     
 	<script type="text/javascript">
-	
+	     
 	    var map = L.map('map').setView(<%= mapCenter %>, <%= mapZoom %>);
 	    
 	    L.tileLayer('<%= tilesURL %>', {
@@ -86,5 +89,6 @@
 	           }
 	       } 
 	    %>
+         
 	</script>    
 </c:if>
