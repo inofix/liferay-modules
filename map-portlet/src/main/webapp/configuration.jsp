@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-09 22:09 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2016-05-11 20:54 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -62,7 +62,7 @@
         
 			<aui:fieldset id="marker" cssClass="marker">
 			<%
-			    for (int i=0; i<markerLatLongs.length; i++) {
+			    for (int i=0; i<markerLabels.length; i++) {
 			%>
 			    <aui:container>
 			
@@ -79,12 +79,12 @@
 			                                                    
 			                    <aui:col span="6">
 			                    
-			                        <aui:input name="markerLatLongs"
-			                            cssClass="marker-lat-long"
-			                            helpMessage="marker-lat-long-help"
-			                            label="marker-lat-long"
-			                            value="<%= markerLatLongs[i] %>" />
-
+			                        <aui:input name="markerLocations"
+			                            cssClass="marker-location"
+			                            helpMessage="marker-location-help"
+			                            label="marker-location"
+			                            value="<%= markerLocations[i] %>" />
+                                        
 			                    </aui:col>
 			                    <aui:col span="6">
 			                    
@@ -118,6 +118,10 @@
     
             <aui:input name="claim" cssClass="claim" helpMessage="claim-help" 
                 value="<%= claim %>"/>
+                
+            <aui:input name="addressResolverURL" cssClass="address-resolver-url"
+                helpMessage="address-resolver-url-help" label="address-resolver-url"
+                value="<%= addressResolverURL %>"/>
                 
             <aui:input name="markerIconConfig" type="textarea" value="<%= markerIconConfig %>"
                 helpMessage="marker-icon-config-help" />

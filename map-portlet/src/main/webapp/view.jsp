@@ -80,14 +80,49 @@
 	    <% } %>
 	    
 	    <% 
-	       for (int i=0; i<markerLatLongs.length; i++) { 
-	           if (Validator.isNotNull(markerLatLongs[i])) {
+	       for (int i=0; i<markerLabels.length; i++) { 
+	           
+	           String markerLocation = markerLocations[i]; 
+	           	           
+	           if (Validator.isNotNull(markerLocation)) {
+	               
+	               if (markerLocation.startsWith("[")
+                       && markerLocation.endsWith("]")) {
+	                   
+	                   // Location is configured in array syntax
+	               
 	    %>
-	        L.marker(<%= markerLatLongs[i] %>, {icon: markerIcon}).addTo(map)
+	        L.marker(<%= markerLocation %>, {icon: markerIcon}).addTo(map)
 	            .bindPopup('<%= markerLabels[i] %>');   
 	    <%     
+		           } else {
+		               
+	                   // Location is given via the address
+
+		               if (Validator.isNotNull(addressResolverURL)) {
+		                  
+		                   String resolverURL = addressResolverURL + markerLocation;
+		                   
+		               %>
+			               $.getJSON('<%= resolverURL %>', function( data ) {
+			                   
+			                   if (data[0]) {
+			                   
+			                       var lat = data[0].lat; 
+			                       var lon = data[0].lon;
+			                       
+			                       L.marker([lat, lon], {icon: markerIcon}).addTo(map)
+			                           .bindPopup('<%= markerLabels[i] %>');
+			                       
+			                   }
+			               });		               
+		               
+		               <%
+		               
+		               }
+		           }
 	           }
-	       } 
+           }
 	    %>
          
 	</script>    

@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-05-09 22:14
- * @version 1.0.6
+ * @modified 2016-05-11 20:48
+ * @version 1.0.7
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -69,6 +69,8 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             }
         }
 
+        String addressResolverURL =
+            ParamUtil.getString(actionRequest, "addressResolverURL");
         String claim = ParamUtil.getString(actionRequest, "claim");
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
         String mapHeight = ParamUtil.getString(actionRequest, "mapHeight");
@@ -77,8 +79,8 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             ParamUtil.getString(actionRequest, "markerIconConfig");
         String[] markerLabels =
             ParamUtil.getParameterValues(actionRequest, "markerLabels");
-        String[] markerLatLongs =
-            actionRequest.getParameterValues("markerLatLongs");
+        String[] markerLocations =
+            actionRequest.getParameterValues("markerLocations");
         String showTable = ParamUtil.getString(actionRequest, "showTable");
         String tilesCopyright =
             ParamUtil.getString(actionRequest, "tilesCopyright");
@@ -88,16 +90,17 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         // Append markers from file to markers from request
         markerLabels =
             (String[]) ArrayUtil.append(markerLabels, labels.toArray());
-        markerLatLongs =
-            (String[]) ArrayUtil.append(markerLatLongs, latLongs.toArray());
+        markerLocations =
+            (String[]) ArrayUtil.append(markerLocations, latLongs.toArray());
 
+        setPreference(actionRequest, "addressResolverURL", addressResolverURL);
         setPreference(actionRequest, "claim", claim);
         setPreference(actionRequest, "mapCenter", mapCenter);
         setPreference(actionRequest, "mapHeight", mapHeight);
         setPreference(actionRequest, "mapZoom", mapZoom);
         setPreference(actionRequest, "markerIconConfig", markerIconConfig);
         setPreference(actionRequest, "markerLabels", markerLabels);
-        setPreference(actionRequest, "markerLatLongs", markerLatLongs);
+        setPreference(actionRequest, "markerLocations", markerLocations);
         setPreference(actionRequest, "showTable", showTable);
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
