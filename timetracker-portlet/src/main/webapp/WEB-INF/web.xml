@@ -1,24 +1,14 @@
 <?xml version="1.0"?>
 <!-- 
 	web.xml: Web-Application configuration
-	of the timetracker-portlet-application.
+	of the timetracker-portlet.
 	
 	Created:	2013-10-06 17:23 by Christian Berndt
-	Modified:	2013-10-06 17:23 by Christian Berndt
-	Version: 	1.0
+	Modified:	2015-05-12 18:16 by Christian Berndt
+	Version: 	1.0.1
 -->
-<web-app version="2.4" 
-	xmlns="http://java.sun.com/xml/ns/j2ee" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-	<jsp-config>
-		<taglib>
-			<taglib-uri>http://java.sun.com/portlet_2_0</taglib-uri>
-			<taglib-location>/WEB-INF/tld/liferay-portlet.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://liferay.com/tld/aui</taglib-uri>
-			<taglib-location>/WEB-INF/tld/aui.tld</taglib-location>
-		</taglib>
-	</jsp-config>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+        http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 </web-app>
