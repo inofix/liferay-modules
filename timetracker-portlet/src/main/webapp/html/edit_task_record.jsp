@@ -2,12 +2,12 @@
     edit_taks_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2016-04-01 17:54 by Christian Berndt
-    Version:     1.0.6
+    Modified:    2016-05-12 17:54 by Christian Berndt
+    Version:     1.0.7
 
 --%>
 
-<%@ include file="/html/init.jsp" %>
+<%@ include file="/html/init.jsp"%>
 
 <%
     String redirect = ParamUtil.getString(request, "redirect");
@@ -35,7 +35,6 @@
 
     String mvcPath = ParamUtil.getString(request, "mvcPath");
 
-    // 	String tabs1 = ParamUtil.getString(request, "tabs1", "contact");
     // Retrieve the display settings.
     PortletPreferences preferences = renderRequest.getPreferences();
 
@@ -48,11 +47,6 @@
             PortletPreferencesFactoryUtil.getPortletSetup(
                 request, portletResource);
     }
-
-//     String timeFormat =
-//         PrefsParamUtil.getString(
-//             preferences, renderRequest,
-//             TimetrackerPortletKeys.TIME_FORMAT, TimeFormat.FROM_UNTIL);
 
     // Retrieve the task record from the request
     // (Stored there by the MVC Controller portlet).
@@ -91,82 +85,136 @@
     }
 %>
 
-
 <%-- Compose the saveTaskRecordURL --%>
 <portlet:actionURL var="saveTaskRecordURL" name="saveTaskRecord">
-    <portlet:param name="mvcPath" value="/html/edit_task_record.jsp"/>
+    <portlet:param name="mvcPath" value="/html/edit_task_record.jsp" />
 </portlet:actionURL>
 
 <div class="timetracker-portlet">
 
-	<liferay-ui:header title="timetracker" backURL="<%=backURL%>"
-		showBackURL="<%=true%>" />
+    <liferay-ui:header title="timetracker" backURL="<%=backURL%>"
+        showBackURL="<%=true%>" />
 
-	<aui:form method="post" action="<%=saveTaskRecordURL%>" name="fm">
+    <aui:form method="post" action="<%=saveTaskRecordURL%>" name="fm">
 
-		<aui:input name="<%=CommonFields.USER_ID%>"
-			value="<%=String.valueOf(themeDisplay.getUserId())%>" type="hidden" />
+        <aui:input name="<%=CommonFields.USER_ID%>"
+            value="<%=String.valueOf(themeDisplay.getUserId())%>"
+            type="hidden" />
 
-		<aui:fieldset>
+        <%-- The model for this record. --%>
+        <aui:model-context bean="<%=taskRecord%>"
+            model="<%=TaskRecord.class%>" />
 
-			<%-- The model for this fieldset. --%>
-			<aui:model-context bean="<%=taskRecord%>"
-				model="<%=TaskRecord.class%>" />
+        <aui:row>
+            <aui:col span="6">
+                <aui:fieldset>
 
-			<aui:input name="backURL" type="hidden" value="<%=backURL%>" />
-			<aui:input name="<%=TaskRecordFields.END_DATE%>" type="hidden" />
-			<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
-			<aui:input name="<%=TaskRecordFields.TASK_RECORD_ID%>" type="hidden" />
+                    <aui:input name="backURL" type="hidden"
+                        value="<%=backURL%>" />
+                        
+                    <aui:input name="<%=TaskRecordFields.END_DATE%>"
+                        type="hidden" />
+                        
+                    <aui:input name="redirect" type="hidden"
+                        value="<%=redirect%>" />
+                        
+                    <aui:input
+                        name="<%=TaskRecordFields.TASK_RECORD_ID%>"
+                        type="hidden" />
 
-			<aui:input name="<%=TaskRecordFields.WORK_PACKAGE%>"
-				helpMessage="work-package-help" cssClass="timetracker-input" />
-			<aui:input name="<%=TaskRecordFields.TICKET_URL%>" label="ticket-url"
-				helpMessage="ticket-url-help" cssClass="timetracker-input" />
-			<aui:input name="<%=TaskRecordFields.DESCRIPTION%>" />
-			<aui:input name="<%=TaskRecordFields.START_DATE%>" label="date" />
+                    <aui:input name="<%=TaskRecordFields.WORK_PACKAGE%>"
+                        helpMessage="work-package-help"
+                        cssClass="timetracker-input" />
+                        
+                    <aui:input name="<%=TaskRecordFields.TICKET_URL%>"
+                        label="ticket-url" helpMessage="ticket-url-help"
+                        cssClass="timetracker-input" />
+                        
+                    <aui:input name="<%=TaskRecordFields.DESCRIPTION%>" />
 
-			<c:if
-				test="<%=Validator.equals(
-                            TimeFormat.FROM_UNTIL, timeFormat)%>">
-				<aui:field-wrapper name="from-until">
-					<iu:time-picker deltaMinutes="<%=15%>" firstHour="<%=0%>"
-						hour="<%=startDateHour%>" minute="<%=startDateMinute%>"
-						nullable="<%=false%>" prefix="<%=startDatePrefix%>" />
-                    --
-                    <iu:time-picker deltaMinutes="<%=15%>"
-						firstHour="<%=0%>" hour="<%=endDateHour%>"
-						minute="<%=endDateMinute%>" nullable="<%=false%>"
-						prefix="<%=endDatePrefix%>" />
+                </aui:fieldset>
+            </aui:col>
 
-				</aui:field-wrapper>
-			</c:if>
-			<c:if
-				test="<%=!Validator.equals(
-                            TimeFormat.FROM_UNTIL, timeFormat)%>">
-				<aui:field-wrapper label="<%=TaskRecordFields.DURATION%>"
-					helpMessage="duration-help">
-					<input name="<portlet:namespace/>duration"
-						value="<%=durationInMinutes%>"
-						class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" />
-				</aui:field-wrapper>
-			</c:if>
-			
-			<aui:select name="status">
-                 <aui:option value="<%= WorkflowConstants.STATUS_APPROVED %>" selected="<%= WorkflowConstants.STATUS_APPROVED == taskRecord.getStatus() %>"><liferay-ui:message key="approved"/></aui:option>
-                 <aui:option value="<%= WorkflowConstants.STATUS_DENIED %>" selected="<%= WorkflowConstants.STATUS_DENIED == taskRecord.getStatus() %>"><liferay-ui:message key="denied"/></aui:option>
-                 <aui:option value="<%= WorkflowConstants.STATUS_DRAFT %>" selected="<%= WorkflowConstants.STATUS_DRAFT == taskRecord.getStatus() %>"><liferay-ui:message key="draft"/></aui:option>
-                 <aui:option value="<%= WorkflowConstants.STATUS_INACTIVE %>" selected="<%= WorkflowConstants.STATUS_INACTIVE == taskRecord.getStatus() %>"><liferay-ui:message key="inactive"/></aui:option>
-                 <aui:option value="<%= WorkflowConstants.STATUS_INCOMPLETE %>" selected="<%= WorkflowConstants.STATUS_INCOMPLETE == taskRecord.getStatus() %>"><liferay-ui:message key="incomplete"/></aui:option>
-                 <aui:option value="<%= WorkflowConstants.STATUS_PENDING %>" selected="<%= WorkflowConstants.STATUS_PENDING == taskRecord.getStatus() %>"><liferay-ui:message key="pending"/></aui:option>
-			</aui:select>
-			
-		</aui:fieldset>
+            <aui:col span="6">
+                <aui:fieldset>
+                
+                    <aui:input name="<%=TaskRecordFields.START_DATE%>"
+                        label="date" />                
 
-		<aui:button-row>
-			<aui:button type="submit" />
-		</aui:button-row>
+                    <c:if
+                        test="<%=Validator.equals(
+                                    TimeFormat.FROM_UNTIL, timeFormat)%>">
+                        <aui:field-wrapper name="from-until">
+                            <iu:time-picker deltaMinutes="<%=15%>"
+                                firstHour="<%=0%>"
+                                hour="<%=startDateHour%>"
+                                minute="<%=startDateMinute%>"
+                                nullable="<%=false%>"
+                                prefix="<%=startDatePrefix%>" />
+		                    --
+		                    <iu:time-picker deltaMinutes="<%=15%>"
+                                firstHour="<%=0%>"
+                                hour="<%=endDateHour%>"
+                                minute="<%=endDateMinute%>"
+                                nullable="<%=false%>"
+                                prefix="<%=endDatePrefix%>" />
 
-	</aui:form>
+                        </aui:field-wrapper>
+                    </c:if>
+                    <c:if
+                        test="<%=!Validator.equals(
+                                    TimeFormat.FROM_UNTIL, timeFormat)%>">
+                        <aui:field-wrapper
+                            label="<%=TaskRecordFields.DURATION%>"
+                            helpMessage="duration-help">
+                            <input name="<portlet:namespace/>duration"
+                                value="<%=durationInMinutes%>"
+                                class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" />
+                        </aui:field-wrapper>
+                    </c:if>
+
+                    <aui:select name="status">
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_APPROVED%>"
+                            selected="<%=WorkflowConstants.STATUS_APPROVED == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="approved" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_DENIED%>"
+                            selected="<%=WorkflowConstants.STATUS_DENIED == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="denied" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_DRAFT%>"
+                            selected="<%=WorkflowConstants.STATUS_DRAFT == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="draft" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_INACTIVE%>"
+                            selected="<%=WorkflowConstants.STATUS_INACTIVE == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="inactive" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_INCOMPLETE%>"
+                            selected="<%=WorkflowConstants.STATUS_INCOMPLETE == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="incomplete" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_PENDING%>"
+                            selected="<%=WorkflowConstants.STATUS_PENDING == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="pending" />
+                        </aui:option>
+                    </aui:select>
+
+                </aui:fieldset>
+
+                <aui:button-row>
+                    <aui:button type="submit" />
+                </aui:button-row>
+
+            </aui:col>
+        </aui:row>
+    </aui:form>
 </div>
 
-<ifx-util:build-info/>
+<ifx-util:build-info />
