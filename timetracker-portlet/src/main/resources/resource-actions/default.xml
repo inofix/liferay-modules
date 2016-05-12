@@ -5,7 +5,7 @@
     default.xml: The timetracker portlet's permission configuration.
     
     Created:    2016-03-20 17:26 by Christian Berndt
-    Modified:   2015-03-20 17:26 by Christian Berndt
+    Modified:   2016-03-20 17:26 by Christian Berndt
     Version:    1.0.0
 -->
 <resource-action-mapping>
