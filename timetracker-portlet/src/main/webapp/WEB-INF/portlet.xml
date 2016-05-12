@@ -4,13 +4,13 @@
 	timetracker portlet. 
 	
 	Created: 	2013-10-07 15:41 by Christian Berndt
-	Modified: 	2016-03-19 22:36 by Christian Berndt
-	Version: 	1.0.1
+	Modified: 	2016-05-12 18:06 by Christian Berndt
+	Version: 	1.0.2
 -->
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0">
 	<portlet>
 		<portlet-name>timetracker-portlet</portlet-name>
-		<display-name>timetracker-portlet</display-name>
+		<display-name>Timetracker</display-name>
 		<portlet-class>ch.inofix.portlet.timetracker.portlet.TimetrackerPortlet</portlet-class>
 		<init-param>
 			<name>view-jsp</name>
@@ -29,9 +29,9 @@
 		</supports>
 		<resource-bundle>Language</resource-bundle>
 		<portlet-info>
-			<title>timetracker-portlet</title>
-			<short-title>timetracker-portlet</short-title>
-			<keywords>timetracker-portlet</keywords>
+			<title>Timetracker Portlet</title>
+			<short-title>Timetracker Portlet</short-title>
+			<keywords>Timetracker Portlet</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>
