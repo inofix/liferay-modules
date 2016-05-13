@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-13 11:57 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2016-05-13 12:26 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -118,6 +118,10 @@
     
             <aui:input name="claim" cssClass="claim" helpMessage="claim-help" 
                 value="<%= claim %>"/>
+                
+            <aui:input name="dataURL" cssClass="full-width" helpMessage="data-url-help" 
+                label="data-url"
+                value="<%= dataURL %>"/>                
                 
             <aui:input name="addressResolverURL" cssClass="address-resolver-url"
                 helpMessage="address-resolver-url-help" label="address-resolver-url"
