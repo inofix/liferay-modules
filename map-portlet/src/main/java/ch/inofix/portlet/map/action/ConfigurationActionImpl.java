@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-05-11 20:48
- * @version 1.0.7
+ * @modified 2016-05-13 11:59
+ * @version 1.0.8
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -86,6 +86,8 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             ParamUtil.getString(actionRequest, "tilesCopyright");
         String tilesURL = ParamUtil.getString(actionRequest, "tilesURL");
         String useDivIcon = ParamUtil.getString(actionRequest, "useDivIcon");
+        String useGlobalJQuery =
+            ParamUtil.getString(actionRequest, "useGlobalJQuery");
 
         // Append markers from file to markers from request
         markerLabels =
@@ -105,6 +107,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
         setPreference(actionRequest, "useDivIcon", useDivIcon);
+        setPreference(actionRequest, "useGlobalJQuery", useGlobalJQuery);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
 

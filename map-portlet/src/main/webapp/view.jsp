@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-05-11 20:39 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-05-13 12:05 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -16,11 +16,15 @@
 -->
 </style>
 
+<c:if test="<%= !useGlobalJQuery %>">
+    <script type="text/javascript" src="/map-portlet/js/jquery-1.11.3.min.js" ></script>
+</c:if>
 
 <c:if test="<%= showTable %>">
 	<div>
 		<div style="width: 50%; float: left;">
 			<form id="filter">
+                        
 				<fieldset>
 					<!-- <label>Keyword</label>-->
 					<input class="keyword" type="text" placeholder="Search ...">
