@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-05-13 12:25 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2016-05-13 15:32 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%-- Import required classes --%>
@@ -51,6 +51,8 @@
 
     String addressResolverURL = portletPreferences.getValue("addressResolverURL", "//nominatim.openstreetmap.org/?format=json&addressdetails=1&format=json&limit=1&q=");
     String claim = portletPreferences.getValue("claim", "");
+    String dataTableColumnDefs = portletPreferences.getValue("dataTableColumnDefs", "");
+    String dataTableColumns = portletPreferences.getValue("dataTableColumns", "");
     String dataURL = portletPreferences.getValue("dataURL", "");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
