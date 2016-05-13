@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-11 20:54 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2016-05-13 11:57 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -128,6 +128,10 @@
                 
             <aui:input name="useDivIcon" type="checkbox" checked="<%= useDivIcon %>" 
                 helpMessage="use-div-icon-help"/>  
+                
+            <aui:input name="useGlobalJQuery" type="checkbox" checked="<%= useGlobalJQuery %>" 
+                label="use-global-jquery"
+                helpMessage="use-global-jquery-help"/>                  
                 
             <aui:input name="showTable" type="checkbox" checked="<%= showTable %>" 
                 helpMessage="show-table-help"/>                 
