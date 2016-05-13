@@ -73,14 +73,12 @@
             </c:if>
                 
             "dom" : 'ipt',                               // hide default filter and length config
-            "columnDefs" : [                 
-            {
-                "targets" : [ 1 ],  // hide the second
-                "visible" : false
-            }, {    
-                "targets" : [ 2 ],  // and third column (lat / long)
-                "visible" : false
-            } ],
+            <c:if test="<%= Validator.isNotNull(dataTableColumns) %>">
+                <%= dataTableColumns %>,
+            </c:if>               
+            <c:if test="<%= Validator.isNotNull(dataTableColumnDefs) %>">
+                <%= dataTableColumnDefs %>,
+            </c:if>
             scrollY : wh - (bodyOffset + filterHeight + headHeight),
             paging : false
         });   
@@ -208,8 +206,8 @@
             var markers = [];
 
             for (var i = 0; i < locations.length; i++) {
-                var marker = new L.marker([ locations[i][1],
-                        locations[i][2] ])
+                var marker = new L.marker([ locations[i].lat,
+                        locations[i].lon ])
                         .bindPopup(locations[i][0]);
                 markers.push(marker);
             }

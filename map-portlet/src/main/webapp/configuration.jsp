@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-13 12:26 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2016-05-13 15:36 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -43,11 +43,11 @@
             <% } %>
             </aui:select>
             
-            <aui:input name="tilesURL" cssClass="tiles-url"
+            <aui:input name="tilesURL" cssClass="full-width"
                 helpMessage="tiles-url-help" label="tiles-url"
                 value="<%= tilesURL %>"/>
                 
-            <aui:input name="tilesCopyright" cssClass="tiles-copyright" 
+            <aui:input name="tilesCopyright" cssClass="full-width" 
                 helpMessage="tiles-copyright-help" value="<%= tilesCopyright %>"/>   
                         
         </liferay-ui:panel>
@@ -80,7 +80,7 @@
 			                    <aui:col span="6">
 			                    
 			                        <aui:input name="markerLocations"
-			                            cssClass="marker-location"
+			                            cssClass="full-width"
 			                            helpMessage="marker-location-help"
 			                            label="marker-location"
 			                            value="<%= markerLocations[i] %>" />
@@ -96,7 +96,7 @@
 			                        %>
 			                    
                                     <aui:input name="markerLabels"
-                                        cssClass="marker-label"
+                                        cssClass="full-width"
                                         helpMessage="marker-label-help"
                                         label="marker-label"
                                         value="<%= label %>" />
@@ -114,16 +114,31 @@
 
 		</liferay-ui:panel>
         
-        <liferay-ui:panel id="mapportletMiscelaneousPanel" title="miscellaneous" extended="true">
-    
-            <aui:input name="claim" cssClass="claim" helpMessage="claim-help" 
-                value="<%= claim %>"/>
+        <liferay-ui:panel id="mapportletDataTablePanel" title="data-table" extended="true">                
                 
+            <aui:input name="showTable" type="checkbox" checked="<%= showTable %>" 
+                helpMessage="show-table-help"/>   
+                             
             <aui:input name="dataURL" cssClass="full-width" helpMessage="data-url-help" 
                 label="data-url"
-                value="<%= dataURL %>"/>                
+                value="<%= dataURL %>"/>                               
+ 
+             <aui:input name="dataTableColumns" type="textarea" 
+                helpMessage="data-table-columns-help" 
+                value="<%= dataTableColumns %>"/> 
+                                      
+             <aui:input name="dataTableColumnDefs" type="textarea" 
+                helpMessage="data-table-colum-defs-help" 
+                value="<%= dataTableColumnDefs %>"/> 
+                                      
+        </liferay-ui:panel>        
+        
+        <liferay-ui:panel id="mapportletMiscellaneousPanel" title="miscellaneous" extended="true">
+    
+            <aui:input name="claim" cssClass="full-width" helpMessage="claim-help" 
+                value="<%= claim %>"/>               
                 
-            <aui:input name="addressResolverURL" cssClass="address-resolver-url"
+            <aui:input name="addressResolverURL" cssClass="full-width"
                 helpMessage="address-resolver-url-help" label="address-resolver-url"
                 value="<%= addressResolverURL %>"/>
                 

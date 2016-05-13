@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-05-11 20:57 by Christian Berndt
- * Version:     1.0.3
+ * Modified:    2016-05-13 16:03 by Christian Berndt
+ * Version:     1.0.4
  */
  
 @import "compass";
@@ -19,12 +19,7 @@
             }
         }
     
-        input.address-resolver-url,
-        input.claim,
-        input.marker-label,
-        input.marker-location,
-        input.tiles-copyright,
-        input.tiles-url {
+        input.full-width {
             width: 100%;
             box-sizing: border-box;
             padding: 5px;
