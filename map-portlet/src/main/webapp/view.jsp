@@ -3,7 +3,7 @@
     
     Created:    2016-03-02 00:07 by Christian Berndt
     Modified:   2016-05-13 12:28 by Christian Berndt
-    Version:    1.0.9
+    Version:    1.1.0
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -17,7 +17,7 @@
 </style>
 
 <c:if test="<%= !useGlobalJQuery %>">
-    <script type="text/javascript" src="/map-portlet/js/jquery-1.11.3.min.js" ></script>
+    <script type="text/javascript" src="/map-portlet/js/jquery-1.12.3.min.js" ></script>
 </c:if>
 
 <c:if test="<%= showTable %>">
