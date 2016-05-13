@@ -7,7 +7,7 @@
     <portlet>
         <portlet-name>search-portlet</portlet-name>
         <display-name>Search Portlet</display-name>
-        <portlet-class>ch.inofix.portlet.search.SearchPortlet</portlet-class>
+        <portlet-class>ch.inofix.portlet.search.portlet.SearchPortlet</portlet-class>
         <init-param>
             <name>view-template</name>
             <value>/view.jsp</value>
