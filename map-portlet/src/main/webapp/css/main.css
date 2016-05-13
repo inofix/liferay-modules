@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-05-13 16:03 by Christian Berndt
- * Version:     1.0.4
+ * Modified:    2016-05-13 16:41 by Christian Berndt
+ * Version:     1.0.5
  */
  
 @import "compass";
@@ -45,9 +45,57 @@
             padding-top: 30px;
         }
         
-        table.dataTable thead th,
         .dataTables_wrapper.no-footer .dataTables_scrollBody {
             border-bottom: none;
-        } 	   
+        }
+        
+        .dataTables_scrollBody thead {
+            display: none;
+        }
+        
+        table.dataTable thead {
+        
+            th {
+            
+                border-bottom: none;
+                
+                &::after {
+                    float: right;
+                    font-family: "fontawesome-alloy";
+                    font-style: normal;
+                    font-weight: normal;
+                    font-variant: normal;
+                    text-transform: none;
+                    height: 0;
+                }
+            
+                &.sorting_asc {
+                
+                    background-image: none; 
+                    
+                    &::after {
+                        content: "";  
+                    }                
+                } 
+                
+                &.sort_both {
+                
+                    background-image: none;
+                    
+                    &::after {
+                        content: "";                  
+                    }
+                } 
+                
+                &.sorting_desc {
+                
+                    background-image: none;
+                    
+                    &::after {
+                        content: "";                   
+                    }                
+                } 
+            }       
+        }         
     } 
 }
