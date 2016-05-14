@@ -118,10 +118,10 @@
                 
             <aui:input name="showTable" type="checkbox" checked="<%= showTable %>" 
                 helpMessage="show-table-help"/>   
-                             
-            <aui:input name="dataURL" cssClass="full-width" helpMessage="data-url-help" 
-                label="data-url"
-                value="<%= dataURL %>"/>                               
+
+             <aui:input name="dataTableAjax" type="textarea" 
+                helpMessage="data-table-ajax-help" 
+                value="<%= dataTableAjax %>"/>                                                          
  
              <aui:input name="dataTableColumns" type="textarea" 
                 helpMessage="data-table-columns-help" 
@@ -130,6 +130,10 @@
              <aui:input name="dataTableColumnDefs" type="textarea" 
                 helpMessage="data-table-colum-defs-help" 
                 value="<%= dataTableColumnDefs %>"/> 
+                
+            <aui:input name="dataTablePaging" type="checkbox" value="true"
+                checked='<%= "true".equals(dataTablePaging) %>' 
+                helpMessage="data-table-paging-help" />                 
                                       
         </liferay-ui:panel>        
         
@@ -150,10 +154,7 @@
                 
             <aui:input name="useGlobalJQuery" type="checkbox" checked="<%= useGlobalJQuery %>" 
                 label="use-global-jquery"
-                helpMessage="use-global-jquery-help"/>                  
-                
-            <aui:input name="showTable" type="checkbox" checked="<%= showTable %>" 
-                helpMessage="show-table-help"/>                 
+                helpMessage="use-global-jquery-help"/>               
                        
         </liferay-ui:panel>
 
