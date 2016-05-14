@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-05-13 16:41 by Christian Berndt
- * Version:     1.0.5
+ * Modified:    2016-05-14 01:49 by Christian Berndt
+ * Version:     1.0.6
  */
  
 @import "compass";
@@ -78,12 +78,13 @@
                     }                
                 } 
                 
-                &.sort_both {
+                &.sorting {
                 
                     background-image: none;
                     
                     &::after {
-                        content: "";                  
+                        content: "";
+                        opacity: 0.3;          
                     }
                 } 
                 
