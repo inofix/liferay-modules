@@ -72,11 +72,14 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String addressResolverURL =
             ParamUtil.getString(actionRequest, "addressResolverURL");
         String claim = ParamUtil.getString(actionRequest, "claim");
+        String dataTableAjax =
+            ParamUtil.getString(actionRequest, "dataTableAjax");
         String dataTableColumnDefs =
             ParamUtil.getString(actionRequest, "dataTableColumnDefs");
         String dataTableColumns =
             ParamUtil.getString(actionRequest, "dataTableColumns");
-        String dataURL = ParamUtil.getString(actionRequest, "dataURL");
+        String dataTablePaging =
+            ParamUtil.getString(actionRequest, "dataTablePaging", "false");
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
         String mapHeight = ParamUtil.getString(actionRequest, "mapHeight");
         String mapZoom = ParamUtil.getString(actionRequest, "mapZoom");
@@ -102,9 +105,10 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
         setPreference(actionRequest, "addressResolverURL", addressResolverURL);
         setPreference(actionRequest, "claim", claim);
+        setPreference(actionRequest, "dataTableAjax", dataTableAjax);
         setPreference(actionRequest, "dataTableColumnDefs", dataTableColumnDefs);
         setPreference(actionRequest, "dataTableColumns", dataTableColumns);
-        setPreference(actionRequest, "dataURL", dataURL);
+        setPreference(actionRequest, "dataTablePaging", dataTablePaging);
         setPreference(actionRequest, "mapCenter", mapCenter);
         setPreference(actionRequest, "mapHeight", mapHeight);
         setPreference(actionRequest, "mapZoom", mapZoom);
