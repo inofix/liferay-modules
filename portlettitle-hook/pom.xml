@@ -4,14 +4,13 @@
 	<parent>
     <artifactId>liferay-modules</artifactId>
     <groupId>ch.inofix</groupId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
   </parent>
-	<groupId>ch.inofix</groupId>
 	<artifactId>portlettitle-hook</artifactId>
 	<packaging>war</packaging>
 	<name>Portlet-Title Hook</name>
-	<description>Display the portlet's title for </description>
-	<version>1.0.0-SNAPSHOT</version>
+	<description>Display the portlet's title also for borderless portlets.</description>
+	<version>1.0.1-SNAPSHOT</version>
 	<build>
 		<plugins>
             <!-- Read properties from dev.properties in -->
