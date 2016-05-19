@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-19 13:07 by Christian Berndt
-    Version:    1.1.8
+    Modified:   2016-05-19 16:32 by Christian Berndt
+    Version:    1.1.9
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -117,17 +117,17 @@
         <liferay-ui:panel id="mapportletDataTablePanel" title="data-table" extended="true">                
                 
             <aui:input name="showTable" type="checkbox" checked="<%= showTable %>" 
-                helpMessage="show-table-help"/>   
-
-             <aui:input name="dataTableAjax" type="textarea" 
-                helpMessage="data-table-ajax-help" 
-                value="<%= dataTableAjax %>"/>                                                          
+                helpMessage="show-table-help"/>  
+                
+            <aui:input name="locationsURL" cssClass="full-width" label="locations-url"
+                helpMessage="locations-url-help" 
+                value="<%= locationsURL %>"/>                                                      
  
-             <aui:input name="dataTableColumns" type="textarea" 
+            <aui:input name="dataTableColumns" type="textarea" 
                 helpMessage="data-table-columns-help" 
                 value="<%= dataTableColumns %>"/> 
                                       
-             <aui:input name="dataTableColumnDefs" type="textarea" 
+            <aui:input name="dataTableColumnDefs" type="textarea" 
                 helpMessage="data-table-colum-defs-help" 
                 value="<%= dataTableColumnDefs %>"/> 
                 

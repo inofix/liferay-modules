@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-05-13 15:26
- * @version 1.1.0
+ * @modified 2016-05-19 16:24
+ * @version 1.1.1
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -51,6 +51,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
         if (Validator.isNotNull(file) && file.length() > 0) {
 
+            // TODO: reconsider the input format for markers from file
             Reader in = new FileReader(file);
             Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 
@@ -72,14 +73,14 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String addressResolverURL =
             ParamUtil.getString(actionRequest, "addressResolverURL");
         String claim = ParamUtil.getString(actionRequest, "claim");
-        String dataTableAjax =
-            ParamUtil.getString(actionRequest, "dataTableAjax");
         String dataTableColumnDefs =
             ParamUtil.getString(actionRequest, "dataTableColumnDefs");
         String dataTableColumns =
             ParamUtil.getString(actionRequest, "dataTableColumns");
         String dataTablePaging =
             ParamUtil.getString(actionRequest, "dataTablePaging", "false");
+        String locationsURL =
+            ParamUtil.getString(actionRequest, "locationsURL");
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
         String mapHeight = ParamUtil.getString(actionRequest, "mapHeight");
         String mapZoom = ParamUtil.getString(actionRequest, "mapZoom");
@@ -105,10 +106,10 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
         setPreference(actionRequest, "addressResolverURL", addressResolverURL);
         setPreference(actionRequest, "claim", claim);
-        setPreference(actionRequest, "dataTableAjax", dataTableAjax);
         setPreference(actionRequest, "dataTableColumnDefs", dataTableColumnDefs);
         setPreference(actionRequest, "dataTableColumns", dataTableColumns);
         setPreference(actionRequest, "dataTablePaging", dataTablePaging);
+        setPreference(actionRequest, "locationsURL", locationsURL);
         setPreference(actionRequest, "mapCenter", mapCenter);
         setPreference(actionRequest, "mapHeight", mapHeight);
         setPreference(actionRequest, "mapZoom", mapZoom);
