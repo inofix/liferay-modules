@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-05-19 16:24
- * @version 1.1.1
+ * @modified 2016-05-19 22:01
+ * @version 1.1.2
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -73,6 +73,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String addressResolverURL =
             ParamUtil.getString(actionRequest, "addressResolverURL");
         String claim = ParamUtil.getString(actionRequest, "claim");
+        String customAddressAndLabel = ParamUtil.getString(actionRequest, "customAddressAndLabel");
         String dataTableColumnDefs =
             ParamUtil.getString(actionRequest, "dataTableColumnDefs");
         String dataTableColumns =
@@ -106,6 +107,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
         setPreference(actionRequest, "addressResolverURL", addressResolverURL);
         setPreference(actionRequest, "claim", claim);
+        setPreference(actionRequest, "customAddressAndLabel", customAddressAndLabel);
         setPreference(actionRequest, "dataTableColumnDefs", dataTableColumnDefs);
         setPreference(actionRequest, "dataTableColumns", dataTableColumns);
         setPreference(actionRequest, "dataTablePaging", dataTablePaging);

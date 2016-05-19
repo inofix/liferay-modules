@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-05-19 13:27 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2016-05-19 22:01 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -73,6 +73,11 @@
      
        var wh = $(window).height();
        var ww = $(window).width(); 
+       
+       var margin = 0; 
+       if (ww >= 1200) {
+           margin = (ww - 1170)/2; 
+       }
      
        var locations = []; 
 
@@ -105,7 +110,8 @@
 
        function loadData(){
            
-           var namesRequest = $.getJSON( "<%= locationsURL %>", function( data ) { /* debug messages */ }); 
+           var namesRequest = $.getJSON( "<%= locationsURL %>", function( data ) { /* debug messages */ });
+           var labels = []; 
 
            namesRequest.done(function() { // if "data/cities.json" were successfully loaded ...
                
@@ -113,14 +119,22 @@
 
                var locationRequests = [];
 
-               for(var i = 0; i < data.length; i++){
+               for(var i = 0; i < data.length; i++){ 
 
-                   var city = data[i]; 
-                 
-                   locationRequests.push(
-
-                       $.getJSON( resolverURL + city.name,  function( data ) { /* debug messages */ } )
-                   );
+                    var address = data[i].name; 
+                    var label = data[i].name;
+                    
+                    <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
+                        <%= customAddressAndLabel %>
+                    </c:if>
+                    
+                    labels.push(label);
+                    
+                    locationRequests.push(    
+                    
+                           $.getJSON( resolverURL + address,  function( data ) { /* debug messages */ } )
+                       
+                    );
                }
 
                $.when.apply($, locationRequests).then(function() {
@@ -128,13 +142,16 @@
                    var markers = []; 
 
                    for (var i = 0; i < locationRequests.length; i++) {
+                       
                        var location = locationRequests[i].responseJSON[0]; 
-
-                       var marker = [location.display_name, location.lat, location.lon]; 
                      
-                       var row = {"0":location.display_name, "1":location.lat, "2": location.lon};
-                     
-                       table.row.add(row);
+                       if (location) {
+                           
+                           var row = {"0":labels[i], "1":location.lat, "2": location.lon};
+                           // var row = {"0":location.display_name, "1":location.lat, "2": location.lon};
+                      
+                           table.row.add(row);
+                       }
                    }
                  
                    table.draw(); 
@@ -245,11 +262,6 @@
        <% if (showTable) { %>       
            // fit the map into the right half of the window
            $("#map").css("height", wh - bodyOffset);
-         
-           var margin = 0; 
-           if (ww >= 1200) {
-               margin = (ww - 1170)/2; 
-           }
          
            $("#filter, #locations_info, tbody h3").css("padding-left", margin); 
          
