@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-13 15:36 by Christian Berndt
-    Version:    1.1.7
+    Modified:   2016-05-19 13:07 by Christian Berndt
+    Version:    1.1.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -131,7 +131,7 @@
                 helpMessage="data-table-colum-defs-help" 
                 value="<%= dataTableColumnDefs %>"/> 
                 
-            <aui:input name="dataTablePaging" type="checkbox" value="true"
+            <aui:input name="dataTablePaging" type="checkbox" value="<%= dataTablePaging %>"
                 checked='<%= "true".equals(dataTablePaging) %>' 
                 helpMessage="data-table-paging-help" />                 
                                       
