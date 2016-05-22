@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-05-19 22:01 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2016-05-22 13:37 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -20,6 +20,10 @@
     
     .map {
         height: <%= mapHeight %>;
+    }
+    
+    #table_info {
+        opacity: 0;
     }
 -->
 </style>
@@ -203,12 +207,17 @@
                // when the search is initiated from the 
                // filter form, fit the map to found locations.
                map.fitBounds(locationLayer.getBounds());
+               
+               console.log(map.getCenter());
+               console.log(map.getZoom());
 
            }
 
        });
      
        table.on("draw.dt", function() {
+           $("#table_info").css("padding-left", margin); 
+           $("#table_info").css("opacity", "1"); 
            $("td").css("padding-left", margin); 
        });
      
