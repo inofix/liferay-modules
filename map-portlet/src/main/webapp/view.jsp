@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-05-22 13:37 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2016-05-31 17:11 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -90,6 +90,11 @@
        var headHeight = $('#site-navigation').height();
 
        var resolverURL = "<%= addressResolverURL %>";
+       var tableHeight = wh - (bodyOffset + filterHeight + headHeight);
+       
+       if (wh > ww) {
+           tableHeight = (wh - (bodyOffset + headHeight)) / 2;
+       }
 
        // setup the datatable
        var table = $("#table").DataTable({
@@ -104,7 +109,7 @@
                <%= dataTableColumnDefs %>,
            </c:if>
                
-           scrollY : wh - (bodyOffset + filterHeight + headHeight),
+           scrollY : tableHeight,
            paging : <%= dataTablePaging %>
        });
        
@@ -268,10 +273,16 @@
           markerIcon = L.divIcon(); 
        <% } %>
      
-       <% if (showTable) { %>       
+       <% if (showTable) { %> 
+       
            // fit the map into the right half of the window
-           $("#map").css("height", wh - bodyOffset);
-         
+           $("#map").css("height", wh - bodyOffset);           
+           
+           if (wh > ww) {
+               $("#map").css("height", tableHeight); 
+               margin = 15;
+           }
+
            $("#filter, #locations_info, tbody h3").css("padding-left", margin); 
          
            map.invalidateSize(true);
