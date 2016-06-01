@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-05-31 17:11 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2016-06-01 23:54 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -81,6 +81,10 @@
        var margin = 0; 
        if (ww >= 1200) {
            margin = (ww - 1170)/2; 
+       }
+       
+       if (ww < 1200 && ww > 979) {
+           margin = (ww - 940)/2;            
        }
      
        var locations = []; 
