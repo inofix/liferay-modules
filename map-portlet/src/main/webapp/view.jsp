@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-06-01 23:54 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2016-06-02 17:39 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -32,13 +32,21 @@
     <script type="text/javascript" src="/map-portlet/js/jquery-1.12.3.min.js" ></script>
 </c:if>
 
+<%
+   String dataTablesTranslationURL = null; 
+   String languageId = LanguageUtil.getLanguageId(request);
+
+   if ("de_DE".equals(languageId)) {
+       dataTablesTranslationURL = "/map-portlet/js/dataTables/German.json"; 
+   }
+%>
+
 <div>
 	<div class="table-wrapper">
 		<form id="filter">
-                            
 			<fieldset>
 				<!-- <label>Keyword</label>-->
-				<input class="keyword" type="text" placeholder="Search ...">
+				<input class="keyword" type="text" placeholder="<liferay-ui:message key="placeholder-search"/>">
 				<!-- <span class="help-block">Example block-level help text here.</span> -->
 			</fieldset>
 			<!--
@@ -102,6 +110,12 @@
 
        // setup the datatable
        var table = $("#table").DataTable({
+           
+           <c:if test="<%= Validator.isNotNull(dataTablesTranslationURL) %>">
+               "language": {
+                   "url": "<%= dataTablesTranslationURL %>"
+               },
+           </c:if> 
                
            "dom" : 'ipt',  // hide default filter and length config
            
