@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-06-02 17:39 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2016-06-03 17:54 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -44,24 +44,24 @@
 <div>
 	<div class="table-wrapper">
 		<form id="filter">
+        
 			<fieldset>
-				<!-- <label>Keyword</label>-->
-				<input class="keyword" type="text" placeholder="<liferay-ui:message key="placeholder-search"/>">
-				<!-- <span class="help-block">Example block-level help text here.</span> -->
+				<input id="keyword" class="keyword" type="text" placeholder="<liferay-ui:message key="placeholder-search"/>">
+                <input id="filter1" type="text" data-value placeholder="<liferay-ui:message key="placeholder-competences"/>">
+                <aui:button icon="icon-remove" onClick="clearForm();" />
 			</fieldset>
-			<!--
-	          <fieldset>
-	            <button type="submit" class="btn">Search</button>
-	          </fieldset>
-	          -->
+            
 		</form>
 		<table id="table" class="display">
 			<thead>
 				<tr>
 					<th>Name</th>
 					<th>Latitude</th>
-					<th>Longitude</th>
-				</tr>
+                    <th>Longitude</th>
+                    <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                        <th>Filter1</th>
+                    </c:if>  				
+                </tr>
 			</thead>
 		</table>
 	</div>
@@ -77,6 +77,13 @@
 </div>
 	
 <script type="text/javascript">
+
+    function clearForm() {
+        // alert('clearForm()');
+        $( "#keyword" ).val("");
+        $( "#keyword" ).trigger( "keyup" );
+        $( "#filter1").val(""); 
+    }
 
    /**
     * jQuery plugins
@@ -139,14 +146,18 @@
            
            var namesRequest = $.getJSON( "<%= locationsURL %>", function( data ) { /* debug messages */ });
            var labels = []; 
-
+                      
+           <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+               var filter1Values = [];
+           </c:if>           
+           
            namesRequest.done(function() { // if "data/cities.json" were successfully loaded ...
                
                data = namesRequest.responseJSON; 
 
                var locationRequests = [];
 
-               for(var i = 0; i < data.length; i++){ 
+               for ( var i = 0; i < data.length; i++ ){ 
 
                     var address = data[i].name; 
                     var label = data[i].name;
@@ -156,6 +167,11 @@
                     </c:if>
                     
                     labels.push(label);
+                    
+                    
+                    <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                        <%= filter1Values %>                        
+                    </c:if>                     
                     
                     locationRequests.push(    
                     
@@ -174,8 +190,14 @@
                      
                        if (location) {
                            
-                           var row = {"0":labels[i], "1":location.lat, "2": location.lon};
-                           // var row = {"0":location.display_name, "1":location.lat, "2": location.lon};
+                           var row = {
+                               "0": labels[i] 
+                               , "1": location.lat 
+                               , "2": location.lon
+                               <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                                   , "3": filter1Values[i]
+                               </c:if>                                 
+                           };
                       
                            table.row.add(row);
                        }
@@ -202,9 +224,9 @@
            return false;
        });
        
-     
+       // Filter the table by keyword
        $("#filter .keyword").bind("keyup", function() {
-
+       
            // Ignore and reset the map bounds 
            // when the keyword field is used.
            considerBounds = false;
@@ -217,6 +239,42 @@
            table.search( this.value ).draw();
 
        });
+       
+        // Load data for the select filter and filter the table
+        $.ajax({
+            url: "<%= filter1DataURL %>"
+        }).done(function (data) {
+           
+            var values = []; 
+            
+            <%= labelValueMapping %>
+            
+            values.sort(function(a, b) {
+                return a.label > b.label;
+            });
+         
+            $("#filter1").autocomplete({
+                minLength: 0
+                , source: values
+                , select: function (event, ui) {
+                   
+                    event.preventDefault();
+                    
+                    $("#filter1").val(ui.item.label);
+                    $("#filter1").attr("data-value", ui.item.value);
+                
+                    table.search(ui.item.value).draw();
+                    
+                }
+                , delay: 500
+                , open: function() { $(this).attr('state', 'open'); }
+                , close: function () { $(this).attr('state', 'closed'); }
+            }).focus(function () {
+                if ($(this).attr('state') != 'open') {
+                    $(this).autocomplete("search");
+                }
+            });
+        });       
 
        // Redraw the map whenever the table is searched.
        table.on("search", function () {

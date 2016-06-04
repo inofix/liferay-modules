@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-05-19 22:03 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2016-06-03 17:46 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%-- Import required classes --%>
@@ -55,6 +55,9 @@
     String dataTableColumnDefs = portletPreferences.getValue("dataTableColumnDefs", "");
     String dataTableColumns = portletPreferences.getValue("dataTableColumns", "");
     String dataTablePaging = portletPreferences.getValue("dataTablePaging", "false");
+    String filter1DataURL = portletPreferences.getValue("filter1DataURL", "/map-portlet/data/countries.json");
+    String filter1Values = portletPreferences.getValue("filter1Values", "");
+    String labelValueMapping = portletPreferences.getValue("labelValueMapping", "label: value.name, value: value.id"); 
     String locationsURL = portletPreferences.getValue("locationsURL", "/map-portlet/data/cities.json");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");

@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-05-19 22:04 by Christian Berndt
-    Version:    1.2.0
+    Modified:   2016-06-03 17:45 by Christian Berndt
+    Version:    1.2.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -121,7 +121,19 @@
                 
             <aui:input name="locationsURL" cssClass="full-width" label="locations-url"
                 helpMessage="locations-url-help" 
-                value="<%= locationsURL %>"/> 
+                value="<%= locationsURL %>"/>
+                
+            <aui:input name="filter1DataURL" cssClass="full-width" label="filter-1-data-url"
+                helpMessage="filter-1-data-url-help" 
+                value="<%= filter1DataURL %>"/> 
+                
+            <aui:input name="filter1Values" type="textarea" 
+                helpMessage="filter-1-values-help" 
+                value="<%= filter1Values %>"/>                                  
+
+            <aui:input name="labelValueMapping" type="textarea" 
+                helpMessage="label-value-mapping-help" 
+                value="<%= labelValueMapping %>"/> 
                 
             <aui:input name="customAddressAndLabel" type="textarea" 
                 helpMessage="custom-address-and-label-help" 
