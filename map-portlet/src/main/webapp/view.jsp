@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-06-03 17:54 by Christian Berndt
-    Version:    1.1.7
+    Modified:   2016-06-05 13:19 by Christian Berndt
+    Version:    1.1.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -250,7 +250,13 @@
             <%= labelValueMapping %>
             
             values.sort(function(a, b) {
-                return a.label > b.label;
+                if (a.label > b.label) {
+                    return 1;
+                } else if (a.label < b.label) {
+                    return -1; 
+                } else {
+                    return 0;
+                }
             });
          
             $("#filter1").autocomplete({
