@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-06-03 18:35 by Christian Berndt
- * Version:     1.0.7
+ * Modified:    2016-06-05 13:21 by Christian Berndt
+ * Version:     1.0.8
  */
  
 @import "compass";
@@ -122,5 +122,60 @@
     .ui-menu .ui-state-focus {
         padding: 3px 1em 3px .4em;
         margin: 0;
-    }    
+    }
+    
+    @media (max-width: 979px) {
+      
+        .portlet-map {
+        
+            #filter {
+                            
+                button {
+                    margin-top: 0; 
+                    padding: 4px 12px; /** bs default for .btn */
+                }
+            }
+        }
+    }
+    
+    @media (max-width: 767px) {
+    
+        .portlet-map {
+        
+            .dataTables_scroll {
+            
+                margin-top: 10px;
+            
+                .dataTables_scrollHead {
+                    display: none; 
+                }
+            }
+        
+            #filter {
+            
+                padding-top: 10px;
+                
+                button {
+                    position: absolute;
+                    right: 4px;
+                    top: 56px;
+                    background: none;
+                    border: none;
+                    float: right;
+                    width: auto;
+                    box-shadow: none;                    
+                }
+                
+                input {
+                    box-sizing: border-box;
+                    margin-right: 0;
+                    width: 100%;
+                        
+                    &:nth-child(1) {
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+        }       
+    }
 }
