@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-03-14 18:16 by Christian Berndt
- * Modified:    2016-06-05 13:21 by Christian Berndt
- * Version:     1.0.8
+ * Modified:    2016-06-05 19:01 by Christian Berndt
+ * Version:     1.0.9
  */
  
 @import "compass";
@@ -123,6 +123,20 @@
         padding: 3px 1em 3px .4em;
         margin: 0;
     }
+    
+    @media (max-width: 1199px) {
+      
+        .portlet-map {
+        
+            #filter {
+                            
+                input {
+                    margin-right: 15px;
+                    padding: 4px 6px;
+                }
+            }
+        }
+    }    
     
     @media (max-width: 979px) {
       
