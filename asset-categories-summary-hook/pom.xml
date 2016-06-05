@@ -4,12 +4,12 @@
 	<parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
     </parent>
 	<artifactId>asset-categories-summary-hook</artifactId>
 	<packaging>war</packaging>
-	<name>asset-categories-summary-hook Hook</name>
-	<version>0.9.1-SNAPSHOT</version>
+	<name>Asset Categories Summary Hook</name>
+	<version>1.0.0</version>
 	<build>
 		<plugins>
 			<!-- Read properties from dev.properties in -->
