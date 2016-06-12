@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<!--
-    ext-spring.xml: Configuration of custom spring beans.
 
-    Created:     2013-11-09 22:48 by Christian Berndt
-    Version:     1.0
+<!-- 
+    ext-spring.xml: Configuration of custom spring beans. 
+
+    Created: 2013-11-09 22:48 by Christian Berndt 
+    Version: 1.0 
 -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -19,4 +20,4 @@
         <property name="TimetrackerPortlet"
             ref="ch.inofix.portlet.timetracker.util.TimetrackerPortlet" />
     </bean>
-   </beans>
+</beans>
