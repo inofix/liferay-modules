@@ -125,6 +125,7 @@
         <module>social-media-portlet</module>
         <module>taglib-util</module>
     <module>search-portlet</module>
+    <module>freemarker-tools-hook</module>
   </modules>
     
     <issueManagement>
