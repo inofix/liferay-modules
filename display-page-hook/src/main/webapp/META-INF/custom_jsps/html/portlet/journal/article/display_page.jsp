@@ -10,10 +10,10 @@
     display page selector from this jsp to the structure editor, too.
     
     Created:    2015-07-25 14:51 by Christian Berndt
-    Modified:   2015-07-25 14:51 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-06-12 23:01 by Christian Berndt
+    Version:    1.0.1
  --%>
-
+ 
 <%--
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
@@ -39,6 +39,12 @@ String defaultLanguageId = (String)request.getAttribute("edit_article.jsp-defaul
 String toLanguageId = (String)request.getAttribute("edit_article.jsp-toLanguageId");
 
 String layoutUuid = BeanParamUtil.getString(article, request, "layoutUuid");
+
+boolean changeStructure = GetterUtil.getBoolean(request.getAttribute("edit_article.jsp-changeStructure"));
+
+if (changeStructure && (article != null)) {
+    layoutUuid = article.getLayoutUuid();
+}
 
 Layout selLayout = null;
 
@@ -72,7 +78,7 @@ Group parentGroup = themeDisplay.getSiteGroup();
 <h3><liferay-ui:message key="display-page" /><liferay-ui:icon-help message="default-display-page-help" /></h3>
 
 <div id="<portlet:namespace />pagesContainer">
-    <aui:input id="pagesContainerInput" name="layoutUuid" type="hidden" value="<%= layoutUuid %>" />
+    <aui:input id="pagesContainerInput" ignoreRequestValue="<%= true %>" name="layoutUuid" type="hidden" value="<%= layoutUuid %>" />
 
     <div class="display-page-item-container hide" id="<portlet:namespace />displayPageItemContainer">
         <span class="display-page-item">
@@ -572,7 +578,6 @@ Group parentGroup = themeDisplay.getSiteGroup();
     </c:choose>
 </aui:script>
 
-
 <%-- Custom script --%>
 
 <aui:script use="aui-base">
@@ -582,17 +587,17 @@ Group parentGroup = themeDisplay.getSiteGroup();
     
     if (defaultLayoutInput) {
     
-	    var defaultLayout = defaultLayoutInput.get('value');
-	    
-	    if (defaultLayout != '') {  
-	    
-	        var configuredLayout = pagesContainerInput.get('value'); 
-	        
-	        // Only set the defaultLayout if no other layout has been configured
-	        if (configuredLayout == '') {
-			    pagesContainerInput.set('value', defaultLayout); 
-		    }
-	    }  
+        var defaultLayout = defaultLayoutInput.get('value');
+        
+        if (defaultLayout != '') {  
+        
+            var configuredLayout = pagesContainerInput.get('value'); 
+            
+            // Only set the defaultLayout if no other layout has been configured
+            if (configuredLayout == '') {
+                pagesContainerInput.set('value', defaultLayout); 
+            }
+        }  
     }
     
 </aui:script>
