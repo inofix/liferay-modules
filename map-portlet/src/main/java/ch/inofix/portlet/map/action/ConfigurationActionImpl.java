@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-06-03 17:57
- * @version 1.1.3
+ * @modified 2016-06-15 18:42
+ * @version 1.1.4
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -45,28 +45,20 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             PortalUtil.getUploadPortletRequest(actionRequest);
 
         List<String> labels = new ArrayList<String>();
-        List<String> latLongs = new ArrayList<String>();
+        List<String> locations = new ArrayList<String>();
 
         File file = uploadPortletRequest.getFile("file");
 
         if (Validator.isNotNull(file) && file.length() > 0) {
 
-            // TODO: reconsider the input format for markers from file
             Reader in = new FileReader(file);
             Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 
             for (CSVRecord record : records) {
 
-                labels.add(record.get(0));
+                locations.add(record.get(0));
+                labels.add(record.get(1));
 
-                StringBuilder sb = new StringBuilder(5);
-                sb.append("[");
-                sb.append(record.get(1));
-                sb.append(",");
-                sb.append(record.get(2));
-                sb.append("]");
-
-                latLongs.add(sb.toString());
             }
         }
 
@@ -95,7 +87,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String markerIconConfig =
             ParamUtil.getString(actionRequest, "markerIconConfig");
         String[] markerLabels =
-            ParamUtil.getParameterValues(actionRequest, "markerLabels");
+            actionRequest.getParameterValues("markerLabels");
         String[] markerLocations =
             actionRequest.getParameterValues("markerLocations");
         String showTable = ParamUtil.getString(actionRequest, "showTable");
@@ -110,7 +102,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         markerLabels =
             (String[]) ArrayUtil.append(markerLabels, labels.toArray());
         markerLocations =
-            (String[]) ArrayUtil.append(markerLocations, latLongs.toArray());
+            (String[]) ArrayUtil.append(markerLocations, locations.toArray());
 
         setPreference(actionRequest, "addressResolverURL", addressResolverURL);
         setPreference(actionRequest, "claim", claim);
