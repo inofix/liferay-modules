@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-06-03 17:45 by Christian Berndt
-    Version:    1.2.1
+    Modified:   2016-06-16 19:02 by Christian Berndt
+    Version:    1.2.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -139,6 +139,10 @@
                 helpMessage="custom-address-and-label-help" 
                 value="<%= customAddressAndLabel %>"/>                                                                     
  
+            <aui:input name="customLatLon" type="textarea" 
+                helpMessage="custom-lat-lon-help" 
+                value="<%= customLatLon %>"/>                                                                     
+ 
             <aui:input name="dataTableColumns" type="textarea" 
                 helpMessage="data-table-columns-help" 
                 value="<%= dataTableColumns %>"/> 
@@ -146,6 +150,10 @@
             <aui:input name="dataTableColumnDefs" type="textarea" 
                 helpMessage="data-table-column-defs-help" 
                 value="<%= dataTableColumnDefs %>"/> 
+                               
+            <aui:input name="useAddressResolver" type="checkbox" 
+                checked="<%= useAddressResolver %>" 
+                helpMessage="use-address-resolver-help"/>                 
                 
             <aui:input name="dataTablePaging" type="checkbox" value="<%= dataTablePaging %>"
                 checked='<%= "true".equals(dataTablePaging) %>' 
@@ -163,7 +171,7 @@
                 value="<%= addressResolverURL %>"/>
                 
             <aui:input name="markerIconConfig" type="textarea" value="<%= markerIconConfig %>"
-                helpMessage="marker-icon-config-help" />
+                helpMessage="marker-icon-config-help" />                
                 
             <aui:input name="useDivIcon" type="checkbox" checked="<%= useDivIcon %>" 
                 helpMessage="use-div-icon-help"/>  

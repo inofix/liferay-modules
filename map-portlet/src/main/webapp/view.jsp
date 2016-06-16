@@ -146,6 +146,7 @@
            
            var namesRequest = $.getJSON( "<%= locationsURL %>", function( data ) { /* debug messages */ });
            var labels = []; 
+           var latLons = [];
                       
            <c:if test="<%= Validator.isNotNull(filter1Values) %>">
                var filter1Values = [];
@@ -153,59 +154,103 @@
            
            namesRequest.done(function() { // if "data/cities.json" were successfully loaded ...
                
-               data = namesRequest.responseJSON; 
-
-               var locationRequests = [];
-
-               for ( var i = 0; i < data.length; i++ ){ 
-
-                    var address = data[i].name; 
-                    var label = data[i].name;
-                    
-                    <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
-                        <%= customAddressAndLabel %>
-                    </c:if>
-                    
-                    labels.push(label);
-                    
-                    
-                    <c:if test="<%= Validator.isNotNull(filter1Values) %>">
-                        <%= filter1Values %>                        
-                    </c:if>                     
-                    
-                    locationRequests.push(    
-                    
-                           $.getJSON( resolverURL + address,  function( data ) { /* debug messages */ } )
-                       
-                    );
-               }
-
-               $.when.apply($, locationRequests).then(function() {
-
-                   var markers = []; 
-
-                   for (var i = 0; i < locationRequests.length; i++) {
-                       
-                       var location = locationRequests[i].responseJSON[0]; 
-                     
-                       if (location) {
+           <c:choose>
+               <c:when test="<%= useAddressResolver %>">
+               
+                   data = namesRequest.responseJSON; 
+    
+                   var locationRequests = [];
+    
+                   for ( var i = 0; i < data.length; i++ ){ 
+    
+                        var address = data[i].name; 
+                        var label = data[i].name;
+                        
+                        <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
+                            <%= customAddressAndLabel %>
+                        </c:if>
+                        
+                        labels.push(label);
+                        
+                        <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                            <%= filter1Values %>                        
+                        </c:if>                     
+                        
+                        locationRequests.push(    
+                        
+                               $.getJSON( resolverURL + address,  function( data ) { /* debug messages */ } )
                            
-                           var row = {
-                               "0": labels[i] 
-                               , "1": location.lat 
-                               , "2": location.lon
-                               <c:if test="<%= Validator.isNotNull(filter1Values) %>">
-                                   , "3": filter1Values[i]
-                               </c:if>                                 
-                           };
-                      
-                           table.row.add(row);
-                       }
+                        );
                    }
-                 
-                   table.draw(); 
-
-               }); 
+    
+                   $.when.apply($, locationRequests).then(function() {
+    
+                       var markers = []; 
+    
+                       for (var i = 0; i < locationRequests.length; i++) {
+                           
+                           var location = locationRequests[i].responseJSON[0]; 
+                         
+                           if (location) {
+                               
+                               var row = {
+                                   "0": labels[i] 
+                                   , "1": location.lat 
+                                   , "2": location.lon
+                                   <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                                       , "3": filter1Values[i]
+                                   </c:if>                                 
+                               };
+                          
+                               table.row.add(row);
+                           }
+                       }
+                     
+                       table.draw(); 
+    
+                   }); 
+               </c:when>             
+               
+               <c:otherwise>
+                   
+                   data = namesRequest.responseJSON; 
+                       
+                   for ( var i = 0; i < data.length; i++ ){ 
+    
+                        var address = data[i].name; 
+                        var label = data[i].name;
+                        var latLon = data[i].latLon;
+                        
+                        <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
+                            <%= customAddressAndLabel %>
+                        </c:if>
+                        
+                        <c:if test="<%= Validator.isNotNull(customLatLon) %>">
+                            <%= customLatLon %>
+                        </c:if>
+                        
+                        <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                            <%= filter1Values %>                        
+                        </c:if>  
+                        
+                        var row = {
+                            "0": label
+                            , "1": latLon[0]
+                            , "2": latLon[1]
+                            <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                                , "3": filter1Values[i]
+                            </c:if>                                 
+                        };
+                       
+                        table.row.add(row);
+                        
+                   }
+                   
+                   table.draw();
+               
+               </c:otherwise>
+           </c:choose>
+           
            });
        }
        
