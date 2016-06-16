@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-06-03 17:46 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2016-06-16 18:51 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%-- Import required classes --%>
@@ -52,12 +52,13 @@
     String addressResolverURL = portletPreferences.getValue("addressResolverURL", "//nominatim.openstreetmap.org/?format=json&addressdetails=1&format=json&limit=1&q=");
     String claim = portletPreferences.getValue("claim", "");
     String customAddressAndLabel = portletPreferences.getValue("customAddressAndLabel", "");
+    String customLatLon = portletPreferences.getValue("customLatLon", "");
     String dataTableColumnDefs = portletPreferences.getValue("dataTableColumnDefs", "");
     String dataTableColumns = portletPreferences.getValue("dataTableColumns", "");
     String dataTablePaging = portletPreferences.getValue("dataTablePaging", "false");
     String filter1DataURL = portletPreferences.getValue("filter1DataURL", "/map-portlet/data/countries.json");
     String filter1Values = portletPreferences.getValue("filter1Values", "");
-    String labelValueMapping = portletPreferences.getValue("labelValueMapping", "label: value.name, value: value.id"); 
+    String labelValueMapping = portletPreferences.getValue("labelValueMapping", ""); 
     String locationsURL = portletPreferences.getValue("locationsURL", "/map-portlet/data/cities.json");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
@@ -68,6 +69,7 @@
     boolean showTable = GetterUtil.getBoolean(portletPreferences.getValue("showTable", "false"));
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
+    boolean useAddressResolver = GetterUtil.getBoolean(portletPreferences.getValue("useAddressResolver", "false"));
     boolean useDivIcon = GetterUtil.getBoolean(portletPreferences.getValue("useDivIcon", "false"));
     boolean useGlobalJQuery = GetterUtil.getBoolean(portletPreferences.getValue("useGlobalJQuery", "false"));
 
