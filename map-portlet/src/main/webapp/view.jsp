@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-06-05 13:19 by Christian Berndt
-    Version:    1.1.8
+    Modified:   2016-06-17 10:44 by Christian Berndt
+    Version:    1.1.9
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -42,40 +42,40 @@
 %>
 
 <div>
-	<div class="table-wrapper">
-		<form id="filter">
+    <div class="table-wrapper">
+        <form id="filter">
         
-			<fieldset>
-				<input id="keyword" class="keyword" type="text" placeholder="<liferay-ui:message key="placeholder-search"/>">
+            <fieldset>
+                <input id="keyword" class="keyword" type="text" placeholder="<liferay-ui:message key="placeholder-search"/>">
                 <input id="filter1" type="text" data-value placeholder="<liferay-ui:message key="placeholder-competences"/>">
                 <aui:button icon="icon-remove" onClick="clearForm();" />
-			</fieldset>
+            </fieldset>
             
-		</form>
-		<table id="table" class="display">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Latitude</th>
+        </form>
+        <table id="table" class="display">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Latitude</th>
                     <th>Longitude</th>
                     <c:if test="<%= Validator.isNotNull(filter1Values) %>">
                         <th>Filter1</th>
-                    </c:if>  				
+                    </c:if>                 
                 </tr>
-			</thead>
-		</table>
-	</div>
+            </thead>
+        </table>
+    </div>
         
-	<div class="map-wrapper">
+    <div class="map-wrapper">
         <c:if test="<%= Validator.isNotNull(claim) %>">
             <div class="jumbotron">
                 <h1><%= claim %></h1>
             </div>
         </c:if>    
-	    <div id="map" class="map"></div>
-	</div>		
+        <div id="map" class="map"></div>
+    </div>      
 </div>
-	
+    
 <script type="text/javascript">
 
     function clearForm() {
@@ -146,6 +146,7 @@
            
            var namesRequest = $.getJSON( "<%= locationsURL %>", function( data ) { /* debug messages */ });
            var labels = []; 
+           var latLons = [];
                       
            <c:if test="<%= Validator.isNotNull(filter1Values) %>">
                var filter1Values = [];
@@ -153,59 +154,103 @@
            
            namesRequest.done(function() { // if "data/cities.json" were successfully loaded ...
                
-               data = namesRequest.responseJSON; 
-
-               var locationRequests = [];
-
-               for ( var i = 0; i < data.length; i++ ){ 
-
-                    var address = data[i].name; 
-                    var label = data[i].name;
-                    
-                    <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
-                        <%= customAddressAndLabel %>
-                    </c:if>
-                    
-                    labels.push(label);
-                    
-                    
-                    <c:if test="<%= Validator.isNotNull(filter1Values) %>">
-                        <%= filter1Values %>                        
-                    </c:if>                     
-                    
-                    locationRequests.push(    
-                    
-                           $.getJSON( resolverURL + address,  function( data ) { /* debug messages */ } )
-                       
-                    );
-               }
-
-               $.when.apply($, locationRequests).then(function() {
-
-                   var markers = []; 
-
-                   for (var i = 0; i < locationRequests.length; i++) {
-                       
-                       var location = locationRequests[i].responseJSON[0]; 
-                     
-                       if (location) {
+           <c:choose>
+               <c:when test="<%= useAddressResolver %>">
+               
+                   data = namesRequest.responseJSON; 
+    
+                   var locationRequests = [];
+    
+                   for ( var i = 0; i < data.length; i++ ){ 
+    
+                        var address = data[i].name; 
+                        var label = data[i].name;
+                        
+                        <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
+                            <%= customAddressAndLabel %>
+                        </c:if>
+                        
+                        labels.push(label);
+                        
+                        <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                            <%= filter1Values %>                        
+                        </c:if>                     
+                        
+                        locationRequests.push(    
+                        
+                               $.getJSON( resolverURL + address,  function( data ) { /* debug messages */ } )
                            
-                           var row = {
-                               "0": labels[i] 
-                               , "1": location.lat 
-                               , "2": location.lon
-                               <c:if test="<%= Validator.isNotNull(filter1Values) %>">
-                                   , "3": filter1Values[i]
-                               </c:if>                                 
-                           };
-                      
-                           table.row.add(row);
-                       }
+                        );
                    }
-                 
-                   table.draw(); 
-
-               }); 
+    
+                   $.when.apply($, locationRequests).then(function() {
+    
+                       var markers = []; 
+    
+                       for (var i = 0; i < locationRequests.length; i++) {
+                           
+                           var location = locationRequests[i].responseJSON[0]; 
+                         
+                           if (location) {
+                               
+                               var row = {
+                                   "0": labels[i] 
+                                   , "1": location.lat 
+                                   , "2": location.lon
+                                   <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                                       , "3": filter1Values[i]
+                                   </c:if>                                 
+                               };
+                          
+                               table.row.add(row);
+                           }
+                       }
+                     
+                       table.draw(); 
+    
+                   }); 
+               </c:when>             
+               
+               <c:otherwise>
+                   
+                   data = namesRequest.responseJSON; 
+                       
+                   for ( var i = 0; i < data.length; i++ ){ 
+    
+                        var address = data[i].name; 
+                        var label = data[i].name;
+                        var latLon = data[i].latLon;
+                        
+                        <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
+                            <%= customAddressAndLabel %>
+                        </c:if>
+                        
+                        <c:if test="<%= Validator.isNotNull(customLatLon) %>">
+                            <%= customLatLon %>
+                        </c:if>
+                        
+                        <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                            <%= filter1Values %>                        
+                        </c:if>  
+                        
+                        var row = {
+                            "0": label
+                            , "1": latLon[0]
+                            , "2": latLon[1]
+                            <c:if test="<%= Validator.isNotNull(filter1Values) %>">
+                                , "3": filter1Values[i]
+                            </c:if>                                 
+                        };
+                       
+                        table.row.add(row);
+                        
+                   }
+                   
+                   table.draw();
+               
+               </c:otherwise>
+           </c:choose>
+           
            });
        }
        
@@ -414,7 +459,7 @@
            for (int i=0; i<markerLabels.length; i++) { 
                
                String markerLocation = markerLocations[i]; 
-               	           
+                           
                if (Validator.isNotNull(markerLocation)) {
                    
                    if (markerLocation.startsWith("[")
@@ -426,32 +471,32 @@
             L.marker(<%= markerLocation %>, {icon: markerIcon}).addTo(map)
                 .bindPopup('<%= markerLabels[i] %>');   
         <%     
-    	           } else {
-    	               
+                   } else {
+                       
                        // Location is given via the address
     
-    	               if (Validator.isNotNull(addressResolverURL)) {
-    	                  
-    	                   // String resolverURL = addressResolverURL + markerLocation;
-    	                   
-    	               %>
-    		               $.getJSON(resolverURL + '<%= markerLocation %>' , function( data ) {
-    		                   
-    		                   if (data[0]) {
-    		                   
-    		                       var lat = data[0].lat; 
-    		                       var lon = data[0].lon;
-    		                       
-    		                       L.marker([lat, lon], {icon: markerIcon}).addTo(map)
-    		                           .bindPopup('<%= markerLabels[i] %>');
-    		                       
-    		                   }
-    		               });		               
-    	               
-    	               <%
-    	               
-    	               }
-    	           }
+                       if (Validator.isNotNull(addressResolverURL)) {
+                          
+                           // String resolverURL = addressResolverURL + markerLocation;
+                           
+                       %>
+                           $.getJSON(resolverURL + '<%= markerLocation %>' , function( data ) {
+                               
+                               if (data[0]) {
+                               
+                                   var lat = data[0].lat; 
+                                   var lon = data[0].lon;
+                                   
+                                   L.marker([lat, lon], {icon: markerIcon}).addTo(map)
+                                       .bindPopup('<%= markerLabels[i] %>');
+                                   
+                               }
+                           });                     
+                       
+                       <%
+                       
+                       }
+                   }
                }
            }
         %>
