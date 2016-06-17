@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-06-15 18:42
- * @version 1.1.4
+ * @modified 2016-06-16 19:01
+ * @version 1.1.5
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -67,6 +67,8 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String claim = ParamUtil.getString(actionRequest, "claim");
         String customAddressAndLabel =
             ParamUtil.getString(actionRequest, "customAddressAndLabel");
+        String customLatLon =
+            ParamUtil.getString(actionRequest, "customLatLon");
         String dataTableColumnDefs =
             ParamUtil.getString(actionRequest, "dataTableColumnDefs");
         String dataTableColumns =
@@ -94,6 +96,8 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String tilesCopyright =
             ParamUtil.getString(actionRequest, "tilesCopyright");
         String tilesURL = ParamUtil.getString(actionRequest, "tilesURL");
+        String useAddressResolver =
+            ParamUtil.getString(actionRequest, "useAddressResolver");
         String useDivIcon = ParamUtil.getString(actionRequest, "useDivIcon");
         String useGlobalJQuery =
             ParamUtil.getString(actionRequest, "useGlobalJQuery");
@@ -106,6 +110,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
         setPreference(actionRequest, "addressResolverURL", addressResolverURL);
         setPreference(actionRequest, "claim", claim);
+        setPreference(actionRequest, "customLatLon", customLatLon);
         setPreference(
             actionRequest, "customAddressAndLabel", customAddressAndLabel);
         setPreference(actionRequest, "dataTableColumnDefs", dataTableColumnDefs);
@@ -124,6 +129,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "showTable", showTable);
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
+        setPreference(actionRequest, "useAddressResolver", useAddressResolver);
         setPreference(actionRequest, "useDivIcon", useDivIcon);
         setPreference(actionRequest, "useGlobalJQuery", useGlobalJQuery);
 
