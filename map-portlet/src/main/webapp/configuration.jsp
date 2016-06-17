@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-06-03 17:45 by Christian Berndt
-    Version:    1.2.1
+    Modified:   2016-06-16 19:02 by Christian Berndt
+    Version:    1.2.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -54,47 +54,47 @@
         
         <liferay-ui:panel id="mapportletMarkersPanel" title="markers" extended="true">
         
-			<aui:fieldset>
+            <aui:fieldset>
                 <aui:input name="file" type="file" inlineField="true"
                     label="import-markers-from-file" inlineLabel="true"
                     helpMessage="import-markers-from-file-help" />
             </aui:fieldset>
         
-			<aui:fieldset id="marker" cssClass="marker">
-			<%
-			    for (int i=0; i<markerLabels.length; i++) {
-			%>
-			    <aui:container>
-			
-			        <aui:row>
-			            <div class="lfr-form-row">
+            <aui:fieldset id="marker" cssClass="marker">
+            <%
+                for (int i=0; i<markerLabels.length; i++) {
+            %>
+                <aui:container>
+            
+                    <aui:row>
+                        <div class="lfr-form-row">
 
-			                <legend class="fieldset-legend">
-			                
-			                    <span class="sort-handle"></span>
+                            <legend class="fieldset-legend">
+                            
+                                <span class="sort-handle"></span>
 
-			                </legend>           
-			            
-			                <div class="row-fields">
-			                                                    
-			                    <aui:col span="6">
-			                    
-			                        <aui:input name="markerLocations"
-			                            cssClass="full-width"
-			                            helpMessage="marker-location-help"
-			                            label="marker-location"
-			                            value="<%= markerLocations[i] %>" />
+                            </legend>           
+                        
+                            <div class="row-fields">
+                                                                
+                                <aui:col span="6">
+                                
+                                    <aui:input name="markerLocations"
+                                        cssClass="full-width"
+                                        helpMessage="marker-location-help"
+                                        label="marker-location"
+                                        value="<%= markerLocations[i] %>" />
                                         
-			                    </aui:col>
-			                    <aui:col span="6">
-			                    
-			                        <%
-			                             String label = ""; 
-			                             if (markerLabels.length > i) {
-			                                 label = markerLabels[i]; 
-			                             }
-			                        %>
-			                    
+                                </aui:col>
+                                <aui:col span="6">
+                                
+                                    <%
+                                         String label = ""; 
+                                         if (markerLabels.length > i) {
+                                             label = markerLabels[i]; 
+                                         }
+                                    %>
+                                
                                     <aui:input name="markerLabels"
                                         cssClass="full-width"
                                         helpMessage="marker-label-help"
@@ -102,17 +102,17 @@
                                         value="<%= label %>" />
                                         
                               </aui:col>
-			                </div>
-			            </div>
-			        </aui:row>
-			
-			    </aui:container>
-			<%
-			    }
-			%>
-			</aui:fieldset>
+                            </div>
+                        </div>
+                    </aui:row>
+            
+                </aui:container>
+            <%
+                }
+            %>
+            </aui:fieldset>
 
-		</liferay-ui:panel>
+        </liferay-ui:panel>
         
         <liferay-ui:panel id="mapportletDataTablePanel" title="data-table" extended="true">                
                 
@@ -139,6 +139,10 @@
                 helpMessage="custom-address-and-label-help" 
                 value="<%= customAddressAndLabel %>"/>                                                                     
  
+            <aui:input name="customLatLon" type="textarea" 
+                helpMessage="custom-lat-lon-help" 
+                value="<%= customLatLon %>"/>                                                                     
+ 
             <aui:input name="dataTableColumns" type="textarea" 
                 helpMessage="data-table-columns-help" 
                 value="<%= dataTableColumns %>"/> 
@@ -146,6 +150,10 @@
             <aui:input name="dataTableColumnDefs" type="textarea" 
                 helpMessage="data-table-column-defs-help" 
                 value="<%= dataTableColumnDefs %>"/> 
+                               
+            <aui:input name="useAddressResolver" type="checkbox" 
+                checked="<%= useAddressResolver %>" 
+                helpMessage="use-address-resolver-help"/>                 
                 
             <aui:input name="dataTablePaging" type="checkbox" value="<%= dataTablePaging %>"
                 checked='<%= "true".equals(dataTablePaging) %>' 
@@ -163,7 +171,7 @@
                 value="<%= addressResolverURL %>"/>
                 
             <aui:input name="markerIconConfig" type="textarea" value="<%= markerIconConfig %>"
-                helpMessage="marker-icon-config-help" />
+                helpMessage="marker-icon-config-help" />                
                 
             <aui:input name="useDivIcon" type="checkbox" checked="<%= useDivIcon %>" 
                 helpMessage="use-div-icon-help"/>  
