@@ -11,7 +11,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.9.9-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -126,7 +126,8 @@
         <module>taglib-util</module>
     <module>search-portlet</module>
     <module>freemarker-tools-hook</module>
-  </modules>
+    <module>geotag-hook</module>
+    </modules>
     
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
