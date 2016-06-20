@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+<!-- 
+    liferay-hook.xml: Configuration of the geotag-hook.
+
+    Created:    2016-06-20 22:30 by Christian Berndt
+    Modified:   2016-06-20 22:30 by Christian Berndt
+    Version:    1.0.0
+ -->
+<hook>
+    <portal-properties>portal.properties</portal-properties>
+</hook>
