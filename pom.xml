@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-04-18 16:04 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-06-21 12:43 by Christian Berndt
+    Version:    1.0.7
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -32,12 +32,14 @@
 <!--         <liferay.base.dir> -->
 <!--         </liferay.base.dir> -->
 
+        <tomcat.version>tomcat-7.0.62</tomcat.version>
+
         <liferay.app.server.deploy.dir>
-            ${liferay.base.dir}/${tomcat-version}/webapps
+            ${liferay.base.dir}/${tomcat.version}/webapps
         </liferay.app.server.deploy.dir>
 
         <liferay.app.server.lib.global.dir>
-            ${liferay.base.dir}/${tomcat-version}/lib/ext
+            ${liferay.base.dir}/${tomcat.version}/lib/ext
         </liferay.app.server.lib.global.dir>
 
         <liferay.app.server.portal.dir>
@@ -48,7 +50,7 @@
             ${liferay.base.dir}/deploy
         </liferay.auto.deploy.dir>
 
-        <liferay.version>6.2.3</liferay.version>
+        <liferay.version>6.2.5</liferay.version>
 
         <liferay.maven.plugin.version>6.2.2</liferay.maven.plugin.version>
         
@@ -117,16 +119,15 @@
         <module>contact-manager-portlet</module>
         <module>ckeditor-hook</module>
         <module>display-page-hook</module>
+        <module>geotag-hook</module>
         <module>inofix-theme</module>
 	    <module>map-portlet</module>
 	    <module>portlettitle-hook</module>
         <module>proxy-portlet</module>
         <module>search-facet-hook</module>
+        <module>search-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
-    <module>search-portlet</module>
-    <module>freemarker-tools-hook</module>
-    <module>geotag-hook</module>
     </modules>
     
     <issueManagement>

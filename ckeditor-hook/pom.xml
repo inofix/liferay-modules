@@ -4,7 +4,7 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>0.9.8-SNAPSHOT</version>
+        <version>0.9.9-SNAPSHOT</version>
     </parent>
     <artifactId>ckeditor-hook</artifactId>
     <packaging>war</packaging>
