@@ -5,7 +5,7 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>0.9.6-SNAPSHOT</version>
+        <version>0.9.9-SNAPSHOT</version>
     </parent>
     <artifactId>contact-manager-portlet</artifactId>
     <packaging>war</packaging>

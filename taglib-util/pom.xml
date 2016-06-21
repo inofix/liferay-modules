@@ -4,10 +4,10 @@
     <parent>
         <groupId>ch.inofix</groupId>
         <artifactId>liferay-modules</artifactId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.9-SNAPSHOT</version>
     </parent>
     <artifactId>taglib-util</artifactId>
-    <name>taglib-util</name>
+    <name>Taglib Util</name>
     <description>Utility tags by Inofix GmbH, Luzern</description>
     <developers>
         <developer>
