@@ -19,8 +19,8 @@ import com.liferay.portlet.journal.model.JournalArticle;
  *
  * @author Christian Berndt
  * @created 2016-06-20 22:23
- * @modified 2016-06-25 14:26
- * @version 1.0.2
+ * @modified 2016-06-27 12:40
+ * @version 1.0.3
  */
 public class StartupAction extends SimpleAction {
 
@@ -39,13 +39,14 @@ public class StartupAction extends SimpleAction {
     protected void doRun(long companyId)
         throws Exception {
 
-        // Create a custom geoJSON column required by the geotag-hook
-        // for selected classes
-        createColumn(DLFileEntry.class, companyId);
-        createColumn(JournalArticle.class, companyId);
+        // Create a custom columns required by the geotag-hook.
+        createColumn(companyId, DLFileEntry.class, "geoJSON");
+        createColumn(companyId, DLFileEntry.class, "mapState");
+        createColumn(companyId, JournalArticle.class, "geoJSON");
+        createColumn(companyId, JournalArticle.class, "mapState");
     }
 
-    private void createColumn(Class<?> clazz, long companyId)
+    private void createColumn(long companyId, Class<?> clazz, String fieldName)
         throws PortalException, SystemException {
 
         ExpandoTable expandoTable = null;
@@ -65,7 +66,7 @@ public class StartupAction extends SimpleAction {
 
         try {
             ExpandoColumnLocalServiceUtil.addColumn(
-                expandoTable.getTableId(), "geoJSON",
+                expandoTable.getTableId(), fieldName,
                 ExpandoColumnConstants.STRING);
 
         }
