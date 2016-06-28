@@ -432,7 +432,7 @@ if ((checkedOut || pending) && !PropsValues.DL_FILE_ENTRY_DRAFTS_ENABLED) {
                 </aui:fieldset>
             </liferay-ui:panel>
             
-            <%-- Custom include --%>
+<%-- Custom include --%>
             <%@ include file="/html/portlet/geotag.jsp" %>
             
         </c:if>
