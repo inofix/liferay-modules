@@ -6,11 +6,10 @@
         <groupId>ch.inofix</groupId>
         <version>0.9.9-SNAPSHOT</version>
     </parent>
-    <groupId>ch.inofix</groupId>
     <artifactId>asset-links-hook</artifactId>
     <packaging>war</packaging>
     <name>Asset Links Hook</name>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>1.0.0</version>
 	<build>
 		<plugins>
             <!-- Read properties from dev.properties in -->

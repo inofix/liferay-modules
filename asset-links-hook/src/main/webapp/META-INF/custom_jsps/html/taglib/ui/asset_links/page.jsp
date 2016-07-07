@@ -3,8 +3,8 @@
     asset-links tag which provides grouped and sorted asset-links.
         
     Created:    2016-03-14 15:27 by Christian Berndt
-    Modified:   2016-03-18 14:39 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-07-07 15:27 by Christian Berndt
+    Version:    1.0.4
 --%>
 <%--
 /**
@@ -22,9 +22,9 @@
  */
 --%>
 
-<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@ include file="/html/taglib/ui/asset_links/init.jsp" %>
 
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.util.PropertyComparator"%>
 <%@page import="javax.portlet.WindowStateException"%>
 
@@ -144,13 +144,23 @@ for (AssetLink assetLink : assetLinks) {
 	
 	                String urlViewInContext = assetRenderer.getURLViewInContext((LiferayPortletRequest)portletRequest, (LiferayPortletResponse)portletResponse, viewFullContentURLString);
 	
-	                urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);                
+	                urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);
+	                
+                    String method = null;
+                    String target = "_self";
+
+                    if (themeDisplay.isStatePopUp() || (themeDisplay.isStateMaximized() && PropsValues.DOCKBAR_ADMINISTRATIVE_LINKS_SHOW_IN_POP_UP && PortletCategoryKeys.MY.equals(themeDisplay.getControlPanelCategory()))) {
+                        method = "get";
+                        target = "_blank";
+                    }                    
 	        %>
 		        <li class="asset-links-list-item <%= assetRendererFactory.getType() %>">
 		            <liferay-ui:icon
 		                label="<%= true %>"
 		                message="<%= assetLinkEntryTitle %>"
+                        method="<%= method %>"                                            
 		                src="<%= assetRenderer.getIconPath(portletRequest) %>"
+                        target="<%= target %>"                        
 		                url="<%= urlViewInContext %>"
 		            />
 		        </li>
@@ -181,13 +191,23 @@ for (AssetLink assetLink : assetLinks) {
 
             String urlViewInContext = assetRenderer.getURLViewInContext((LiferayPortletRequest)portletRequest, (LiferayPortletResponse)portletResponse, viewFullContentURLString);
 
-            urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);            
+            urlViewInContext = HttpUtil.setParameter(urlViewInContext, "inheritRedirect", true);
+            
+            String method = null;
+            String target = "_self";
+
+            if (themeDisplay.isStatePopUp() || (themeDisplay.isStateMaximized() && PropsValues.DOCKBAR_ADMINISTRATIVE_LINKS_SHOW_IN_POP_UP && PortletCategoryKeys.MY.equals(themeDisplay.getControlPanelCategory()))) {
+                method = "get";
+                target = "_blank";
+            }            
             %>
             <li class="asset-links-list-item <%= assetRendererFactory.getType() %>">
 	            <liferay-ui:icon
 	                label="<%= true %>"
 	                message="<%= assetLinkEntryTitle %>"
+                    method="<%= method %>"                    
 	                src="<%= assetRenderer.getIconPath(portletRequest) %>"
+                    target="<%= target %>"                    
 	                url="<%= urlViewInContext %>"
 	            />
 	        </li>
@@ -240,4 +260,3 @@ for (AssetLink assetLink : assetLinks) {
         return assetPublisherURL;
     }
 %>
-
