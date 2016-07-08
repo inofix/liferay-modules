@@ -17,6 +17,7 @@
         <!--  We assume jquery to be present, e.g. included by a theme. -->
 <!--         <header-portlet-javascript>/js/jquery-1.12.1.min.js</header-portlet-javascript> -->
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+        <css-class-wrapper>portlet-proxy</css-class-wrapper>
         <add-default-resource>true</add-default-resource>
         <system>true</system>
     </portlet>
