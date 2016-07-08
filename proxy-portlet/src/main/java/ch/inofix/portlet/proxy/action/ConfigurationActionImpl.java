@@ -29,10 +29,8 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         throws Exception {
 
         String[] hosts = ParamUtil.getParameterValues(actionRequest, "host");
-        // String portrait = ParamUtil.getString(actionRequest, "portrait");
 
         setPreference(actionRequest, "hosts", hosts);
-        // setPreference(actionRequest, "portrait", portrait);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
 

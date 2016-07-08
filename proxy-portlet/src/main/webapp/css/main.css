@@ -1,3 +1,17 @@
-#p_p_id_proxyportlet_WAR_proxyportlet_ .portlet-borderless-container {
-    min-height: 0;
+@import "compass";
+
+.portlet-proxy { 
+    
+    .portlet {
+        display: none;
+    }
+}
+
+.panel-page-application {
+    
+    .portlet-proxy {     
+        .portlet {
+            display: block;
+        }
+    }   
 }

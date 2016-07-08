@@ -10,7 +10,7 @@
     <artifactId>proxy-portlet</artifactId>
     <packaging>war</packaging>
     <name>Proxy Portlet</name>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->
