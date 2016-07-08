@@ -1,4 +1,12 @@
 <%--
+    portlet.jsp: a customized versio of the portlet renderer which
+    displays the portlet-title for unauthenticated users, too.
+            
+    Created:    2016-07-08 18:00 by Christian Berndt
+    Modified:   2016-07-08 18:00 by Christian Berndt
+    Version:    1.0.2
+--%>
+<%--
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
@@ -19,7 +27,12 @@
 <portlet:defineObjects />
 
 <%
-String tilesPortletContent = GetterUtil.getString(TilesAttributeUtil.getTilesAttribute(pageContext, "portlet_content"));
+String tilesPortletContent = GetterUtil.getString(request.getAttribute(WebKeys.PORTLET_CONTENT_JSP));
+
+if (Validator.isBlank(tilesPortletContent)) {
+    tilesPortletContent = GetterUtil.getString(TilesAttributeUtil.getTilesAttribute(pageContext, "portlet_content"));
+}
+
 boolean tilesPortletDecorate = GetterUtil.getBoolean(TilesAttributeUtil.getTilesAttribute(pageContext, "portlet_decorate"), true);
 
 TilesAttributeUtil.removeComponentContext(pageContext);
@@ -155,8 +168,7 @@ boolean wsrp = ParamUtil.getBoolean(PortalUtil.getOriginalServletRequest(request
 <%-- Customized: display the portlet-title for borderless portlets regardless of the 
      showPortletActions settings. This is needed, for example, to use the portlets title's
      as list-items of a scrollspy component           
---%>                       
-           
+--%>     
                     <span class="portlet-title-default"><%= HtmlUtil.escape(portletDisplay.getTitle()) %></span>
                     <c:if test="<%= showPortletActions || portletDisplay.isShowBackIcon() %>">
                         <div class="portlet-borderless-bar">
