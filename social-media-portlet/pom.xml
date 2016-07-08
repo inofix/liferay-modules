@@ -9,7 +9,7 @@
 	<artifactId>social-media-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>Social Media Portlet</name>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<build>
                 
 		<plugins>
