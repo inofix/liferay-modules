@@ -1,10 +1,11 @@
-
 package ch.inofix.portlet.search.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.lang3.time.StopWatch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,14 +27,14 @@ import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 /**
  * @author Christian Berndt
  * @created 2016-05-20 16:34
- * @modified 2016-05-20 16:34
- * @version 1.0.0
+ * @modified 2016-07-19 21:46
+ * @version 1.0.1
  */
 public class SearchUtil {
 
     // Enable logging for this class
-    private static final Log _log =
-        LogFactoryUtil.getLog(SearchUtil.class.getName());
+    private static final Log _log = LogFactoryUtil.getLog(SearchUtil.class
+            .getName());
 
     /**
      * Return the hits' documents as an array of json-objects.
@@ -65,6 +66,14 @@ public class SearchUtil {
         // class.
         objectMapper.addMixIn(PersistedModel.class, IgnoreMixin.class);
 
+        StopWatch stopWatch = new StopWatch();
+
+        stopWatch.start();
+
+        if (_log.isDebugEnabled()) {
+            _log.debug("Start toJson.");
+        }
+
         List<Document> documents = hits.toList();
         Iterator<Document> iterator = documents.iterator();
 
@@ -81,8 +90,8 @@ public class SearchUtil {
             if (useModel) {
 
                 String entryClassName = document.get(Field.ENTRY_CLASS_NAME);
-                long entryClassPK =
-                    GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
+                long entryClassPK = GetterUtil.getLong(document
+                        .get(Field.ENTRY_CLASS_PK));
 
                 if (JournalArticle.class.getName().equals(entryClassName)) {
 
@@ -90,29 +99,23 @@ public class SearchUtil {
                     long groupId = GetterUtil.getLong(document.get("groupId"));
 
                     try {
-                        obj =
-                            JournalArticleLocalServiceUtil.getArticle(
+                        obj = JournalArticleLocalServiceUtil.getArticle(
                                 groupId, articleId);
 
-                    }
-                    catch (PortalException e) {
+                    } catch (PortalException e) {
+                        _log.error(e);
+                    } catch (SystemException e) {
                         _log.error(e);
                     }
-                    catch (SystemException e) {
-                        _log.error(e);
-                    }
-                }
-                else if (DLFileEntry.class.getName().equals(entryClassName)) {
+                } else if (DLFileEntry.class.getName().equals(entryClassName)) {
 
                     try {
 
-                        obj =
-                            DLFileEntryLocalServiceUtil.getFileEntry(entryClassPK);
-                    }
-                    catch (PortalException e) {
+                        obj = DLFileEntryLocalServiceUtil
+                                .getFileEntry(entryClassPK);
+                    } catch (PortalException e) {
                         _log.error(e);
-                    }
-                    catch (SystemException e) {
+                    } catch (SystemException e) {
                         _log.error(e);
                     }
                 }
@@ -125,8 +128,8 @@ public class SearchUtil {
                     // Generic method invocation for any other (ServiceBuilder
                     // generated) model.
 
-                    String serviceClassName =
-                        entryClassName.replace("model", "service");
+                    String serviceClassName = entryClassName.replace("model",
+                            "service");
                     serviceClassName = serviceClassName + "LocalServiceUtil";
 
                     try {
@@ -134,28 +137,21 @@ public class SearchUtil {
                         Class<?> serviceClass = Class.forName(serviceClassName);
 
                         String simpleName = modelClass.getSimpleName();
-                        Method method =
-                            serviceClass.getMethod(
-                                "get" + simpleName, long.class);
+                        Method method = serviceClass.getMethod("get"
+                                + simpleName, long.class);
                         obj = method.invoke(null, entryClassPK);
 
-                    }
-                    catch (SecurityException e) {
+                    } catch (SecurityException e) {
                         _log.error(e);
-                    }
-                    catch (NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         _log.error(e);
-                    }
-                    catch (IllegalArgumentException e) {
+                    } catch (IllegalArgumentException e) {
                         _log.error(e);
-                    }
-                    catch (IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         _log.error(e);
-                    }
-                    catch (InvocationTargetException e) {
+                    } catch (InvocationTargetException e) {
                         _log.error(e);
-                    }
-                    catch (ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         _log.error(e);
                     }
 
@@ -178,14 +174,17 @@ public class SearchUtil {
                     sb.append(",");
                     sb.append("\n");
                 }
-            }
-            catch (JsonProcessingException e) {
+            } catch (JsonProcessingException e) {
                 _log.error(e);
             }
 
         }
 
         sb.append("]");
+
+        if (_log.isDebugEnabled()) {
+            _log.debug("toJSON took " + stopWatch.getTime() + " ms");
+        }
 
         return sb.toString();
 

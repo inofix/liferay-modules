@@ -1,4 +1,3 @@
-
 package ch.inofix.portlet.search.servlet;
 
 import ch.inofix.portlet.search.util.SearchUtil;
@@ -39,40 +38,41 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.time.StopWatch;
+
 /**
  * @author Christian Berndt
  * @created 2016-05-20 16:41
- * @modified 2016-05-20 16:41
- * @version 1.0.0
+ * @modified 2016-07-19 21:47
+ * @version 1.0.1
  */
 @SuppressWarnings("serial")
 public class JSONSearchServlet extends HttpServlet {
 
     // Enable logging for this class
-    private static final Log _log =
-        LogFactoryUtil.getLog(JSONSearchServlet.class.getName());
+    private static final Log _log = LogFactoryUtil
+            .getLog(JSONSearchServlet.class.getName());
 
     /**
      * @since 1.0.0
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
+            throws IOException {
 
         ThemeDisplay themeDisplay = null;
 
         try {
             themeDisplay = initThemeDisplay(request, response);
-        }
-        catch (Exception e1) {
+        } catch (Exception e1) {
             _log.error(e1);
         }
 
         if (themeDisplay == null) {
             return;
-        }
+        }        
 
-        String classNames[] =
-            ParamUtil.getParameterValues(request, "className");
+        String classNames[] = ParamUtil
+                .getParameterValues(request, "className");
         boolean useModel = ParamUtil.getBoolean(request, "useModel", false);
 
         SearchContext searchContext = SearchContextFactory.getInstance(request);
@@ -92,7 +92,20 @@ public class JSONSearchServlet extends HttpServlet {
 
         try {
 
+            StopWatch stopWatch = new StopWatch();
+
+            stopWatch.start();
+
+            if (_log.isDebugEnabled()) {
+                _log.debug("Start search");
+            }
+
             Hits hits = indexer.search(searchContext);
+            _log.info("hits.getLength() = " + hits.getLength()); 
+            
+            if (_log.isDebugEnabled()) {
+                _log.info("Search took " + stopWatch.getTime() + " ms");
+            }
 
             if (_log.isDebugEnabled()) {
                 _log.debug("hits.getLength = " + hits.getLength());
@@ -100,8 +113,7 @@ public class JSONSearchServlet extends HttpServlet {
 
             json = SearchUtil.toJSON(hits, useModel);
 
-        }
-        catch (SearchException e) {
+        } catch (SearchException e) {
             _log.error(e);
         }
 
@@ -121,9 +133,8 @@ public class JSONSearchServlet extends HttpServlet {
      * @return
      * @throws Exception
      */
-    public ThemeDisplay initThemeDisplay(
-        HttpServletRequest request, HttpServletResponse response)
-        throws Exception {
+    public ThemeDisplay initThemeDisplay(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
 
         ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -134,8 +145,8 @@ public class JSONSearchServlet extends HttpServlet {
         PrincipalThreadLocal.setName(user.getUserId());
         PrincipalThreadLocal.setPassword(PortalUtil.getUserPassword(request));
 
-        PermissionChecker permissionChecker =
-            PermissionCheckerFactoryUtil.create(user);
+        PermissionChecker permissionChecker = PermissionCheckerFactoryUtil
+                .create(user);
 
         PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
@@ -152,8 +163,7 @@ public class JSONSearchServlet extends HttpServlet {
     }
 
     // From WebServerServlet
-    private static User _getUser(HttpServletRequest request)
-        throws Exception {
+    private static User _getUser(HttpServletRequest request) throws Exception {
 
         HttpSession session = request.getSession();
 
@@ -175,8 +185,7 @@ public class JSONSearchServlet extends HttpServlet {
             long userId = GetterUtil.getLong(userIdString);
 
             user = UserLocalServiceUtil.getUser(userId);
-        }
-        else {
+        } else {
 
             long companyId = PortalUtil.getCompanyId(request);
 
