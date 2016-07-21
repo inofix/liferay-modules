@@ -3,16 +3,15 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-06-21 12:43 by Christian Berndt
-    Version:    1.0.7
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    Modified:   2016-07-21 21:59 by Christian Berndt
+    Version:    1.0.9
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.9-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -116,6 +115,7 @@
         <module>asset-categories-summary-hook</module>
         <module>asset-display-hook</module>
         <module>asset-links-hook</module>
+        <module>asset-search-portlet</module>
         <module>cdav-manager-portlet</module>
         <module>contact-manager-portlet</module>
         <module>ckeditor-hook</module>
@@ -129,7 +129,7 @@
         <module>search-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
-    </modules>
+  </modules>
     
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
