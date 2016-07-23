@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-07-23 15:38 by Christian Berndt
- * Modified:    2016-07-23 15:38 by Christian Berndt
- * Version:     1.0.0
+ * Modified:    2016-07-23 16:34 by Christian Berndt
+ * Version:     1.0.1
  */
  
 @import "compass";
@@ -12,6 +12,12 @@
 .aui {
     
     .portlet-map-search {
+    
+        .dataTables_wrapper {
+            select {
+                width: auto;
+            }  
+        }
         
         table.dataTable thead {
         

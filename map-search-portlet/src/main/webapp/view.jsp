@@ -2,11 +2,13 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-23 15:31 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-07-23 16:34 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
+
+<%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 
 <style>
 <!--
@@ -36,6 +38,13 @@
         <div id="<portlet:namespace/>map" class="map"></div>
     </div>
 </div>
+
+
+<portlet:resourceURL var="resourceURL" id="search">
+    <portlet:param name="className" value="<%= JournalArticle.class.getName() %>"/>
+</portlet:resourceURL>
+
+<a href="<%= resourceURL %>" target="_blank">Display results</a>
 
 <script type="text/javascript">
 
