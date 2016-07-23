@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-21 23:10 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-07-23 14:51 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -36,5 +36,17 @@
     L.tileLayer('<%= tilesURL %>', {
         attribution: '<%= tilesCopyright %>'
     }).addTo(map);
+
+    var markers = L.markerClusterGroup();
     
+    for (var i = 0; i < addressPoints.length; i++) {
+        var a = addressPoints[i];
+        var title = a[2];
+        var marker = L.marker(new L.LatLng(a[0], a[1]), { title: title });
+        marker.bindPopup(title);
+        markers.addLayer(marker);
+    }
+
+    map.addLayer(markers);
+
 </script>
