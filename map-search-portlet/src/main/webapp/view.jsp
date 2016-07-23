@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-23 16:34 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-07-24 00:55 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -51,7 +51,9 @@
 $(document).ready(function () {
     
     // Datatable Setup
-    var table = $("#<portlet:namespace/>table").DataTable({});
+    var table = $("#<portlet:namespace/>table").DataTable({
+        "ajax": "<%= resourceURL %>"
+    });
     
     // Map Setup
     var map = L.map('<portlet:namespace/>map').setView(<%= mapCenter %>, <%= mapZoom %>);
