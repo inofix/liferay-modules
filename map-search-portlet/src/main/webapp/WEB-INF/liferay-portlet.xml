@@ -5,14 +5,15 @@
     map search portlet.
     
     Created:    2016-07-21 22:51 by Christian Berndt
-    Modified:   2016-07-23 14:48 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-07-23 15:36 by Christian Berndt
+    Version:    1.0.2
  -->
 <liferay-portlet-app>
 	<portlet>
 		<portlet-name>map-search-portlet</portlet-name>
 		<icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.mapsearch.action.ConfigurationActionImpl</configuration-action-class>        
+        <header-portlet-css>/css/jquery.dataTables.min.css</header-portlet-css>
         <header-portlet-css>/css/leaflet.css</header-portlet-css>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <header-portlet-css>/css/MarkerCluster.css</header-portlet-css>
@@ -20,7 +21,9 @@
         <header-portlet-javascript>/js/leaflet.js</header-portlet-javascript>
         <header-portlet-javascript>/js/leaflet.markercluster.js</header-portlet-javascript>
         <header-portlet-javascript>/js/realworld.388.js</header-portlet-javascript>
+        <footer-portlet-javascript>/js/jquery.dataTables.min.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+        <css-class-wrapper>portlet-map-search</css-class-wrapper>        
 	</portlet>
 	<role-mapper>
 		<role-name>administrator</role-name>

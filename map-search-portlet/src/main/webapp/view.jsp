@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-23 14:51 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-07-23 15:31 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -22,7 +22,15 @@
 
 <div class="row-fluid">
     <div class="span6">
-        <div style="background: lightgray; height: 500px;"></div>
+        <table id="<portlet:namespace/>table" class="display">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>                
+                </tr>
+            </thead>
+        </table>
     </div>
     <div class="span6">
         <div id="<portlet:namespace/>map" class="map"></div>
@@ -31,6 +39,12 @@
 
 <script type="text/javascript">
 
+$(document).ready(function () {
+    
+    // Datatable Setup
+    var table = $("#<portlet:namespace/>table").DataTable({});
+    
+    // Map Setup
     var map = L.map('<portlet:namespace/>map').setView(<%= mapCenter %>, <%= mapZoom %>);
     
     L.tileLayer('<%= tilesURL %>', {
@@ -48,5 +62,7 @@
     }
 
     map.addLayer(markers);
+    
+}); 
 
 </script>
