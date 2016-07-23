@@ -1,0 +1,10 @@
+/target/
+/node/
+/node_modules/
+/target/
+/target/
+/bower_components/
+/.settings/
+/.classpath
+/.project
+/.tern-project

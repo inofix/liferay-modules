@@ -1,0 +1,12 @@
+{
+  "name": "map-search-portlet",
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery": "^3.1.0",
+    "datatables.net": "^1.10.12",
+    "datatables.net-dt": "^1.10.12",
+    "leaflet": "^1.0.0",
+    "leaflet.markercluster": "git://github.com/Leaflet/Leaflet.markercluster.git#v1.0.0-rc.1"
+  },
+  "private": true
+}
