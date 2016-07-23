@@ -6,6 +6,12 @@ module.exports = function(grunt) {
     grunt.initConfig({
         
         copy : {
+            datatables : {
+                files: [
+                    {cwd: 'bower_components/datatables.net/js',  src: ['**/*.min.js'], dest: 'src/main/webapp/js', expand: true },
+                    {cwd: 'bower_components/datatables.net-dt/css',  src: ['**/*.min.css'], dest: 'src/main/webapp/css', expand: true }
+                ]           
+            },
             jquery : {
                 files: [{cwd: 'bower_components/jquery/dist',  src: ['**/*.min.js'], dest: 'src/main/webapp/js', expand: true }]           
             },
