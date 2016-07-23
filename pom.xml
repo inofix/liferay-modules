@@ -129,7 +129,8 @@
         <module>search-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
-  </modules>
+        <module>map-search-portlet</module>
+    </modules>
     
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>

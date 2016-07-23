@@ -1,0 +1,39 @@
+{
+  "name": "map-search-portlet",
+  "version": "0.0.1",
+  "dependencies": {
+    "bower": "~1.7.2",
+    "grunt": "^1.0.0",
+    "grunt-cli": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-karma": "^1.0.0",
+    "gulp": "^3.9.0",
+    "jspm": "~0.16.39",
+    "karma": "^0.13.0",
+    "karma-jasmine": "~0.3.6",
+    "karma-phantomjs-launcher": "~0.2.3",
+    "jasmine-core": "^2.4.1",
+    "phantomjs": "^1.9.19"
+  },
+  "jspm": {
+    "dependencies": {
+      "jquery": "github:jquery/jquery@^2.1.3"
+    },
+    "devDependencies": {
+      "traceur": "github:jmcriffey/bower-traceur@0.0.95",
+      "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.95"
+    }
+  },
+  "scripts": {
+    "prebuild": "npm install",
+    "build": "gulp"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "jasmine": "^2.4.1",
+    "jspm": "^0.16.39",
+    "karma": "^0.13.22",
+    "traceur": "0.0.111"
+  }
+}
