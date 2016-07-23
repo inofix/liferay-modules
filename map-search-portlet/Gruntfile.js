@@ -12,7 +12,9 @@ module.exports = function(grunt) {
             leaflet : {
                 files: [
                     {cwd: 'bower_components/leaflet/dist',  src: ['images/*', 'leaflet.js'], dest: 'src/main/webapp/js', expand: true },
-                    {cwd: 'bower_components/leaflet/dist',  src: ['leaflet.css'], dest: 'src/main/webapp/css', expand: true }
+                    {cwd: 'bower_components/leaflet/dist',  src: ['leaflet.css'], dest: 'src/main/webapp/css', expand: true },
+                    {cwd: 'bower_components/leaflet.markercluster/dist',  src: ['leaflet.markercluster.js'], dest: 'src/main/webapp/js', expand: true },
+                    {cwd: 'bower_components/leaflet.markercluster/dist',  src: ['*.css'], dest: 'src/main/webapp/css', expand: true }
                 ]                           
             }
         },
