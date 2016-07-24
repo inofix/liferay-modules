@@ -59,8 +59,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 /**
  * @author Christian Berndt
  * @created 2016-07-23 16:05
- * @modified 2016-07-23 16:05
- * @version 1.0.0
+ * @modified 2016-07-24 14:26
+ * @version 1.0.1
  */
 public class MapSearchPortlet extends MVCPortlet {
 
@@ -110,6 +110,8 @@ public class MapSearchPortlet extends MVCPortlet {
 
         ObjectMapper mapper = new ObjectMapper();
 
+        String geoJSONField = "expando/custom_fields/geoJSON";
+
         try {
 
             Hits hits = indexer.search(searchContext);
@@ -121,7 +123,7 @@ public class MapSearchPortlet extends MVCPortlet {
             // We are only interested in the records with geoJSON data
             for (Document document : documents) {
 
-                String geoJSON = document.get("expando/custom_fields/geoJSON");
+                String geoJSON = document.get(geoJSONField);
 
                 if (Validator.isNotNull(geoJSON)) {
                     filteredDocuments.add(document);
@@ -142,8 +144,7 @@ public class MapSearchPortlet extends MVCPortlet {
                 PortletURL viewFullContentURL = null;
                 String viewURL = null;
 
-                String geoJSONString =
-                    document.get("expando/custom_fields/geoJSON");
+                String geoJSONString = document.get(geoJSONField);
 
                 JSONObject geoJSON =
                     JSONFactoryUtil.createJSONObject(geoJSONString);
