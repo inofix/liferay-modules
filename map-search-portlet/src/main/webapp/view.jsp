@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-24 14:23 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2016-07-24 18:40 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -46,6 +46,12 @@
 
 <a href="<%= resourceURL %>" target="_blank">Display results</a>
 
+<%-- 
+<hr>
+
+<ifx-util:build-info/>
+--%>
+
 <script type="text/javascript">
 
 $(document).ready(function () {
@@ -63,7 +69,7 @@ $(document).ready(function () {
     // Datatable Setup
     var table = $("#<portlet:namespace/>table")
         .on('xhr.dt', function ( e, settings, json, xhr ) {
-            console.log("resourceURL loaded");
+            // console.log("resourceURL loaded");
         })
         .DataTable({
             "ajax": "<%= resourceURL %>"
@@ -72,7 +78,7 @@ $(document).ready(function () {
     // Redraw the map whenever the table is searched.
     table.on("search", function () {
       
-        console.log("search");
+        // console.log("search");
         
         // Update the locations array
         locations = table.rows({
@@ -141,7 +147,7 @@ $(document).ready(function () {
 
     function updateMarkers(locations) {
         
-        console.log("updateMarkers");
+        // console.log("updateMarkers");
     
         markers.clearLayers(); 
                 
@@ -155,7 +161,6 @@ $(document).ready(function () {
         }
         
         map.addLayer(markers);
-        // map.fitBounds(markers.getBounds());    
     
     }
     

@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-search-portlet
     
     Created:    2016-07-21 22:27 by Christian Berndt
-    Modified:   2016-07-21 22:27 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-07-24 18:05 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%-- Import required classes --%>
@@ -12,7 +12,10 @@
 
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
 
@@ -51,4 +54,6 @@
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
     boolean useDivIcon = GetterUtil.getBoolean(portletPreferences.getValue("useDivIcon", "false"));
     boolean useGlobalJQuery = GetterUtil.getBoolean(portletPreferences.getValue("useGlobalJQuery", "false"));    
-%>
+    boolean viewByDefault = GetterUtil.getBoolean(portletPreferences.getValue("viewByDefault", "false"));
+             
+ %>
