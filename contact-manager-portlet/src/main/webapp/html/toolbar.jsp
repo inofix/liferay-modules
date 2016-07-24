@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the contact-manager portlet
     
     Created:    2015-07-03 19:00 by Christian Berndt
-    Modified:   2015-07-03 19:00 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-07-24 16:57 by Christian Berndt
+    Version:    1.0.1
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -44,11 +44,12 @@
 								permissionChecker, scopeGroupId,
 								ActionKeys.ADD_CONTACT)%>'>
 			<%
-				String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editContact', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new"))	+ "', uri:'" + HtmlUtil.escapeJS(addURL)+ "'});";
+                String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editContact', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addURL) + "'});";
 			%>
-
-			<aui:button type="submit" value="add-contact"
-				href="<%=taglibAddURL%>" cssClass="pull-left add-contact" />
+              
+            <aui:a href="<%= taglibAddURL %>" cssClass="btn btn-primary pull-left add-contact">
+                <liferay-ui:message key="add-contact"/>
+            </aui:a>
 
 		</c:if>
 	</aui:nav>
