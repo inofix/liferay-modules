@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-24 00:55 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-07-24 14:23 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -50,10 +50,73 @@
 
 $(document).ready(function () {
     
+    var considerBounds = false;
+    var locations = [];
+    
+    var markers = L.markerClusterGroup();
+
+    var maxLat = parseFloat(90);
+    var maxLong = parseFloat(180);
+    var minLat = parseFloat(-90);
+    var minLong = parseFloat(-180);
+    
     // Datatable Setup
-    var table = $("#<portlet:namespace/>table").DataTable({
-        "ajax": "<%= resourceURL %>"
+    var table = $("#<portlet:namespace/>table")
+        .on('xhr.dt', function ( e, settings, json, xhr ) {
+            console.log("resourceURL loaded");
+        })
+        .DataTable({
+            "ajax": "<%= resourceURL %>"
     });
+    
+    // Redraw the map whenever the table is searched.
+    table.on("search", function () {
+      
+        console.log("search");
+        
+        // Update the locations array
+        locations = table.rows({
+            search: "applied"
+        }).data();
+        
+        updateMarkers(locations);
+        
+        if (!considerBounds) {
+        
+            // when the search is initiated from the filter form,
+            // fit the map to the bounds of the clustered markers.
+            map.fitBounds(markers.getBounds());
+        
+        }
+
+    });
+    
+    // Custom filter method which filters the 
+    // locations by the map's boundaries.
+    $.fn.dataTable.ext.search.push(
+            
+        function (settings, data, dataIndex) {
+        
+        // only consider the bounds, if the search was triggered by the map
+        if (considerBounds) {
+        
+            minLat = parseFloat(map.getBounds().getSouth());
+            maxLat = parseFloat(map.getBounds().getNorth());
+            minLong = parseFloat(map.getBounds().getWest());
+            maxLong = parseFloat(map.getBounds().getEast());
+        
+        }
+        
+        var latitude = parseFloat(data[2]) || 0; // use data for the lat column
+        var longitude = parseFloat(data[1]) || 0; // use data for the long column
+        
+        if ((minLat <= latitude && latitude <= maxLat) && // north-south
+            (minLong <= longitude && longitude <= maxLong)) { // east-west
+            return true;
+        }
+            return false;
+        }
+    );
     
     // Map Setup
     var map = L.map('<portlet:namespace/>map').setView(<%= mapCenter %>, <%= mapZoom %>);
@@ -62,17 +125,39 @@ $(document).ready(function () {
         attribution: '<%= tilesCopyright %>'
     }).addTo(map);
 
-    var markers = L.markerClusterGroup();
-    
-    for (var i = 0; i < addressPoints.length; i++) {
-        var a = addressPoints[i];
-        var title = a[2];
-        var marker = L.marker(new L.LatLng(a[0], a[1]), { title: title });
-        marker.bindPopup(title);
-        markers.addLayer(marker);
-    }
+    map.on("drag", function () {
+        filterByMap();
+     });
 
-    map.addLayer(markers);
+     map.on("zoomend", function () {
+        filterByMap();
+     });
+
+     /** redraw the table and filter by map bounds */
+    function filterByMap() {
+        considerBounds = true;
+        table.draw();
+    }    
+
+    function updateMarkers(locations) {
+        
+        console.log("updateMarkers");
+    
+        markers.clearLayers(); 
+                
+        for (var i = 0; i < locations.length; i++) {
+            var lat = parseFloat(locations[i][2]);
+            var lon = parseFloat(locations[i][1]);
+            var title = locations[i][0];
+            var marker = L.marker(new L.LatLng(lat, lon), { title: title });
+            marker.bindPopup(title);
+            markers.addLayer(marker);
+        }
+        
+        map.addLayer(markers);
+        // map.fitBounds(markers.getBounds());    
+    
+    }
     
 }); 
 
