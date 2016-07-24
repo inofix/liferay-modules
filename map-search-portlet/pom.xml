@@ -41,6 +41,7 @@
                 <version>1.0</version>
                 <executions>
                     <execution>
+                        <phase>generate-sources</phase>
                         <id>install node and npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
@@ -52,6 +53,7 @@
                     </execution>
                     
                     <execution>
+                        <phase>generate-sources</phase>
                         <id>npm run build</id>
                         <goals>
                             <goal>npm</goal>
@@ -62,6 +64,7 @@
                     </execution>
                                         
                     <execution>
+                        <phase>generate-sources</phase>
                         <id>bower install</id>
                         <goals>
                             <goal>bower</goal>
@@ -78,6 +81,7 @@
                     
 <!--  Maybe in future instead bower. -->
                     <execution>
+                        <phase>generate-sources</phase>
                         <id>jspm install</id>
                         <goals>
                             <goal>jspm</goal>
@@ -88,6 +92,7 @@
                     </execution>
                         
                     <execution>
+                        <phase>generate-sources</phase>
                         <id>grunt build</id>
                         <goals>
                             <goal>grunt</goal>
