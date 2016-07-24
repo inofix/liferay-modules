@@ -7,7 +7,6 @@
 --%>
 
 <%-- Import required classes --%>
-
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
@@ -15,9 +14,12 @@
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
+<%@page import="com.liferay.portlet.documentlibrary.model.DLFileEntry"%>
+<%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 
 <%-- Import required taglibs --%>
 
@@ -43,13 +45,11 @@
     currentURL = HttpUtil.removeParameter(currentURL,
             renderResponse.getNamespace() + "javax.portlet.action");
 
-    String filter1DataURL = portletPreferences.getValue("filter1DataURL", "/map-portlet/data/countries.json");
-    String locationsURL = portletPreferences.getValue("locationsURL", "/map-portlet/data/cities.json");
+    String classNames = portletPreferences.getValue("classNames", JournalArticle.class.getName() + StringPool.NEW_LINE + DLFileEntry.class.getName());
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
     String mapZoom = portletPreferences.getValue("mapZoom", "13");
-    String markerIconConfig = portletPreferences.getValue("markerIconConfig", "");
-    
+    String markerIconConfig = portletPreferences.getValue("markerIconConfig", "");   
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");
     boolean useDivIcon = GetterUtil.getBoolean(portletPreferences.getValue("useDivIcon", "false"));
