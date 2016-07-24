@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.FacetedSearcher;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -40,10 +41,14 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.facet.AssetEntriesFacet;
+import com.liferay.portal.kernel.search.facet.Facet;
+import com.liferay.portal.kernel.search.facet.ScopeFacet;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Layout;
@@ -87,7 +92,8 @@ public class MapSearchPortlet extends MVCPortlet {
         LiferayPortletResponse liferayPortletResponse =
             (LiferayPortletResponse) resourceResponse;
 
-        String currentURL = _getClosePopupURL(resourceRequest, resourceResponse);;
+        String currentURL =
+            _getClosePopupURL(resourceRequest, resourceResponse);;
 
         // TODO:
         boolean inheritRedirect = true;
@@ -105,14 +111,33 @@ public class MapSearchPortlet extends MVCPortlet {
 
         Locale locale = themeDisplay.getLocale();
 
-        String className = ParamUtil.getString(resourceRequest, "className");
+        // String className = ParamUtil.getString(resourceRequest, "className");
 
-        Indexer indexer = IndexerRegistryUtil.getIndexer(className);
+        String[] classNames =
+            StringUtil.split(
+                portletPreferences.getValue("classNames", ""),
+                StringPool.NEW_LINE);
+
+        // Indexer indexer = IndexerRegistryUtil.getIndexer(className);
 
         HttpServletRequest request =
             PortalUtil.getHttpServletRequest(resourceRequest);
 
+        // SearchContext searchContext =
+        // SearchContextFactory.getInstance(request);
+
         SearchContext searchContext = SearchContextFactory.getInstance(request);
+        searchContext.setEntryClassNames(classNames);
+
+        Facet assetEntriesFacet = new AssetEntriesFacet(searchContext);
+        assetEntriesFacet.setStatic(true);
+        searchContext.addFacet(assetEntriesFacet);
+
+        Facet scopeFacet = new ScopeFacet(searchContext);
+        scopeFacet.setStatic(true);
+        searchContext.addFacet(scopeFacet);
+
+        Indexer indexer = FacetedSearcher.getInstance();
 
         Result result = new Result();
 
@@ -159,15 +184,49 @@ public class MapSearchPortlet extends MVCPortlet {
 
                 JSONObject geometry = geoJSON.getJSONObject("geometry");
 
-                JSONArray coordinates = geometry.getJSONArray("coordinates");
+                _log.info(geometry);
 
-                _log.info(coordinates);
+                String type = geometry.getString("type");
 
-                String lat = coordinates.getString(0);
-                String lon = coordinates.getString(1);
+                String lat = "0";
+                String lon = "0";
+
+                if ("Point".equals(type)) {
+
+                    _log.info("type = " + type);
+
+                    JSONArray coordinates =
+                        geometry.getJSONArray("coordinates");
+
+                    _log.info(coordinates);
+
+                    lat = coordinates.getString(0);
+                    lon = coordinates.getString(1);
+
+                }
+                else {
+
+                    _log.info("type = " + type);
+
+                    // TODO: Use the polygon's or path's center
+                    // instead of the first point.
+
+                    JSONArray points = geometry.getJSONArray("coordinates");
+                    JSONArray coords = points.getJSONArray(0);
+                    JSONArray coordinates = coords.getJSONArray(0);
+
+                    _log.info(coordinates);
+
+                    lat = coordinates.getString(0);
+                    lon = coordinates.getString(1);
+
+                }
 
                 _log.info(lat);
                 _log.info(lon);
+
+                String className =
+                    GetterUtil.getString(document.get(Field.ENTRY_CLASS_NAME));
 
                 AssetRenderer assetRenderer = null;
 
@@ -203,11 +262,6 @@ public class MapSearchPortlet extends MVCPortlet {
                     viewFullContentURL.setParameter(
                         "struts_action", "/asset_publisher/view_content");
 
-                    // if (Validator.isNotNull(returnToFullPageURL)) {
-                    // viewFullContentURL.setParameter("returnToFullPageURL",
-                    // returnToFullPageURL);
-                    // }
-
                     viewFullContentURL.setParameter(
                         "assetEntryId", String.valueOf(assetEntry.getEntryId()));
                     viewFullContentURL.setParameter(
@@ -240,11 +294,6 @@ public class MapSearchPortlet extends MVCPortlet {
                             assetRenderer.getURLViewInContext(
                                 liferayPortletRequest, liferayPortletResponse,
                                 viewFullContentURLString);
-
-                        // viewURL =
-                        // AssetUtil.checkViewURL(
-                        // assetEntry, viewInContext, viewURL, currentURL,
-                        // themeDisplay);
                     }
                     else {
                         viewURL = viewFullContentURL.toString();
@@ -256,11 +305,6 @@ public class MapSearchPortlet extends MVCPortlet {
                     viewFullContentURL =
                         _getViewFullContentURL(
                             request, themeDisplay, portletId, document);
-
-                    // if (Validator.isNotNull(returnToFullPageURL)) {
-                    // viewFullContentURL.setParameter("returnToFullPageURL",
-                    // returnToFullPageURL);
-                    // }
 
                     viewURL = viewFullContentURL.toString();
                 }
@@ -294,8 +338,8 @@ public class MapSearchPortlet extends MVCPortlet {
                 String message = "view-x";
 
                 PortletURL editURL =
-                                assetRenderer.getURLEdit(
-                                    liferayPortletRequest, liferayPortletResponse);
+                    assetRenderer.getURLEdit(
+                        liferayPortletRequest, liferayPortletResponse);
 
                 if (!viewByDefault && editURL != null) {
 
@@ -307,7 +351,13 @@ public class MapSearchPortlet extends MVCPortlet {
                     viewURL = editURL.toString();
                 }
 
-                String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + liferayPortletResponse.getNamespace() + "editAsset', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(locale, message, HtmlUtil.escape(entryTitle))) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
+                String taglibViewURL =
+                    "javascript:Liferay.Util.openWindow({id: '" +
+                        liferayPortletResponse.getNamespace() +
+                        "editAsset', title: '" +
+                        HtmlUtil.escapeJS(LanguageUtil.format(
+                            locale, message, HtmlUtil.escape(entryTitle))) +
+                        "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("<a href=\"");
@@ -328,6 +378,8 @@ public class MapSearchPortlet extends MVCPortlet {
             }
 
             result.setData(data);
+
+            _log.info("hits.getLength = " + hits.getLength());
 
             if (_log.isDebugEnabled()) {
                 _log.debug("hits.getLength = " + hits.getLength());

@@ -2,13 +2,11 @@
     configuration.jsp: Configure the map-search-portlet's preferences.
     
     Created:    2016-07-21 22:26 by Christian Berndt
-    Modified:   2016-07-24 15:52 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-07-24 18:58 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
-
-<%-- Import required classes --%>
 
 <%
     PortletURL portletURL = renderResponse.createRenderURL();
@@ -28,6 +26,13 @@
         value="<%=configurationRenderURL%>" />
         
     <liferay-ui:panel-container id="mapsearchportletSettingsPanelContainer" persistState="<%= true %>">
+    
+        <liferay-ui:panel id="mapsearchportletSearchPanel" title="search" extended="true">
+            
+            <aui:input name="classNames" value="<%= classNames %>" type="textarea" 
+                helpMessage="class-names-help"/>                         
+                       
+        </liferay-ui:panel> 
 
         <liferay-ui:panel id="mapsearchportletMapSettingsPanel" title="map-settings" extended="true">
         
@@ -68,7 +73,7 @@
 
             </aui:row> 
                                    
-        </liferay-ui:panel>        
+        </liferay-ui:panel>      
         
         <liferay-ui:panel id="mapsearchportletMiscellaneousPanel" title="miscellaneous" extended="true">
                 

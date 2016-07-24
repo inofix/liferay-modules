@@ -41,7 +41,6 @@
 
 
 <portlet:resourceURL var="resourceURL" id="search">
-    <portlet:param name="className" value="<%= JournalArticle.class.getName() %>"/>
 </portlet:resourceURL>
 
 <a href="<%= resourceURL %>" target="_blank">Display results</a>
