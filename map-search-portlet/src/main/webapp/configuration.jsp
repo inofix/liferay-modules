@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-search-portlet's preferences.
     
     Created:    2016-07-21 22:26 by Christian Berndt
-    Modified:   2016-07-21 22:26 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-07-24 15:52 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -74,7 +74,14 @@
                 
             <aui:input name="useGlobalJQuery" type="checkbox" checked="<%= useGlobalJQuery %>" 
                 label="use-global-jquery"
-                helpMessage="use-global-jquery-help"/>               
+                helpMessage="use-global-jquery-help"/>  
+                
+            <aui:field-wrapper label="view-by-default" helpMessage="view-by-default-help">
+                <aui:input name="viewByDefault" type="radio" value="true"
+                    checked="<%= viewByDefault%>" label="yes" inlineField="true" />
+                <aui:input name="viewByDefault" type="radio" value="false"
+                    checked="<%=!viewByDefault%>" label="no" inlineField="true" />
+            </aui:field-wrapper>                             
                        
         </liferay-ui:panel>
 

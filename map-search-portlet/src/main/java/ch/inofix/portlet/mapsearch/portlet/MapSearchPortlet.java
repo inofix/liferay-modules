@@ -10,10 +10,12 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.portlet.WindowState;
+import javax.portlet.WindowStateException;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.mapsearch.search.Result;
@@ -22,10 +24,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -37,6 +41,7 @@ import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -59,8 +64,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 /**
  * @author Christian Berndt
  * @created 2016-07-23 16:05
- * @modified 2016-07-24 14:26
- * @version 1.0.1
+ * @modified 2016-07-24 18:38
+ * @version 1.0.2
  */
 public class MapSearchPortlet extends MVCPortlet {
 
@@ -73,19 +78,6 @@ public class MapSearchPortlet extends MVCPortlet {
         ResourceRequest resourceRequest, ResourceResponse resourceResponse)
         throws IOException, PortletException {
 
-        // TODO:
-        String currentURL = "";
-
-        // TODO:
-        boolean inheritRedirect = true;
-
-        PortletPreferences portletPreferences =
-            resourceRequest.getPreferences();
-
-        boolean viewInContext =
-            GetterUtil.getBoolean(
-                portletPreferences.getValue("viewInContext", null), true);
-
         ThemeDisplay themeDisplay =
             (ThemeDisplay) resourceRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
@@ -94,6 +86,22 @@ public class MapSearchPortlet extends MVCPortlet {
 
         LiferayPortletResponse liferayPortletResponse =
             (LiferayPortletResponse) resourceResponse;
+
+        String currentURL = _getClosePopupURL(resourceRequest, resourceResponse);;
+
+        // TODO:
+        boolean inheritRedirect = true;
+
+        PortletPreferences portletPreferences =
+            resourceRequest.getPreferences();
+
+        boolean viewByDefault =
+            GetterUtil.getBoolean(
+                portletPreferences.getValue("viewByDefault", null), true);
+
+        boolean viewInContext =
+            GetterUtil.getBoolean(
+                portletPreferences.getValue("viewInContext", null), true);
 
         Locale locale = themeDisplay.getLocale();
 
@@ -281,8 +289,37 @@ public class MapSearchPortlet extends MVCPortlet {
                     viewURL = viewFullContentURL.toString();
                 }
 
+                viewURL = HttpUtil.setParameter(viewURL, "p_p_state", "pop_up");
+
+                String message = "view-x";
+
+                PortletURL editURL =
+                                assetRenderer.getURLEdit(
+                                    liferayPortletRequest, liferayPortletResponse);
+
+                if (!viewByDefault && editURL != null) {
+
+                    editURL.setWindowState(LiferayWindowState.POP_UP);
+                    editURL.setParameter("redirect", currentURL);
+
+                    message = "edit-x";
+
+                    viewURL = editURL.toString();
+                }
+
+                String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + liferayPortletResponse.getNamespace() + "editAsset', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(locale, message, HtmlUtil.escape(entryTitle))) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("<a href=\"");
+                sb.append(taglibViewURL);
+                sb.append("\"");
+                // sb.append(" target=\"_blank\"");
+                sb.append(">");
+                sb.append(entryTitle);
+                sb.append("</a>");
+
                 List<String> row = new ArrayList<String>();
-                row.add(entryTitle);
+                row.add(sb.toString());
                 row.add(lat);
                 row.add(lon);
 
@@ -307,6 +344,25 @@ public class MapSearchPortlet extends MVCPortlet {
         PortletResponseUtil.write(
             resourceResponse, mapper.writeValueAsString(result));
 
+    }
+
+    private String _getClosePopupURL(
+        PortletRequest portletRequest, PortletResponse portletResponse)
+        throws WindowStateException {
+
+        LiferayPortletResponse liferayPortletResponse =
+            (LiferayPortletResponse) portletResponse;
+
+        String currentURL =
+            (String) portletRequest.getAttribute(WebKeys.CURRENT_URL);
+
+        PortletURL portletURL = liferayPortletResponse.createRenderURL();
+        portletURL.setWindowState(LiferayWindowState.POP_UP);
+        portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
+        portletURL.setParameter("redirect", HttpUtil.getPath(currentURL));
+        portletURL.setParameter("windowId", "editAsset");
+
+        return portletURL.toString();
     }
 
     private PortletURL _getViewFullContentURL(
