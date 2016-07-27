@@ -123,13 +123,13 @@
         <module>geotag-hook</module>
         <module>inofix-theme</module>
 	    <module>map-portlet</module>
+        <module>map-search-portlet</module>
 	    <module>portlettitle-hook</module>
         <module>proxy-portlet</module>
         <module>search-facet-hook</module>
         <module>search-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
-        <module>map-search-portlet</module>
     </modules>
     
     <issueManagement>
