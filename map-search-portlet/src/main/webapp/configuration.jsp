@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-search-portlet's preferences.
     
     Created:    2016-07-21 22:26 by Christian Berndt
-    Modified:   2016-07-24 18:58 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-07-27 12:22 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -86,7 +86,14 @@
                     checked="<%= viewByDefault%>" label="yes" inlineField="true" />
                 <aui:input name="viewByDefault" type="radio" value="false"
                     checked="<%=!viewByDefault%>" label="no" inlineField="true" />
-            </aui:field-wrapper>                             
+            </aui:field-wrapper> 
+            
+            <aui:field-wrapper label="view-in-context" helpMessage="view-in-context-help">
+                <aui:input name="viewInContext" type="radio" value="true"
+                    checked="<%= viewInContext%>" label="yes" inlineField="true" />
+                <aui:input name="viewInContext" type="radio" value="false"
+                    checked="<%=!viewInContext%>" label="no" inlineField="true" />
+            </aui:field-wrapper>                                          
                        
         </liferay-ui:panel>
 

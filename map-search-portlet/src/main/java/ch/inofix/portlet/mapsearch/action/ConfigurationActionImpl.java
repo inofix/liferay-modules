@@ -11,8 +11,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 /**
  * @author Christian Berndt
  * @created 2016-07-21 22:23
- * @modified 2016-07-24 19:04
- * @version 1.0.2
+ * @modified 2016-07-27 12:20
+ * @version 1.0.3
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -30,6 +30,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String tilesCopyright = ParamUtil.getString(actionRequest, "tilesCopyright");
         String tilesURL = ParamUtil.getString(actionRequest, "tilesURL");
         String viewByDefault = ParamUtil.getString(actionRequest, "viewByDefault");
+        String viewInContext = ParamUtil.getString(actionRequest, "viewInContext");
 
         setPreference(actionRequest, "classNames", classNames);
         setPreference(actionRequest, "mapCenter", mapCenter);
@@ -39,6 +40,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
         setPreference(actionRequest, "viewByDefault", viewByDefault);
+        setPreference(actionRequest, "viewInContext", viewInContext);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
 
