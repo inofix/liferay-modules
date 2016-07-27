@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-07-23 15:38 by Christian Berndt
- * Modified:    2016-07-23 16:34 by Christian Berndt
- * Version:     1.0.1
+ * Modified:    2016-07-27 14:46 by Christian Berndt
+ * Version:     1.0.2
  */
  
 @import "compass";
@@ -12,6 +12,17 @@
 .aui {
     
     .portlet-map-search {
+    
+        dl.build-info dfn, 
+        dl.build-info dt {
+            display: inline;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        dl.build-info dfn {
+            margin-right: 20px;
+        }
     
         .dataTables_wrapper {
             select {

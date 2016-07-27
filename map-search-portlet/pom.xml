@@ -140,6 +140,59 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!-- Create an automatic build-number -->
+            <!-- every time a build is made. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>true</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <format>{0,number,integer}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
+                </configuration>
+            </plugin> 
+            <!-- Store the build number etc. in the MANIFEST.mf -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <!-- Required for the auto-generated -->
+                        <!-- liferay-plugin-package.xml file but -->
+                        <!-- missing in the 6.2.2 archetype. -->
+                        <manifest>
+                            <addDefaultSpecificationEntries>
+                                true
+                            </addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>
+                                true
+                            </addDefaultImplementationEntries>
+                        </manifest>
+                        <!-- Additional info used by the -->
+                        <!-- BuildInfoTag of Inofix'     -->
+                        <!-- utility taglib.             -->
+                        <manifestEntries>
+                            <Implementation-Build>${buildNumber}</Implementation-Build>
+                            <Timestamp>${timestamp}</Timestamp>
+                            <Source-Control>${project.scm.url}</Source-Control>
+                            <Issue-Management>${project.issueManagement.url}</Issue-Management>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>                       
         </plugins>
     </build>
     <dependencies>

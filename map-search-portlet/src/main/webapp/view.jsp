@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-27 14:26 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-07-27 14:49 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -45,11 +45,9 @@
 
 <%-- <a href="<%= resourceURL %>" target="_blank">Display results</a> --%>
 
-<%-- 
 <hr>
 
 <ifx-util:build-info/>
---%>
 
 <script type="text/javascript">
 
