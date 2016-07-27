@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-search-portlet
     
     Created:    2016-07-21 22:27 by Christian Berndt
-    Modified:   2016-07-24 18:05 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-07-27 12:21 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%-- Import required classes --%>
@@ -55,5 +55,6 @@
     boolean useDivIcon = GetterUtil.getBoolean(portletPreferences.getValue("useDivIcon", "false"));
     boolean useGlobalJQuery = GetterUtil.getBoolean(portletPreferences.getValue("useGlobalJQuery", "false"));    
     boolean viewByDefault = GetterUtil.getBoolean(portletPreferences.getValue("viewByDefault", "false"));
+    boolean viewInContext = GetterUtil.getBoolean(portletPreferences.getValue("viewInContext", "false"));
              
  %>

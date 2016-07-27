@@ -69,8 +69,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 /**
  * @author Christian Berndt
  * @created 2016-07-23 16:05
- * @modified 2016-07-24 18:38
- * @version 1.0.2
+ * @modified 2016-07-27 13:01
+ * @version 1.0.3
  */
 public class MapSearchPortlet extends MVCPortlet {
 
@@ -92,9 +92,6 @@ public class MapSearchPortlet extends MVCPortlet {
         LiferayPortletResponse liferayPortletResponse =
             (LiferayPortletResponse) resourceResponse;
 
-        String currentURL =
-            _getClosePopupURL(resourceRequest, resourceResponse);;
-
         // TODO:
         boolean inheritRedirect = true;
 
@@ -109,6 +106,9 @@ public class MapSearchPortlet extends MVCPortlet {
             GetterUtil.getBoolean(
                 portletPreferences.getValue("viewInContext", null), true);
 
+        String currentURL =
+            _getClosePopupURL(resourceRequest, resourceResponse, viewInContext);
+
         Locale locale = themeDisplay.getLocale();
 
         // String className = ParamUtil.getString(resourceRequest, "className");
@@ -118,13 +118,8 @@ public class MapSearchPortlet extends MVCPortlet {
                 portletPreferences.getValue("classNames", ""),
                 StringPool.NEW_LINE);
 
-        // Indexer indexer = IndexerRegistryUtil.getIndexer(className);
-
         HttpServletRequest request =
             PortalUtil.getHttpServletRequest(resourceRequest);
-
-        // SearchContext searchContext =
-        // SearchContextFactory.getInstance(request);
 
         SearchContext searchContext = SearchContextFactory.getInstance(request);
         searchContext.setEntryClassNames(classNames);
@@ -184,7 +179,7 @@ public class MapSearchPortlet extends MVCPortlet {
 
                 JSONObject geometry = geoJSON.getJSONObject("geometry");
 
-                _log.info(geometry);
+                // _log.info(geometry);
 
                 String type = geometry.getString("type");
 
@@ -193,12 +188,12 @@ public class MapSearchPortlet extends MVCPortlet {
 
                 if ("Point".equals(type)) {
 
-                    _log.info("type = " + type);
+                    // _log.info("type = " + type);
 
                     JSONArray coordinates =
                         geometry.getJSONArray("coordinates");
 
-                    _log.info(coordinates);
+                    // _log.info(coordinates);
 
                     lat = coordinates.getString(0);
                     lon = coordinates.getString(1);
@@ -206,7 +201,7 @@ public class MapSearchPortlet extends MVCPortlet {
                 }
                 else {
 
-                    _log.info("type = " + type);
+                    // _log.info("type = " + type);
 
                     // TODO: Use the polygon's or path's center
                     // instead of the first point.
@@ -215,15 +210,15 @@ public class MapSearchPortlet extends MVCPortlet {
                     JSONArray coords = points.getJSONArray(0);
                     JSONArray coordinates = coords.getJSONArray(0);
 
-                    _log.info(coordinates);
+                    // _log.info(coordinates);
 
                     lat = coordinates.getString(0);
                     lon = coordinates.getString(1);
 
                 }
 
-                _log.info(lat);
-                _log.info(lon);
+                // _log.info(lat);
+                // _log.info(lon);
 
                 String className =
                     GetterUtil.getString(document.get(Field.ENTRY_CLASS_NAME));
@@ -297,6 +292,9 @@ public class MapSearchPortlet extends MVCPortlet {
                     }
                     else {
                         viewURL = viewFullContentURL.toString();
+                        viewURL =
+                            HttpUtil.setParameter(
+                                viewURL, "redirect", currentURL);
                     }
                 }
                 else {
@@ -307,6 +305,7 @@ public class MapSearchPortlet extends MVCPortlet {
                             request, themeDisplay, portletId, document);
 
                     viewURL = viewFullContentURL.toString();
+
                 }
 
                 Indexer assetIndexer =
@@ -333,7 +332,10 @@ public class MapSearchPortlet extends MVCPortlet {
                     viewURL = viewFullContentURL.toString();
                 }
 
-                viewURL = HttpUtil.setParameter(viewURL, "p_p_state", "pop_up");
+                if (!viewInContext) {
+                    viewURL =
+                        HttpUtil.setParameter(viewURL, "p_p_state", "pop_up");
+                }
 
                 String message = "view-x";
 
@@ -361,9 +363,16 @@ public class MapSearchPortlet extends MVCPortlet {
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("<a href=\"");
-                sb.append(taglibViewURL);
+                if (viewInContext) {
+                    sb.append(viewURL);
+                }
+                else {
+                    sb.append(taglibViewURL);
+                }
                 sb.append("\"");
-                // sb.append(" target=\"_blank\"");
+                if (viewInContext) {
+                    sb.append(" target=\"_blank\"");
+                }
                 sb.append(">");
                 sb.append(entryTitle);
                 sb.append("</a>");
@@ -379,12 +388,6 @@ public class MapSearchPortlet extends MVCPortlet {
 
             result.setData(data);
 
-            _log.info("hits.getLength = " + hits.getLength());
-
-            if (_log.isDebugEnabled()) {
-                _log.debug("hits.getLength = " + hits.getLength());
-            }
-
         }
         catch (SearchException e) {
             _log.error(e);
@@ -399,7 +402,8 @@ public class MapSearchPortlet extends MVCPortlet {
     }
 
     private String _getClosePopupURL(
-        PortletRequest portletRequest, PortletResponse portletResponse)
+        PortletRequest portletRequest, PortletResponse portletResponse,
+        boolean viewInContext)
         throws WindowStateException {
 
         LiferayPortletResponse liferayPortletResponse =
@@ -409,8 +413,10 @@ public class MapSearchPortlet extends MVCPortlet {
             (String) portletRequest.getAttribute(WebKeys.CURRENT_URL);
 
         PortletURL portletURL = liferayPortletResponse.createRenderURL();
-        portletURL.setWindowState(LiferayWindowState.POP_UP);
-        portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
+        if (!viewInContext) {
+            portletURL.setWindowState(LiferayWindowState.POP_UP);
+            portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
+        }
         portletURL.setParameter("redirect", HttpUtil.getPath(currentURL));
         portletURL.setParameter("windowId", "editAsset");
 
