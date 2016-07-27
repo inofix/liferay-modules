@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-24 18:40 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-07-27 14:26 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -43,7 +43,7 @@
 <portlet:resourceURL var="resourceURL" id="search">
 </portlet:resourceURL>
 
-<a href="<%= resourceURL %>" target="_blank">Display results</a>
+<%-- <a href="<%= resourceURL %>" target="_blank">Display results</a> --%>
 
 <%-- 
 <hr>
@@ -71,6 +71,9 @@ $(document).ready(function () {
             // console.log("resourceURL loaded");
         })
         .DataTable({
+            <c:if test="<%= Validator.isNotNull(dataTableColumnDefs) %>">
+                <%= dataTableColumnDefs %>,
+            </c:if>            
             "ajax": "<%= resourceURL %>"
     });
     

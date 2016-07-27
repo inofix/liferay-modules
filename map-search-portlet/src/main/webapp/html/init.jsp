@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-search-portlet
     
     Created:    2016-07-21 22:27 by Christian Berndt
-    Modified:   2016-07-27 12:21 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-07-27 14:23 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%-- Import required classes --%>
@@ -46,6 +46,7 @@
             renderResponse.getNamespace() + "javax.portlet.action");
 
     String classNames = portletPreferences.getValue("classNames", JournalArticle.class.getName() + StringPool.NEW_LINE + DLFileEntry.class.getName());
+    String dataTableColumnDefs = portletPreferences.getValue("dataTableColumnDefs", "");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
     String mapZoom = portletPreferences.getValue("mapZoom", "13");

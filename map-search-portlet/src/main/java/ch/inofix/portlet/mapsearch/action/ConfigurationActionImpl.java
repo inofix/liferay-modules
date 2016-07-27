@@ -11,8 +11,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 /**
  * @author Christian Berndt
  * @created 2016-07-21 22:23
- * @modified 2016-07-27 12:20
- * @version 1.0.3
+ * @modified 2016-07-27 14:22
+ * @version 1.0.4
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -23,6 +23,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         throws Exception {
 
         String classNames = ParamUtil.getString(actionRequest, "classNames");
+        String dataTableColumnDefs =  ParamUtil.getString(actionRequest, "dataTableColumnDefs");
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
         String mapHeight = ParamUtil.getString(actionRequest, "mapHeight");
         String mapZoom = ParamUtil.getString(actionRequest, "mapZoom");
@@ -33,6 +34,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String viewInContext = ParamUtil.getString(actionRequest, "viewInContext");
 
         setPreference(actionRequest, "classNames", classNames);
+        setPreference(actionRequest, "dataTableColumnDefs", dataTableColumnDefs);
         setPreference(actionRequest, "mapCenter", mapCenter);
         setPreference(actionRequest, "mapHeight", mapHeight);
         setPreference(actionRequest, "mapZoom", mapZoom);
