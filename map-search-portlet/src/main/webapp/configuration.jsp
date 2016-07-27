@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-search-portlet's preferences.
     
     Created:    2016-07-21 22:26 by Christian Berndt
-    Modified:   2016-07-27 12:22 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-07-27 14:24 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -73,7 +73,16 @@
 
             </aui:row> 
                                    
-        </liferay-ui:panel>      
+        </liferay-ui:panel>
+        
+        <liferay-ui:panel id="mapsearchportletDataTablePanel" title="data-table" extended="true">                
+                
+                                      
+            <aui:input name="dataTableColumnDefs" type="textarea" 
+                helpMessage="data-table-column-defs-help" 
+                value="<%= dataTableColumnDefs %>"/>                 
+                                      
+        </liferay-ui:panel>               
         
         <liferay-ui:panel id="mapsearchportletMiscellaneousPanel" title="miscellaneous" extended="true">
                 
