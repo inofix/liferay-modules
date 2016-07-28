@@ -69,8 +69,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 /**
  * @author Christian Berndt
  * @created 2016-07-23 16:05
- * @modified 2016-07-27 13:01
- * @version 1.0.3
+ * @modified 2016-07-28 17:22
+ * @version 1.0.4
  */
 public class MapSearchPortlet extends MVCPortlet {
 
@@ -93,7 +93,7 @@ public class MapSearchPortlet extends MVCPortlet {
             (LiferayPortletResponse) resourceResponse;
 
         // TODO:
-        boolean inheritRedirect = true;
+        // boolean inheritRedirect = true;
 
         PortletPreferences portletPreferences =
             resourceRequest.getPreferences();
@@ -136,9 +136,10 @@ public class MapSearchPortlet extends MVCPortlet {
 
         Result result = new Result();
 
-        ObjectMapper mapper = new ObjectMapper();
-
         String geoJSONField = "expando/custom_fields/geoJSON";
+
+        long[] assetCategoryIds = null;
+        String[] assetTagNames = null;
 
         try {
 
@@ -223,90 +224,34 @@ public class MapSearchPortlet extends MVCPortlet {
                 String className =
                     GetterUtil.getString(document.get(Field.ENTRY_CLASS_NAME));
 
-                AssetRenderer assetRenderer = null;
+                long entryClassPK =
+                    GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
+
+                AssetEntry assetEntry =
+                    AssetEntryLocalServiceUtil.getEntry(className, entryClassPK);
 
                 AssetRendererFactory assetRendererFactory =
                     AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(className);
 
-                if (assetRendererFactory != null) {
+                AssetRenderer assetRenderer =
+                    assetRendererFactory.getAssetRenderer(entryClassPK);
 
-                    long entryClassPK =
-                        GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
+                assetCategoryIds = assetEntry.getCategoryIds();
+                assetTagNames = assetEntry.getTagNames();
 
-                    long resourcePrimKey =
-                        GetterUtil.getLong(document.get(Field.ROOT_ENTRY_CLASS_PK));
+                String portletId = document.get(Field.PORTLET_ID);
 
-                    if (resourcePrimKey > 0) {
-                        entryClassPK = resourcePrimKey;
-                    }
+                downloadURL = assetRenderer.getURLDownload(themeDisplay);
 
-                    AssetEntry assetEntry =
-                        AssetEntryLocalServiceUtil.getEntry(
-                            className, entryClassPK);
+                viewURL =
+                    _getViewURL(
+                        assetRendererFactory, className, currentURL, document,
+                        liferayPortletRequest, liferayPortletResponse, request,
+                        themeDisplay, viewInContext);
 
-                    assetRenderer =
-                        assetRendererFactory.getAssetRenderer(entryClassPK);
-
-                    downloadURL = assetRenderer.getURLDownload(themeDisplay);
-
-                    viewFullContentURL =
-                        _getViewFullContentURL(
-                            request, themeDisplay, PortletKeys.ASSET_PUBLISHER,
-                            document);
-
-                    viewFullContentURL.setParameter(
-                        "struts_action", "/asset_publisher/view_content");
-
-                    viewFullContentURL.setParameter(
-                        "assetEntryId", String.valueOf(assetEntry.getEntryId()));
-                    viewFullContentURL.setParameter(
-                        "type", assetRendererFactory.getType());
-
-                    if (Validator.isNotNull(assetRenderer.getUrlTitle())) {
-                        if ((assetRenderer.getGroupId() > 0) &&
-                            (assetRenderer.getGroupId() != themeDisplay.getScopeGroupId())) {
-                            viewFullContentURL.setParameter(
-                                "groupId",
-                                String.valueOf(assetRenderer.getGroupId()));
-                        }
-
-                        viewFullContentURL.setParameter(
-                            "urlTitle", assetRenderer.getUrlTitle());
-                    }
-
-                    if (viewInContext || !assetEntry.isVisible()) {
-                        inheritRedirect = true;
-
-                        String viewFullContentURLString =
-                            viewFullContentURL.toString();
-
-                        viewFullContentURLString =
-                            HttpUtil.setParameter(
-                                viewFullContentURLString, "redirect",
-                                currentURL);
-
-                        viewURL =
-                            assetRenderer.getURLViewInContext(
-                                liferayPortletRequest, liferayPortletResponse,
-                                viewFullContentURLString);
-                    }
-                    else {
-                        viewURL = viewFullContentURL.toString();
-                        viewURL =
-                            HttpUtil.setParameter(
-                                viewURL, "redirect", currentURL);
-                    }
-                }
-                else {
-                    String portletId = document.get(Field.PORTLET_ID);
-
-                    viewFullContentURL =
-                        _getViewFullContentURL(
-                            request, themeDisplay, portletId, document);
-
-                    viewURL = viewFullContentURL.toString();
-
-                }
+                viewFullContentURL =
+                    _getViewFullContentURL(
+                        request, themeDisplay, portletId, document);
 
                 Indexer assetIndexer =
                     IndexerRegistryUtil.getIndexer(className);
@@ -328,9 +273,9 @@ public class MapSearchPortlet extends MVCPortlet {
                     entrySummary = assetRenderer.getSearchSummary(locale);
                 }
 
-                if ((assetRendererFactory == null) && viewInContext) {
-                    viewURL = viewFullContentURL.toString();
-                }
+//                if ((assetRendererFactory == null) && viewInContext) {
+//                    viewURL = viewFullContentURL.toString();
+//                }
 
                 if (!viewInContext) {
                     viewURL =
@@ -381,6 +326,8 @@ public class MapSearchPortlet extends MVCPortlet {
                 row.add(sb.toString());
                 row.add(lat);
                 row.add(lon);
+                row.add(StringUtil.merge(assetCategoryIds));
+                row.add(StringUtil.merge(assetTagNames));
 
                 data.add(row);
 
@@ -395,6 +342,8 @@ public class MapSearchPortlet extends MVCPortlet {
         catch (Exception e) {
             _log.error(e);
         }
+
+        ObjectMapper mapper = new ObjectMapper();
 
         PortletResponseUtil.write(
             resourceResponse, mapper.writeValueAsString(result));
@@ -465,5 +414,92 @@ public class MapSearchPortlet extends MVCPortlet {
         portletURL.setWindowState(WindowState.MAXIMIZED);
 
         return portletURL;
+    }
+
+    private String _getViewURL(
+        AssetRendererFactory assetRendererFactory, String className,
+        String currentURL, Document document,
+        LiferayPortletRequest liferayPortletRequest,
+        LiferayPortletResponse liferayPortletResponse,
+        HttpServletRequest request, ThemeDisplay themeDisplay,
+        boolean viewInContext)
+        throws Exception {
+
+        String viewURL = null;
+        PortletURL viewFullContentURL = null;
+
+        if (assetRendererFactory != null) {
+
+            long entryClassPK =
+                GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
+
+            long resourcePrimKey =
+                GetterUtil.getLong(document.get(Field.ROOT_ENTRY_CLASS_PK));
+
+            if (resourcePrimKey > 0) {
+                entryClassPK = resourcePrimKey;
+            }
+
+            AssetEntry assetEntry =
+                AssetEntryLocalServiceUtil.getEntry(className, entryClassPK);
+
+            AssetRenderer assetRenderer =
+                assetRendererFactory.getAssetRenderer(entryClassPK);
+
+            viewFullContentURL =
+                _getViewFullContentURL(
+                    request, themeDisplay, PortletKeys.ASSET_PUBLISHER,
+                    document);
+
+            viewFullContentURL.setParameter(
+                "struts_action", "/asset_publisher/view_content");
+
+            viewFullContentURL.setParameter(
+                "assetEntryId", String.valueOf(assetEntry.getEntryId()));
+            viewFullContentURL.setParameter(
+                "type", assetRendererFactory.getType());
+
+            if (Validator.isNotNull(assetRenderer.getUrlTitle())) {
+                if ((assetRenderer.getGroupId() > 0) &&
+                    (assetRenderer.getGroupId() != themeDisplay.getScopeGroupId())) {
+                    viewFullContentURL.setParameter(
+                        "groupId", String.valueOf(assetRenderer.getGroupId()));
+                }
+
+                viewFullContentURL.setParameter(
+                    "urlTitle", assetRenderer.getUrlTitle());
+            }
+
+            if (viewInContext || !assetEntry.isVisible()) {
+                // inheritRedirect = true;
+
+                String viewFullContentURLString = viewFullContentURL.toString();
+
+                viewFullContentURLString =
+                    HttpUtil.setParameter(
+                        viewFullContentURLString, "redirect", currentURL);
+
+                viewURL =
+                    assetRenderer.getURLViewInContext(
+                        liferayPortletRequest, liferayPortletResponse,
+                        viewFullContentURLString);
+            }
+            else {
+                viewURL = viewFullContentURL.toString();
+                viewURL =
+                    HttpUtil.setParameter(viewURL, "redirect", currentURL);
+            }
+        }
+        else {
+            String portletId = document.get(Field.PORTLET_ID);
+
+            viewFullContentURL =
+                _getViewFullContentURL(
+                    request, themeDisplay, portletId, document);
+
+            viewURL = viewFullContentURL.toString();
+
+        }
+        return viewURL;
     }
 }
