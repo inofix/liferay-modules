@@ -2,11 +2,12 @@
     init.jsp: Common imports and setup code of the map-search-portlet
     
     Created:    2016-07-21 22:27 by Christian Berndt
-    Modified:   2016-07-27 14:23 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-08-17 23:15 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%-- Import required classes --%>
+<%@page import="java.util.List"%>
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
@@ -57,5 +58,5 @@
     boolean useGlobalJQuery = GetterUtil.getBoolean(portletPreferences.getValue("useGlobalJQuery", "false"));    
     boolean viewByDefault = GetterUtil.getBoolean(portletPreferences.getValue("viewByDefault", "false"));
     boolean viewInContext = GetterUtil.getBoolean(portletPreferences.getValue("viewInContext", "false"));
-             
+    long vocabularyId = GetterUtil.getLong(portletPreferences.getValue("vocabularyId", "0"));             
  %>

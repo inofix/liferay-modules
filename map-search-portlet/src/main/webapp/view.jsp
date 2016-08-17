@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-07-27 14:49 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2016-08-17 23:40 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -24,12 +24,17 @@
 
 <div class="row-fluid">
     <div class="span6">
+        <aui:form name="fm">
+            <%= vocabularyId %>
+        </aui:form>
         <table id="<portlet:namespace/>table" class="display">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Latitude</th>
                     <th>Longitude</th>                
+                    <th>CategoryIDs</th>                
+                    <th>AssetTagNames</th>                
                 </tr>
             </thead>
         </table>
@@ -43,7 +48,7 @@
 <portlet:resourceURL var="resourceURL" id="search">
 </portlet:resourceURL>
 
-<%-- <a href="<%= resourceURL %>" target="_blank">Display results</a> --%>
+<a href="<%= resourceURL %>" target="_blank">Display results</a>
 
 <hr>
 

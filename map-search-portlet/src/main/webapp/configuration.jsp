@@ -2,14 +2,20 @@
     configuration.jsp: Configure the map-search-portlet's preferences.
     
     Created:    2016-07-21 22:26 by Christian Berndt
-    Modified:   2016-07-27 14:24 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-08-17 23:39 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
+<%@page import="com.liferay.portlet.asset.model.AssetVocabulary"%>
+<%@page import="com.liferay.portlet.asset.service.AssetVocabularyServiceUtil"%>
+
 <%
     PortletURL portletURL = renderResponse.createRenderURL();
+
+    List<AssetVocabulary> vocabularies = AssetVocabularyServiceUtil
+            .getGroupVocabularies(themeDisplay.getScopeGroupId());
 %>
 
 <liferay-portlet:actionURL portletConfiguration="true"
@@ -30,7 +36,15 @@
         <liferay-ui:panel id="mapsearchportletSearchPanel" title="search" extended="true">
             
             <aui:input name="classNames" value="<%= classNames %>" type="textarea" 
-                helpMessage="class-names-help"/>                         
+                helpMessage="class-names-help"/> 
+                
+            <aui:select name="vocabularyId" helpMessage="vocabulary-id-help">
+                <aui:option label="select-vocabulary" value="0"/>
+                <% for (AssetVocabulary vocabulary: vocabularies) { %>
+                    <aui:option label="<%= vocabulary.getTitle(locale) %>" value="<%= vocabulary.getVocabularyId() %>"
+                        selected="<%= vocabularyId == vocabulary.getVocabularyId() %>"/>
+                <% } %>
+            </aui:select>                           
                        
         </liferay-ui:panel> 
 
