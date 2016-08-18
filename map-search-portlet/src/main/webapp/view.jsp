@@ -76,7 +76,7 @@
 <portlet:resourceURL var="resourceURL" id="search">
 </portlet:resourceURL>
 
-<a href="<%= resourceURL %>" target="_blank">Display results</a>
+<%-- <a href="<%= resourceURL %>" target="_blank">Display results</a> --%>
 
 <hr>
 
