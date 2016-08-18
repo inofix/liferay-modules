@@ -13,10 +13,11 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+        <resource-bundle>Language</resource-bundle>		
 		<portlet-info>
 			<title>map-search-portlet</title>
-			<short-title>map-search-portlet</short-title>
-			<keywords>map-search-portlet</keywords>
+			<short-title>Map Search Portlet</short-title>
+			<keywords>Map Search</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>
