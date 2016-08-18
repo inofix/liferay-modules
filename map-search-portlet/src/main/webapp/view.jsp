@@ -2,13 +2,22 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-08-17 23:40 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2016-08-18 00:48 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
+<%@page import="com.liferay.portlet.asset.service.AssetCategoryServiceUtil"%>
+<%@page import="com.liferay.portlet.asset.model.AssetCategory"%>
+
 <%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
+
+<%
+    List<AssetCategory> categories = AssetCategoryServiceUtil
+            .getVocabularyRootCategories(scopeGroupId, vocabularyId, 0,
+                    Integer.MAX_VALUE, null);
+%>
 
 <style>
 <!--
@@ -24,9 +33,28 @@
 
 <div class="row-fluid">
     <div class="span6">
+    
         <aui:form name="fm">
-            <%= vocabularyId %>
+        
+            <aui:input name="keywords" label="" placeholder="search" inlineField="true"/>
+        
+            <c:if test="<%= vocabularyId > 0 %>">
+                <aui:select name="assetCategoryId" label="" inlineField="true">
+                    <aui:option label="select-category" value="0"/>
+                    <% for (AssetCategory category : categories) { %>
+                        <aui:option label="<%= category.getTitle(locale) %>" 
+                            value="<%= category.getCategoryId() %>"/>
+                    <% } %>
+                </aui:select>
+            </c:if>
+            
+            <aui:button icon="icon-search" onClick="submitForm();" />
+            
+            <aui:button icon="icon-remove" onClick="clearForm();" />
+            
+            
         </aui:form>
+        
         <table id="<portlet:namespace/>table" class="display">
             <thead>
                 <tr>
@@ -68,6 +96,33 @@ $(document).ready(function () {
     var minLat = parseFloat(-90);
     var minLong = parseFloat(-180);
     
+    // Disable the filter form's default 
+    // submit behaviour.
+    $("#<portlet:namespace/>fm").submit(function(e){
+        return false;
+    });
+    
+    // Filter the table by keyword
+    $("#<portlet:namespace/>keywords").bind("keyup", function() {
+    	    
+        // Ignore and reset the map bounds 
+        // when the keyword field is used.
+        considerBounds = false;
+
+        minLat = parseFloat(-90);
+        maxLat = parseFloat(90);
+        minLong = parseFloat(-180);
+        maxLong = parseFloat(180);
+
+        table.search( this.value ).draw();
+
+    });
+    
+    // Filter the table by assetCategoryId
+    $("#<portlet:namespace/>assetCategoryId").bind("change", function() {
+    	console.log(this.value);    	
+    });
+    
     // Datatable Setup
     var table = $("#<portlet:namespace/>table")
         .on('xhr.dt', function ( e, settings, json, xhr ) {
@@ -76,7 +131,10 @@ $(document).ready(function () {
         .DataTable({
             <c:if test="<%= Validator.isNotNull(dataTableColumnDefs) %>">
                 <%= dataTableColumnDefs %>,
-            </c:if>            
+            </c:if> 
+            <c:if test="<%= Validator.isNotNull(dataTableDom) %>">
+                "dom": '<%= dataTableDom %>',
+            </c:if>                 
             "ajax": "<%= resourceURL %>"
     });
     

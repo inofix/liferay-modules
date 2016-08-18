@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-07-23 15:38 by Christian Berndt
- * Modified:    2016-07-27 14:46 by Christian Berndt
- * Version:     1.0.2
+ * Modified:    2016-08-18 01:03 by Christian Berndt
+ * Version:     1.0.3
  */
  
 @import "compass";
@@ -28,6 +28,14 @@
             select {
                 width: auto;
             }  
+        }
+        
+        input[type="text"], select {
+            margin-bottom: 0; 
+        }
+        
+        select {
+            padding: 0 6px;
         }
         
         table.dataTable thead {
