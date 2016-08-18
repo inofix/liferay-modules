@@ -48,6 +48,7 @@
 
     String classNames = portletPreferences.getValue("classNames", JournalArticle.class.getName() + StringPool.NEW_LINE + DLFileEntry.class.getName());
     String dataTableColumnDefs = portletPreferences.getValue("dataTableColumnDefs", "");
+    String dataTableDom = portletPreferences.getValue("dataTableDom", "lfrtip");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
     String mapZoom = portletPreferences.getValue("mapZoom", "13");
