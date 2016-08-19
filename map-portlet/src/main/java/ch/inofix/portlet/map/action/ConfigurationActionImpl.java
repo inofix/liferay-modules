@@ -26,8 +26,8 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-06-16 19:01
- * @version 1.1.5
+ * @modified 2016-08-08 18:53
+ * @version 1.1.6
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -75,12 +75,20 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             ParamUtil.getString(actionRequest, "dataTableColumns");
         String dataTablePaging =
             ParamUtil.getString(actionRequest, "dataTablePaging", "false");
+        String[] filterColumns =
+            actionRequest.getParameterValues("filterColumns");
+        String[] filterDataURLs =
+            actionRequest.getParameterValues("filterDataURLs");
+        String[] filterPlaceholders =
+            actionRequest.getParameterValues("filterPlaceholders");
         String filter1DataURL =
             ParamUtil.getString(actionRequest, "filter1DataURL");
         String filter1Values =
             ParamUtil.getString(actionRequest, "filter1Values");
         String labelValueMapping =
             ParamUtil.getString(actionRequest, "labelValueMapping");
+        String labelValueMappings =
+            ParamUtil.getString(actionRequest, "labelValueMappings");
         String locationsURL =
             ParamUtil.getString(actionRequest, "locationsURL");
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
@@ -116,9 +124,13 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "dataTableColumnDefs", dataTableColumnDefs);
         setPreference(actionRequest, "dataTableColumns", dataTableColumns);
         setPreference(actionRequest, "dataTablePaging", dataTablePaging);
+        setPreference(actionRequest, "filterColumns", filterColumns);
+        setPreference(actionRequest, "filterDataURLs", filterDataURLs);
+        setPreference(actionRequest, "filterPlaceholders", filterPlaceholders);
         setPreference(actionRequest, "filter1DataURL", filter1DataURL);
         setPreference(actionRequest, "filter1Values", filter1Values);
         setPreference(actionRequest, "labelValueMapping", labelValueMapping);
+        setPreference(actionRequest, "labelValueMappings", labelValueMappings);
         setPreference(actionRequest, "locationsURL", locationsURL);
         setPreference(actionRequest, "mapCenter", mapCenter);
         setPreference(actionRequest, "mapHeight", mapHeight);

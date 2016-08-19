@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-06-16 19:02 by Christian Berndt
-    Version:    1.2.2
+    Modified:   2016-08-08 16:49 by Christian Berndt
+    Version:    1.2.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -114,6 +114,72 @@
 
         </liferay-ui:panel>
         
+        <liferay-ui:panel id="mapportletFiltersPanel" title="filters" extended="true">
+        
+            <aui:fieldset id="filter" cssClass="filter">
+            <%
+                for (int i=0; i<filterColumns.length; i++) {
+            %>
+                <aui:container>
+            
+                    <aui:row>
+                        <div class="lfr-form-row">
+
+                            <legend class="fieldset-legend">
+                            
+                                <span class="sort-handle"></span>
+
+                            </legend>           
+                        
+                            <div class="row-fields">
+                            
+                                <aui:col span="3">
+                                
+                                    <aui:input name="filterColumns"
+                                        helpMessage="filter-column-help"
+                                        label="filter-column"
+                                        value="<%= filterColumns[i] %>" />
+                                        
+                                </aui:col>                            
+                                                                
+                                <aui:col span="3">
+                                
+                                    <aui:input name="filterDataURLs"
+                                        helpMessage="filter-data-url-help"
+                                        label="filter-data-url"
+                                        value="<%= filterDataURLs[i] %>" />
+                                        
+                                </aui:col>
+                                
+                                <aui:col span="3">
+                                
+                                    <aui:input name="labelValueMappings"
+                                        helpMessage="label-value-mapping-help"
+                                        label="label-value-mapping"
+                                        value="<%= labelValueMappings[i] %>" />
+                                        
+                                </aui:col>
+                                                              
+                                <aui:col span="3">
+                                
+                                    <aui:input name="filterPlaceholders"
+                                        helpMessage="filter-placeholder-help"
+                                        label="filter-placeholder"
+                                        value="<%= filterPlaceholders[i] %>" />
+                                        
+                              </aui:col>
+                            </div>
+                        </div>
+                    </aui:row>
+            
+                </aui:container>
+            <%
+                }
+            %>
+            </aui:fieldset>
+
+        </liferay-ui:panel>        
+        
         <liferay-ui:panel id="mapportletDataTablePanel" title="data-table" extended="true">                
                 
             <aui:input name="showTable" type="checkbox" checked="<%= showTable %>" 
@@ -123,6 +189,7 @@
                 helpMessage="locations-url-help" 
                 value="<%= locationsURL %>"/>
                 
+            <%-- 
             <aui:input name="filter1DataURL" cssClass="full-width" label="filter-1-data-url"
                 helpMessage="filter-1-data-url-help" 
                 value="<%= filter1DataURL %>"/> 
@@ -134,6 +201,8 @@
             <aui:input name="labelValueMapping" type="textarea" 
                 helpMessage="label-value-mapping-help" 
                 value="<%= labelValueMapping %>"/> 
+                
+                --%>
                 
             <aui:input name="customAddressAndLabel" type="textarea" 
                 helpMessage="custom-address-and-label-help" 
@@ -195,6 +264,18 @@
 
     var markerAutoFields = new Liferay.AutoFields({
         contentBox : 'fieldset#<portlet:namespace />marker',
+        namespace : '<portlet:namespace />',
+        sortable : true,
+        sortableHandle: '.sort-handle',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+    
+    var filterAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />filter',
         namespace : '<portlet:namespace />',
         sortable : true,
         sortableHandle: '.sort-handle',

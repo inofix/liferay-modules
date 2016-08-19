@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-06-16 18:51 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2016-08-08 16:50 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%-- Import required classes --%>
@@ -56,9 +56,13 @@
     String dataTableColumnDefs = portletPreferences.getValue("dataTableColumnDefs", "");
     String dataTableColumns = portletPreferences.getValue("dataTableColumns", "");
     String dataTablePaging = portletPreferences.getValue("dataTablePaging", "false");
+    String[] filterColumns = portletPreferences.getValues("filterColumns", new String[] {""});
+    String[] filterDataURLs = portletPreferences.getValues("filterDataURLs", new String[] {"/map-portlet/data/countries.json"});
+    String[] filterPlaceholders = portletPreferences.getValues("filterPlaceholders", new String[] {"search"});
     String filter1DataURL = portletPreferences.getValue("filter1DataURL", "/map-portlet/data/countries.json");
     String filter1Values = portletPreferences.getValue("filter1Values", "");
     String labelValueMapping = portletPreferences.getValue("labelValueMapping", ""); 
+    String[] labelValueMappings = portletPreferences.getValues("labelValueMappings", new String[] {""});
     String locationsURL = portletPreferences.getValue("locationsURL", "/map-portlet/data/cities.json");
     String mapCenter = portletPreferences.getValue("mapCenter", "[47.05207, 8.30585]");
     String mapHeight = portletPreferences.getValue("mapHeight", "400px");
