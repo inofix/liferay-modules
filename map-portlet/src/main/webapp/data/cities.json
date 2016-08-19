@@ -1,8 +1,8 @@
 [
     {"name": "Athens", "country": "Greece", "latLon": [37.98432,23.72798]},
-    {"name": "Belgrade", "country": "Serbia", "latLon": [0,0]},
-    {"name": "Berlin", "country": "Germany", "latLon": [0,0]},
-    {"name": "Bern", "country": "Switzerland", "latLon": [0,0]},
+    {"name": "Belgrade", "country": "Serbia", "latLon": [44.68092,20.41277]},
+    {"name": "Berlin", "country": "Germany", "latLon": [52.51733,13.38886]},
+    {"name": "Bern", "country": "Switzerland", "latLon": [46.95460,7.39494]},
     {"name": "Bratislava", "country": "Slovak Republic", "latLon": [0,0]},
     {"name": "Brussels", "country": "Belgium", "latLon": [0,0]},
     {"name": "Bucharest", "country": "Romania", "latLon": [0,0]},

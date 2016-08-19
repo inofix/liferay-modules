@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-06-17 10:44 by Christian Berndt
-    Version:    1.1.9
+    Modified:   2016-08-08 16:48 by Christian Berndt
+    Version:    1.2.0
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -47,7 +47,14 @@
         
             <fieldset>
                 <input id="keyword" class="keyword" type="text" placeholder="<liferay-ui:message key="placeholder-search"/>">
-                <input id="filter1" type="text" data-value placeholder="<liferay-ui:message key="placeholder-competences"/>">
+        <%
+           for (int i=0; i<filterColumns.length; i++) {
+        %>          
+                <input id="filter<%= i %>" type="text" data-value placeholder="<liferay-ui:message key="<%= filterPlaceholders[i] %>"/>">
+<%--                 <input id="filter1" type="text" data-value placeholder="<liferay-ui:message key="placeholder-competences"/>"> --%>
+        <%
+           }
+        %>
                 <aui:button icon="icon-remove" onClick="clearForm();" />
             </fieldset>
             
@@ -58,9 +65,17 @@
                     <th>Name</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
-                    <c:if test="<%= Validator.isNotNull(filter1Values) %>">
-                        <th>Filter1</th>
+<%
+    for (int i=0; i<filterColumns.length; i++) {
+        String filter = "filter-" + i; 
+%>
+                    <c:if test="<%= Validator.isNotNull(filterColumns[i]) %>">
+<%--                     <c:if test="<%= Validator.isNotNull(filter1Values) %>"> --%>
+                        <th><%= filter %></th>
                     </c:if>                 
+<%
+    }
+%>
                 </tr>
             </thead>
         </table>
@@ -79,10 +94,15 @@
 <script type="text/javascript">
 
     function clearForm() {
-        // alert('clearForm()');
         $( "#keyword" ).val("");
         $( "#keyword" ).trigger( "keyup" );
-        $( "#filter1").val(""); 
+<%
+    for (int i=0; i<filterColumns.length; i++) {
+ %>           
+         $( "#filter<%= i %>").val(""); 
+<%
+    }
+%>
     }
 
    /**
@@ -229,17 +249,34 @@
                             <%= customLatLon %>
                         </c:if>
                         
+                <%
+                        for (int i=0; i<filterColumns.length; i++) {
+                            if (Validator.isNotNull(filterColumns[i])) {
+                %>                        
+                        var filterColumn<%= i %> = <%= filterColumns[i] %>; 
+                <%  
+                            }
+                        }
+                %>
+                <%--      
                         <c:if test="<%= Validator.isNotNull(filter1Values) %>">
                             <%= filter1Values %>                        
-                        </c:if>  
+                        </c:if> 
+                --%> 
                         
                         var row = {
                             "0": label
                             , "1": latLon[0]
                             , "2": latLon[1]
-                            <c:if test="<%= Validator.isNotNull(filter1Values) %>">
-                                , "3": filter1Values[i]
-                            </c:if>                                 
+                <%
+                        for (int i=0; i<filterColumns.length; i++) {
+                            if (Validator.isNotNull(filterColumns[i])) {
+                %>                        
+                            , "<%= i+3 %>": filterColumn<%= i %>
+                <%
+                            }
+                        }
+                %>                               
                         };
                        
                         table.row.add(row);
@@ -285,14 +322,21 @@
 
        });
        
-        // Load data for the select filter and filter the table
+        // Load data for the select filter and filter the table       
+<%
+    for (int i=0; i<filterDataURLs.length; i++) {
+        if (Validator.isNotNull(filterDataURLs[i])) {
+%>         
+        
         $.ajax({
-            url: "<%= filter1DataURL %>"
+            url: "<%= filterDataURLs[i] %>"
         }).done(function (data) {
+            
+            console.log(data); 
            
             var values = []; 
             
-            <%= labelValueMapping %>
+            <%= labelValueMappings[i] %>
             
             values.sort(function(a, b) {
                 if (a.label > b.label) {
@@ -304,15 +348,15 @@
                 }
             });
          
-            $("#filter1").autocomplete({
+            $("#filter<%= i %>").autocomplete({
                 minLength: 0
                 , source: values
                 , select: function (event, ui) {
                    
                     event.preventDefault();
                     
-                    $("#filter1").val(ui.item.label);
-                    $("#filter1").attr("data-value", ui.item.value);
+                    $("#filter<%= i %>").val(ui.item.label);
+                    $("#filter<%= i %>").attr("data-value", ui.item.value);
                 
                     table.search(ui.item.value).draw();
                     
@@ -325,7 +369,12 @@
                     $(this).autocomplete("search");
                 }
             });
-        });       
+        }); 
+        
+<%
+        }
+    }
+%>
 
        // Redraw the map whenever the table is searched.
        table.on("search", function () {
@@ -500,6 +549,6 @@
                }
            }
         %>
-   });  // $(document).ready     
+   });  
          
 </script> 
