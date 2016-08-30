@@ -1,4 +1,3 @@
-
 package ch.inofix.hook.geotag.events;
 
 import com.liferay.portal.kernel.events.ActionException;
@@ -19,25 +18,22 @@ import com.liferay.portlet.journal.model.JournalArticle;
  *
  * @author Christian Berndt
  * @created 2016-06-20 22:23
- * @modified 2016-06-27 12:40
- * @version 1.0.3
+ * @modified 2016-08-30 12:49
+ * @version 1.0.4
  */
 public class StartupAction extends SimpleAction {
 
     @Override
-    public void run(String[] ids)
-        throws ActionException {
+    public void run(String[] ids) throws ActionException {
 
         try {
             doRun(GetterUtil.getLong(ids[0]));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ActionException(e);
         }
     }
 
-    protected void doRun(long companyId)
-        throws Exception {
+    protected void doRun(long companyId) throws Exception {
 
         // Create a custom columns required by the geotag-hook.
         createColumn(companyId, DLFileEntry.class, "geoJSON");
@@ -47,30 +43,24 @@ public class StartupAction extends SimpleAction {
     }
 
     private void createColumn(long companyId, Class<?> clazz, String fieldName)
-        throws PortalException, SystemException {
+            throws PortalException, SystemException {
 
         ExpandoTable expandoTable = null;
 
         try {
-            expandoTable =
-                ExpandoTableLocalServiceUtil.addTable(
-                    companyId, DLFileEntry.class.getName(),
-                    ExpandoTableConstants.DEFAULT_TABLE_NAME);
-        }
-        catch (Exception e) {
-            expandoTable =
-                ExpandoTableLocalServiceUtil.getTable(
-                    companyId, clazz.getName(),
-                    ExpandoTableConstants.DEFAULT_TABLE_NAME);
+            expandoTable = ExpandoTableLocalServiceUtil.addTable(companyId,
+                    clazz.getName(), ExpandoTableConstants.DEFAULT_TABLE_NAME);
+        } catch (Exception e) {
+            expandoTable = ExpandoTableLocalServiceUtil.getTable(companyId,
+                    clazz.getName(), ExpandoTableConstants.DEFAULT_TABLE_NAME);
         }
 
         try {
-            ExpandoColumnLocalServiceUtil.addColumn(
-                expandoTable.getTableId(), fieldName,
-                ExpandoColumnConstants.STRING);
+            ExpandoColumnLocalServiceUtil.addColumn(expandoTable.getTableId(),
+                    fieldName, ExpandoColumnConstants.STRING);
 
-        }
-        catch (Exception ignore) {
+        } catch (Exception e) {
+            System.out.println("StartupAction.e: " + e);
         }
     }
 }
