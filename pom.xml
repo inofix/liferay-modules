@@ -11,7 +11,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -130,6 +130,7 @@
         <module>search-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
+        <module>download-filter-hook</module>
     </modules>
     
     <issueManagement>

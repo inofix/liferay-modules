@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+
+<hook>
+	<servlet-filter>
+		<servlet-filter-name>Download Filter</servlet-filter-name>
+		<servlet-filter-impl>ch.inofix.hook.downloadfilter.filter.DownloadFilter</servlet-filter-impl>
+		<init-param>
+			<param-name>printMessages</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</servlet-filter>
+	<servlet-filter-mapping>
+		<servlet-filter-name>Download Filter</servlet-filter-name>
+		<before-filter>SSO Open SSO Filter</before-filter>
+		<url-pattern>/documents/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</servlet-filter-mapping>
+</hook>
