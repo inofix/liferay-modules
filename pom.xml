@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-07-21 21:59 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2016-08-31 18:38 by Christian Berndt
+    Version:    1.1.0
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -120,6 +120,7 @@
         <module>contact-manager-portlet</module>
         <module>ckeditor-hook</module>
         <module>display-page-hook</module>
+        <module>download-filter-hook</module>
         <module>geotag-hook</module>
         <module>inofix-theme</module>
 	    <module>map-portlet</module>
@@ -130,7 +131,6 @@
         <module>search-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
-        <module>download-filter-hook</module>
     </modules>
     
     <issueManagement>
