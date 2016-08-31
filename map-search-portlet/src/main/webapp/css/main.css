@@ -2,8 +2,8 @@
  * main.css: Main CSS of the map-portlet
  * 
  * Created:     2016-07-23 15:38 by Christian Berndt
- * Modified:    2016-08-18 14:35 by Christian Berndt
- * Version:     1.0.4
+ * Modified:    2016-08-30 22:42 by Christian Berndt
+ * Version:     1.0.5
  */
  
 @import "compass";
@@ -38,55 +38,70 @@
             margin-bottom: 0; 
         }
         
+        .leaflet-popup-content {
+            .title {
+                display: none; 
+            }
+        }
+        
         select {
             padding: 0 6px;
         }
         
-        table.dataTable thead {
+        table.dataTable {
         
-            th {
-            
-                border-bottom: none;
-                
-                &::after {
-                    float: right;
-                    font-family: "fontawesome-alloy";
-                    font-style: normal;
-                    font-weight: normal;
-                    font-variant: normal;
-                    text-transform: none;
-                    height: 0;
+            td {
+                img {
+                    max-width: 64px;
                 }
+            }
+        
+            thead {
             
-                &.sorting_asc {
+                th {
                 
-                    background-image: none; 
+                    border-bottom: none;
                     
                     &::after {
-                        content: "";  
-                    }                
-                } 
-                
-                &.sorting {
-                
-                    background-image: none;
-                    
-                    &::after {
-                        content: "";
-                        opacity: 0.3;          
+                        float: right;
+                        font-family: "fontawesome-alloy";
+                        font-style: normal;
+                        font-weight: normal;
+                        font-variant: normal;
+                        text-transform: none;
+                        height: 0;
                     }
-                } 
                 
-                &.sorting_desc {
-                
-                    background-image: none;
+                    &.sorting_asc {
                     
-                    &::after {
-                        content: "";                   
-                    }                
-                } 
-            }       
-        }               
+                        background-image: none; 
+                        
+                        &::after {
+                            content: "";  
+                        }                
+                    } 
+                    
+                    &.sorting {
+                    
+                        background-image: none;
+                        
+                        &::after {
+                            content: "";
+                            opacity: 0.3;          
+                        }
+                    } 
+                    
+                    &.sorting_desc {
+                    
+                        background-image: none;
+                        
+                        &::after {
+                            content: "";                   
+                        }                
+                    } 
+                }       
+            } 
+        }             
     }
     
     @media (max-width: 1199px) {
