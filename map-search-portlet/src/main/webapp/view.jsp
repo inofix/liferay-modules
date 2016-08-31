@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-search-portlet.
     
     Created:    2016-07-21 23:10 by Christian Berndt
-    Modified:   2016-08-18 15:24 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2016-08-31 10:43 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -232,17 +232,15 @@
         }    
     
         function updateMarkers(locations) {
-            
-            // console.log("updateMarkers");
-        
+                    
             markers.clearLayers(); 
                     
             for (var i = 0; i < locations.length; i++) {
                 var lat = parseFloat(locations[i][2]);
                 var lon = parseFloat(locations[i][1]);
-                var title = locations[i][0];
-                var marker = L.marker(new L.LatLng(lat, lon), { title: title });
-                marker.bindPopup(title);
+                var label = locations[i][0];
+                var marker = L.marker(new L.LatLng(lat, lon), { title: '<liferay-ui:message key="click-to-preview"/>' });
+                marker.bindPopup(label);
                 markers.addLayer(marker);
             }
             
@@ -253,3 +251,29 @@
     }); 
 
 </script>
+
+<aui:script use="aui-tooltip">
+    AUI().ready(
+        'aui-tooltip',
+        function(A) {
+            new A.TooltipDelegate({
+                cssClass: 'tooltip-help',
+                position: 'right',
+                title: true,
+                trigger: '.leaflet-marker-icon'
+            })
+        }
+    );
+    
+    AUI().ready(
+        'aui-tooltip',
+        function(A) {
+            new A.TooltipDelegate({
+                cssClass: 'tooltip-help',
+                position: 'right',
+                title: true,
+                trigger: '.leaflet-popup-content img'
+            })
+        }
+    );
+</aui:script>

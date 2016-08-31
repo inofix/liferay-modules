@@ -1,4 +1,3 @@
-
 package ch.inofix.portlet.mapsearch.search;
 
 import java.util.ArrayList;
