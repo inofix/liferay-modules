@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head />
+    <h:body>
+
+        <h:form>
+            <p:dataTable var="car" value="#{dtFilterView.cars}"
+                widgetVar="carsTable"
+                emptyMessage="No cars found with given criteria"
+                filteredValue="#{dtFilterView.filteredCars}" lazy="true"
+                paginator="true" rows="5" selectionMode="single"
+                rowKey="#{car.id}">
+
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Search all fields:" />
+                        <h:inputText id="globalFilter"
+                            onkeyup="carsTable.filter()" />
+                        <h:outputText
+                            value="#{fn:length(dtFilterView.cars)} entries " />
+                    </p:outputPanel>
+                </f:facet>
+
+
+                <p:column filterBy="#{car.year}" sortBy="#{car.year}"
+                    headerText="Year" footerText="contains"
+                    filterMatchMode="contains">
+                    <f:facet name="filter">
+                        <p:spinner onchange="PF('carsTable').filter()"
+                            styleClass="year-spinner">
+                            <f:converter
+                                converterId="javax.faces.Integer" />
+                        </p:spinner>
+                    </f:facet>
+                    <h:outputText value="#{car.year}" />
+                </p:column>
+
+                <p:column filterBy="#{car.color}" sortBy="#{car.color}"
+                    headerText="Color" footerText="contains"
+                    filterMatchMode="contains">
+                    <f:facet name="filter">
+                        <p:selectCheckboxMenu label="Colors"
+                            onchange="PF('carsTable').filter()"
+                            panelStyle="width:125px" scrollHeight="150">
+                            <f:selectItems
+                                value="#{dtFilterView.colors}" />
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{car.color}" />
+                </p:column>
+
+                <!--                 <p:column> -->
+                <!--                     <p:commandButton value="Select"> -->
+                <!--                         <f:setPropertyActionListener value="#{car}" -->
+                <!--                             target="#{dtFilterView.selectedCar}" /> -->
+                <!--                     </p:commandButton> -->
+                <!--                 </p:column> -->
+
+
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</f:view>
