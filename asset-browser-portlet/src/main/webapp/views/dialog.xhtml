@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head />
+    <h:body>
+        <h:form>
+            <p:dialog header="Dynamic Focus" widgetVar="dlg" focus="age">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="name" value="Name:" />
+                    <p:inputText id="name" label="name" />
+
+                    <h:outputLabel for="surname" value="Surname:" />
+                    <p:inputText id="surname" label="surname" />
+
+                    <h:outputLabel for="age" value="Age:" />
+                    <p:inputText id="age" label="age" />
+                </h:panelGrid>
+            </p:dialog>
+            <p:commandButton value="Show" type="button"
+                onclick="dlg.show()" />
+        </h:form>
+    </h:body>
+</f:view>
