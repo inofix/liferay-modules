@@ -140,7 +140,8 @@
                                         label="filter-column"
                                         value="<%= filterColumns[i] %>" />
                                         
-                                </aui:col>                            
+                                </aui:col>   
+                                
                                                                 
                                 <aui:col span="3">
                                 
@@ -168,6 +169,7 @@
                                         value="<%= filterPlaceholders[i] %>" />
                                         
                               </aui:col>
+                                                            
                             </div>
                         </div>
                     </aui:row>
