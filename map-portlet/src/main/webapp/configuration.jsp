@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-08-08 16:49 by Christian Berndt
-    Version:    1.2.3
+    Modified:   2016-09-03 08:23 by Christian Berndt
+    Version:    1.2.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -157,6 +157,7 @@
                                     <aui:input name="labelValueMappings"
                                         helpMessage="label-value-mapping-help"
                                         label="label-value-mapping"
+                                        type="textarea"
                                         value="<%= labelValueMappings[i] %>" />
                                         
                                 </aui:col>
