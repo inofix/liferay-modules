@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-09-02 16:29 by Christian Berndt
-    Version:    1.2.2
+    Modified:   2016-09-07 18:48 by Christian Berndt
+    Version:    1.2.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -54,7 +54,7 @@
         <%
            }
         %>
-                <aui:button icon="icon-remove" onClick="clearForm();" />
+                <aui:button icon="icon-remove" cssClass="reset-button" />
             </fieldset>            
         </form>
         <table id="table" class="display">
@@ -65,10 +65,9 @@
                     <th>Longitude</th>
 <%
     for (int i=0; i<filterColumns.length; i++) {
-        String filter = "filter-" + i; 
 %>
-                    <c:if test="<%= Validator.isNotNull(filterColumns[i]) %>">
-                        <th><%= filter %></th>
+                    <c:if test="<%= Validator.isNotNull(filterPlaceholders[i]) %>">
+                        <th><%= filterPlaceholders[i] %></th>
                     </c:if>                 
 <%
     }
@@ -89,18 +88,6 @@
 </div>
     
 <script type="text/javascript">
-
-    function clearForm() {
-        $( "#keyword" ).val("");
-        $( "#keyword" ).trigger( "keyup" );
-<%
-    for (int i=0; i<filterColumns.length; i++) {
-%>           
-         $( "#filter<%= i %>").val(""); 
-<%
-    }
-%>
-    }
     
     /**
      * jQuery plugins
@@ -161,6 +148,22 @@
             paging : <%= dataTablePaging %>
                 
         });
+        
+        $( "#filter .reset-button" ).click(function() {
+            $( "#keyword" ).val("");
+            $( "#keyword" ).trigger( "keyup" );
+    <%
+        for (int i=0; i<filterColumns.length; i++) {
+    %>           
+             $( "#filter<%= i %>").val(""); 
+    <%
+        }
+    %>
+            table.search( "" );
+            table.columns().search( "" ).draw();
+
+        });
+             
         
         <c:if test="<%= Validator.isNotNull(locationsURL) %>">
         
@@ -260,6 +263,110 @@
             table.search( this.value ).draw();
 
         });
+        
+        // Load data for the select filters and filter the table
+        <%
+            for (int i=0; i<filterColumns.length; i++) {
+                if (Validator.isNotNull(filterColumns[i])) {
+        %>        
+                $.ajax({
+                    url: "<%= filterDataURLs[i] %>"
+                }).done(function (data) {
+                   
+                    var values = [];
+                                        
+//                     for (i=0; i<data.length; i++) {
+//                         values.push({"label": data[i].name, "value": data[i].id});
+//                     }
+                      
+                    <%= labelValueMappings[i] %>
+                    
+                    values.sort(function(a, b) {
+                        if (a.label > b.label) {
+                            return 1;
+                        } else if (a.label < b.label) {
+                            return -1; 
+                        } else {
+                            return 0;
+                        }
+                    });
+                                        
+                    $( "#filter<%= i %>" ).autocomplete({
+                        minLength: 0,
+                        source: values,
+                        select: function( event, ui ) {
+                          
+                            event.preventDefault();
+                          
+                            $("#filter<%= i %>").val(ui.item.label);
+                            $("#filter<%= i %>").attr("data-value", ui.item.value);
+                                                        
+                            table.columns(<%= i + 3 %>).search(ui.item.label).draw();                            
+                        } 
+                        , delay: 500
+                        , open: function() { $(this).attr('state', 'open'); }
+                        , close: function () { $(this).attr('state', 'closed'); }                          
+                    }).focus(function () {
+                        if ($(this).attr('state') != 'open') {
+                            $(this).autocomplete("search");
+                        }
+                    });                    
+                }); 
+        
+        <%
+                }
+            }
+        %>
+        
+        // Redraw the map whenever the table is searched.
+        table.on("search", function () {
+
+            locations = table.rows({search: "applied"}).data();
+          
+            updateMarkers(locations);
+
+            if (!considerBounds) {
+
+                // when the search is initiated from the 
+                // filter form, fit the map to found locations.
+                map.fitBounds(locationLayer.getBounds());
+
+            }
+
+        });
+        
+        table.on("draw.dt", function() {
+            $("#table_info").css("padding-left", margin); 
+            $("#table_info").css("opacity", "1"); 
+            $("td").css("padding-left", margin); 
+        });
+      
+        // Custom filter method which filters the 
+        // locations by the map's boundaries.
+        $.fn.dataTable.ext.search.push(
+
+            function( settings, data, dataIndex ) {
+
+                // only consider the bounds, if the search was triggered by the map
+                if (considerBounds) {
+
+                    minLat = parseFloat(map.getBounds().getSouth());
+                    maxLat = parseFloat(map.getBounds().getNorth());
+                    minLong = parseFloat(map.getBounds().getWest());
+                    maxLong = parseFloat(map.getBounds().getEast());
+
+                }
+
+                var latitude = parseFloat( data[1] ) || 0;  // use data for the lat column
+                var longitude = parseFloat( data[2] ) || 0; // use data for the long column
+
+                if (( minLat <= latitude && latitude <= maxLat ) &&       // north-south
+                    ( minLong <= longitude && longitude <= maxLong )) {   // east-west
+                    return true;
+                  }
+                return false;
+            }
+        );
         
         
         // Map setup
