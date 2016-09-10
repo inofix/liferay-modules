@@ -2,14 +2,16 @@
     init.jsp: Common imports and setup code of the map-portlet
     
     Created:    2016-03-01 17:58 by Christian Berndt
-    Modified:   2016-08-08 16:50 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2016-09-08 23:21 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%-- Import required classes --%>
 
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.Locale"%>
+<%@page import="java.util.Map"%>
 
 <%@page import="javax.portlet.PortletURL"%>
 
@@ -21,6 +23,7 @@
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
+<%@page import="com.liferay.portal.kernel.util.LocalizationUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
@@ -67,6 +70,8 @@
     String markerIconConfig = portletPreferences.getValue("markerIconConfig", "");
     String[] markerLabels = portletPreferences.getValues("markerLabels", new String[] {""});
     String[] markerLocations = portletPreferences.getValues("markerLocations", new String[] {""});
+    String placeholderKeyword = portletPreferences.getValue("placeholderKeyword", "Search");
+    Map<Locale, String> placeholderKeywordMap = LocalizationUtil.getLocalizationMap(placeholderKeyword); 
     boolean showTable = GetterUtil.getBoolean(portletPreferences.getValue("showTable", "false"));
     String tilesCopyright = portletPreferences.getValue("tilesCopyright", "&copy; <a href=\"http://osm.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
     String tilesURL = portletPreferences.getValue("tilesURL", "http://{s}.tile.osm.org/{z}/{x}/{y}.png");

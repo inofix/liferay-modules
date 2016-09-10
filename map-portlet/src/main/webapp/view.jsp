@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-09-07 18:48 by Christian Berndt
-    Version:    1.2.3
+    Modified:   2016-09-10 16:19 by Christian Berndt
+    Version:    1.2.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -35,7 +35,7 @@
 <%
    String dataTablesTranslationURL = null; 
    String languageId = LanguageUtil.getLanguageId(request);
-
+   
    if ("de_DE".equals(languageId)) {
        dataTablesTranslationURL = "/map-portlet/js/dataTables/German.json"; 
    }
@@ -46,7 +46,7 @@
         <form id="filter">
         
             <fieldset>
-                <input id="keyword" class="keyword" type="text" placeholder="<liferay-ui:message key="search"/>">
+                <input id="keyword" class="keyword" type="text" placeholder="<%= (String)placeholderKeywordMap.get(locale) %>">
         <%
            for (int i=0; i<filterColumns.length; i++) {
         %>          
@@ -301,7 +301,7 @@
                             $("#filter<%= i %>").val(ui.item.label);
                             $("#filter<%= i %>").attr("data-value", ui.item.value);
                                                         
-                            table.columns(<%= i + 3 %>).search(ui.item.label).draw();                            
+                            table.columns(<%= i + 3 %>).search(ui.item.value).draw();                            
                         } 
                         , delay: 500
                         , open: function() { $(this).attr('state', 'open'); }
