@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-09-03 08:23 by Christian Berndt
-    Version:    1.2.4
+    Modified:   2016-09-08 23:21 by Christian Berndt
+    Version:    1.2.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -250,8 +250,13 @@
                 
             <aui:input name="useGlobalJQuery" type="checkbox" checked="<%= useGlobalJQuery %>" 
                 label="use-global-jquery"
-                helpMessage="use-global-jquery-help"/>               
-                       
+                helpMessage="use-global-jquery-help"/>
+
+            <aui:field-wrapper name="placeholderKeyword" helpMessage="placeholder-keyword-help">
+                <liferay-ui:input-localized name="placeholderKeyword"
+                    xml="<%=placeholderKeyword%>" />
+            </aui:field-wrapper>
+
         </liferay-ui:panel>
 
     </liferay-ui:panel-container>

@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -19,15 +21,18 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PortalUtil;
 
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-09-01 16:04
- * @version 1.1.7
+ * @modified 2016-09-10 16:10
+ * @version 1.1.8
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -94,6 +99,10 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             actionRequest.getParameterValues("markerLabels");
         String[] markerLocations =
             actionRequest.getParameterValues("markerLocations");
+        Map<Locale, String> placeholderKeywordMap =
+            LocalizationUtil.getLocalizationMap(
+                actionRequest, "placeholderKeyword");
+        _log.info(placeholderKeywordMap.size());
         String showTable = ParamUtil.getString(actionRequest, "showTable");
         String tilesCopyright =
             ParamUtil.getString(actionRequest, "tilesCopyright");
@@ -129,6 +138,9 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "markerIconConfig", markerIconConfig);
         setPreference(actionRequest, "markerLabels", markerLabels);
         setPreference(actionRequest, "markerLocations", markerLocations);
+        setPreference(
+            actionRequest, "placeholderKeyword",
+            mapToXML(placeholderKeywordMap, "placeholderKeyword"));
         setPreference(actionRequest, "showTable", showTable);
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
@@ -138,5 +150,20 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
         super.processAction(portletConfig, actionRequest, actionResponse);
 
+    }
+
+    private static String mapToXML(
+        Map<Locale, String> localizationMap, String key) {
+
+        String xml = StringPool.BLANK;
+
+        String defaultLanguageId =
+            LocaleUtil.toLanguageId(LocaleUtil.getDefault());
+
+        xml =
+            LocalizationUtil.updateLocalization(
+                localizationMap, xml, key, defaultLanguageId);
+
+        return xml;
     }
 }
