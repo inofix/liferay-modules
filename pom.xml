@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-09-23 23:06 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-09-23 23:26 by Christian Berndt
+    Version:    1.0.7
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -12,7 +12,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -69,13 +69,6 @@
             <version>${liferay.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- not required in 6.1.x -->
-<!--         <dependency> -->
-<!--             <groupId>com.liferay.portal</groupId> -->
-<!--             <artifactId>portal-pacl</artifactId> -->
-<!--             <version>${liferay.version}</version> -->
-<!--             <scope>provided</scope> -->
-<!--         </dependency> -->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-service</artifactId>
@@ -99,12 +92,6 @@
             <artifactId>util-java</artifactId>
             <version>${liferay.version}</version>
         </dependency>
-        <!-- not required in 6.1.x -->
-<!--         <dependency> -->
-<!--             <groupId>com.liferay.portal</groupId> -->
-<!--             <artifactId>util-slf4j</artifactId> -->
-<!--             <version>${liferay.version}</version> -->
-<!--         </dependency> -->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>util-taglib</artifactId>
@@ -115,54 +102,55 @@
     <modules>
         <module>asset-categories-summary-hook</module>
         <module>asset-display-hook</module>
+        <module>asset-publisher-hook</module>
         <module>cache-filter-hook</module>
         <module>display-page-hook</module>
         <module>inofix-theme</module>
         <module>portlettitle-hook</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
-  </modules>
+    </modules>
     
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
     </issueManagement>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.codehaus.mojo
-                                        </groupId>
-                                        <artifactId>
-                                            properties-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [1.0-alpha-2,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>
-                                                read-project-properties
-                                            </goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+<!--     <build> -->
+<!--         <pluginManagement> -->
+<!--             <plugins> -->
+<!--                 This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+<!--                 <plugin> -->
+<!--                     <groupId>org.eclipse.m2e</groupId> -->
+<!--                     <artifactId>lifecycle-mapping</artifactId> -->
+<!--                     <version>1.0.0</version> -->
+<!--                     <configuration> -->
+<!--                         <lifecycleMappingMetadata> -->
+<!--                             <pluginExecutions> -->
+<!--                                 <pluginExecution> -->
+<!--                                     <pluginExecutionFilter> -->
+<!--                                         <groupId> -->
+<!--                                             org.codehaus.mojo -->
+<!--                                         </groupId> -->
+<!--                                         <artifactId> -->
+<!--                                             properties-maven-plugin -->
+<!--                                         </artifactId> -->
+<!--                                         <versionRange> -->
+<!--                                             [1.0-alpha-2,) -->
+<!--                                         </versionRange> -->
+<!--                                         <goals> -->
+<!--                                             <goal> -->
+<!--                                                 read-project-properties -->
+<!--                                             </goal> -->
+<!--                                         </goals> -->
+<!--                                     </pluginExecutionFilter> -->
+<!--                                     <action> -->
+<!--                                         <ignore></ignore> -->
+<!--                                     </action> -->
+<!--                                 </pluginExecution> -->
+<!--                             </pluginExecutions> -->
+<!--                         </lifecycleMappingMetadata> -->
+<!--                     </configuration> -->
+<!--                 </plugin> -->
+<!--             </plugins> -->
+<!--         </pluginManagement> -->
+<!--     </build> -->
 </project>
