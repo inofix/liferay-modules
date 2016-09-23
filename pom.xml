@@ -116,7 +116,6 @@
         <module>asset-categories-summary-hook</module>
         <module>asset-display-hook</module>
         <module>cache-filter-hook</module>
-        <module>contact-manager-portlet</module>
         <module>display-page-hook</module>
         <module>inofix-theme</module>
         <module>portlettitle-hook</module>
