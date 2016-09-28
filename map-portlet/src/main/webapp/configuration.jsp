@@ -2,8 +2,8 @@
     configuration.jsp: Configure the map-portlet's preferences.
     
     Created:    2016-03-01 23:47 by Christian Berndt
-    Modified:   2016-09-08 23:21 by Christian Berndt
-    Version:    1.2.5
+    Modified:   2016-09-28 18:24 by Christian Berndt
+    Version:    1.2.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -234,9 +234,10 @@
         </liferay-ui:panel>        
         
         <liferay-ui:panel id="mapportletMiscellaneousPanel" title="miscellaneous" extended="true">
-    
-            <aui:input name="claim" cssClass="full-width" helpMessage="claim-help" 
-                value="<%= claim %>"/>               
+            
+            <aui:field-wrapper name="claim" helpMessage="claim-help">
+	            <liferay-ui:input-localized name="claim" xml="<%= claim %>"/>  
+            </aui:field-wrapper>        
                 
             <aui:input name="addressResolverURL" cssClass="full-width"
                 helpMessage="address-resolver-url-help" label="address-resolver-url"

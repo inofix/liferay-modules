@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-09-10 16:19 by Christian Berndt
-    Version:    1.2.4
+    Modified:   2016-09-28 18:35 by Christian Berndt
+    Version:    1.2.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -76,15 +76,15 @@
             </thead>
         </table>
     </div>
-        
-    <div class="map-wrapper">
-        <c:if test="<%= Validator.isNotNull(claim) %>">
-            <div class="jumbotron">
-                <h1><%= claim %></h1>
-            </div>
-        </c:if>    
-        <div id="map" class="map"></div>
-    </div>      
+
+	<div class="map-wrapper">
+		<c:if test="<%=Validator.isNotNull(claim)%>">
+			<div class="jumbotron">
+				<h1><%=LocalizationUtil.getLocalization(claim, LanguageUtil.getLanguageId(locale))%></h1>
+			</div>
+		</c:if>
+		<div id="map" class="map"></div>
+	</div>
 </div>
     
 <script type="text/javascript">
@@ -274,10 +274,6 @@
                 }).done(function (data) {
                    
                     var values = [];
-                                        
-//                     for (i=0; i<data.length; i++) {
-//                         values.push({"label": data[i].name, "value": data[i].id});
-//                     }
                       
                     <%= labelValueMappings[i] %>
                     
