@@ -1,4 +1,3 @@
-
 package ch.inofix.portlet.map.action;
 
 import java.io.File;
@@ -31,23 +30,22 @@ import com.liferay.portal.util.PortalUtil;
 /**
  * @author Christian Berndt
  * @created 2016-03-01 23:44
- * @modified 2016-09-10 16:10
- * @version 1.1.8
+ * @modified 2016-09-28 18:33
+ * @version 1.1.9
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
     // Enable logging for this class
-    private static Log _log =
-        LogFactoryUtil.getLog(ConfigurationActionImpl.class.getName());
+    private static Log _log = LogFactoryUtil
+            .getLog(ConfigurationActionImpl.class.getName());
 
     @Override
-    public void processAction(
-        PortletConfig portletConfig, ActionRequest actionRequest,
-        ActionResponse actionResponse)
-        throws Exception {
+    public void processAction(PortletConfig portletConfig,
+            ActionRequest actionRequest, ActionResponse actionResponse)
+            throws Exception {
 
-        UploadPortletRequest uploadPortletRequest =
-            PortalUtil.getUploadPortletRequest(actionRequest);
+        UploadPortletRequest uploadPortletRequest = PortalUtil
+                .getUploadPortletRequest(actionRequest);
 
         List<String> labels = new ArrayList<String>();
         List<String> locations = new ArrayList<String>();
@@ -67,63 +65,63 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             }
         }
 
-        String addressResolverURL =
-            ParamUtil.getString(actionRequest, "addressResolverURL");
+        String addressResolverURL = ParamUtil.getString(actionRequest,
+                "addressResolverURL");
         String claim = ParamUtil.getString(actionRequest, "claim");
-        String customAddressAndLabel =
-            ParamUtil.getString(actionRequest, "customAddressAndLabel");
-        String customLatLon =
-            ParamUtil.getString(actionRequest, "customLatLon");
-        String dataTableColumnDefs =
-            ParamUtil.getString(actionRequest, "dataTableColumnDefs");
-        String dataTableColumns =
-            ParamUtil.getString(actionRequest, "dataTableColumns");
-        String dataTablePaging =
-            ParamUtil.getString(actionRequest, "dataTablePaging", "false");
-        String[] filterColumns =
-            actionRequest.getParameterValues("filterColumns");
-        String[] filterDataURLs =
-            actionRequest.getParameterValues("filterDataURLs");
-        String[] filterPlaceholders =
-            actionRequest.getParameterValues("filterPlaceholders");
-        String[] labelValueMappings =
-            actionRequest.getParameterValues("labelValueMappings");
-        String locationsURL =
-            ParamUtil.getString(actionRequest, "locationsURL");
+        Map<Locale, String> claimMap = LocalizationUtil.getLocalizationMap(
+                actionRequest, "claim");
+        String customAddressAndLabel = ParamUtil.getString(actionRequest,
+                "customAddressAndLabel");
+        String customLatLon = ParamUtil
+                .getString(actionRequest, "customLatLon");
+        String dataTableColumnDefs = ParamUtil.getString(actionRequest,
+                "dataTableColumnDefs");
+        String dataTableColumns = ParamUtil.getString(actionRequest,
+                "dataTableColumns");
+        String dataTablePaging = ParamUtil.getString(actionRequest,
+                "dataTablePaging", "false");
+        String[] filterColumns = actionRequest
+                .getParameterValues("filterColumns");
+        String[] filterDataURLs = actionRequest
+                .getParameterValues("filterDataURLs");
+        String[] filterPlaceholders = actionRequest
+                .getParameterValues("filterPlaceholders");
+        String[] labelValueMappings = actionRequest
+                .getParameterValues("labelValueMappings");
+        String locationsURL = ParamUtil
+                .getString(actionRequest, "locationsURL");
         String mapCenter = ParamUtil.getString(actionRequest, "mapCenter");
         String mapHeight = ParamUtil.getString(actionRequest, "mapHeight");
         String mapZoom = ParamUtil.getString(actionRequest, "mapZoom");
-        String markerIconConfig =
-            ParamUtil.getString(actionRequest, "markerIconConfig");
-        String[] markerLabels =
-            actionRequest.getParameterValues("markerLabels");
-        String[] markerLocations =
-            actionRequest.getParameterValues("markerLocations");
-        Map<Locale, String> placeholderKeywordMap =
-            LocalizationUtil.getLocalizationMap(
-                actionRequest, "placeholderKeyword");
-        _log.info(placeholderKeywordMap.size());
+        String markerIconConfig = ParamUtil.getString(actionRequest,
+                "markerIconConfig");
+        String[] markerLabels = actionRequest
+                .getParameterValues("markerLabels");
+        String[] markerLocations = actionRequest
+                .getParameterValues("markerLocations");
+        Map<Locale, String> placeholderKeywordMap = LocalizationUtil
+                .getLocalizationMap(actionRequest, "placeholderKeyword");
         String showTable = ParamUtil.getString(actionRequest, "showTable");
-        String tilesCopyright =
-            ParamUtil.getString(actionRequest, "tilesCopyright");
+        String tilesCopyright = ParamUtil.getString(actionRequest,
+                "tilesCopyright");
         String tilesURL = ParamUtil.getString(actionRequest, "tilesURL");
-        String useAddressResolver =
-            ParamUtil.getString(actionRequest, "useAddressResolver");
+        String useAddressResolver = ParamUtil.getString(actionRequest,
+                "useAddressResolver");
         String useDivIcon = ParamUtil.getString(actionRequest, "useDivIcon");
-        String useGlobalJQuery =
-            ParamUtil.getString(actionRequest, "useGlobalJQuery");
+        String useGlobalJQuery = ParamUtil.getString(actionRequest,
+                "useGlobalJQuery");
 
         // Append markers from file to markers from request
-        markerLabels =
-            (String[]) ArrayUtil.append(markerLabels, labels.toArray());
-        markerLocations =
-            (String[]) ArrayUtil.append(markerLocations, locations.toArray());
+        markerLabels = (String[]) ArrayUtil.append(markerLabels,
+                labels.toArray());
+        markerLocations = (String[]) ArrayUtil.append(markerLocations,
+                locations.toArray());
 
         setPreference(actionRequest, "addressResolverURL", addressResolverURL);
-        setPreference(actionRequest, "claim", claim);
+        setPreference(actionRequest, "claim", mapToXML(claimMap, "claim"));
         setPreference(actionRequest, "customLatLon", customLatLon);
-        setPreference(
-            actionRequest, "customAddressAndLabel", customAddressAndLabel);
+        setPreference(actionRequest, "customAddressAndLabel",
+                customAddressAndLabel);
         setPreference(actionRequest, "dataTableColumnDefs", dataTableColumnDefs);
         setPreference(actionRequest, "dataTableColumns", dataTableColumns);
         setPreference(actionRequest, "dataTablePaging", dataTablePaging);
@@ -138,9 +136,8 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "markerIconConfig", markerIconConfig);
         setPreference(actionRequest, "markerLabels", markerLabels);
         setPreference(actionRequest, "markerLocations", markerLocations);
-        setPreference(
-            actionRequest, "placeholderKeyword",
-            mapToXML(placeholderKeywordMap, "placeholderKeyword"));
+        setPreference(actionRequest, "placeholderKeyword",
+                mapToXML(placeholderKeywordMap, "placeholderKeyword"));
         setPreference(actionRequest, "showTable", showTable);
         setPreference(actionRequest, "tilesCopyright", tilesCopyright);
         setPreference(actionRequest, "tilesURL", tilesURL);
@@ -152,17 +149,16 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
     }
 
-    private static String mapToXML(
-        Map<Locale, String> localizationMap, String key) {
+    private static String mapToXML(Map<Locale, String> localizationMap,
+            String key) {
 
         String xml = StringPool.BLANK;
 
-        String defaultLanguageId =
-            LocaleUtil.toLanguageId(LocaleUtil.getDefault());
+        String defaultLanguageId = LocaleUtil.toLanguageId(LocaleUtil
+                .getDefault());
 
-        xml =
-            LocalizationUtil.updateLocalization(
-                localizationMap, xml, key, defaultLanguageId);
+        xml = LocalizationUtil.updateLocalization(localizationMap, xml, key,
+                defaultLanguageId);
 
         return xml;
     }
