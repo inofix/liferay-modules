@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-09-28 18:35 by Christian Berndt
-    Version:    1.2.5
+    Modified:   2016-09-30 16:08 by Christian Berndt
+    Version:    1.2.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -163,76 +163,128 @@
             table.columns().search( "" ).draw();
 
         });
+        
              
-        
-        <c:if test="<%= Validator.isNotNull(locationsURL) %>">
-        
-        loadData();
+        <c:choose>        
+	        <c:when test="<%= Validator.isNotNull(locationsURL) %>">
+	        	
+		        loadData();
 
-        function loadData(){
-                        
-            var namesRequest = $.getJSON( "<%= locationsURL %>", function( data ) { /* debug messages */ });
-            var labels = []; 
-            var latLons = [];
-            
-            namesRequest.done(function() { // if "data/cities.json" were successfully loaded ...
-                            
-                var data = namesRequest.responseJSON; 
-                
+		        function loadData(){
+		                        
+		            var namesRequest = $.getJSON( "<%= locationsURL %>", function( data ) { /* debug messages */ });
+		            var labels = []; 
+		            var latLons = [];
+		            
+		            namesRequest.done(function() { // if "data/cities.json" were successfully loaded ...
+		                            
+		                var data = namesRequest.responseJSON; 
+		                
+		
+		                if (useAddressResolver) {
+		                    console.log('TODO: useAddressResolver');                    
+		                } else {
+		                    
+		                    for ( var i = 0; i < data.length; i++ ){ 
+		                        
+		                        var address = data[i].name; 
+		                        var label = data[i].name;
+		                        var latLon = data[i].latLon;
+		                        
+		                        <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
+		                            <%= customAddressAndLabel %>
+		                        </c:if>
+		                        
+		                        <c:if test="<%= Validator.isNotNull(customLatLon) %>">
+		                            <%= customLatLon %>
+		                        </c:if>
+		                                                
+		                        <%
+		                            for (int i=0; i<filterColumns.length; i++) {
+		                                if (Validator.isNotNull(filterColumns[i])) {
+		                        %>
+		                            var filter<%= i %> = <%= filterColumns[i] %>;
+		                        <%
+		                                }
+		                            }
+		                        %>
+		
+		                        var row = {
+		                            "0": label
+		                            , "1": latLon[0]
+		                            , "2": latLon[1] 
+		                        <%
+		                            for (int i=0; i<filterColumns.length; i++) {
+		                                if (Validator.isNotNull(filterColumns[i])) {
+		                        %>
+		                            , "<%= i + 3 %>": filter<%= i %>
+		                        <%
+		                                }
+		                            }
+		                        %>                            
+		                        };
+		                       
+		                        table.row.add(row);
+		                    }
+		                    
+		                    table.draw();
+		                    
+		                }
+		            }); 
+		        }
+	            
+	        </c:when>
+	        
+	        <c:otherwise>
 
-                if (useAddressResolver) {
-                    console.log('TODO: useAddressResolver');                    
-                } else {
-                    
-                    for ( var i = 0; i < data.length; i++ ){ 
-                        
-                        var address = data[i].name; 
-                        var label = data[i].name;
-                        var latLon = data[i].latLon;
-                        
-                        <c:if test="<%= Validator.isNotNull(customAddressAndLabel) %>">
-                            <%= customAddressAndLabel %>
-                        </c:if>
-                        
-                        <c:if test="<%= Validator.isNotNull(customLatLon) %>">
-                            <%= customLatLon %>
-                        </c:if>
-                                                
-                        <%
-                            for (int i=0; i<filterColumns.length; i++) {
-                                if (Validator.isNotNull(filterColumns[i])) {
-                        %>
-                            var filter<%= i %> = <%= filterColumns[i] %>;
-                        <%
-                                }
-                            }
-                        %>
+	        <% 
+	           for (int i=0; i<markerLabels.length; i++) { 
+	               
+	               String markerLocation = markerLocations[i]; 
+	                           
+	               if (Validator.isNotNull(markerLocation)) {
+	                   
+	                   if (markerLocation.startsWith("[")
+	                       && markerLocation.endsWith("]")) {
+	                       
+	                       // Location is configured in array syntax
+	                   
+	        %>
+	            L.marker(<%= markerLocation %>, {icon: markerIcon}).addTo(map)
+	                .bindPopup('<%= markerLabels[i] %>');   
+	        <%     
+	                   } else {
+	                       
+	                       // Location is given via the address
 
-                        var row = {
-                            "0": label
-                            , "1": latLon[0]
-                            , "2": latLon[1] 
-                        <%
-                            for (int i=0; i<filterColumns.length; i++) {
-                                if (Validator.isNotNull(filterColumns[i])) {
-                        %>
-                            , "<%= i + 3 %>": filter<%= i %>
-                        <%
-                                }
-                            }
-                        %>                            
-                        };
-                       
-                        table.row.add(row);
-                    }
-                    
-                    table.draw();
-                    
-                }
-            }); 
-        }
-            
-        </c:if>
+	                       if (Validator.isNotNull(addressResolverURL)) {
+	                          
+	                           String resolverURL = addressResolverURL + markerLocation;
+	                           
+            %>
+	                           $.getJSON('<%= resolverURL %>', function( data ) {
+	                               
+	                               if (data[0]) {
+	                               
+	                                   var lat = data[0].lat; 
+	                                   var lon = data[0].lon;
+	                                   
+	                                   L.marker([lat, lon], {icon: markerIcon}).addTo(map)
+	                                       .bindPopup('<%= markerLabels[i] %>');
+	                                   
+	                               }
+	                           });                     
+	                       
+            <%
+	                       
+	                       }
+	                   }
+	               }
+	           }
+	        %>
+	        
+	        </c:otherwise>	        
+        </c:choose>
         
         var considerBounds = false;
 
