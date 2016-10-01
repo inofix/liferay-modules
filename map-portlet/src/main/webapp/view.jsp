@@ -2,8 +2,8 @@
     view.jsp: Default view of the map-portlet.
     
     Created:    2016-03-02 00:07 by Christian Berndt
-    Modified:   2016-09-30 16:08 by Christian Berndt
-    Version:    1.2.6
+    Modified:   2016-10-01 13:31 by Christian Berndt
+    Version:    1.2.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -43,20 +43,24 @@
 
 <div>
     <div class="table-wrapper">
-        <form id="filter">
+    
+        <aui:form name="fm" cssClass="filter" onSubmit="event.preventDefault();">
         
             <fieldset>
-                <input id="keyword" class="keyword" type="text" placeholder="<%= (String)placeholderKeywordMap.get(locale) %>">
+                <aui:input name="keywords" label="" placeholder="<%= (String)placeholderKeywordMap.get(locale) %>" inlineField="true"/>            
         <%
            for (int i=0; i<filterColumns.length; i++) {
         %>          
-                <input id="filter<%= i %>" type="text" data-value placeholder="<liferay-ui:message key="<%= filterPlaceholders[i] %>"/>">
+                <input id="<portlet:namespace/>filter<%= i %>" type="text" data-value placeholder="<liferay-ui:message key="<%= filterPlaceholders[i] %>"/>">
         <%
            }
         %>
-                <aui:button icon="icon-remove" cssClass="reset-button" />
-            </fieldset>            
-        </form>
+        
+              <aui:button icon="icon-remove" name="clear"/>
+        
+           </fieldset>        
+        </aui:form>
+        
         <table id="table" class="display">
             <thead>
                 <tr>
@@ -109,7 +113,7 @@
         var locations = [];
         
         var bodyOffset = $('#site-navigation').height();
-        var filterHeight = $('#filter').height();
+        var filterHeight = $('#<portlet:namespace/>fm').height();
         var headHeight = $('#site-navigation').height();
 
         var resolverURL = "<%= addressResolverURL %>";
@@ -147,23 +151,7 @@
             scrollY : tableHeight,
             paging : <%= dataTablePaging %>
                 
-        });
-        
-        $( "#filter .reset-button" ).click(function() {
-            $( "#keyword" ).val("");
-            $( "#keyword" ).trigger( "keyup" );
-    <%
-        for (int i=0; i<filterColumns.length; i++) {
-    %>           
-             $( "#filter<%= i %>").val(""); 
-    <%
-        }
-    %>
-            table.search( "" );
-            table.columns().search( "" ).draw();
-
-        });
-        
+        });        
              
         <c:choose>        
 	        <c:when test="<%= Validator.isNotNull(locationsURL) %>">
@@ -293,16 +281,31 @@
         var minLong = parseFloat(-180);
         var maxLong = parseFloat(180);
 
-        // Disable the filter form's default 
-        // submit behaviour.
-        $("#filter").submit(function(e){
-            return false;
+        // Reset the search form
+        $("#<portlet:namespace/>clear").bind("click", function() {
+            clearForm();  
         });
         
+        function clearForm() {
+        	        	
+            $( "#<portlet:namespace/>keywords" ).val("");
+        <%
+            for (int i=0; i<filterColumns.length; i++) {
+        %>           
+                 $( "#<portlet:namespace/>filter<%= i %>").val(""); 
+                 $( "#<portlet:namespace/>filter<%= i %>").attr("data-value", "");
+        <%
+            }
+        %>
+            searchTable(); 
+        }        
         
-        // Filter the table by keyword
-        $("#filter .keyword").bind("keyup", function() {
-        
+        // Search the table
+        function searchTable() {
+        	                        
+            table.search('');
+            table.columns().search('');
+
             // Ignore and reset the map bounds 
             // when the keyword field is used.
             considerBounds = false;
@@ -311,11 +314,30 @@
             maxLat = parseFloat(90);
             minLong = parseFloat(-180);
             maxLong = parseFloat(180);
-
-            table.search( this.value ).draw();
-
-        });
+            
+            var keywords = $("#<portlet:namespace/>keywords").val(); 
+            
+            table.search(keywords);
+            
+        <%
+            for (int i=0; i<filterColumns.length; i++) {
+        %> 
+          
+	        table.columns(<%= i + 3 %>).search($("#<portlet:namespace/>filter<%= i %>").attr("data-value"));
         
+        <%
+            }
+        %>            
+
+            table.draw(); 
+        
+        }        
+                
+        // Filter the table by keyword
+        $("#<portlet:namespace/>keywords").bind("keyup", function() {
+            searchTable();  
+        });
+                
         // Load data for the select filters and filter the table
         <%
             for (int i=0; i<filterColumns.length; i++) {
@@ -339,21 +361,30 @@
                         }
                     });
                                         
-                    $( "#filter<%= i %>" ).autocomplete({
-                        minLength: 0,
-                        source: values,
-                        select: function( event, ui ) {
+                    $( "#<portlet:namespace/>filter<%= i %>" ).autocomplete({
+                        minLength: 0
+                        , source: values
+                        , select: function( event, ui ) {
                           
                             event.preventDefault();
                           
-                            $("#filter<%= i %>").val(ui.item.label);
-                            $("#filter<%= i %>").attr("data-value", ui.item.value);
-                                                        
-                            table.columns(<%= i + 3 %>).search(ui.item.value).draw();                            
+                            $("#<portlet:namespace/>filter<%= i %>").val(ui.item.label);
+                            $("#<portlet:namespace/>filter<%= i %>").attr("data-value", ui.item.value);
+                            
+                            searchTable(); 
+                            
                         } 
                         , delay: 500
-                        , open: function() { $(this).attr('state', 'open'); }
-                        , close: function () { $(this).attr('state', 'closed'); }                          
+                        , open: function() { 
+                        	$(this).attr('state', 'open');
+                        	if ($(this).val() == "") {
+                        		$(this).attr("data-value", "");
+                        		searchTable(); 
+                        	}                    	
+                       	}
+                        , close: function () { 
+                        	$(this).attr('state', 'closed'); 
+                       	}                          
                     }).focus(function () {
                         if ($(this).attr('state') != 'open') {
                             $(this).autocomplete("search");
@@ -366,27 +397,16 @@
             }
         %>
         
-        // Redraw the map whenever the table is searched.
-        table.on("search", function () {
-
-            locations = table.rows({search: "applied"}).data();
-          
-            updateMarkers(locations);
-
-            if (!considerBounds) {
-
-                // when the search is initiated from the 
-                // filter form, fit the map to found locations.
-                map.fitBounds(locationLayer.getBounds());
-
-            }
-
-        });
-        
         table.on("draw.dt", function() {
+        	
+	         locations = table.rows({search: "applied"}).data();
+	            
+	         updateMarkers(locations);
+        	
             $("#table_info").css("padding-left", margin); 
             $("#table_info").css("opacity", "1"); 
-            $("td").css("padding-left", margin); 
+            $("td").css("padding-left", margin);
+            
         });
       
         // Custom filter method which filters the 
@@ -447,7 +467,7 @@
                 margin = 15;
             }
 
-            $("#filter, #locations_info, tbody h3").css("padding-left", margin); 
+            $("#<portlet:namespace/>fm, #locations_info, tbody h3").css("padding-left", margin); 
           
             map.invalidateSize(true);
           
@@ -489,7 +509,15 @@
             if (markers.length > 0) {
                 locationLayer = L.featureGroup(markers);        
                 locationLayer.addTo(map);
-            }    
+            }  
+            
+            if (!considerBounds) {
+
+                // when the search is initiated from the 
+                // filter form, fit the map to found locations.
+                map.fitBounds(locationLayer.getBounds());
+
+            }            
         }        
         
     });   
