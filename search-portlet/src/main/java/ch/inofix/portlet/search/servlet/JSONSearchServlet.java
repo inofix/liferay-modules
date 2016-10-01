@@ -1,5 +1,14 @@
 package ch.inofix.portlet.search.servlet;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.time.StopWatch;
+
 import ch.inofix.portlet.search.util.SearchUtil;
 
 import com.liferay.portal.kernel.log.Log;
@@ -31,20 +40,11 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.time.StopWatch;
-
 /**
  * @author Christian Berndt
  * @created 2016-05-20 16:41
- * @modified 2016-07-19 21:47
- * @version 1.0.1
+ * @modified 2016-10-01 11:29
+ * @version 1.0.2
  */
 @SuppressWarnings("serial")
 public class JSONSearchServlet extends HttpServlet {
@@ -56,6 +56,7 @@ public class JSONSearchServlet extends HttpServlet {
     /**
      * @since 1.0.0
      */
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
@@ -63,13 +64,13 @@ public class JSONSearchServlet extends HttpServlet {
 
         try {
             themeDisplay = initThemeDisplay(request, response);
-        } catch (Exception e1) {
-            _log.error(e1);
+        } catch (Exception e) {
+            _log.error(e);
         }
 
         if (themeDisplay == null) {
             return;
-        }        
+        }
 
         String classNames[] = ParamUtil
                 .getParameterValues(request, "className");
@@ -101,10 +102,9 @@ public class JSONSearchServlet extends HttpServlet {
             }
 
             Hits hits = indexer.search(searchContext);
-            _log.info("hits.getLength() = " + hits.getLength()); 
-            
+
             if (_log.isDebugEnabled()) {
-                _log.info("Search took " + stopWatch.getTime() + " ms");
+                _log.debug("Search took " + stopWatch.getTime() + " ms");
             }
 
             if (_log.isDebugEnabled()) {
@@ -127,7 +127,7 @@ public class JSONSearchServlet extends HttpServlet {
     /**
      * Set up a minimal themeDisplay with the attributes required by the
      * SearchContextFactory.
-     * 
+     *
      * @param request
      * @param response
      * @return
