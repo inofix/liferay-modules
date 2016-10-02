@@ -10,7 +10,7 @@
 	<artifactId>map-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>Map Portlet</name>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5</version>
 	<build>
 		<plugins>
 			<!-- Read properties from dev.properties in -->
