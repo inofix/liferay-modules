@@ -3,21 +3,22 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-09-23 23:26 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-10-04 21:29 by Christian Berndt
+    Version:    1.0.8
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>0.9.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
     <url>http://www.inofix.ch</url>
-    
+
     <scm>
         <url>https://github.com/inofix/liferay-modules</url>
         <connection>scm:git:https://github.com/inofix/liferay-modules</connection>
@@ -27,11 +28,11 @@
 
     <properties>
 
-		<!-- liferay.base.dir is read by the modules from -->
-		<!-- dev.properties. Please create this file and  -->
-		<!-- adjust it to your personal environment.      -->
-<!--         <liferay.base.dir> -->
-<!--         </liferay.base.dir> -->
+        <!-- liferay.base.dir is read by the modules from -->
+        <!-- dev.properties. Please create this file and -->
+        <!-- adjust it to your personal environment. -->
+        <!-- <liferay.base.dir> -->
+        <!-- </liferay.base.dir> -->
 
         <liferay.app.server.deploy.dir>
             ${liferay.base.dir}/${tomcat-version}/webapps
@@ -52,7 +53,7 @@
         <liferay.version>6.1.2</liferay.version>
 
         <liferay.maven.plugin.version>6.1.2</liferay.maven.plugin.version>
-        
+
         <properties.plugin.version>1.0.0</properties.plugin.version>
 
     </properties>
@@ -98,7 +99,7 @@
             <version>${liferay.version}</version>
         </dependency>
     </dependencies>
-    
+
     <modules>
         <module>asset-categories-summary-hook</module>
         <module>asset-display-hook</module>
@@ -107,50 +108,13 @@
         <module>display-page-hook</module>
         <module>inofix-theme</module>
         <module>portlettitle-hook</module>
+        <module>slider-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
     </modules>
-    
+
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
     </issueManagement>
-<!--     <build> -->
-<!--         <pluginManagement> -->
-<!--             <plugins> -->
-<!--                 This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
-<!--                 <plugin> -->
-<!--                     <groupId>org.eclipse.m2e</groupId> -->
-<!--                     <artifactId>lifecycle-mapping</artifactId> -->
-<!--                     <version>1.0.0</version> -->
-<!--                     <configuration> -->
-<!--                         <lifecycleMappingMetadata> -->
-<!--                             <pluginExecutions> -->
-<!--                                 <pluginExecution> -->
-<!--                                     <pluginExecutionFilter> -->
-<!--                                         <groupId> -->
-<!--                                             org.codehaus.mojo -->
-<!--                                         </groupId> -->
-<!--                                         <artifactId> -->
-<!--                                             properties-maven-plugin -->
-<!--                                         </artifactId> -->
-<!--                                         <versionRange> -->
-<!--                                             [1.0-alpha-2,) -->
-<!--                                         </versionRange> -->
-<!--                                         <goals> -->
-<!--                                             <goal> -->
-<!--                                                 read-project-properties -->
-<!--                                             </goal> -->
-<!--                                         </goals> -->
-<!--                                     </pluginExecutionFilter> -->
-<!--                                     <action> -->
-<!--                                         <ignore></ignore> -->
-<!--                                     </action> -->
-<!--                                 </pluginExecution> -->
-<!--                             </pluginExecutions> -->
-<!--                         </lifecycleMappingMetadata> -->
-<!--                     </configuration> -->
-<!--                 </plugin> -->
-<!--             </plugins> -->
-<!--         </pluginManagement> -->
-<!--     </build> -->
+
 </project>
