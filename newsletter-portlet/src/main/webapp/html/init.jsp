@@ -8,10 +8,14 @@
 
 <%-- Import required classes --%>
 
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+
 <%@page import="javax.portlet.PortletPreferences"%>
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 
 
 <%-- Import required taglibs --%>

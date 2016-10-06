@@ -1,0 +1,26 @@
+
+<h1>Templates</h1>
+
+
+
+script = <strong><%=script%></strong>
+<br />
+
+<%
+        String langType = TemplateConstants.LANG_TYPE_FTL;
+        String languageId = LanguageUtil.getLanguageId(locale);
+        Map<String, Object> contextObjects = new HashMap<String, Object>();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("firstname", "Christian");
+        map.put("lastname", "Berndt");
+        map.put("salutation", "Hallo");
+        contextObjects.put("contact", map);
+        String viewMode = Constants.VIEW;
+        String xml = "";
+
+        String content =
+            TemplateUtil.transform(
+                themeDisplay, contextObjects, script, langType);
+    %>
+
+content = <%=content%>
