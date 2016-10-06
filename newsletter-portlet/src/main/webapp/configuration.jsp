@@ -32,8 +32,8 @@
         <liferay-ui:panel id="newsletterSettingsPanel" title="settings"
             extended="true">
 
-            <aui:input name="template" value="<%=template%>"
-                type="textarea" helpMessage="template-help" />
+            <aui:input name="script" value="<%=script%>"
+                type="textarea" helpMessage="script-help" />
 
         </liferay-ui:panel>
     </liferay-ui:panel-container>

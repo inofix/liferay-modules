@@ -33,5 +33,5 @@
 <theme:defineObjects />
 
 <%
-    String template = portletPreferences.getValue("template", "");
+    String script = portletPreferences.getValue("script", "");
 %>
