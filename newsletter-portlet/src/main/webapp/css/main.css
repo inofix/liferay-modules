@@ -1,0 +1,21 @@
+/**
+ * main.css: css specific to the timetracker-portlet.
+ *
+ * Created:     2016-10-06 16:54 by Christian Berndt
+ * Modified:    2016-10-06 16:54 by Christian Berndt
+ * Version:     1.0.0
+ * 
+ */
+.aui {
+ 
+    dl.build-info dfn, 
+    dl.build-info dt {
+        display: inline;
+        font-weight: normal;
+        font-style: normal;
+    }
+    
+    dl.build-info dfn {
+        margin-right: 20px;
+    }
+}
