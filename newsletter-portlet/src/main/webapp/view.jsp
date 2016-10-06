@@ -6,13 +6,9 @@
     Version:     1.0.1
  --%>
 
-<%@page import="com.liferay.portal.security.auth.PrincipalException"%>
-<%@page import="ch.inofix.portlet.newsletter.util.TemplateUtil"%>
-
-<%@page import="com.liferay.portal.kernel.template.TemplateConstants"%>
-<%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
-
 <%@ include file="/html/init.jsp"%>
+
+<%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
@@ -25,7 +21,6 @@
 %>
 
 <div id="<portlet:namespace />newsletterContainer">
-
 
     <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
     
@@ -42,7 +37,8 @@
                 <%@include file="/html/newsletters.jspf"%>
         </c:when>
         
-        <c:when test='<%=tabs1.equals("templates")%>'>           
+        <c:when test='<%=tabs1.equals("templates")%>'>
+<%--             <liferay-util:include servletContext="<%=session.getServletContext()%>" page="/html/templates.jspf"/> --%>
             <%@include file="/html/templates.jspf"%>
         </c:when>
         
@@ -51,7 +47,9 @@
         </c:when>              
 
         <c:otherwise>
+               
             <h1>Subscribers</h1>
+        
         </c:otherwise>
         
     </c:choose>
