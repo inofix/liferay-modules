@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="ch.inofix.portlet.newsletter.model.Mailing">
+		<field name="uuid" type="String" />
+		<field name="mailingId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="title" type="String" />
+		<field name="publishDate" type="String" />
+		<field name="newsletterId" type="long" />
+		<field name="articleId" type="long" />
+	</model>
+	<model name="ch.inofix.portlet.newsletter.model.Newsletter">
+		<field name="uuid" type="String" />
+		<field name="newsletterId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="title" type="String" />
+		<field name="template" type="String" />
+	</model>
+	<model name="ch.inofix.portlet.newsletter.model.Subscriber">
+		<field name="uuid" type="String" />
+		<field name="subscriberId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="email" type="String" />
+		<field name="firstname" type="String" />
+		<field name="middlename" type="String" />
+		<field name="lastname" type="String" />
+		<field name="salutation" type="String" />
+		<field name="title" type="String" />
+		<field name="newsletterId" type="long" />
+	</model>
+</model-hints>
