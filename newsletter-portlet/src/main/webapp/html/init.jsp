@@ -2,12 +2,12 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-07 14:30 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2016-10-08 00:28 by Christian Berndt
+    Version:     1.0.2
 --%>
 
 <%-- Import required classes --%>
-
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 
@@ -16,6 +16,7 @@
 
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.util.PortalUtil"%>
 
 
 <%-- Import required taglibs --%>
@@ -38,5 +39,6 @@
 
 <%
     String className = portletPreferences.getValue("className", "ch.inofix.portlet.contact.model.Contact");
+    String currentURL = PortalUtil.getCurrentURL(request);
     String script = portletPreferences.getValue("script", "");
 %>

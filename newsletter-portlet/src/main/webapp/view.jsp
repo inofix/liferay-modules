@@ -8,12 +8,17 @@
 
 <%@ include file="/html/init.jsp"%>
 
+<%@page import="ch.inofix.portlet.newsletter.security.permission.ActionKeys"%>
+<%@page import="ch.inofix.portlet.newsletter.service.permission.NewsletterPortletPermission"%>
+
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.log.Log"%>
+<%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.search.BooleanClause"%>
 <%@page import="com.liferay.portal.kernel.search.BooleanClauseFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.BooleanQuery"%>
 <%@page import="com.liferay.portal.kernel.search.BooleanQueryFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.FacetedSearcher"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
 <%@page import="com.liferay.portal.kernel.search.Indexer"%>
@@ -24,6 +29,7 @@
 <%@page import="com.liferay.portal.kernel.search.facet.AssetEntriesFacet"%>
 <%@page import="com.liferay.portal.kernel.search.facet.RangeFacet"%>
 <%@page import="com.liferay.portal.kernel.search.facet.ScopeFacet"%>
+<%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
@@ -92,7 +98,52 @@
     <c:choose>
 
         <c:when test='<%=tabs1.equals("newsletters")%>'>
-            <%@include file="/html/newsletters.jspf"%>
+        
+            <portlet:actionURL var="addNewsletterURL" name="editNewsletter"
+                windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+                <portlet:param name="mvcPath" value="/html/edit_newsletter.jsp" />
+                <portlet:param name="redirect" value="<%= currentURL %>" />
+                <portlet:param name="windowId" value="editNewsletter" />
+            </portlet:actionURL>
+
+            <c:if test='<%=NewsletterPortletPermission.contains(
+                                permissionChecker, scopeGroupId,
+                                ActionKeys.ADD_NEWSLETTER)%>'>
+                <%
+                    String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "editNewsletter', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addNewsletterURL) + "'});";
+                %>
+
+                <aui:a href="<%=taglibAddURL%>"
+                    cssClass="btn btn-primary add-newsletter">
+                    <liferay-ui:message key="add-newsletter" />
+                </aui:a>
+
+            </c:if>
+            
+            <liferay-ui:search-container emptyResultsMessage="there-are-no-newsletters">
+                <liferay-ui:search-container-results 
+                    total="<%= 0 %>" 
+                    results="<%= new ArrayList<Document>() %>"/>
+                    
+                <liferay-ui:search-container-row
+                    className="com.liferay.portal.kernel.search.Document"
+                    modelVar="document">
+
+                    <liferay-ui:search-container-column-text name="name"
+                        orderable="true" orderableProperty="fullName"
+                        value='<%=document.get("fullName")%>' />
+
+                    <liferay-ui:search-container-column-text
+                        name="email" orderable="true"
+                        orderableProperty="email"
+                        value='<%=document.get("email")%>' />
+
+                </liferay-ui:search-container-row>
+
+                <liferay-ui:search-iterator />                    
+            </liferay-ui:search-container>
+
+            <%--             <%@include file="/html/newsletters.jspf"%> --%>
         </c:when>
 
         <c:when test='<%=tabs1.equals("templates")%>'>
