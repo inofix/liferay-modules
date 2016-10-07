@@ -8,16 +8,69 @@
 
 <%@ include file="/html/init.jsp"%>
 
+<%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.log.Log"%>
+<%@page import="com.liferay.portal.kernel.search.FacetedSearcher"%>
+<%@page import="com.liferay.portal.kernel.search.Hits"%>
+<%@page import="com.liferay.portal.kernel.search.Indexer"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContext"%>
+<%@page import="com.liferay.portal.kernel.search.Sort"%>
+<%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
+<%@page import="com.liferay.portal.kernel.search.facet.AssetEntriesFacet"%>
+<%@page import="com.liferay.portal.kernel.search.facet.ScopeFacet"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
-    String tabs1 = ParamUtil.getString(request, "tabs1", "subscribers");  
-    
+    String[] classNames = new String[] {className}; 
+    int delta = ParamUtil.getInteger(request, "delta", 20);
+    int idx = ParamUtil.getInteger(request, "cur");
+    String keywords = ParamUtil.getString(request, "keywords");
+    String orderByCol =
+        ParamUtil.getString(request, "orderByCol", "name");
+    String orderByType =
+        ParamUtil.getString(request, "orderByType", "asc");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "subscribers");
+
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("mvcPath", "/view.jsp");
-    portletURL.setParameter("backURL", backURL); 
+    portletURL.setParameter("backURL", backURL);
+
+    Log log = LogFactoryUtil.getLog("docroot.html.view.jsp");
+
+    if (idx > 0) {
+        idx = idx - 1;
+    }
+    int start = delta * idx;
+    int end = delta * idx + delta;
+
+    SearchContext searchContext =
+        SearchContextFactory.getInstance(request);
+
+    boolean reverse = "desc".equals(orderByType);
+
+    Sort sort = new Sort(orderByCol, reverse);
+
+    searchContext.setEntryClassNames(classNames);
+    searchContext.setKeywords(keywords);
+    searchContext.setAttribute("paginationType", "more");
+    searchContext.setStart(start);
+    searchContext.setEnd(end);
+    searchContext.setSorts(sort);
+    
+    Facet assetEntriesFacet = new AssetEntriesFacet(searchContext);
+    assetEntriesFacet.setStatic(true);
+    searchContext.addFacet(assetEntriesFacet);
+    
+    Facet scopeFacet = new ScopeFacet(searchContext);
+    scopeFacet.setStatic(true);
+    searchContext.addFacet(scopeFacet);
+
+    Indexer indexer = FacetedSearcher.getInstance();
+    
+    Hits hits = indexer.search(searchContext);
 %>
 
 <div id="<portlet:namespace />newsletterContainer">
@@ -44,14 +97,37 @@
         
         <c:when test='<%=tabs1.equals("mailings")%>'>           
             <%@include file="/html/mailings.jspf"%>
-        </c:when>              
+        </c:when>
 
         <c:otherwise>
-               
-            <h1>Subscribers</h1>
-        
+
+            <liferay-ui:search-container>
+                <liferay-ui:search-container-results
+                    results="<%=hits.toList()%>"
+                    total="<%=hits.getLength()%>" />
+
+                <liferay-ui:search-container-row
+                    className="com.liferay.portal.kernel.search.Document"
+                    modelVar="document">
+
+                    <liferay-ui:search-container-column-text name="name"
+                        orderable="true"
+                        orderableProperty="fullName"                        
+                        value='<%=document.get("fullName")%>' />
+
+                    <liferay-ui:search-container-column-text name="email"
+                        orderable="true"
+                        orderableProperty="email"
+                        value='<%=document.get("email")%>' />
+
+                </liferay-ui:search-container-row>
+                
+                <liferay-ui:search-iterator />             
+
+            </liferay-ui:search-container>
+
         </c:otherwise>
-        
+
     </c:choose>
 
     <hr>

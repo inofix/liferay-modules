@@ -11,8 +11,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 /**
  * @author Christian Berndt
  * @created 2016-10-05 15:38
- * @modified 2016-10-06 17:35
- * @version 1.0.1
+ * @modified 2016-10-07 14:27
+ * @version 1.0.2
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -22,8 +22,10 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         ActionResponse actionResponse)
         throws Exception {
 
+        String className = ParamUtil.getString(actionRequest, "className");
         String script = ParamUtil.getString(actionRequest, "script");
 
+        setPreference(actionRequest, "className", className);
         setPreference(actionRequest, "script", script);
 
         super.processAction(portletConfig, actionRequest, actionResponse);

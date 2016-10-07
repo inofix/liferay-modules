@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-05 15:44 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2016-10-07 14:30 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 <%-- Import required classes --%>
@@ -37,5 +37,6 @@
 <theme:defineObjects />
 
 <%
+    String className = portletPreferences.getValue("className", "ch.inofix.portlet.contact.model.Contact");
     String script = portletPreferences.getValue("script", "");
 %>
