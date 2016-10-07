@@ -3,8 +3,8 @@
     newsletter-portlet.
 
     Created:    2016-10-05 15:43 by Christian Berndt
-    Modified:   2016-10-05 15:43 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-10-07 14:27 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -29,13 +29,22 @@
     <liferay-ui:panel-container id="newsletterSettingsPanelContainer"
         persistState="<%=true%>">
 
-        <liferay-ui:panel id="newsletterSettingsPanel" title="settings"
-            extended="true">
+        <liferay-ui:panel id="newsletterSubscribersPanel"
+            title="subscribers" extended="true">
 
-            <aui:input name="script" value="<%=script%>"
-                type="textarea" helpMessage="script-help" />
+            <aui:input name="className" value="<%=className%>"
+                helpMessage="class-name-help" />
 
         </liferay-ui:panel>
+
+        <liferay-ui:panel id="newsletterTemplatePanel" title="template"
+            extended="true">
+
+            <aui:input name="script" value="<%=script%>" type="textarea"
+                helpMessage="script-help" />
+
+        </liferay-ui:panel>
+
     </liferay-ui:panel-container>
 
     <aui:button-row>
