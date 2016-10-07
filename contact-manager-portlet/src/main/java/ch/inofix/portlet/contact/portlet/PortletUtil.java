@@ -10,31 +10,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.contact.ImageFileFormatException;
 import ch.inofix.portlet.contact.KeyFileFormatException;
-import ch.inofix.portlet.contact.NoSuchContactException;
 import ch.inofix.portlet.contact.SoundFileFormatException;
-import ch.inofix.portlet.contact.model.Contact;
-import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
-import ch.inofix.portlet.contact.service.ContactServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
 
-import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.parameter.AddressType;
@@ -91,11 +83,11 @@ import ezvcard.util.DataUri;
 /**
  * Utility methods used by the ContactManagerPortlet. Based on the model of the
  * ActionUtil of Liferay proper.
- * 
+ *
  * @author Christian Berndt
  * @created 2015-05-16 15:31
- * @modified 2015-07-04 14:47
- * @version 1.1.5
+ * @modified 2016-10-07 13:13
+ * @version 1.1.6
  *
  */
 public class PortletUtil {
@@ -104,7 +96,7 @@ public class PortletUtil {
 	private static Log log = LogFactoryUtil.getLog(PortletUtil.class.getName());
 
 	/**
-	 * 
+	 *
 	 * @param i
 	 * @return
 	 * @since 1.0.4
@@ -125,7 +117,7 @@ public class PortletUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param vCard
 	 * @return
 	 * @since 1.0.9
@@ -765,15 +757,15 @@ public class PortletUtil {
 		}
 
 		if (parameters.containsKey("nickname")) {
-			
-			String[] names = ParamUtil.getParameterValues(request, "nickname"); 
-			
+
+			String[] names = ParamUtil.getParameterValues(request, "nickname");
+
 			Nickname nickname = new Nickname();
 
 			for (String name: names) {
 				nickname.addValue(name);
 			}
-			
+
 			vCard.setNickname(nickname);
 		}
 
@@ -1183,7 +1175,7 @@ public class PortletUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param portletRequest
 	 * @param vCard
 	 * @return
@@ -1202,95 +1194,7 @@ public class PortletUtil {
 	}
 
 	/**
-	 * 
-	 * @param vCards
-	 * @param request
-	 * @return
-	 * @since 1.0.2
-	 * @throws PortalException
-	 * @throws SystemException
-	 */
-	public static String importVcards(List<VCard> vCards,
-			ServiceContext serviceContext) throws PortalException,
-			SystemException {
-
-		long userId = serviceContext.getUserId();
-		long groupId = serviceContext.getScopeGroupId();
-		boolean updateExisting = GetterUtil.getBoolean(
-				serviceContext.getAttribute("updateExisting"), false);
-
-		StringBuilder sb = new StringBuilder();
-
-		Integer numVCards = 0;
-		Integer numImported = 0;
-		Integer numIgnored = 0;
-		Integer numUpdated = 0;
-
-		numVCards = vCards.size();
-
-		for (VCard vCard : vCards) {
-
-			Uid uidObj = vCard.getUid();
-			String uid = null;
-
-			if (Validator.isNotNull(uidObj)) {
-				uid = uidObj.getValue();
-			} else {
-				uid = UUID.randomUUID().toString();
-				uidObj = new Uid(uid);
-				vCard.setUid(uidObj);
-			}
-
-			String[] assetTagNames = getAssetTagNames(vCard);
-
-			serviceContext.setAssetTagNames(assetTagNames);
-
-			String card = Ezvcard.write(vCard).version(VCardVersion.V4_0).go();
-
-			// Only add the contact, if the vCard's uid does not yet exist
-			// in this scope
-			Contact contact = null;
-
-			try {
-				contact = ContactLocalServiceUtil.getContact(groupId, uid);
-			} catch (NoSuchContactException ignore) {
-				// ignore
-			}
-
-			if (contact == null) {
-				ContactServiceUtil.addContact(userId, groupId, card, uid,
-						serviceContext);
-				numImported++;
-			} else {
-
-				if (updateExisting) {
-
-					ContactServiceUtil.updateContact(userId, groupId,
-							contact.getContactId(), card, uid, serviceContext);
-					numUpdated++;
-
-				} else {
-					numIgnored++;
-				}
-			}
-
-		}
-
-		sb.append(translate("found-x-vcards", numVCards));
-		sb.append(" ");
-		sb.append(translate("imported-x-vcards", numImported));
-		sb.append(" ");
-		if (updateExisting) {
-			sb.append(translate("updated-x-vcards", numUpdated));
-		} else {
-			sb.append(translate("ignored-x-vcards", numIgnored));
-		}
-
-		return sb.toString();
-	}
-
-	/**
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 * @since 1.0.2
@@ -1300,7 +1204,7 @@ public class PortletUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @param object
 	 * @return
@@ -1311,7 +1215,7 @@ public class PortletUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @param objects
 	 * @return
