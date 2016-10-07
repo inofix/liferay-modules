@@ -13,8 +13,8 @@
     <version>0.7.6-SNAPSHOT</version>
     <build>
         <plugins>
-			<!-- Read properties from dev.properties in -->
-			<!-- the parent project directory.          -->
+            <!-- Read properties from dev.properties in -->
+            <!-- the parent project directory. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
@@ -115,8 +115,8 @@
                             </addDefaultImplementationEntries>
                         </manifest>
                         <!-- Additional info used by the -->
-                        <!-- BuildInfoTag of Inofix'     -->
-                        <!-- utility taglib.             -->
+                        <!-- BuildInfoTag of Inofix' -->
+                        <!-- utility taglib. -->
                         <manifestEntries>
                             <Implementation-Build>${buildNumber}</Implementation-Build>
                             <Timestamp>${timestamp}</Timestamp>
@@ -129,7 +129,8 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -210,6 +211,12 @@
         </dependency>
 
         <!-- Contact Manager dependencies -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
 
         <!-- vcard support -->
         <dependency>
