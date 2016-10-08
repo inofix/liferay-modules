@@ -48,8 +48,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2015-10-07 22:59
- * @version 1.2.1
+ * @modified 2016-10-08 14:31
+ * @version 1.2.2
  */
 public class ContactManagerPortlet extends MVCPortlet {
 
@@ -259,7 +259,8 @@ public class ContactManagerPortlet extends MVCPortlet {
 
         String[] servletContextNames = new String[] { servletContextName };
 
-        Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+        Map<String, String[]> parameterMap = new HashMap<String, String[]>(
+                actionRequest.getParameterMap());
         parameterMap.put("servletContextNames", servletContextNames);
 
         if (Validator.isNotNull(file)) {
@@ -270,8 +271,9 @@ public class ContactManagerPortlet extends MVCPortlet {
 
             if (vCards.size() > 0) {
 
-                message = PortletUtil.translate(
-                        "found-x-v-cards-the-import-will-finish-in-separate-thread",
+                message = PortletUtil
+                        .translate(
+                                "found-x-v-cards-the-import-will-finish-in-separate-thread",
                                 vCards.size());
 
                 // TODO: use remote service and check permissions
