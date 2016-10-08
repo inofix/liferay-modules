@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
@@ -33,8 +35,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2016-10-07 13:04
- * @modified 2016-10-07 13:04
- * @version 1.0.0
+ * @modified 2016-10-08 14:32
+ * @version 1.0.1
  *
  */
 public class ContactImporter {
@@ -50,17 +52,16 @@ public class ContactImporter {
         User user = UserLocalServiceUtil.getUser(userId);
         serviceContext.setCompanyId(user.getCompanyId());
 
-        // TODO: read from parameterMap
-        boolean updateExisting = true;
+        boolean updateExisting = GetterUtil.getBoolean(ArrayUtil.getValue(
+                parameterMap.get("updateExisting"), 0));
 
         try {
 
-            int numProcessed = 1;
-            // int numImported = 0;
-            // int numIgnored = 0;
-            // int numUpdated = 0;
+            int numProcessed = 0;
+            int numImported = 0;
+            int numIgnored = 0;
+            int numUpdated = 0;
 
-            // TODO:
             StopWatch stopWatch = new StopWatch();
 
             stopWatch.start();
@@ -102,7 +103,7 @@ public class ContactImporter {
                 if (contact == null) {
                     ContactServiceUtil.addContact(userId, groupId, card, uid,
                             serviceContext);
-                    // numImported++;
+                    numImported++;
                 } else {
 
                     if (updateExisting) {
@@ -110,14 +111,14 @@ public class ContactImporter {
                         ContactServiceUtil.updateContact(userId, groupId,
                                 contact.getContactId(), card, uid,
                                 serviceContext);
-                        // numUpdated++;
+                        numUpdated++;
 
                     } else {
-                        // numIgnored++;
+                        numIgnored++;
                     }
                 }
 
-                if (numProcessed % 100 == 0) {
+                if (numProcessed % 100 == 0 && numProcessed > 0) {
 
                     float completed = ((Integer) numProcessed).floatValue()
                             / ((Integer) vCards.size()).floatValue() * 100;
@@ -132,6 +133,10 @@ public class ContactImporter {
             }
 
             _log.info("Import took " + stopWatch.getTime() + " ms");
+            _log.info("Processed " + numProcessed + " cards.");
+            _log.info("Imported " + numImported + " cards.");
+            _log.info("Ignored " + numIgnored + " cards.");
+            _log.info("Updated " + numUpdated + " cards.");
 
         } catch (IOException ioe) {
             _log.error(ioe);

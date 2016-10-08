@@ -17,8 +17,8 @@ import com.liferay.portal.model.BackgroundTask;
 /**
  * @author Christian Berndt
  * @created 2016-10-06 19:48
- * @modified 2016-10-06 19:48
- * @version 1.0.0
+ * @modified 2016-10-08 15:16
+ * @version 1.0.1
  */
 public class ContactImportBackgroundTaskExecutor extends
         BaseBackgroundTaskExecutor {
@@ -34,6 +34,7 @@ public class ContactImportBackgroundTaskExecutor extends
         long groupId = MapUtil.getLong(taskContextMap, "groupId");
         boolean privateLayout = MapUtil.getBoolean(taskContextMap,
                 "privateLayout");
+        @SuppressWarnings("unchecked")
         Map<String, String[]> parameterMap = (Map<String, String[]>) taskContextMap
                 .get("parameterMap");
 

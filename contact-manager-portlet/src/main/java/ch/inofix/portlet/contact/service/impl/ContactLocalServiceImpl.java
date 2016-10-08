@@ -52,8 +52,8 @@ import com.liferay.portlet.asset.model.AssetLinkConstants;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2016-10-06 20:02
- * @version 1.0.7
+ * @modified 2016-10-08 15:14
+ * @version 1.0.8
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -276,6 +276,7 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
         Map<String, Serializable> taskContextMap = new HashMap<String, Serializable>();
         taskContextMap.put("userId", userId);
         taskContextMap.put("groupId", groupId);
+        taskContextMap.put("parameterMap", (Serializable) parameterMap);
         taskContextMap.put("privateLayout", privateLayout);
 
         String[] servletContextNames = parameterMap.get("servletContextNames");
