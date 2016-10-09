@@ -13,10 +13,6 @@
 <%@page import="com.liferay.portal.kernel.search.BooleanQuery"%>
 <%@page import="com.liferay.portal.kernel.search.BooleanQueryFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.FacetedSearcher"%>
-<%@page import="com.liferay.portal.kernel.search.Hits"%>
-<%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
-<%@page import="com.liferay.portal.kernel.search.SearchContext"%>
-<%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
 <%@page import="com.liferay.portal.kernel.search.facet.AssetEntriesFacet"%>
 <%@page import="com.liferay.portal.kernel.search.facet.ScopeFacet"%>
@@ -56,12 +52,8 @@
     Facet assetEntriesFacet = new AssetEntriesFacet(searchContext);
     assetEntriesFacet.setStatic(true);
     searchContext.addFacet(assetEntriesFacet);
-
-    Facet scopeFacet = new ScopeFacet(searchContext);
-    scopeFacet.setStatic(true);
-    searchContext.addFacet(scopeFacet); 
     
-    Hits hits = SubscriberServiceUtil.search(searchContext, start, end);
+    Hits hits = SubscriberServiceUtil.search(themeDisplay.getScopeGroupId(), searchContext, start, end);
 %>
 
 <liferay-ui:search-container emptyResultsMessage="there-are-no-subscribers">

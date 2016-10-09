@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.search.FacetedSearcher;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.facet.Facet;
+import com.liferay.portal.kernel.search.facet.ScopeFacet;
 
 /**
  * The implementation of the subscriber local service.
@@ -28,8 +30,8 @@ import com.liferay.portal.kernel.search.SearchContext;
  *
  * @author Christian Berndt
  * @created 2016-10-09 20:49
- * @modified 2016-10-09 20:49
- * @version 1.0.0
+ * @modified 2016-10-09 23:02
+ * @version 1.0.1
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil
  */
@@ -43,13 +45,17 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
      */
 
     @Override
-    public Hits search(SearchContext searchContext, int start, int end)
-            throws PortalException, SystemException {
+    public Hits search(long groupId, SearchContext searchContext, int start,
+            int end) throws PortalException, SystemException {
 
         _log.info("search()");
 
         searchContext.setStart(start);
         searchContext.setEnd(end);
+
+        Facet scopeFacet = new ScopeFacet(searchContext);
+        scopeFacet.setStatic(true);
+        searchContext.addFacet(scopeFacet);
 
         Indexer indexer = FacetedSearcher.getInstance();
 
