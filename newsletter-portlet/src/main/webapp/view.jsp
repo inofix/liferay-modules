@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2016-10-09 21:26 by Christian Berndt
-    Version:     1.0.7
+    Modified:    2016-10-09 23:04 by Christian Berndt
+    Version:     1.0.8
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -44,6 +44,19 @@
         </c:when>
 
         <c:otherwise>
+        
+            <%
+//                 String vCardGroupId = "E27BDC61-2989-4D44-A303-C79EC33D07D8";
+//                 SearchContext searchContext = SearchContextFactory
+//                         .getInstance(request);
+//                 List<Document> documents = SubscriberServiceUtil
+//                         .getSubscribersFromVCardGroup(
+//                                 themeDisplay.getScopeGroupId(), searchContext,
+//                                 vCardGroupId);
+            %>
+            
+<%--             vCardGroupId = <%= vCardGroupId %> --%>
+        
             <%@include file="/html/subscribers.jspf"%>
         </c:otherwise>
 
