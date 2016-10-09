@@ -52,8 +52,8 @@ import com.liferay.portlet.asset.model.AssetLinkConstants;
  * @see ch.inofix.portlet.contact.service.base.ContactLocalServiceBaseImpl
  * @see ch.inofix.portlet.contact.service.ContactLocalServiceUtil
  * @created 2015-05-07 18:36
- * @modified 2016-10-08 15:14
- * @version 1.0.8
+ * @modified 2016-10-08 17:02
+ * @version 1.0.9
  */
 public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
 
@@ -359,8 +359,7 @@ public class ContactLocalServiceImpl extends ContactLocalServiceBaseImpl {
         Date startDate = null;
         Date endDate = null;
         Date expirationDate = null;
-        // TODO: Is vcard the correct mime-type?
-        String mimeType = "text/vcard";
+        String mimeType = "text/x-vcard";
         String title = contact.getFullName(true);
         String description = contact.getFormattedName();
         String summary = HtmlUtil.extractText(StringUtil.shorten(
