@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2016-10-09 14:57 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2016-10-09 16:18 by Christian Berndt
+    Version:     1.0.4
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -125,7 +125,15 @@
                     <liferay-ui:search-container-column-text
                         name="email" orderable="true"
                         orderableProperty="email"
-                        value='<%=document.get("email")%>' />                        
+                        value='<%=document.get("email")%>' /> 
+                        
+                    <%
+                        Date modifiedDate = new Date(GetterUtil.getLong(document.get("modified_sortable"))); 
+                    %> 
+                        
+                    <liferay-ui:search-container-column-text
+                        name="modified-date" 
+                        value='<%= modifiedDate.toString() %>' />                                               
 
                 </liferay-ui:search-container-row>
 
