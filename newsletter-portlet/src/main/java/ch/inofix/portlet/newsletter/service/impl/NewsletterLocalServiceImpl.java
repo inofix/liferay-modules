@@ -34,8 +34,8 @@ import com.liferay.portlet.asset.model.AssetLinkConstants;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2016-10-08 16:41
- * @version 1.0.0
+ * @modified 2016-10-09 18:39
+ * @version 1.0.1
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -49,12 +49,13 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
      * access the newsletter local service.
      */
 
+    @Override
     public Newsletter addNewsletter(long userId, long groupId, String title,
-            String template, ServiceContext serviceContext)
+            String template, String vCardGroupId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         Newsletter newsletter = saveNewsletter(userId, groupId, 0, title,
-                template, serviceContext);
+                template, vCardGroupId, serviceContext);
 
         // Asset
 
@@ -97,8 +98,8 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     private Newsletter saveNewsletter(long userId, long groupId,
             long newsletterId, String title, String template,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            String vCardGroupId, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         User user = userPersistence.findByPrimaryKey(userId);
         Date now = new Date();
@@ -122,6 +123,7 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         // TODO: validate the template string
         newsletter.setTitle(title);
         newsletter.setTemplate(template);
+        newsletter.setVCardGroupId(vCardGroupId);
         newsletter.setExpandoBridgeAttributes(serviceContext);
 
         newsletterPersistence.update(newsletter);
@@ -130,6 +132,7 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     }
 
+    @Override
     public void updateAsset(long userId, Newsletter newsletter,
             long[] assetCategoryIds, String[] assetTagNames,
             long[] assetLinkEntryIds) throws PortalException, SystemException {
@@ -157,25 +160,28 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId,
                 newsletter.getGroupId(), newsletter.getCreateDate(),
                 newsletter.getModifiedDate(), Newsletter.class.getName(),
-                newsletter.getNewsletterId(), newsletter.getUuid(), classTypeId,
-                assetCategoryIds, assetTagNames, visible, startDate, endDate,
-                expirationDate, mimeType, title, description, summary, url,
-                layoutUuid, height, width, priority, sync);
+                newsletter.getNewsletterId(), newsletter.getUuid(),
+                classTypeId, assetCategoryIds, assetTagNames, visible,
+                startDate, endDate, expirationDate, mimeType, title,
+                description, summary, url, layoutUuid, height, width, priority,
+                sync);
 
         assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(),
                 assetLinkEntryIds, AssetLinkConstants.TYPE_RELATED);
 
-        Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Newsletter.class);
+        Indexer indexer = IndexerRegistryUtil
+                .nullSafeGetIndexer(Newsletter.class);
         indexer.reindex(newsletter);
     }
 
+    @Override
     public Newsletter updateNewsletter(long userId, long groupId,
-            long newsletterId, String card, String uid,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            long newsletterId, String title, String template,
+            String vCardGroupId, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         Newsletter newsletter = saveNewsletter(userId, groupId, newsletterId,
-                card, uid, serviceContext);
+                title, template, vCardGroupId, serviceContext);
 
         // Asset
 

@@ -33,8 +33,8 @@ import com.liferay.portal.service.ServiceContext;
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
  * @created 2016-10-08 01:25
- * @modified 2016-10-09 14:39
- * @version 1.0.1
+ * @modified 2016-10-09 18:42
+ * @version 1.0.2
  */
 public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
     /*
@@ -51,6 +51,7 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
      * @param groupId
      * @param title
      * @param template
+     * @param vCardGroupId
      * @param serviceContext
      * @return
      * @since 1.0.0
@@ -59,14 +60,14 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
      */
     @Override
     public Newsletter addNewsletter(long userId, long groupId, String title,
-            String template, ServiceContext serviceContext)
+            String template, String vCardGroupId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), groupId,
                 ActionKeys.ADD_NEWSLETTER);
 
         return NewsletterLocalServiceUtil.addNewsletter(userId, groupId, title,
-                template, serviceContext);
+                template, vCardGroupId, serviceContext);
 
     }
 
@@ -118,6 +119,7 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
      * @throws PortalException
      * @throws SystemException
      */
+    @Override
     public List<Newsletter> getGroupNewsletters(long groupId, int start, int end)
             throws PortalException, SystemException {
 
@@ -152,16 +154,14 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
     @Override
     public Newsletter updateNewsletter(long userId, long groupId,
             long newsletterId, String title, String template,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
-
-        _log.info("updateNewsletter()");
+            String vCardGroupId, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         NewsletterPermission.check(getPermissionChecker(), newsletterId,
                 ActionKeys.UPDATE);
 
         return NewsletterLocalServiceUtil.updateNewsletter(userId, groupId,
-                newsletterId, title, template, serviceContext);
+                newsletterId, title, template, vCardGroupId, serviceContext);
 
     }
 

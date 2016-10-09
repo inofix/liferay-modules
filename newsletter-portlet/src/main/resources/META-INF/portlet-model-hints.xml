@@ -28,6 +28,7 @@
 		<field name="status" type="int" />
 		<field name="title" type="String" />
 		<field name="template" type="String" />
+		<field name="vCardGroupId" type="String" />
 	</model>
 	<model name="ch.inofix.portlet.newsletter.model.Subscriber">
 		<field name="uuid" type="String" />
