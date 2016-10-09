@@ -29,8 +29,8 @@ import com.liferay.portal.security.permission.PermissionChecker;
  *
  * @author Christian Berndt
  * @created 2015-05-20 13:28
- * @modified 2015-05-27 11:45
- * @version 1.0.3
+ * @modified 2016-10-09 22:06
+ * @version 1.0.4
  *
  */
 public class ContactIndexer extends BaseIndexer {
@@ -95,6 +95,7 @@ public class ContactIndexer extends BaseIndexer {
                 .getNumber());
         document.addKeyword(Field.SCOPE_GROUP_ID, contact.getGroupId());
         document.addText(Field.TITLE, contact.getFullName(true));
+        document.addKeyword("vCardUID", contact.getUid());
 
         return document;
     }
