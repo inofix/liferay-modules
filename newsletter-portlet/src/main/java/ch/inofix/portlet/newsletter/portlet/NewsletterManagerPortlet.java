@@ -8,6 +8,8 @@ import ch.inofix.portlet.newsletter.model.Newsletter;
 import ch.inofix.portlet.newsletter.portlet.util.PortletUtil;
 import ch.inofix.portlet.newsletter.service.NewsletterServiceUtil;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -24,11 +26,49 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-08 16:04
- * @version 1.0.1
+ * @modified 2016-10-09 16:39
+ * @version 1.0.2
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.2
+     * @throws PortalException
+     * @throws SystemException
+     */
+    public void deleteNewsletter(ActionRequest actionRequest,
+            ActionResponse actionResponse) throws PortalException,
+            SystemException {
+
+        // Get the parameters from the request.
+        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+
+        // Delete the requested newsletter.
+        NewsletterServiceUtil.deleteNewsletter(newsletterId);
+
+        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                PortletUtil.translate("successfully-deleted-the-newsletter"));
+
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("newsletterId",
+                String.valueOf(newsletterId));
+        actionResponse.setRenderParameter("tabs1", tabs1);
+
+    }
+
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.0
+     * @throws Exception
+     */
     public void editMailing(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
 
@@ -45,8 +85,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      */
     public void editNewsletter(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
-
-        _log.info("editNewsletter()");
 
         String backURL = ParamUtil.getString(actionRequest, "backURL");
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
@@ -94,8 +132,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     public void saveNewsletter(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
 
-        _log.info("saveNewsletter()");
-
         HttpServletRequest request = PortalUtil
                 .getHttpServletRequest(actionRequest);
 
@@ -133,20 +169,20 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         if (newsletterId > 0) {
             newsletter = NewsletterServiceUtil.updateNewsletter(userId,
                     groupId, newsletterId, title, template, serviceContext);
-            SessionMessages.add(actionRequest, "request_processed", PortletUtil
+            SessionMessages.add(actionRequest, REQUEST_PROCESSED, PortletUtil
                     .translate("successfully-updated-the-newsletter"));
         } else {
             newsletter = NewsletterServiceUtil.addNewsletter(userId, groupId,
                     title, template, serviceContext);
-            SessionMessages.add(actionRequest, "request_processed",
+            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-added-the-newsletter"));
         }
 
-        // Store the updated or added newsletter as a request attribute
         actionRequest.setAttribute("NEWSLETTER", newsletter);
 
     }
 
     private static Log _log = LogFactoryUtil
             .getLog(NewsletterManagerPortlet.class.getName());
+    private static String REQUEST_PROCESSED = "request_processed";
 }

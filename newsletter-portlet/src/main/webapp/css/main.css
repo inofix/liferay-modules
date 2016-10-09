@@ -1,15 +1,15 @@
 /**
- * main.css: css specific to the timetracker-portlet.
+ * main.css: css specific to the newsletter-portlet.
  *
  * Created:     2016-10-06 16:54 by Christian Berndt
- * Modified:    2016-10-08 01:18 by Christian Berndt
- * Version:     1.0.1
+ * Modified:    2016-10-09 17:25 by Christian Berndt
+ * Version:     1.0.2
  * 
  */
 .aui {
     
-    .add-newsletter {
-        margin-bottom: 20px;
+    .alert-info {
+        margin-top: 20px;
     }
  
     dl.build-info dfn, 
@@ -21,5 +21,11 @@
     
     dl.build-info dfn {
         margin-right: 20px;
+    }
+    
+    .last {
+        .btn-group {
+            float: right;
+        }
     }
 }
