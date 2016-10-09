@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2016-10-09 16:26 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2016-10-09 17:22 by Christian Berndt
+    Version:     1.0.6
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -93,7 +93,7 @@
 
     <c:choose>
 
-        <c:when test='<%=tabs1.equals("newsletters")%>'>
+        <c:when test='<%=tabs1.equals("newsletters")%>'>        
             <%@include file="/html/newsletters.jspf"%>
         </c:when>
 
