@@ -1,0 +1,43 @@
+<%--
+    subscribers.jspf: the subscribers panel.
+    
+    Created:    2016-10-09 16:24 by Christian Berndt
+    Modified:   2015-10-09 16:24 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<%-- <%@include file="/html/init.jsp"%> --%>
+
+<liferay-ui:search-container emptyResultsMessage="there-are-no-subscribers">
+
+    <liferay-ui:search-container-results
+        results="<%= hits.toList() %>"
+        total="<%= hits.getLength() %>"/>
+
+    <liferay-ui:search-container-row
+        className="com.liferay.portal.kernel.search.Document"
+        modelVar="document">
+
+        <liferay-ui:search-container-column-text name="name"
+            orderable="true" orderableProperty="fullName"
+            value='<%=document.get("fullName")%>' />
+
+        <liferay-ui:search-container-column-text
+            name="email" orderable="true"
+            orderableProperty="email"
+            value='<%=document.get("email")%>' /> 
+            
+        <%
+            Date modifiedDate = new Date(GetterUtil.getLong(document.get("modified_sortable"))); 
+        %> 
+            
+        <liferay-ui:search-container-column-text
+            name="modified-date" 
+            value='<%= modifiedDate.toString() %>' />                                               
+
+    </liferay-ui:search-container-row>
+
+    <liferay-ui:search-iterator />
+
+</liferay-ui:search-container>
+            

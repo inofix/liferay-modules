@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2016-10-09 16:18 by Christian Berndt
-    Version:     1.0.4
+    Modified:    2016-10-09 16:26 by Christian Berndt
+    Version:     1.0.5
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -98,7 +98,6 @@
         </c:when>
 
         <c:when test='<%=tabs1.equals("templates")%>'>
-            <%--             <liferay-util:include servletContext="<%=session.getServletContext()%>" page="/html/templates.jspf"/> --%>
             <%@include file="/html/templates.jspf"%>
         </c:when>
 
@@ -107,40 +106,7 @@
         </c:when>
 
         <c:otherwise>
-
-            <liferay-ui:search-container emptyResultsMessage="there-are-no-subscribers">
-            
-                <liferay-ui:search-container-results
-                    results="<%= hits.toList() %>"
-                    total="<%= hits.getLength() %>"/>
-
-                <liferay-ui:search-container-row
-                    className="com.liferay.portal.kernel.search.Document"
-                    modelVar="document">
-
-                    <liferay-ui:search-container-column-text name="name"
-                        orderable="true" orderableProperty="fullName"
-                        value='<%=document.get("fullName")%>' />
-
-                    <liferay-ui:search-container-column-text
-                        name="email" orderable="true"
-                        orderableProperty="email"
-                        value='<%=document.get("email")%>' /> 
-                        
-                    <%
-                        Date modifiedDate = new Date(GetterUtil.getLong(document.get("modified_sortable"))); 
-                    %> 
-                        
-                    <liferay-ui:search-container-column-text
-                        name="modified-date" 
-                        value='<%= modifiedDate.toString() %>' />                                               
-
-                </liferay-ui:search-container-row>
-
-                <liferay-ui:search-iterator />
-
-            </liferay-ui:search-container>
-
+            <%@include file="/html/subscribers.jspf"%>
         </c:otherwise>
 
     </c:choose>

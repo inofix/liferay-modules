@@ -1,5 +1,5 @@
 <%--
-    edit_newsletter.jsp: edit the newsletter settings.. 
+    newsletters.jspf: the newsletters panel.
     
     Created:    2016-10-08 15:49 by Christian Berndt
     Modified:   2015-10-08 15:49 by Christian Berndt
@@ -49,4 +49,3 @@
 
     <liferay-ui:search-iterator />
 </liferay-ui:search-container>
-
