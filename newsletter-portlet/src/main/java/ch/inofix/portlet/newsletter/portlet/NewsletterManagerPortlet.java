@@ -26,8 +26,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-09 16:39
- * @version 1.0.2
+ * @modified 2016-10-09 18:44
+ * @version 1.0.3
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -151,6 +151,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         String title = ParamUtil.getString(actionRequest, "title");
         String template = ParamUtil.getString(actionRequest, "template");
+        String vCardGroupId = ParamUtil.getString(actionRequest, "vCardGroupId");
 
         // Pass the required parameters to the render phase
 
@@ -168,12 +169,13 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         if (newsletterId > 0) {
             newsletter = NewsletterServiceUtil.updateNewsletter(userId,
-                    groupId, newsletterId, title, template, serviceContext);
+                    groupId, newsletterId, title, template, vCardGroupId,
+                    serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED, PortletUtil
                     .translate("successfully-updated-the-newsletter"));
         } else {
             newsletter = NewsletterServiceUtil.addNewsletter(userId, groupId,
-                    title, template, serviceContext);
+                    title, template, vCardGroupId, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-added-the-newsletter"));
         }

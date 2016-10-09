@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-09 17:23 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2016-10-09 21:30 by Christian Berndt
+    Version:     1.0.6
 --%>
 
 <%-- Import required classes --%>
@@ -11,10 +11,13 @@
 <%@page import="ch.inofix.portlet.newsletter.model.Newsletter"%>
 <%@page import="ch.inofix.portlet.newsletter.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.newsletter.service.NewsletterServiceUtil"%>
+<%@page import="ch.inofix.portlet.newsletter.service.SubscriberServiceUtil"%>
 <%@page import="ch.inofix.portlet.newsletter.service.permission.NewsletterPermission"%>
 <%@page import="ch.inofix.portlet.newsletter.service.permission.NewsletterPortletPermission"%>
 
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
+<%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.log.Log"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>

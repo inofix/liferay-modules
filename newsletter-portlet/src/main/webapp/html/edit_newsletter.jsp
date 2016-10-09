@@ -2,8 +2,8 @@
     edit_newsletter.jsp: edit the newsletter settings.. 
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-08 15:49 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-10-09 18:46 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -42,17 +42,19 @@
 
 <aui:form action="<%=saveNewsletterURL%>" method="post" name="fm">
 
-    <aui:model-context bean="<%=newsletter%>"
-        model="<%=Newsletter.class%>" />
-
     <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
     <aui:input name="newsletterId" type="hidden"
         value="<%=String.valueOf(newsletter.getNewsletterId())%>" />
     <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
     <aui:input name="windowId" type="hidden" value="<%=windowId%>" />
     
-    <aui:input name="title"/>
-    <aui:input name="template"/>
+    <aui:input name="title"
+        value="<%= newsletter.getTitle() %>"/>
+    <aui:input name="template" 
+        type="textarea"
+        value="<%= newsletter.getTemplate() %>"/>
+    <aui:input name="vCardGroupId" 
+        value="<%= newsletter.getVCardGroupId() %>"/>
     
     <aui:button-row>
         <aui:button type="submit" />
