@@ -2,8 +2,8 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-09 21:30 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-10-09 21:38 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%-- <%@include file="/html/init.jsp"%> --%>
@@ -12,16 +12,13 @@
 <%@page import="com.liferay.portal.kernel.search.BooleanClauseFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.BooleanQuery"%>
 <%@page import="com.liferay.portal.kernel.search.BooleanQueryFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.FacetedSearcher"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
-<%@page import="com.liferay.portal.kernel.search.Indexer"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
 <%@page import="com.liferay.portal.kernel.search.facet.AssetEntriesFacet"%>
-<%@page import="com.liferay.portal.kernel.search.facet.RangeFacet"%>
 <%@page import="com.liferay.portal.kernel.search.facet.ScopeFacet"%>
 
 <%
