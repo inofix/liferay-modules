@@ -1,2 +1,52 @@
+<%--
+    edit_newsletter.jsp: edit the newsletter settings.. 
+    
+    Created:    2016-10-08 15:49 by Christian Berndt
+    Modified:   2015-10-08 15:49 by Christian Berndt
+    Version:    1.0.0
+--%>
 
-<h1>Newsletters</h1>
+<%-- <%@include file="/html/init.jsp"%> --%>
+
+<portlet:actionURL var="addNewsletterURL" name="editNewsletter"
+    windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+    <portlet:param name="mvcPath" value="/html/edit_newsletter.jsp" />
+    <portlet:param name="redirect" value="<%= currentURL %>" />
+    <portlet:param name="windowId" value="editNewsletter" />
+</portlet:actionURL>
+
+<c:if test='<%=NewsletterPortletPermission.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_NEWSLETTER)%>'>
+
+<%
+    String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "editNewsletter', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addNewsletterURL) + "'});";
+%>
+
+    <aui:a href="<%=taglibAddURL%>"
+        cssClass="btn btn-primary add-newsletter">
+        <liferay-ui:message key="add-newsletter" />
+    </aui:a>
+
+</c:if>
+
+<%
+    List<Newsletter> newsletters = NewsletterServiceUtil
+            .getGroupNewsletters(scopeGroupId, 0, Integer.MAX_VALUE);
+%>
+
+<liferay-ui:search-container
+    emptyResultsMessage="there-are-no-newsletters">
+    <liferay-ui:search-container-results
+        total="<%= newsletters.size() %>" results="<%= newsletters %>" />
+
+    <liferay-ui:search-container-row
+        className="ch.inofix.portlet.newsletter.model.Newsletter"
+        modelVar="newsletter">
+
+        <liferay-ui:search-container-column-text property="title" />
+        <liferay-ui:search-container-column-text property="modifiedDate" name="modified-date"  />
+
+    </liferay-ui:search-container-row>
+
+    <liferay-ui:search-iterator />
+</liferay-ui:search-container>
+
