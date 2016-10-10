@@ -31,8 +31,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-10 17:19
- * @version 1.0.0
+ * @modified 2016-10-10 23:39
+ * @version 1.0.1
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -66,6 +66,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     }
 
+    @Override
     public Mailing deleteMailing(long mailingId) throws PortalException,
             SystemException {
 
@@ -100,7 +101,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, long articleId,
+            String title, long newsletterId, long articleId, boolean sent,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
@@ -108,7 +109,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
                 ActionKeys.UPDATE);
 
         return MailingLocalServiceUtil.updateMailing(userId, groupId,
-                mailingId, title, newsletterId, articleId, serviceContext);
+                mailingId, title, newsletterId, articleId, sent, serviceContext);
 
     }
 

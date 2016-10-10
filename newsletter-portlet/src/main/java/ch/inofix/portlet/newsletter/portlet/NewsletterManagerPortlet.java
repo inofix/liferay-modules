@@ -28,8 +28,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-10 18:37
- * @version 1.0.4
+ * @modified 2016-10-10 23:39
+ * @version 1.0.5
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -104,8 +104,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      */
     public void editMailing(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
-
-        _log.info("editMailing()");
 
         String backURL = ParamUtil.getString(actionRequest, "backURL");
         long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
@@ -208,6 +206,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String title = ParamUtil.getString(actionRequest, "title");
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
         long articleId = ParamUtil.getLong(actionRequest, "articleId");
+        boolean sent = ParamUtil.getBoolean(actionRequest, "sent");
 
         // Pass the required parameters to the render phase
 
@@ -225,7 +224,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         if (mailingId > 0) {
             mailing = MailingServiceUtil.updateMailing(userId, groupId,
-                    mailingId, title, newsletterId, articleId, serviceContext);
+                    mailingId, title, newsletterId, articleId, sent, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-updated-the-mailing"));
         } else {

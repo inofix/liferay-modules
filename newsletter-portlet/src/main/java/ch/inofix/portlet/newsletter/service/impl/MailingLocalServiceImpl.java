@@ -32,8 +32,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-10 17:21
- * @version 1.0.0
+ * @modified 2016-10-10 23:39
+ * @version 1.0.1
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -46,12 +46,15 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
      * the mailing local service.
      */
 
+    @Override
     public Mailing addMailing(long userId, long groupId, String title,
             long newsletterId, long articleId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
+        boolean sent = false;
+
         Mailing mailing = saveMailing(userId, groupId, 0, title, newsletterId,
-                articleId, serviceContext);
+                articleId, sent, serviceContext);
 
         // Asset
 
@@ -90,7 +93,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     private Mailing saveMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, long articleId,
+            String title, long newsletterId, long articleId, boolean sent,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
@@ -116,6 +119,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         mailing.setTitle(title);
         mailing.setNewsletterId(newsletterId);
         mailing.setArticleId(articleId);
+        mailing.setSent(sent);
         mailing.setExpandoBridgeAttributes(serviceContext);
 
         mailingPersistence.update(mailing);
@@ -124,6 +128,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
     }
 
+    @Override
     public void updateAsset(long userId, Mailing mailing,
             long[] assetCategoryIds, String[] assetTagNames,
             long[] assetLinkEntryIds) throws PortalException, SystemException {
@@ -160,13 +165,14 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         indexer.reindex(mailing);
     }
 
+    @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, long articleId,
+            String title, long newsletterId, long articleId, boolean sent,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
         Mailing mailing = saveMailing(userId, groupId, mailingId, title,
-                newsletterId, articleId, serviceContext);
+                newsletterId, articleId, sent, serviceContext);
 
         // Asset
 
