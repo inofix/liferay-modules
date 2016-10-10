@@ -6,7 +6,7 @@
     version="2.0">
     <portlet>
         <portlet-name>newsletter-portlet</portlet-name>
-        <display-name>Newsletter Portlet</display-name>
+        <display-name>Newsletter</display-name>
         <portlet-class>ch.inofix.portlet.newsletter.portlet.NewsletterManagerPortlet</portlet-class>
         <init-param>
             <name>add-process-action-success-action</name>
@@ -22,9 +22,9 @@
         </supports>
         <resource-bundle>Language</resource-bundle>
         <portlet-info>
-            <title>Newsletter Portlet</title>
-            <short-title>Newsletter Portlet</short-title>
-            <keywords>Newsletter Portlet</keywords>
+            <title>Newsletter</title>
+            <short-title>Newsletter</short-title>
+            <keywords>Newsletter</keywords>
         </portlet-info>
         <security-role-ref>
             <role-name>administrator</role-name>
