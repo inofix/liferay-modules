@@ -2,8 +2,8 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-10 18:44 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-10-10 23:07 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%-- <%@include file="/html/init.jsp"%> --%>
@@ -21,6 +21,7 @@
                 PortletURL selectURL = renderResponse.createRenderURL();
                 String currentVCardGroupId = newsletter.getVCardGroupId(); 
                 selectURL.setParameter("vCardGroupId", currentVCardGroupId);
+                selectURL.setParameter("tabs1", tabs1);
                 boolean selected = vCardGroupId.equalsIgnoreCase(currentVCardGroupId);
         %>       
             <aui:option label="<%= newsletter.getTitle() %>" selected="<%= selected %>" value="<%= selectURL.toString() %>" />
@@ -39,6 +40,7 @@
             <%
                 PortletURL iteratorURL = searchContainer.getIteratorURL(); 
                 iteratorURL.setParameter("vCardGroupId", vCardGroupId);
+                iteratorURL.setParameter("tabs1", tabs1);
                 searchContainer.setIteratorURL(iteratorURL);
                 
                 SearchContext searchContext = SearchContextFactory.getInstance(request);
