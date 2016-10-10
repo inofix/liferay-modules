@@ -15,6 +15,7 @@
 		<field name="publishDate" type="String" />
 		<field name="newsletterId" type="long" />
 		<field name="articleId" type="long" />
+		<field name="sent" type="boolean" />
 	</model>
 	<model name="ch.inofix.portlet.newsletter.model.Newsletter">
 		<field name="uuid" type="String" />

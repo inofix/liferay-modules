@@ -124,7 +124,7 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
             throws PortalException, SystemException {
 
         // TODO: check permissions?
-        // TODO: filter by group group
+        // TODO: filter by group
         return NewsletterLocalServiceUtil.getNewsletters(start, end);
     }
 
