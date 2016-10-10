@@ -1,2 +1,123 @@
+<%--
+    mailings.jspf: the mailings panel.
+    
+    Created:    2016-10-10 17:47 by Christian Berndt
+    Modified:   2015-10-10 17:47 by Christian Berndt
+    Version:    1.0.0
+--%>
+    
+<portlet:actionURL var="addMailingURL" name="editMailing"
+    windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+    <portlet:param name="mvcPath" value="/html/edit_mailing.jsp" />
+    <portlet:param name="redirect" value="<%= currentURL %>" />
+    <portlet:param name="windowId" value="editMailing" />
+</portlet:actionURL>
 
-<h1>Mailings</h1>
+<c:if test='<%=NewsletterPortletPermission.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_MAILING)%>'>
+
+<%
+    String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "editMailing', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addMailingURL) + "'});";
+%>
+
+    <aui:a href="<%=taglibAddURL%>"
+        cssClass="btn btn-primary add-mailing">
+        <liferay-ui:message key="add-mailing" />
+    </aui:a>
+
+</c:if>
+
+<%
+    List<Mailing> mailings = MailingServiceUtil
+            .getGroupMailings(scopeGroupId, 0, Integer.MAX_VALUE);
+%>
+
+<liferay-ui:search-container
+    emptyResultsMessage="there-are-no-mailings">
+    <liferay-ui:search-container-results
+        total="<%= mailings.size() %>" results="<%= mailings %>" />
+
+    <liferay-ui:search-container-row
+        className="ch.inofix.portlet.newsletter.model.Mailing"
+        modelVar="mailing">
+        
+        <portlet:actionURL var="deleteURL" name="deleteMailing">
+            <portlet:param name="mailingId"
+                value="<%= String.valueOf(mailing.getMailingId()) %>" />
+            <portlet:param name="backURL" value="<%= currentURL %>" />
+            <portlet:param name="mvcPath" value="/view.jsp" />
+            <portlet:param name="tabs1" value="<%= tabs1 %>" />            
+        </portlet:actionURL>
+    
+        <portlet:actionURL var="editURL" name="editMailing"
+            windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+            <portlet:param name="redirect" value="<%= currentURL %>" />
+            <portlet:param name="mailingId"
+                value="<%= String.valueOf(mailing.getMailingId()) %>" />
+            <portlet:param name="mvcPath" value="/html/edit_mailing.jsp" />
+            <portlet:param name="windowId" value="editMailing" />
+        </portlet:actionURL>
+    
+        <%
+            StringBuilder sb = new StringBuilder(); 
+        
+            sb.append(LanguageUtil.get(pageContext, "permissions-of-mailing")); 
+            sb.append(" "); 
+            sb.append(mailing.getMailingId()); 
+        
+            String modelResourceDescription = sb.toString(); 
+        %>
+    
+        <liferay-security:permissionsURL
+            modelResource="<%= Mailing.class.getName() %>"
+            modelResourceDescription="<%= modelResourceDescription %>"
+            resourcePrimKey="<%= String.valueOf(mailing.getMailingId()) %>"
+            var="permissionsURL" />         
+        
+        <%
+            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editMailing', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", mailing.getTitle())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+        
+            boolean hasDeletePermission = MailingPermission.contains(permissionChecker,
+                    mailing.getMailingId(), ActionKeys.DELETE);   
+            boolean hasPermissionsPermission = MailingPermission.contains(permissionChecker,
+                    mailing.getMailingId(), ActionKeys.PERMISSIONS);  
+            boolean hasUpdatePermission = MailingPermission.contains(permissionChecker,
+                    mailing.getMailingId(), ActionKeys.UPDATE);
+            
+            String detailURL = null;
+
+            if (hasUpdatePermission) {                   
+                detailURL = taglibEditURL;                  
+            }
+        %>
+
+        <liferay-ui:search-container-column-text
+            property="title" href="<%=detailURL%>" />
+        <liferay-ui:search-container-column-text
+            property="userName" name="user-name"
+            href="<%=detailURL%>" />
+        <liferay-ui:search-container-column-text
+            property="modifiedDate" name="modified-date"
+            href="<%= detailURL %>" />
+
+        <liferay-ui:search-container-column-text>      
+
+            <liferay-ui:icon-menu>
+
+                <c:if test="<%= hasUpdatePermission %>">
+                    <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" />
+                </c:if>
+                <c:if test="<%= hasPermissionsPermission %>">
+                    <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
+                </c:if>                                    
+                <c:if test="<%= hasDeletePermission %>">
+                    <liferay-ui:icon-delete url="<%=deleteURL%>" />
+                </c:if>
+
+            </liferay-ui:icon-menu>
+
+        </liferay-ui:search-container-column-text>                    
+
+    </liferay-ui:search-container-row>
+
+    <liferay-ui:search-iterator />
+</liferay-ui:search-container>

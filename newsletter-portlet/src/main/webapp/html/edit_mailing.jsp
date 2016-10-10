@@ -1,9 +1,9 @@
 <%--
-    edit_newsletter.jsp: edit the newsletter settings. 
+    edit_mailing.jsp: edit the mailing settings. 
     
-    Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-09 18:46 by Christian Berndt
-    Version:    1.0.1
+    Created:    2016-10-10 18:34 by Christian Berndt
+    Modified:   2015-10-10 18:34 by Christian Berndt
+    Version:    1.0.0
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -13,17 +13,17 @@
 
     String backURL = ParamUtil.getString(request, "backURL", redirect);
     
-    Newsletter newsletter = (Newsletter)request.getAttribute("NEWSLETTER"); 
+    Mailing mailing = (Mailing)request.getAttribute("MAILING"); 
     
     String windowId = ""; 
     windowId = ParamUtil.getString(request, "windowId"); 
     
     // Close the popup, if we are in popup mode, a redirect was provided
-    // and the windowId is "editNewsletter" (which means, viewByDefault 
+    // and the windowId is "editMailing" (which means, viewByDefault 
     // is false.
     
     if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp()
-            && "editNewsletter".equals(windowId)) {
+            && "editMailing".equals(windowId)) {
         
         PortletURL portletURL = renderResponse.createRenderURL();
         portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
@@ -38,23 +38,18 @@
 
 <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
 
-<portlet:actionURL var="saveNewsletterURL" name="saveNewsletter" />
+<portlet:actionURL var="saveMailingURL" name="saveMailing" />
 
-<aui:form action="<%=saveNewsletterURL%>" method="post" name="fm">
+<aui:form action="<%=saveMailingURL%>" method="post" name="fm">
 
     <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
-    <aui:input name="newsletterId" type="hidden"
-        value="<%=String.valueOf(newsletter.getNewsletterId())%>" />
+    <aui:input name="mailingId" type="hidden"
+        value="<%=String.valueOf(mailing.getMailingId())%>" />
     <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
     <aui:input name="windowId" type="hidden" value="<%=windowId%>" />
     
     <aui:input name="title"
-        value="<%= newsletter.getTitle() %>"/>
-    <aui:input name="template" 
-        type="textarea"
-        value="<%= newsletter.getTemplate() %>"/>
-    <aui:input name="vCardGroupId" 
-        value="<%= newsletter.getVCardGroupId() %>"/>
+        value="<%= mailing.getTitle() %>"/>
     
     <aui:button-row>
         <aui:button type="submit" />
@@ -65,4 +60,3 @@
 <hr>
 
 <ifx-util:build-info/>
-

@@ -1,7 +1,7 @@
 package ch.inofix.portlet.newsletter.service.permission;
 
-import ch.inofix.portlet.newsletter.model.Newsletter;
-import ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil;
+import ch.inofix.portlet.newsletter.model.Mailing;
+import ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -11,27 +11,27 @@ import com.liferay.portal.security.permission.PermissionChecker;
 /**
  *
  * @author Christian Berndt
- * @created 2016-10-08 00:32
- * @modified 2016-10-08 00:32
+ * @created 2016-10-10 17:37
+ * @modified 2016-10-10 17:37
  * @version 1.0.0
  *
  */
-public class NewsletterPermission {
+public class MailingPermission {
 
     /**
      *
      * @param permissionChecker
-     * @param newsletterId
+     * @param mailingId
      * @param actionId
      * @since 1.0.0
      * @throws PortalException
      * @throws SystemException
      */
     public static void check(PermissionChecker permissionChecker,
-            long newsletterId, String actionId) throws PortalException,
+            long mailingId, String actionId) throws PortalException,
             SystemException {
 
-        if (!contains(permissionChecker, newsletterId, actionId)) {
+        if (!contains(permissionChecker, mailingId, actionId)) {
             throw new PrincipalException();
         }
     }
@@ -39,7 +39,7 @@ public class NewsletterPermission {
     /**
      *
      * @param permissionChecker
-     * @param newsletterId
+     * @param mailingId
      * @param actionId
      * @return
      * @since 1.0.0
@@ -47,22 +47,20 @@ public class NewsletterPermission {
      * @throws SystemException
      */
     public static boolean contains(PermissionChecker permissionChecker,
-            long newsletterId, String actionId) throws PortalException,
+            long mailingId, String actionId) throws PortalException,
             SystemException {
 
-        Newsletter newsletter = NewsletterLocalServiceUtil
-                .getNewsletter(newsletterId);
+        Mailing mailing = MailingLocalServiceUtil.getMailing(mailingId);
 
-        if (permissionChecker.hasOwnerPermission(newsletter.getCompanyId(),
-                Newsletter.class.getName(), newsletter.getNewsletterId(),
-                newsletter.getUserId(), actionId)) {
+        if (permissionChecker.hasOwnerPermission(mailing.getCompanyId(),
+                Mailing.class.getName(), mailing.getMailingId(),
+                mailing.getUserId(), actionId)) {
 
             return true;
         }
 
-        return permissionChecker.hasPermission(newsletter.getGroupId(),
-                Newsletter.class.getName(), newsletter.getNewsletterId(),
-                actionId);
+        return permissionChecker.hasPermission(mailing.getGroupId(),
+                Mailing.class.getName(), mailing.getNewsletterId(), actionId);
 
     }
 }

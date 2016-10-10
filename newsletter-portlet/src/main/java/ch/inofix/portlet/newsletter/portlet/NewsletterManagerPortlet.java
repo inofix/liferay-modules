@@ -4,8 +4,10 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import ch.inofix.portlet.newsletter.model.Mailing;
 import ch.inofix.portlet.newsletter.model.Newsletter;
 import ch.inofix.portlet.newsletter.portlet.util.PortletUtil;
+import ch.inofix.portlet.newsletter.service.MailingServiceUtil;
 import ch.inofix.portlet.newsletter.service.NewsletterServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -26,10 +28,41 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-09 18:44
- * @version 1.0.3
+ * @modified 2016-10-10 18:37
+ * @version 1.0.4
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
+
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.4
+     * @throws PortalException
+     * @throws SystemException
+     */
+    public void deleteMailing(ActionRequest actionRequest,
+            ActionResponse actionResponse) throws PortalException,
+            SystemException {
+
+        // Get the parameters from the request.
+        long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+
+        // Delete the requested mailing.
+        MailingServiceUtil.deleteMailing(mailingId);
+
+        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                PortletUtil.translate("successfully-deleted-the-mailing"));
+
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("mailingId",
+                String.valueOf(mailingId));
+        actionResponse.setRenderParameter("tabs1", tabs1);
+
+    }
 
     /**
      *
@@ -73,6 +106,29 @@ public class NewsletterManagerPortlet extends MVCPortlet {
             ActionResponse actionResponse) throws Exception {
 
         _log.info("editMailing()");
+
+        String backURL = ParamUtil.getString(actionRequest, "backURL");
+        long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String redirect = ParamUtil.getString(actionRequest, "redirect");
+        String windowId = ParamUtil.getString(actionRequest, "windowId");
+
+        Mailing mailing = null;
+
+        if (mailingId > 0) {
+            mailing = MailingServiceUtil.getMailing(mailingId);
+        } else {
+            mailing = MailingServiceUtil.createMailing();
+        }
+
+        actionRequest.setAttribute("MAILING", mailing);
+
+        actionResponse.setRenderParameter("backURL", backURL);
+        actionResponse.setRenderParameter("mailingId",
+                String.valueOf(mailingId));
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("redirect", redirect);
+        actionResponse.setRenderParameter("windowId", windowId);
 
     }
 
@@ -126,6 +182,66 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     /**
      * @param actionRequest
      * @param actionResponse
+     * @since 1.0.4
+     * @throws Exception
+     */
+    public void saveMailing(ActionRequest actionRequest,
+            ActionResponse actionResponse) throws Exception {
+
+        HttpServletRequest request = PortalUtil
+                .getHttpServletRequest(actionRequest);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) request
+                .getAttribute(WebKeys.THEME_DISPLAY);
+
+        long userId = themeDisplay.getUserId();
+        long groupId = themeDisplay.getScopeGroupId();
+
+        String backURL = ParamUtil.getString(actionRequest, "backURL");
+        long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String redirect = ParamUtil.getString(actionRequest, "redirect");
+        String windowId = ParamUtil.getString(actionRequest, "windowId");
+
+        Mailing mailing = null;
+
+        String title = ParamUtil.getString(actionRequest, "title");
+        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+        long articleId = ParamUtil.getLong(actionRequest, "articleId");
+
+        // Pass the required parameters to the render phase
+
+        actionResponse.setRenderParameter("mailingId",
+                String.valueOf(mailingId));
+        actionResponse.setRenderParameter("backURL", backURL);
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("redirect", redirect);
+        actionResponse.setRenderParameter("windowId", windowId);
+
+        // Save the mailing
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+                Mailing.class.getName(), actionRequest);
+
+        if (mailingId > 0) {
+            mailing = MailingServiceUtil.updateMailing(userId, groupId,
+                    mailingId, title, newsletterId, articleId, serviceContext);
+            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                    PortletUtil.translate("successfully-updated-the-mailing"));
+        } else {
+            mailing = MailingServiceUtil.addMailing(userId, groupId, title,
+                    newsletterId, articleId, serviceContext);
+            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                    PortletUtil.translate("successfully-added-the-mailing"));
+        }
+
+        actionRequest.setAttribute("MAILING", mailing);
+
+    }
+
+    /**
+     * @param actionRequest
+     * @param actionResponse
      * @since 1.0.1
      * @throws Exception
      */
@@ -151,7 +267,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         String title = ParamUtil.getString(actionRequest, "title");
         String template = ParamUtil.getString(actionRequest, "template");
-        String vCardGroupId = ParamUtil.getString(actionRequest, "vCardGroupId");
+        String vCardGroupId = ParamUtil
+                .getString(actionRequest, "vCardGroupId");
 
         // Pass the required parameters to the render phase
 
