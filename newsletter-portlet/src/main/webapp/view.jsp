@@ -43,20 +43,7 @@
             <%@include file="/html/mailings.jspf"%>
         </c:when>
 
-        <c:otherwise>
-        
-            <%
-//                 String vCardGroupId = "E27BDC61-2989-4D44-A303-C79EC33D07D8";
-//                 SearchContext searchContext = SearchContextFactory
-//                         .getInstance(request);
-//                 List<Document> documents = SubscriberServiceUtil
-//                         .getSubscribersFromVCardGroup(
-//                                 themeDisplay.getScopeGroupId(), searchContext,
-//                                 vCardGroupId);
-            %>
-            
-<%--             vCardGroupId = <%= vCardGroupId %> --%>
-        
+        <c:otherwise>        
             <%@include file="/html/subscribers.jspf"%>
         </c:otherwise>
 

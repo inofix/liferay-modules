@@ -2,77 +2,35 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-09 21:38 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-10-10 12:52 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%-- <%@include file="/html/init.jsp"%> --%>
 
-<%@page import="com.liferay.portal.kernel.search.BooleanClause"%>
-<%@page import="com.liferay.portal.kernel.search.BooleanClauseFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.search.BooleanQuery"%>
-<%@page import="com.liferay.portal.kernel.search.BooleanQueryFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.search.FacetedSearcher"%>
-<%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
-<%@page import="com.liferay.portal.kernel.search.facet.AssetEntriesFacet"%>
-<%@page import="com.liferay.portal.kernel.search.facet.ScopeFacet"%>
-
-<%
-    String[] classNames = new String[] { className };
-    int delta = ParamUtil.getInteger(request, "delta", 20);
-    int idx = ParamUtil.getInteger(request, "cur");
-    String keywords = ParamUtil.getString(request, "keywords");
-    String orderByCol = ParamUtil.getString(request, "orderByCol","name");
-    String orderByType = ParamUtil.getString(request, "orderByType", "asc");
-
-    if (idx > 0) {
-        idx = idx - 1;
-    }
-    int start = delta * idx;
-    int end = delta * idx + delta;
-
-    SearchContext searchContext = SearchContextFactory
-            .getInstance(request);
-
-    boolean reverse = "desc".equals(orderByType);
-
-    Sort sort = new Sort(orderByCol, reverse);
-
-    searchContext.setEntryClassNames(classNames);
-    searchContext.setKeywords(keywords);
-    searchContext.setAttribute("paginationType", "more");
-    searchContext.setSorts(sort);
-        
-    // exclude empty emails
-    BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
-    query.addRangeTerm("email", "a", "z");
-    BooleanClause booleanClause = BooleanClauseFactoryUtil.create(searchContext, query, "MUST");
-    searchContext.setBooleanClauses(new BooleanClause[] {booleanClause});
-    
-    Facet assetEntriesFacet = new AssetEntriesFacet(searchContext);
-    assetEntriesFacet.setStatic(true);
-    searchContext.addFacet(assetEntriesFacet);
-    
-    Hits hits = SubscriberServiceUtil.search(themeDisplay.getScopeGroupId(), searchContext, start, end);
-%>
-
 <liferay-ui:search-container emptyResultsMessage="there-are-no-subscribers">
 
+    <%
+        String vCardGroupId = "E27BDC61-2989-4D44-A303-C79EC33D07D8";
+        SearchContext searchContext = SearchContextFactory.getInstance(request);
+        List<Document> documents = SubscriberServiceUtil.getSubscribersFromVCardGroup(
+                        themeDisplay.getScopeGroupId(), searchContext, vCardGroupId, searchContainer.getStart(), searchContainer.getEnd());
+        
+        int numDocuments = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(themeDisplay.getScopeGroupId(), searchContext, vCardGroupId);
+    %>            
+
     <liferay-ui:search-container-results
-        results="<%= hits.toList() %>"
-        total="<%= hits.getLength() %>"/>
+        results="<%= documents %>"
+        total="<%= numDocuments %>"/>
 
     <liferay-ui:search-container-row
         className="com.liferay.portal.kernel.search.Document"
         modelVar="document">
 
         <liferay-ui:search-container-column-text name="name"
-            orderable="true" orderableProperty="fullName"
             value='<%=document.get("fullName")%>' />
 
-        <liferay-ui:search-container-column-text
-            name="email" orderable="true"
-            orderableProperty="email"
+        <liferay-ui:search-container-column-text name="email" 
             value='<%=document.get("email")%>' /> 
             
         <%
@@ -87,5 +45,5 @@
 
     <liferay-ui:search-iterator />
 
-</liferay-ui:search-container>
-            
+</liferay-ui:search-container>   
+        
