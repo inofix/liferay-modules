@@ -2,8 +2,8 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-10 14:43 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-10-10 18:44 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%-- <%@include file="/html/init.jsp"%> --%>
@@ -28,45 +28,53 @@
     </aui:select>
 </aui:form>
 
-<liferay-ui:search-container emptyResultsMessage="there-are-no-subscribers">
-
-    <%
-        PortletURL iteratorURL = searchContainer.getIteratorURL(); 
-        iteratorURL.setParameter("vCardGroupId", vCardGroupId);
-        searchContainer.setIteratorURL(iteratorURL);
+<c:choose>
+    <c:when test="<%= Validator.isNull(vCardGroupId) %>">
+        <div class="alert alert-info">
+            <liferay-ui:message key="no-newsletter-selected"></liferay-ui:message>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <liferay-ui:search-container emptyResultsMessage="there-are-no-subscribers">        
+            <%
+                PortletURL iteratorURL = searchContainer.getIteratorURL(); 
+                iteratorURL.setParameter("vCardGroupId", vCardGroupId);
+                searchContainer.setIteratorURL(iteratorURL);
+                
+                SearchContext searchContext = SearchContextFactory.getInstance(request);
+                List<Document> documents = SubscriberServiceUtil.getSubscribersFromVCardGroup(
+                                themeDisplay.getScopeGroupId(), searchContext, vCardGroupId, searchContainer.getStart(), searchContainer.getEnd());
+                
+                int numDocuments = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(themeDisplay.getScopeGroupId(), searchContext, vCardGroupId);
+            %>            
         
-        SearchContext searchContext = SearchContextFactory.getInstance(request);
-        List<Document> documents = SubscriberServiceUtil.getSubscribersFromVCardGroup(
-                        themeDisplay.getScopeGroupId(), searchContext, vCardGroupId, searchContainer.getStart(), searchContainer.getEnd());
+            <liferay-ui:search-container-results
+                results="<%= documents %>"
+                total="<%= numDocuments %>"/>
         
-        int numDocuments = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(themeDisplay.getScopeGroupId(), searchContext, vCardGroupId);
-    %>            
-
-    <liferay-ui:search-container-results
-        results="<%= documents %>"
-        total="<%= numDocuments %>"/>
-
-    <liferay-ui:search-container-row
-        className="com.liferay.portal.kernel.search.Document"
-        modelVar="document">
-
-        <liferay-ui:search-container-column-text name="name"
-            value='<%=document.get("fullName")%>' />
-
-        <liferay-ui:search-container-column-text name="email" 
-            value='<%=document.get("email")%>' /> 
-            
-        <%
-            Date modifiedDate = new Date(GetterUtil.getLong(document.get("modified_sortable"))); 
-        %> 
-            
-        <liferay-ui:search-container-column-text
-            name="modified-date" 
-            value='<%= modifiedDate.toString() %>' />                                               
-
-    </liferay-ui:search-container-row>
-
-    <liferay-ui:search-iterator />
-
-</liferay-ui:search-container>   
+            <liferay-ui:search-container-row
+                className="com.liferay.portal.kernel.search.Document"
+                modelVar="document">
+        
+                <liferay-ui:search-container-column-text name="name"
+                    value='<%=document.get("fullName")%>' />
+        
+                <liferay-ui:search-container-column-text name="email" 
+                    value='<%=document.get("email")%>' /> 
+                    
+                <%
+                    Date modifiedDate = new Date(GetterUtil.getLong(document.get("modified_sortable"))); 
+                %> 
+                    
+                <liferay-ui:search-container-column-text
+                    name="modified-date" 
+                    value='<%= modifiedDate.toString() %>' />                                               
+        
+            </liferay-ui:search-container-row>
+        
+            <liferay-ui:search-iterator />
+        
+        </liferay-ui:search-container>    
+    </c:otherwise>
+</c:choose>
         
