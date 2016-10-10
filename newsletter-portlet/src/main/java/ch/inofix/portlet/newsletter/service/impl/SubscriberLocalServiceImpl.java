@@ -48,8 +48,6 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
     public Hits search(long groupId, SearchContext searchContext, int start,
             int end) throws PortalException, SystemException {
 
-        _log.info("search()");
-
         searchContext.setStart(start);
         searchContext.setEnd(end);
 
