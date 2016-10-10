@@ -2,16 +2,39 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-10 12:52 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-10-10 14:43 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%-- <%@include file="/html/init.jsp"%> --%>
 
+<%
+    List<Newsletter> newsletters = NewsletterServiceUtil
+        .getGroupNewsletters(themeDisplay.getScopeGroupId(), 0, Integer.MAX_VALUE); 
+    String vCardGroupId = ParamUtil.getString(renderRequest, "vCardGroupId");
+%>
+
+<aui:form name="fm">
+    <aui:select name="vCardGroupId" label=""  onChange=" window.location.href = this.value; ">
+        <aui:option value="" label="select-newsletter"/>
+        <%  for (Newsletter newsletter : newsletters) { 
+                PortletURL selectURL = renderResponse.createRenderURL();
+                String currentVCardGroupId = newsletter.getVCardGroupId(); 
+                selectURL.setParameter("vCardGroupId", currentVCardGroupId);
+                boolean selected = vCardGroupId.equalsIgnoreCase(currentVCardGroupId);
+        %>       
+            <aui:option label="<%= newsletter.getTitle() %>" selected="<%= selected %>" value="<%= selectURL.toString() %>" />
+        <%  } %>
+    </aui:select>
+</aui:form>
+
 <liferay-ui:search-container emptyResultsMessage="there-are-no-subscribers">
 
     <%
-        String vCardGroupId = "E27BDC61-2989-4D44-A303-C79EC33D07D8";
+        PortletURL iteratorURL = searchContainer.getIteratorURL(); 
+        iteratorURL.setParameter("vCardGroupId", vCardGroupId);
+        searchContainer.setIteratorURL(iteratorURL);
+        
         SearchContext searchContext = SearchContextFactory.getInstance(request);
         List<Document> documents = SubscriberServiceUtil.getSubscribersFromVCardGroup(
                         themeDisplay.getScopeGroupId(), searchContext, vCardGroupId, searchContainer.getStart(), searchContainer.getEnd());
