@@ -2,8 +2,8 @@
     mailings.jspf: the mailings panel.
     
     Created:    2016-10-10 17:47 by Christian Berndt
-    Modified:   2015-10-10 17:47 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-10-10 23:46 by Christian Berndt
+    Version:    1.0.1
 --%>
     
 <portlet:actionURL var="addMailingURL" name="editMailing"
@@ -85,7 +85,7 @@
             
             String detailURL = null;
 
-            if (hasUpdatePermission) {                   
+            if (hasUpdatePermission && !mailing.isSent()) {                   
                 detailURL = taglibEditURL;                  
             }
         %>

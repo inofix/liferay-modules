@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2016-10-10 19:08 by Christian Berndt
-    Version:     1.0.9
+    Modified:    2016-10-10 21:44 by Christian Berndt
+    Version:     1.1.0
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -12,7 +12,7 @@
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
-    String tabs1 = ParamUtil.getString(request, "tabs1", "subscribers");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "newsletters");
 
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1);
