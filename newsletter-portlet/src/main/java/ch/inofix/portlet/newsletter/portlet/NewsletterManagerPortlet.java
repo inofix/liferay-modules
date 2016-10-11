@@ -28,8 +28,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-10 23:39
- * @version 1.0.5
+ * @modified 2016-10-11 15:16
+ * @version 1.0.6
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -109,6 +109,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
         String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
         String redirect = ParamUtil.getString(actionRequest, "redirect");
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
         String windowId = ParamUtil.getString(actionRequest, "windowId");
 
         Mailing mailing = null;
@@ -126,6 +127,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                 String.valueOf(mailingId));
         actionResponse.setRenderParameter("mvcPath", mvcPath);
         actionResponse.setRenderParameter("redirect", redirect);
+        actionResponse.setRenderParameter("tabs1", tabs1);
         actionResponse.setRenderParameter("windowId", windowId);
 
     }
