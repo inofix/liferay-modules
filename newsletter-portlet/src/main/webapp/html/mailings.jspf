@@ -2,8 +2,8 @@
     mailings.jspf: the mailings panel.
     
     Created:    2016-10-10 17:47 by Christian Berndt
-    Modified:   2015-10-10 23:46 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-10-11 15:21 by Christian Berndt
+    Version:    1.0.2
 --%>
     
 <portlet:actionURL var="addMailingURL" name="editMailing"
@@ -55,6 +55,7 @@
                 value="<%= String.valueOf(mailing.getMailingId()) %>" />
             <portlet:param name="mvcPath" value="/html/edit_mailing.jsp" />
             <portlet:param name="windowId" value="editMailing" />
+            <portlet:param name="tabs1" value="mailing" />                       
         </portlet:actionURL>
     
         <%
