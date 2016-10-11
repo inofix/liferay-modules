@@ -205,7 +205,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         String title = ParamUtil.getString(actionRequest, "title");
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
-        long articleId = ParamUtil.getLong(actionRequest, "articleId");
+        String articleId = ParamUtil.getString(actionRequest, "articleId");
         boolean sent = ParamUtil.getBoolean(actionRequest, "sent");
 
         // Pass the required parameters to the render phase

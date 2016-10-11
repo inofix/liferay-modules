@@ -32,7 +32,7 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-10 23:39
+ * @modified 2016-10-11 00:34
  * @version 1.0.1
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
@@ -48,7 +48,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
-            long newsletterId, long articleId, ServiceContext serviceContext)
+            long newsletterId, String articleId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         boolean sent = false;
@@ -93,7 +93,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     private Mailing saveMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, long articleId, boolean sent,
+            String title, long newsletterId, String articleId, boolean sent,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
@@ -167,7 +167,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, long articleId, boolean sent,
+            String title, long newsletterId, String articleId, boolean sent,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 

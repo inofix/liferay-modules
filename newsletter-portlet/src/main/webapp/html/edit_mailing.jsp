@@ -2,11 +2,14 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-10 21:46 by Christian Berndt
+    Modified:   2015-10-11 00:38 by Christian Berndt
     Version:    1.0.1
 --%>
 
 <%@include file="/html/init.jsp"%>
+
+<%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
+<%@page import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
 
 <%
     String redirect = ParamUtil.getString(request, "redirect");
@@ -33,6 +36,9 @@
     }
 
     String mvcPath = ParamUtil.getString(request, "mvcPath");
+
+    List<JournalArticle> articles = JournalArticleLocalServiceUtil
+            .getArticles(themeDisplay.getScopeGroupId(), 0, 20);
 
     List<Newsletter> newsletters = NewsletterServiceUtil
             .getGroupNewsletters(themeDisplay.getScopeGroupId(), 0,
@@ -68,8 +74,20 @@
         %>
     </aui:select> 
     
-    <aui:input name="sent" type="checkbox" checked="<%= mailing.isSent() %>"/>
-     
+    <aui:select name="articleId" label="article">
+        <aui:option label="select-article" value="0"/>
+        <%  
+            for (JournalArticle article : articles) {           
+        %>
+            <aui:option label="<%= article.getTitle(locale) %>"
+                value="<%= article.getArticleId() %>"
+                selected="<%= article.getArticleId().equals(mailing.getArticleId()) %>"/>
+        <%
+            }
+        %>
+    </aui:select> 
+        
+    <aui:input name="sent" type="checkbox" checked="<%= mailing.isSent() %>"/>    
     
     <aui:button-row>
         <aui:button type="submit" />
