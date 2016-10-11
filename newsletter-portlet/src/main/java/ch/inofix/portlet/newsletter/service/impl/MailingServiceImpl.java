@@ -31,7 +31,7 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-10 23:39
+ * @modified 2016-10-11 00:35
  * @version 1.0.1
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
@@ -47,7 +47,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
-            long newsletterId, long articleId, ServiceContext serviceContext)
+            long newsletterId, String articleId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), groupId,
@@ -101,7 +101,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, long articleId, boolean sent,
+            String title, long newsletterId, String articleId, boolean sent,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 

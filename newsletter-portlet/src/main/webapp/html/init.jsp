@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-10 17:50 by Christian Berndt
-    Version:     1.0.7
+    Modified:    2016-10-10 23:58 by Christian Berndt
+    Version:     1.0.8
 --%>
 
 <%-- Import required classes --%>
@@ -31,6 +31,7 @@
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
