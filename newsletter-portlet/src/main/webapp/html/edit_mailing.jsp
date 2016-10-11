@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-11 15:15 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-10-11 16:30 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -116,6 +116,9 @@
         <div class="alert alert-info">
             <liferay-ui:message key="the-preview-does-not-include-settings-of-the-site-theme"/>
         </div>
+        
+        <%= MailingServiceUtil.prepareMailing(themeDisplay, mailing.getMailingId()) %>
+        
     </c:otherwise>
     
 </c:choose>
