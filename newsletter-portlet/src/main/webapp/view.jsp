@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2016-10-10 21:44 by Christian Berndt
-    Version:     1.1.0
+    Modified:    2016-10-11 22:58 by Christian Berndt
+    Version:     1.1.1
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -26,17 +26,13 @@
 
     <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
 
-    <liferay-ui:tabs names="newsletters,mailings,subscribers,templates"
+    <liferay-ui:tabs names="newsletters,mailings,subscribers"
         param="tabs1" url="<%=portletURL.toString()%>" />
 
     <c:choose>
 
         <c:when test='<%=tabs1.equals("newsletters")%>'>        
             <%@include file="/html/newsletters.jspf"%>
-        </c:when>
-
-        <c:when test='<%=tabs1.equals("templates")%>'>
-            <%@include file="/html/templates.jspf"%>
         </c:when>
 
         <c:when test='<%=tabs1.equals("mailings")%>'>
