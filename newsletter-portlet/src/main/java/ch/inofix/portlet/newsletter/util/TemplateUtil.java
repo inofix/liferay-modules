@@ -25,8 +25,8 @@ import com.liferay.taglib.util.VelocityTaglib;
  *
  * @author Christian Berndt
  * @created 2016-10-06 11:28
- * @modified 2016-10-06 11:28
- * @version 1.0.0
+ * @modified 2016-10-11 16:15
+ * @version 1.0.1
  */
 public class TemplateUtil {
 
@@ -61,7 +61,11 @@ public class TemplateUtil {
             siteGroupId = themeDisplay.getSiteGroupId();
         }
 
-        String templateId = String.valueOf(contextObjects.get("template_id"));
+        String templateId = null;
+
+        if (contextObjects != null) {
+            templateId = String.valueOf(contextObjects.get("template_id"));
+        }
 
         templateId =
             getTemplateId(templateId, companyId, companyGroupId, scopeGroupId);
