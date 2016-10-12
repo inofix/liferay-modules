@@ -43,8 +43,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-11 16:29
- * @version 1.0.2
+ * @modified 2016-10-12 14:44
+ * @version 1.0.3
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -112,7 +112,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     }
 
     @Override
-    public String prepareMailing(ThemeDisplay themeDisplay, long mailingId)
+    public String prepareMailing(ThemeDisplay themeDisplay,
+            Map<String, Object> contextObjects, long mailingId)
             throws PortalException, SystemException {
 
         _log.info("prepareMailing");
@@ -150,8 +151,6 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
         String introduction = null;
 
         if (Validator.isNotNull(script)) {
-
-            Map<String, Object> contextObjects = null;
 
             try {
                 introduction = TemplateUtil

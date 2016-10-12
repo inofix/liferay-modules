@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-11 16:30 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-10-12 14:45 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -63,61 +63,98 @@
 <c:choose>
 
     <c:when test='<%=tabs1.equals("mailing")%>'>
-    
+
         <portlet:actionURL var="saveMailingURL" name="saveMailing" />
-        
+
         <aui:form action="<%=saveMailingURL%>" method="post" name="fm">
-        
+
             <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
             <aui:input name="mailingId" type="hidden"
                 value="<%=String.valueOf(mailing.getMailingId())%>" />
             <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
-            <aui:input name="windowId" type="hidden" value="<%=windowId%>" />
-            
-            <aui:input name="title"
-                value="<%= mailing.getTitle() %>"/>
-                
-            <aui:select name="newsletterId" label="newsletter">
-                <aui:option label="select-newsletter" value="0"/>
-                <%  
-                    for (Newsletter newsletter : newsletters) {           
+            <aui:input name="windowId" type="hidden"
+                value="<%=windowId%>" />
+
+            <aui:input name="title" helpMessage="title-help"
+                inlineField="true" value="<%=mailing.getTitle()%>" />
+
+            <aui:select name="newsletterId" helpMessage="newsletter-help"
+                label="newsletter" inlineField="true">
+                <aui:option label="select-newsletter" value="0" />
+                <%
+                    for (Newsletter newsletter : newsletters) {
                 %>
-                    <aui:option label="<%= newsletter.getTitle() %>"
-                        value="<%= newsletter.getNewsletterId() %>"
-                        selected="<%= mailing.getNewsletterId() == newsletter.getNewsletterId() %>"/>
+                <aui:option label="<%=newsletter.getTitle()%>"
+                    value="<%=newsletter.getNewsletterId()%>"
+                    selected="<%=mailing.getNewsletterId() == newsletter
+                                        .getNewsletterId()%>" />
                 <%
                     }
                 %>
-            </aui:select> 
-            
-            <aui:select name="articleId" label="article">
-                <aui:option label="select-article" value="0"/>
-                <%  
-                    for (JournalArticle article : articles) {           
+            </aui:select>
+
+            <aui:select name="articleId" helpMessage="article-help"
+                label="article" inlineField="true">
+                <aui:option label="select-article" value="0" />
+                <%
+                    for (JournalArticle article : articles) {
                 %>
-                    <aui:option label="<%= article.getTitle(locale) %>"
-                        value="<%= article.getArticleId() %>"
-                        selected="<%= article.getArticleId().equals(mailing.getArticleId()) %>"/>
+                <aui:option label="<%=article.getTitle(locale)%>"
+                    value="<%=article.getArticleId()%>"
+                    selected="<%=article.getArticleId().equals(
+                                        mailing.getArticleId())%>" />
                 <%
                     }
                 %>
-            </aui:select> 
-                
-            <aui:input name="sent" type="checkbox" checked="<%= mailing.isSent() %>"/>    
-            
-            <aui:button-row>
-                <aui:button type="submit" />
-            </aui:button-row>
-                        
-        </aui:form>            
+            </aui:select>
+
+            <aui:input name="sent" type="checkbox" inlineField="true"
+                checked="<%=mailing.isSent()%>" />
+
+            <aui:button type="submit" />
+
+        </aui:form>
+        
+        <hr>
+
+        <portlet:actionURL var="sendMailingURL" name="sendMailing">
+        </portlet:actionURL>
+
+        <aui:form action="<%=sendMailingURL%>" name="fm1">
+
+            <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+            <aui:input name="mailingId" type="hidden"
+                value="<%=String.valueOf(mailing.getMailingId())%>" />
+            <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+            <aui:input name="windowId" type="hidden"
+                value="<%=windowId%>" />
+                                
+            <aui:input name="email" 
+                label="send-test-mail-to"
+                helpMessage="send-test-mail-to-help"
+                inlineField="true" required="true" />
+
+            <aui:button type="submit" value="send" />
+        </aui:form>
+
     </c:when>
-    
+
     <c:otherwise>
         <div class="alert alert-info">
             <liferay-ui:message key="the-preview-does-not-include-settings-of-the-site-theme"/>
         </div>
         
-        <%= MailingServiceUtil.prepareMailing(themeDisplay, mailing.getMailingId()) %>
+        <%
+            Map<String, String> contact_ = new HashMap<String, String>();
+            contact_.put("firstname", "Christian");
+            contact_.put("lastname", "Berndt");
+            contact_.put("gender", "male");
+
+            Map<String, Object> contextObjects = new HashMap<String, Object>();
+            contextObjects.put("contact", contact_);        
+        %>
+        
+        <%= MailingServiceUtil.prepareMailing(themeDisplay, contextObjects, mailing.getMailingId()) %>
         
     </c:otherwise>
     

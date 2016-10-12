@@ -28,8 +28,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-11 15:16
- * @version 1.0.6
+ * @modified 2016-10-11 23:24
+ * @version 1.0.7
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -226,7 +226,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         if (mailingId > 0) {
             mailing = MailingServiceUtil.updateMailing(userId, groupId,
-                    mailingId, title, newsletterId, articleId, sent, serviceContext);
+                    mailingId, title, newsletterId, articleId, sent,
+                    serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-updated-the-mailing"));
         } else {
@@ -299,6 +300,60 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         }
 
         actionRequest.setAttribute("NEWSLETTER", newsletter);
+
+    }
+
+    /**
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.7
+     * @throws Exception
+     */
+    public void sendMailing(ActionRequest actionRequest,
+            ActionResponse actionResponse) throws Exception {
+
+        _log.info("sendMailing");
+
+        HttpServletRequest request = PortalUtil
+                .getHttpServletRequest(actionRequest);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) request
+                .getAttribute(WebKeys.THEME_DISPLAY);
+
+        String backURL = ParamUtil.getString(actionRequest, "backURL");
+        long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String redirect = ParamUtil.getString(actionRequest, "redirect");
+        String windowId = ParamUtil.getString(actionRequest, "windowId");
+
+        String email = ParamUtil.getString(actionRequest, "email");
+
+        Mailing mailing = null;
+
+        if (mailingId > 0) {
+            mailing = MailingServiceUtil.getMailing(mailingId);
+        } else {
+            // TODO: set error message
+        }
+
+        // Pass the required parameters to the render phase
+
+        actionResponse.setRenderParameter("mailingId",
+                String.valueOf(mailingId));
+        actionResponse.setRenderParameter("backURL", backURL);
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("redirect", redirect);
+        actionResponse.setRenderParameter("windowId", windowId);
+
+        // Process the mailing
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+                Mailing.class.getName(), actionRequest);
+
+        actionRequest.setAttribute("MAILING", mailing);
+
+        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                PortletUtil.translate("the-mailing-has-been-sent-to-x", email));
 
     }
 
