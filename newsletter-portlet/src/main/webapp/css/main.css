@@ -11,6 +11,10 @@
     .alert-info {
         margin-top: 20px;
     }
+    
+    .control-group-inline {
+        margin-right: 20px;
+    }
  
     dl.build-info dfn, 
     dl.build-info dt {

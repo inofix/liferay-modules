@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-10 23:58 by Christian Berndt
-    Version:     1.0.8
+    Modified:    2016-10-11 22:46 by Christian Berndt
+    Version:     1.0.9
 --%>
 
 <%-- Import required classes --%>
@@ -32,6 +32,7 @@
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
+<%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 
@@ -63,7 +64,8 @@
 <theme:defineObjects />
 
 <%
-    String className = portletPreferences.getValue("className", "ch.inofix.portlet.contact.model.Contact");
     String currentURL = PortalUtil.getCurrentURL(request);
-    String script = portletPreferences.getValue("script", "");
+    String[] contextProperties = StringUtil.split(portletPreferences
+            .getValue("contextProperties", "firstname,lastname"),
+            StringPool.COMMA);
 %>
