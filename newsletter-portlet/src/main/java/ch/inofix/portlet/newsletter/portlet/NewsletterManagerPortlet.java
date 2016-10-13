@@ -1,5 +1,8 @@
 package ch.inofix.portlet.newsletter.portlet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +17,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -28,8 +33,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-11 23:24
- * @version 1.0.7
+ * @modified 2016-10-13 14:37
+ * @version 1.0.8
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -327,6 +332,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String windowId = ParamUtil.getString(actionRequest, "windowId");
 
         String email = ParamUtil.getString(actionRequest, "email");
+        // TODO: check email format
 
         Mailing mailing = null;
 
@@ -334,6 +340,19 @@ public class NewsletterManagerPortlet extends MVCPortlet {
             mailing = MailingServiceUtil.getMailing(mailingId);
         } else {
             // TODO: set error message
+        }
+
+        Newsletter newsletter = null;
+
+        if (mailing != null) {
+
+            long newsletterId = mailing.getNewsletterId();
+
+            if (newsletterId > 0) {
+                newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+            } else {
+                // TODO: set error message
+            }
         }
 
         // Pass the required parameters to the render phase
@@ -347,14 +366,40 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         // Process the mailing
 
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(
-                Mailing.class.getName(), actionRequest);
-
         actionRequest.setAttribute("MAILING", mailing);
 
-        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                PortletUtil.translate("the-mailing-has-been-sent-to-x", email));
+        long groupId = themeDisplay.getScopeGroupId();
 
+        Map<String, String[]> parameterMap = new HashMap<String, String[]>(
+                actionRequest.getParameterMap());
+
+        String servletContextName = request.getSession().getServletContext()
+                .getServletContextName();
+
+        String[] servletContextNames = new String[] { servletContextName };
+
+        parameterMap.put("servletContextNames", servletContextNames);
+
+        String taskName = "sendMailings";
+
+        long userId = themeDisplay.getUserId();
+
+        MailingServiceUtil.sendMailingsInBackground(userId, taskName, groupId,
+                parameterMap);
+
+        if (Validator.isNotNull(email)) {
+
+            // test mail
+
+            SessionMessages.add(actionRequest, REQUEST_PROCESSED, PortletUtil
+                    .translate("the-mailing-has-been-sent-to-x", email));
+
+        } else if (newsletter != null) {
+            SessionMessages.add(actionRequest,REQUEST_PROCESSED,PortletUtil
+                    .translate("the-mailing-has-been-sent-to-the-subscribers-of-x", newsletter.getTitle()));
+        } else {
+            SessionErrors.add(actionRequest, "an-error-occurred");
+        }
     }
 
     private static Log _log = LogFactoryUtil
