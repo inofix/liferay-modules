@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-12 14:45 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2015-10-13 17:41 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -17,7 +17,7 @@
     String backURL = ParamUtil.getString(request, "backURL", redirect);
 
     Mailing mailing = (Mailing) request.getAttribute("MAILING");
-
+    
     String windowId = "";
     windowId = ParamUtil.getString(request, "windowId");
 
@@ -132,10 +132,44 @@
             <aui:input name="email" 
                 label="send-test-mail-to"
                 helpMessage="send-test-mail-to-help"
-                inlineField="true" required="true" />
+                inlineField="true" required="true" 
+                value="berndt@kulturtechniker.de"/>
 
             <aui:button type="submit" value="send" />
         </aui:form>
+        
+                
+        <%
+            Newsletter newsletter = null; 
+        
+            if (mailing.getNewsletterId() > 0) {
+                newsletter = NewsletterServiceUtil.getNewsletter(mailing.getNewsletterId());
+            }
+        %>
+        
+        <c:if test="<%= newsletter != null %>">
+        
+            <hr>
+    
+            <aui:form action="<%=sendMailingURL%>" name="fm2">
+    
+                <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+                <aui:input name="mailingId" type="hidden"
+                    value="<%=String.valueOf(mailing.getMailingId())%>" />
+                <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+                <aui:input name="windowId" type="hidden"
+                    value="<%=windowId%>" />
+    
+                <aui:field-wrapper inlineField="true">
+                    <liferay-ui:message
+                        key="send-the-mailing-to-the-subscribers-of-newsletter-x"
+                        arguments="<%=newsletter.getTitle() %>" />
+                </aui:field-wrapper>
+    
+                <aui:button type="submit" value="send" />
+            </aui:form>
+        
+        </c:if>
 
     </c:when>
 
@@ -154,7 +188,7 @@
             contextObjects.put("contact", contact_);        
         %>
         
-        <%= MailingServiceUtil.prepareMailing(themeDisplay, contextObjects, mailing.getMailingId()) %>
+        <%= MailingServiceUtil.prepareMailing(contextObjects, mailing.getMailingId()) %>
         
     </c:otherwise>
     

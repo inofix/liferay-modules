@@ -2,8 +2,8 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-10 23:07 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-10-13 16:41 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%-- <%@include file="/html/init.jsp"%> --%>
@@ -43,34 +43,47 @@
                 iteratorURL.setParameter("tabs1", tabs1);
                 searchContainer.setIteratorURL(iteratorURL);
                 
-                SearchContext searchContext = SearchContextFactory.getInstance(request);
-                List<Document> documents = SubscriberServiceUtil.getSubscribersFromVCardGroup(
-                                themeDisplay.getScopeGroupId(), searchContext, vCardGroupId, searchContainer.getStart(), searchContainer.getEnd());
+                List<Subscriber> subscribers = SubscriberServiceUtil.getSubscribersFromVCardGroup(
+                                themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId, searchContainer.getStart(), searchContainer.getEnd());
                 
-                int numDocuments = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(themeDisplay.getScopeGroupId(), searchContext, vCardGroupId);
+                int numSubscribers = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId);
             %>            
         
             <liferay-ui:search-container-results
-                results="<%= documents %>"
-                total="<%= numDocuments %>"/>
+                results="<%= subscribers %>"
+                total="<%= numSubscribers %>"/>
         
             <liferay-ui:search-container-row
-                className="com.liferay.portal.kernel.search.Document"
-                modelVar="document">
+                className="ch.inofix.portlet.newsletter.model.Subscriber"
+                modelVar="subscriber">
         
                 <liferay-ui:search-container-column-text name="name"
-                    value='<%=document.get("fullName")%>' />
+                    value='<%=subscriber.getName() %>' />
         
                 <liferay-ui:search-container-column-text name="email" 
-                    value='<%=document.get("email")%>' /> 
-                    
-                <%
-                    Date modifiedDate = new Date(GetterUtil.getLong(document.get("modified_sortable"))); 
-                %> 
+                    value='<%=subscriber.getEmail() %>' /> 
                     
                 <liferay-ui:search-container-column-text
                     name="modified-date" 
-                    value='<%= modifiedDate.toString() %>' />                                               
+                    value='<%= subscriber.getModifiedDate().toString() %>' />   
+                    
+                <liferay-ui:search-container-column-text> 
+                
+                    <portlet:renderURL var="previewURL" 
+                        windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+                        <portlet:param name="mvcPath" value="/html/preview_mailing.jsp"/>
+                    </portlet:renderURL>               
+        
+                    <liferay-ui:icon-menu>
+
+                        <liferay-ui:icon iconCssClass="icon-binoculars"
+                            message="preview" label="true"
+                            useDialog="true" image="preview"
+                            url="<%=previewURL%>" />
+
+                    </liferay-ui:icon-menu>
+        
+                </liferay-ui:search-container-column-text>                                                                
         
             </liferay-ui:search-container-row>
         

@@ -1,6 +1,7 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import ch.inofix.portlet.newsletter.model.Mailing;
@@ -21,7 +22,6 @@ import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.JournalArticleDisplay;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
@@ -43,12 +43,13 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-12 14:44
- * @version 1.0.3
+ * @modified 2016-10-13 14:34
+ * @version 1.0.4
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
 public class MailingServiceImpl extends MailingServiceBaseImpl {
+
     /*
      * NOTE FOR DEVELOPERS:
      *
@@ -56,7 +57,6 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
      * ch.inofix.portlet.newsletter.service.MailingServiceUtil} to access the
      * mailing remote service.
      */
-
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
             long newsletterId, String articleId, ServiceContext serviceContext)
@@ -112,11 +112,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     }
 
     @Override
-    public String prepareMailing(ThemeDisplay themeDisplay,
-            Map<String, Object> contextObjects, long mailingId)
-            throws PortalException, SystemException {
-
-        _log.info("prepareMailing");
+    public String prepareMailing(Map<String, Object> contextObjects,
+            long mailingId) throws PortalException, SystemException {
 
         Newsletter newsletter = null;
         JournalArticle article = null;
@@ -139,13 +136,10 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
             String articleId = mailing.getArticleId();
 
-            _log.info("articleId = " + articleId);
-
             if (Validator.isNotNull(articleId)) {
                 article = JournalArticleServiceUtil.getLatestArticle(groupId,
                         articleId, WorkflowConstants.STATUS_APPROVED);
             }
-
         }
 
         String introduction = null;
@@ -153,9 +147,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
         if (Validator.isNotNull(script)) {
 
             try {
-                introduction = TemplateUtil
-                        .transform(themeDisplay, contextObjects, script,
-                                TemplateConstants.LANG_TYPE_FTL);
+                introduction = TemplateUtil.transform(contextObjects, script,
+                        TemplateConstants.LANG_TYPE_FTL);
             } catch (Exception e) {
                 _log.error(e);
                 throw new SystemException(e);
@@ -172,12 +165,14 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
         if (article != null) {
 
-            String languageId = LanguageUtil.getLanguageId(themeDisplay
-                    .getLocale());
+            String languageId = (String) contextObjects.get("languageId");
+            if (Validator.isNull(languageId)) {
+                languageId = LanguageUtil.getLanguageId(Locale.US);
+            }
 
             JournalArticleDisplay articleDisplay = JournalArticleLocalServiceUtil
                     .getArticleDisplay(article, null, null, languageId, 1,
-                            null, themeDisplay);
+                            null, null);
 
             sb.append("<div class=\"newsletter-content\">");
             sb.append(articleDisplay.getContent());
@@ -187,6 +182,16 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
         return sb.toString();
 
+    }
+
+    @Override
+    public long sendMailingsInBackground(long userId, String taskName,
+            long groupId, Map<String, String[]> parameterMap)
+            throws PortalException, SystemException {
+
+        // TODO: check permissions
+        return mailingLocalService.sendMailingsInBackground(userId, taskName,
+                groupId, parameterMap);
     }
 
     @Override

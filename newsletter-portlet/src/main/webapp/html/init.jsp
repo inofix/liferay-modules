@@ -2,14 +2,15 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-11 22:46 by Christian Berndt
-    Version:     1.0.9
+    Modified:    2016-10-13 16:28 by Christian Berndt
+    Version:     1.1.0
 --%>
 
 <%-- Import required classes --%>
 
 <%@page import="ch.inofix.portlet.newsletter.model.Mailing"%>
 <%@page import="ch.inofix.portlet.newsletter.model.Newsletter"%>
+<%@page import="ch.inofix.portlet.newsletter.model.Subscriber"%>
 <%@page import="ch.inofix.portlet.newsletter.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.newsletter.service.MailingServiceUtil"%>
 <%@page import="ch.inofix.portlet.newsletter.service.NewsletterServiceUtil"%>

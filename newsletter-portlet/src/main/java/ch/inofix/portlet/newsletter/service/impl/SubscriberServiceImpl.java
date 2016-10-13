@@ -1,8 +1,10 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import ch.inofix.portlet.newsletter.model.Subscriber;
 import ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -13,8 +15,10 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.search.facet.SimpleFacet;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import ezvcard.Ezvcard;
@@ -37,7 +41,7 @@ import ezvcard.property.Member;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-10-10 14:09
+ * @modified 2016-10-13 16:13
  * @version 1.0.2
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
@@ -78,12 +82,18 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
     }
 
     @Override
-    public List<Document> getSubscribersFromVCardGroup(long groupId,
-            SearchContext searchContext, String vCardGroupId, int start, int end)
+    public List<Subscriber> getSubscribersFromVCardGroup(long companyId,
+            long groupId, String vCardGroupId, int start, int end)
             throws PortalException, SystemException {
 
+        SearchContext searchContext = new SearchContext();
+
+        searchContext.setCompanyId(companyId);
+        searchContext.setEnd(end);
+        searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
+
         Document group = getDocument(groupId, searchContext, vCardGroupId);
-        List<Document> subscribers = new ArrayList<Document>();
+        List<Subscriber> subscribers = new ArrayList<Subscriber>();
 
         if (group != null) {
 
@@ -105,17 +115,24 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
 
                     if (uuid != null) {
 
-                        Document memberDocument = getDocument(groupId,
-                                searchContext, uuid);
-                        if (memberDocument != null) {
+                        Document document = getDocument(groupId, searchContext,
+                                uuid);
+                        if (document != null) {
 
                             // Only add members with email-address
 
-                            String email = memberDocument.get("email");
+                            String email = document.get("email");
                             if (Validator.isNotNull(email)) {
-                                subscribers.add(memberDocument);
-                            }
 
+                                Subscriber subscriber = subscriberLocalService
+                                        .createSubscriber(0);
+                                subscriber.setEmail(email);
+                                subscriber.setModifiedDate(new Date(GetterUtil
+                                        .getLong(document
+                                                .get("modified_sortable"))));
+                                subscriber.setName(document.get("name"));
+                                subscribers.add(subscriber);
+                            }
                         }
                     }
                 }
@@ -130,14 +147,13 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
     }
 
     @Override
-    public int getSubscribersFromVCardGroupCount(long groupId,
-            SearchContext searchContext, String vCardGroupId)
-            throws PortalException, SystemException {
+    public int getSubscribersFromVCardGroupCount(long companyId, long groupId,
+            String vCardGroupId) throws PortalException, SystemException {
 
-        List<Document> documents = getSubscribersFromVCardGroup(groupId,
-                searchContext, vCardGroupId, 0, Integer.MAX_VALUE);
+        List<Subscriber> subscribers = getSubscribersFromVCardGroup(companyId,
+                groupId, vCardGroupId, 0, Integer.MAX_VALUE);
 
-        return documents.size();
+        return subscribers.size();
 
     }
 

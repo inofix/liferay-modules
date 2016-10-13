@@ -1,8 +1,18 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import ch.inofix.portlet.newsletter.backgroundtask.MailingBackgroundTaskExecutor;
 import ch.inofix.portlet.newsletter.model.Mailing;
+import ch.inofix.portlet.newsletter.model.Newsletter;
+import ch.inofix.portlet.newsletter.model.Subscriber;
+import ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil;
+import ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil;
 import ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -11,8 +21,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.model.BackgroundTask;
 import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
+import com.liferay.portal.service.BackgroundTaskLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.asset.model.AssetEntry;
 
@@ -32,8 +47,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-11 00:34
- * @version 1.0.1
+ * @modified 2016-10-13 14:43
+ * @version 1.0.2
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -125,6 +140,87 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         mailingPersistence.update(mailing);
 
         return mailing;
+
+    }
+
+    @Override
+    public void sendMailings(long userId, long groupId,
+            Map<String, String[]> parameterMap) throws PortalException,
+            SystemException {
+
+        _log.info("sendMailings()");
+
+        long mailingId = GetterUtil.getLong(ArrayUtil.getValue(
+                parameterMap.get("mailingId"), 0));
+
+        String email = GetterUtil.getString(ArrayUtil.getValue(
+                parameterMap.get("email"), 0));
+
+        Mailing mailing = null;
+
+        if (mailingId > 0) {
+            mailing = MailingLocalServiceUtil.getMailing(mailingId);
+        }
+
+        List<Subscriber> subscribers = new ArrayList<Subscriber>();
+
+        if (Validator.isNotNull(email)) {
+
+            // test mail
+
+            Subscriber subscriber = SubscriberLocalServiceUtil
+                    .createSubscriber(0);
+            subscriber.setEmail(email);
+            subscribers.add(subscriber);
+
+        } else if (mailing != null) {
+
+            Newsletter newsletter = null;
+
+            if (mailing.getNewsletterId() > 0) {
+                newsletter = newsletterLocalService.getNewsletter(mailing
+                        .getNewsletterId());
+            }
+
+            if (newsletter != null) {
+                subscribers = subscriberService.getSubscribersFromVCardGroup(
+                        newsletter.getCompanyId(), groupId,
+                        newsletter.getVCardGroupId(), 0, Integer.MAX_VALUE);
+            }
+        }
+
+        _log.info("subscribers.size() = " + subscribers.size());
+
+        for (Subscriber subscriber : subscribers) {
+            Map<String, Object> contextObjects = new HashMap<String, Object>();
+            contextObjects.put("subscriber", subscriber);
+            String content = mailingService.prepareMailing(contextObjects,
+                    mailingId);
+            _log.info(content);
+        }
+    }
+
+    @Override
+    public long sendMailingsInBackground(long userId, String taskName,
+            long groupId, Map<String, String[]> parameterMap)
+            throws PortalException, SystemException {
+
+        _log.info("sendMailingsInBackground()");
+
+        Map<String, Serializable> taskContextMap = new HashMap<String, Serializable>();
+        taskContextMap.put("userId", userId);
+        taskContextMap.put("groupId", groupId);
+        taskContextMap.put("parameterMap", (Serializable) parameterMap);
+
+        String[] servletContextNames = parameterMap.get("servletContextNames");
+
+        BackgroundTask backgroundTask = BackgroundTaskLocalServiceUtil
+                .addBackgroundTask(userId, groupId, taskName,
+                        servletContextNames,
+                        MailingBackgroundTaskExecutor.class, taskContextMap,
+                        new ServiceContext());
+
+        return backgroundTask.getBackgroundTaskId();
 
     }
 
