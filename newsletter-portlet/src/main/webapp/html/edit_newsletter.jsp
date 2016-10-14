@@ -2,8 +2,8 @@
     edit_newsletter.jsp: edit the newsletter settings. 
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-11 10:39 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-10-14 17:36 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -51,7 +51,7 @@
     <aui:input name="title"
         value="<%= newsletter.getTitle() %>"/>
     <aui:input name="template" 
-        type="textarea"
+        type="textarea" helpMessage="newsletter-template-help"
         value="<%= newsletter.getTemplate() %>"/>
     <aui:input name="vCardGroupId" label="group-v-card" helpMessage="group-v-card-help"
         value="<%= newsletter.getVCardGroupId() %>"/>

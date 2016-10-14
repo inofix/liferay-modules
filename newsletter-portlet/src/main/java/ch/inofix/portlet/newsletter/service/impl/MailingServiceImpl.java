@@ -1,5 +1,6 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,8 +44,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-13 14:34
- * @version 1.0.4
+ * @modified 2016-10-14 17:08
+ * @version 1.0.5
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -59,14 +60,15 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
      */
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
-            long newsletterId, String articleId, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            String template, long newsletterId, String articleId,
+            ServiceContext serviceContext) throws PortalException,
+            SystemException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), groupId,
                 ActionKeys.ADD_NEWSLETTER);
 
         return MailingLocalServiceUtil.addMailing(userId, groupId, title,
-                newsletterId, articleId, serviceContext);
+                template, newsletterId, articleId, serviceContext);
 
     }
 
@@ -134,6 +136,12 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
                 script = newsletter.getTemplate();
             }
 
+            // mailing.template overrides newsletter.template
+
+            if (Validator.isNotNull(mailing.getTemplate())) {
+                script = mailing.getTemplate();
+            }
+
             String articleId = mailing.getArticleId();
 
             if (Validator.isNotNull(articleId)) {
@@ -196,16 +204,16 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, String articleId, boolean sent,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            String title, String template, long newsletterId, String articleId,
+            Date sendDate, boolean sent, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         MailingPermission.check(getPermissionChecker(), mailingId,
                 ActionKeys.UPDATE);
 
-        return MailingLocalServiceUtil
-                .updateMailing(userId, groupId, mailingId, title, newsletterId,
-                        articleId, sent, serviceContext);
+        return MailingLocalServiceUtil.updateMailing(userId, groupId,
+                mailingId, title, template, newsletterId, articleId, sendDate,
+                sent, serviceContext);
 
     }
 
