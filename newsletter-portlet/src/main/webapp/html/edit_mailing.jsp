@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-13 17:41 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-10-14 17:20 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -74,44 +74,52 @@
             <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
             <aui:input name="windowId" type="hidden"
                 value="<%=windowId%>" />
+                
+            <aui:row>
+    
+                <aui:input name="title" helpMessage="title-help"
+                    inlineField="true" value="<%=mailing.getTitle()%>" />
+    
+                <aui:select name="newsletterId" helpMessage="newsletter-help"
+                    label="newsletter" inlineField="true">
+                    <aui:option label="select-newsletter" value="0" />
+                    <%
+                        for (Newsletter newsletter : newsletters) {
+                    %>
+                    <aui:option label="<%=newsletter.getTitle()%>"
+                        value="<%=newsletter.getNewsletterId()%>"
+                        selected="<%=mailing.getNewsletterId() == newsletter
+                                            .getNewsletterId()%>" />
+                    <%
+                        }
+                    %>
+                </aui:select>
+    
+                <aui:select name="articleId" helpMessage="article-help"
+                    label="article" inlineField="true">
+                    <aui:option label="select-article" value="0" />
+                    <%
+                        for (JournalArticle article : articles) {
+                    %>
+                    <aui:option label="<%=article.getTitle(locale)%>"
+                        value="<%=article.getArticleId()%>"
+                        selected="<%=article.getArticleId().equals(
+                                            mailing.getArticleId())%>" />
+                    <%
+                        }
+                    %>
+                </aui:select>
 
-            <aui:input name="title" helpMessage="title-help"
-                inlineField="true" value="<%=mailing.getTitle()%>" />
+                <aui:input name="template" type="textarea"
+                    helpMessage="mailing-template-help" inlineField="true"
+                    value="<%=mailing.getTemplate()%>" />
 
-            <aui:select name="newsletterId" helpMessage="newsletter-help"
-                label="newsletter" inlineField="true">
-                <aui:option label="select-newsletter" value="0" />
                 <%
-                    for (Newsletter newsletter : newsletters) {
+                    // TODO: sendDate
                 %>
-                <aui:option label="<%=newsletter.getTitle()%>"
-                    value="<%=newsletter.getNewsletterId()%>"
-                    selected="<%=mailing.getNewsletterId() == newsletter
-                                        .getNewsletterId()%>" />
-                <%
-                    }
-                %>
-            </aui:select>
 
-            <aui:select name="articleId" helpMessage="article-help"
-                label="article" inlineField="true">
-                <aui:option label="select-article" value="0" />
-                <%
-                    for (JournalArticle article : articles) {
-                %>
-                <aui:option label="<%=article.getTitle(locale)%>"
-                    value="<%=article.getArticleId()%>"
-                    selected="<%=article.getArticleId().equals(
-                                        mailing.getArticleId())%>" />
-                <%
-                    }
-                %>
-            </aui:select>
-
-            <aui:input name="sent" type="checkbox" inlineField="true"
-                checked="<%=mailing.isSent()%>" />
-
-            <aui:button type="submit" />
+                <aui:button type="submit" />
+            </aui:row>
 
         </aui:form>
         

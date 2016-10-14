@@ -1,5 +1,6 @@
 package ch.inofix.portlet.newsletter.portlet;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,8 +34,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-13 14:37
- * @version 1.0.8
+ * @modified 2016-10-14 17:42
+ * @version 1.0.9
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -211,8 +212,11 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         Mailing mailing = null;
 
         String title = ParamUtil.getString(actionRequest, "title");
+        String template = ParamUtil.getString(actionRequest, "template");
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
         String articleId = ParamUtil.getString(actionRequest, "articleId");
+        // TODO:
+        Date sendDate = null;
         boolean sent = ParamUtil.getBoolean(actionRequest, "sent");
 
         // Pass the required parameters to the render phase
@@ -231,13 +235,13 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         if (mailingId > 0) {
             mailing = MailingServiceUtil.updateMailing(userId, groupId,
-                    mailingId, title, newsletterId, articleId, sent,
+                    mailingId, title, template, newsletterId, articleId, sendDate, sent,
                     serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-updated-the-mailing"));
         } else {
             mailing = MailingServiceUtil.addMailing(userId, groupId, title,
-                    newsletterId, articleId, serviceContext);
+                    template, newsletterId, articleId, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-added-the-mailing"));
         }
@@ -395,8 +399,13 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                     .translate("the-mailing-has-been-sent-to-x", email));
 
         } else if (newsletter != null) {
-            SessionMessages.add(actionRequest,REQUEST_PROCESSED,PortletUtil
-                    .translate("the-mailing-has-been-sent-to-the-subscribers-of-x", newsletter.getTitle()));
+            SessionMessages
+                    .add(actionRequest,
+                            REQUEST_PROCESSED,
+                            PortletUtil
+                                    .translate(
+                                            "the-mailing-has-been-sent-to-the-subscribers-of-x",
+                                            newsletter.getTitle()));
         } else {
             SessionErrors.add(actionRequest, "an-error-occurred");
         }

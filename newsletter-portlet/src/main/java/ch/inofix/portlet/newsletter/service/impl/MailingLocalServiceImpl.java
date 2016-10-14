@@ -47,8 +47,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-13 14:43
- * @version 1.0.2
+ * @modified 2016-10-14 17:08
+ * @version 1.0.3
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -63,13 +63,15 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
-            long newsletterId, String articleId, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            String template, long newsletterId, String articleId,
+            ServiceContext serviceContext) throws PortalException,
+            SystemException {
 
+        Date sendDate = null;
         boolean sent = false;
 
-        Mailing mailing = saveMailing(userId, groupId, 0, title, newsletterId,
-                articleId, sent, serviceContext);
+        Mailing mailing = saveMailing(userId, groupId, 0, title, template,
+                newsletterId, articleId, sendDate, sent, serviceContext);
 
         // Asset
 
@@ -108,8 +110,8 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     private Mailing saveMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, String articleId, boolean sent,
-            ServiceContext serviceContext) throws PortalException,
+            String title, String template, long newsletterId, String articleId,
+            Date sendDate, boolean sent, ServiceContext serviceContext) throws PortalException,
             SystemException {
 
         User user = userPersistence.findByPrimaryKey(userId);
@@ -126,14 +128,15 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             mailing.setUserId(user.getUserId());
             mailing.setUserName(user.getFullName());
             mailing.setCreateDate(now);
-
         }
 
         mailing.setModifiedDate(now);
 
         mailing.setTitle(title);
+        mailing.setTemplate(template);
         mailing.setNewsletterId(newsletterId);
         mailing.setArticleId(articleId);
+        mailing.setSendDate(sendDate);
         mailing.setSent(sent);
         mailing.setExpandoBridgeAttributes(serviceContext);
 
@@ -263,12 +266,13 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
-            String title, long newsletterId, String articleId, boolean sent,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            String title, String template, long newsletterId, String articleId,
+            Date sendDate, boolean sent, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         Mailing mailing = saveMailing(userId, groupId, mailingId, title,
-                newsletterId, articleId, sent, serviceContext);
+                template, newsletterId, articleId, sendDate, sent,
+                serviceContext);
 
         // Asset
 
