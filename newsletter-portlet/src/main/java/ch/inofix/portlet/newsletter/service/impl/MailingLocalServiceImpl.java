@@ -14,6 +14,7 @@ import ch.inofix.portlet.newsletter.model.Subscriber;
 import ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil;
 import ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil;
 import ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl;
+import ch.inofix.portlet.newsletter.util.PortletKey;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -48,8 +49,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-14 17:57
- * @version 1.0.4
+ * @modified 2016-10-15 22:39
+ * @version 1.0.5
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -173,8 +174,8 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         String fromName = null;
 
         if (newsletter != null) {
-           fromAddress = newsletter.getFromAddress();
-           fromName = newsletter.getFromName();
+            fromAddress = newsletter.getFromAddress();
+            fromName = newsletter.getFromName();
         }
 
         _log.info("fromName = " + fromName);
@@ -197,7 +198,10 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         subscriptionSender.setCompanyId(companyId);
         subscriptionSender.setBody(body);
         subscriptionSender.setFrom(fromAddress, fromName);
-
+        subscriptionSender.setHtmlFormat(true);
+        subscriptionSender.setMailId("newsletter", mailing.getMailingId());
+        subscriptionSender.setPortletId(PortletKey.NEWSLETTER);
+        subscriptionSender.setScopeGroupId(mailing.getGroupId());
         subscriptionSender.addRuntimeSubscribers(toAddress, toName);
 
         subscriptionSender.flushNotificationsAsync();
