@@ -2,8 +2,8 @@
     edit_newsletter.jsp: edit the newsletter settings. 
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-14 17:36 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-10-15 13:52 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -47,15 +47,20 @@
         value="<%=String.valueOf(newsletter.getNewsletterId())%>" />
     <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
     <aui:input name="windowId" type="hidden" value="<%=windowId%>" />
-    
-    <aui:input name="title"
-        value="<%= newsletter.getTitle() %>"/>
-    <aui:input name="template" 
-        type="textarea" helpMessage="newsletter-template-help"
-        value="<%= newsletter.getTemplate() %>"/>
-    <aui:input name="vCardGroupId" label="group-v-card" helpMessage="group-v-card-help"
-        value="<%= newsletter.getVCardGroupId() %>"/>
-    
+
+    <aui:input name="title" helpMessage="newsletter-title-help"
+        required="true" value="<%=newsletter.getTitle()%>" />
+    <aui:input name="template" type="textarea"
+        helpMessage="newsletter-template-help"
+        value="<%=newsletter.getTemplate()%>" />
+    <aui:input name="fromAddress" helpMessage="from-address-help"
+        required="true" value="<%=newsletter.getFromAddress()%>" />
+    <aui:input name="fromName" helpMessage="from-name-help"
+        required="true" value="<%=newsletter.getFromName()%>" />
+    <aui:input name="vCardGroupId" label="group-v-card"
+        helpMessage="group-v-card-help"
+        value="<%=newsletter.getVCardGroupId()%>" />
+
     <aui:button-row>
         <aui:button type="submit" />
     </aui:button-row>
