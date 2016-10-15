@@ -29,6 +29,7 @@ import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.BackgroundTaskLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.util.SubscriptionSender;
 import com.liferay.portlet.asset.model.AssetEntry;
 
 /**
@@ -47,8 +48,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-14 17:08
- * @version 1.0.3
+ * @modified 2016-10-14 17:57
+ * @version 1.0.4
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -87,6 +88,14 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     @Override
+    public void checkMailings() throws PortalException, SystemException {
+
+        _log.info("checkMailings()");
+
+        Date now = new Date();
+    }
+
+    @Override
     public Mailing deleteMailing(long mailingId) throws PortalException,
             SystemException {
 
@@ -111,8 +120,8 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
     private Mailing saveMailing(long userId, long groupId, long mailingId,
             String title, String template, long newsletterId, String articleId,
-            Date sendDate, boolean sent, ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            Date sendDate, boolean sent, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         User user = userPersistence.findByPrimaryKey(userId);
         Date now = new Date();
@@ -143,6 +152,55 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         mailingPersistence.update(mailing);
 
         return mailing;
+
+    }
+
+    @Override
+    public void sendEmail(Mailing mailing, Subscriber subscriber)
+            throws PortalException, SystemException {
+
+        _log.info("sendEmail");
+
+        Newsletter newsletter = null;
+
+        if (mailing.getNewsletterId() > 0) {
+            newsletter = newsletterLocalService.getNewsletter(mailing
+                    .getNewsletterId());
+        }
+
+        long companyId = newsletter.getCompanyId();
+        String fromAddress = null;
+        String fromName = null;
+
+        if (newsletter != null) {
+           fromAddress = newsletter.getFromAddress();
+           fromName = newsletter.getFromName();
+        }
+
+        _log.info("fromName = " + fromName);
+        _log.info("fromAddress = " + fromAddress);
+
+        String toName = subscriber.getName();
+        String toAddress = subscriber.getEmail();
+
+        String subject = mailing.getTitle();
+
+        Map<String, Object> contextObjects = new HashMap<String, Object>();
+        contextObjects.put("subscriber", subscriber);
+
+        String body = mailingService.prepareMailing(contextObjects,
+                mailing.getMailingId());
+
+        SubscriptionSender subscriptionSender = new SubscriptionSender();
+
+        subscriptionSender.setSubject(subject);
+        subscriptionSender.setCompanyId(companyId);
+        subscriptionSender.setBody(body);
+        subscriptionSender.setFrom(fromAddress, fromName);
+
+        subscriptionSender.addRuntimeSubscribers(toAddress, toName);
+
+        subscriptionSender.flushNotificationsAsync();
 
     }
 
@@ -195,11 +253,9 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         _log.info("subscribers.size() = " + subscribers.size());
 
         for (Subscriber subscriber : subscribers) {
-            Map<String, Object> contextObjects = new HashMap<String, Object>();
-            contextObjects.put("subscriber", subscriber);
-            String content = mailingService.prepareMailing(contextObjects,
-                    mailingId);
-            _log.info(content);
+
+            sendEmail(mailing, subscriber);
+
         }
     }
 

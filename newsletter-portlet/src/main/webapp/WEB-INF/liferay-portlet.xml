@@ -7,6 +7,15 @@
         <portlet-name>newsletter-portlet</portlet-name>
         <icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.newsletter.action.ConfigurationActionImpl</configuration-action-class>
+        <scheduler-entry>
+            <scheduler-event-listener-class>ch.inofix.portlet.newsletter.messaging.CheckMailingMessageListener</scheduler-event-listener-class>
+            <trigger>
+                <simple>
+                    <property-key>mailing.check.interval</property-key>
+                    <time-unit>minute</time-unit>
+                </simple>
+            </trigger>
+        </scheduler-entry>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
         <css-class-wrapper>portlet-newsletter</css-class-wrapper>

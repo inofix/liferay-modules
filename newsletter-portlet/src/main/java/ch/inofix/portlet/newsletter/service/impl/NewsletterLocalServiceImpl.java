@@ -34,8 +34,8 @@ import com.liferay.portlet.asset.model.AssetLinkConstants;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2016-10-09 18:39
- * @version 1.0.1
+ * @modified 2016-10-15 13:45
+ * @version 1.0.2
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -51,11 +51,12 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     @Override
     public Newsletter addNewsletter(long userId, long groupId, String title,
-            String template, String vCardGroupId, ServiceContext serviceContext)
+            String template, String fromName, String fromAddress,
+            String vCardGroupId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         Newsletter newsletter = saveNewsletter(userId, groupId, 0, title,
-                template, vCardGroupId, serviceContext);
+                template, fromName, fromAddress, vCardGroupId, serviceContext);
 
         // Asset
 
@@ -97,9 +98,10 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     }
 
     private Newsletter saveNewsletter(long userId, long groupId,
-            long newsletterId, String title, String template,
-            String vCardGroupId, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            long newsletterId, String title, String template, String fromName,
+            String fromAddress, String vCardGroupId,
+            ServiceContext serviceContext) throws PortalException,
+            SystemException {
 
         User user = userPersistence.findByPrimaryKey(userId);
         Date now = new Date();
@@ -123,6 +125,8 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         // TODO: validate the template string
         newsletter.setTitle(title);
         newsletter.setTemplate(template);
+        newsletter.setFromAddress(fromAddress);
+        newsletter.setFromName(fromName);
         newsletter.setVCardGroupId(vCardGroupId);
         newsletter.setExpandoBridgeAttributes(serviceContext);
 
@@ -176,12 +180,14 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     @Override
     public Newsletter updateNewsletter(long userId, long groupId,
-            long newsletterId, String title, String template,
-            String vCardGroupId, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            long newsletterId, String title, String template, String fromName,
+            String fromAddress, String vCardGroupId,
+            ServiceContext serviceContext) throws PortalException,
+            SystemException {
 
         Newsletter newsletter = saveNewsletter(userId, groupId, newsletterId,
-                title, template, vCardGroupId, serviceContext);
+                title, template, fromName, fromAddress, vCardGroupId,
+                serviceContext);
 
         // Asset
 

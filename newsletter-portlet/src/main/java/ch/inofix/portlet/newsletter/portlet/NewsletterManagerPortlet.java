@@ -34,8 +34,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-14 17:42
- * @version 1.0.9
+ * @modified 2016-10-15 13:48
+ * @version 1.1.0
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -235,8 +235,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         if (mailingId > 0) {
             mailing = MailingServiceUtil.updateMailing(userId, groupId,
-                    mailingId, title, template, newsletterId, articleId, sendDate, sent,
-                    serviceContext);
+                    mailingId, title, template, newsletterId, articleId,
+                    sendDate, sent, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-updated-the-mailing"));
         } else {
@@ -278,6 +278,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         String title = ParamUtil.getString(actionRequest, "title");
         String template = ParamUtil.getString(actionRequest, "template");
+        String fromAddress = ParamUtil.getString(actionRequest, "fromAddress");
+        String fromName = ParamUtil.getString(actionRequest, "fromName");
         String vCardGroupId = ParamUtil
                 .getString(actionRequest, "vCardGroupId");
 
@@ -297,13 +299,14 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         if (newsletterId > 0) {
             newsletter = NewsletterServiceUtil.updateNewsletter(userId,
-                    groupId, newsletterId, title, template, vCardGroupId,
-                    serviceContext);
+                    groupId, newsletterId, title, template, fromAddress,
+                    fromName, vCardGroupId, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED, PortletUtil
                     .translate("successfully-updated-the-newsletter"));
         } else {
             newsletter = NewsletterServiceUtil.addNewsletter(userId, groupId,
-                    title, template, vCardGroupId, serviceContext);
+                    title, template, fromAddress, fromName, vCardGroupId,
+                    serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-added-the-newsletter"));
         }
