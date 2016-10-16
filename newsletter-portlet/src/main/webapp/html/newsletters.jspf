@@ -2,10 +2,9 @@
     newsletters.jspf: the newsletters panel.
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-09 17:18 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-10-16 23:31 by Christian Berndt
+    Version:    1.0.2
 --%>
-    
 <portlet:actionURL var="addNewsletterURL" name="editNewsletter"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
     <portlet:param name="mvcPath" value="/html/edit_newsletter.jsp" />
@@ -27,14 +26,65 @@
 </c:if>
 
 <%
-    List<Newsletter> newsletters = NewsletterServiceUtil
-            .getGroupNewsletters(scopeGroupId, 0, Integer.MAX_VALUE);
+    int idx = ParamUtil.getInteger(request, "cur");
+    int delta = ParamUtil.getInteger(request, "delta", 20); 
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified_sortable"); 
+    String orderByType = ParamUtil.getString(request, "orderByType", "desc"); 
+
+    if (idx > 0) {
+        idx = idx - 1;
+    }
+    int start = delta * idx;
+    int end = delta * idx + delta;
+
+    SearchContext searchContext =
+        SearchContextFactory.getInstance(request);
+
+    boolean reverse = "desc".equals(orderByType);
+
+    Sort sort = new Sort(orderByCol, reverse);
+
+    searchContext.setAttribute("paginationType", "more");
+    searchContext.setStart(start);
+    searchContext.setEnd(end);
+    searchContext.setSorts(sort);
+
+    Indexer indexer = IndexerRegistryUtil.getIndexer(Newsletter.class);
+
+    Hits hits = indexer.search(searchContext);
+
+    List<Newsletter> newsletters = new ArrayList<Newsletter>(); 
+    
+    for (int i = 0; i < hits.getDocs().length; i++) {
+        
+        Document doc = hits.doc(i);
+
+        long newsletterId =
+            GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+        
+        Newsletter newsletter = null;
+
+        try {
+            newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+        }
+        catch (PortalException pe) {
+            log.error(pe.getLocalizedMessage());
+        }
+        catch (SystemException se) {
+            log.error(se.getLocalizedMessage());
+        }
+
+        if (newsletter != null) {
+            newsletters.add(newsletter);
+        }        
+    }  
 %>
 
 <liferay-ui:search-container
-    emptyResultsMessage="there-are-no-newsletters">
+    searchContainer="<%= new NewsletterSearch(renderRequest, portletURL) %>"
+    var="newsletterSearchContainer">
     <liferay-ui:search-container-results
-        total="<%= newsletters.size() %>" results="<%= newsletters %>" />
+        total="<%= hits.getLength() %>" results="<%= newsletters %>" />
 
     <liferay-ui:search-container-row
         className="ch.inofix.portlet.newsletter.model.Newsletter"
@@ -90,16 +140,19 @@
             }
         %>
 
-        <liferay-ui:search-container-column-text
-            property="title" href="<%=detailURL%>" />
-        <liferay-ui:search-container-column-text
-            property="userName" name="user-name"
-            href="<%=detailURL%>" />
-        <liferay-ui:search-container-column-text
-            property="modifiedDate" name="modified-date"
-            href="<%= detailURL %>" />
+            <liferay-ui:search-container-column-text
+                href="<%=detailURL%>" property="title"
+                orderable="true" orderableProperty="title" />
+            <liferay-ui:search-container-column-text
+                href="<%=detailURL%>" name="user-name"
+                orderable="true" orderableProperty="userName"
+                property="userName" />
+            <liferay-ui:search-container-column-text
+                href="<%=detailURL%>" name="modified-date"
+                orderable="true" orderableProperty="modified_sortable"
+                property="modifiedDate" />
 
-        <liferay-ui:search-container-column-text>      
+            <liferay-ui:search-container-column-text>      
 
             <liferay-ui:icon-menu>
 
@@ -121,4 +174,3 @@
 
     <liferay-ui:search-iterator />
 </liferay-ui:search-container>
-

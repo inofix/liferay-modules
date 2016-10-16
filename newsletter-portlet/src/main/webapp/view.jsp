@@ -31,11 +31,11 @@
 
     <c:choose>
 
-        <c:when test='<%=tabs1.equals("newsletters")%>'>        
+        <c:when test='<%=tabs1.equals("newsletters")%>'>
             <%@include file="/html/newsletters.jspf"%>
         </c:when>
 
-        <c:when test='<%=tabs1.equals("mailings")%>'>
+        <c:when test='<%=tabs1.equals("mailings")%>'>        
             <%@include file="/html/mailings.jspf"%>
         </c:when>
 

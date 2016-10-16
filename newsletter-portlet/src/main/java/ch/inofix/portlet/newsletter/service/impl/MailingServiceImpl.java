@@ -1,7 +1,6 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -44,8 +43,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-14 17:08
- * @version 1.0.5
+ * @modified 2016-10-16 23:45
+ * @version 1.0.6
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -91,15 +90,6 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
         return mailing;
 
-    }
-
-    @Override
-    public List<Mailing> getGroupMailings(long groupId, int start, int end)
-            throws PortalException, SystemException {
-
-        // TODO: check permissions
-        // TODO: filter by group
-        return mailingLocalService.getMailings(start, end);
     }
 
     @Override
