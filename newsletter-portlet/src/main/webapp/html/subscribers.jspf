@@ -2,15 +2,55 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-13 16:41 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-10-16 23:55 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%-- <%@include file="/html/init.jsp"%> --%>
 
 <%
-    List<Newsletter> newsletters = NewsletterServiceUtil
-        .getGroupNewsletters(themeDisplay.getScopeGroupId(), 0, Integer.MAX_VALUE); 
+    SearchContext searchContext =
+        SearchContextFactory.getInstance(request);
+
+    boolean reverse = false;
+
+    Sort sort = new Sort("title", reverse);
+
+    searchContext.setAttribute("paginationType", "more");
+    searchContext.setStart(0);
+    searchContext.setEnd(20);
+    searchContext.setSorts(sort);
+
+    Indexer indexer = IndexerRegistryUtil.getIndexer(Newsletter.class);
+
+    Hits hits = indexer.search(searchContext);
+    
+    List<Newsletter> newsletters = new ArrayList<Newsletter>(); 
+    
+    for (int i = 0; i < hits.getDocs().length; i++) {
+        
+        Document doc = hits.doc(i);
+
+        long newsletterId =
+            GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+        
+        Newsletter newsletter = null;
+
+        try {
+            newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+        }
+        catch (PortalException pe) {
+            log.error(pe.getLocalizedMessage());
+        }
+        catch (SystemException se) {
+            log.error(se.getLocalizedMessage());
+        }
+
+        if (newsletter != null) {
+            newsletters.add(newsletter);
+        }        
+    } 
+
     String vCardGroupId = ParamUtil.getString(renderRequest, "vCardGroupId");
 %>
 

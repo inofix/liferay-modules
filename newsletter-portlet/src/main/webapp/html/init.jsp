@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-13 16:28 by Christian Berndt
-    Version:     1.1.0
+    Modified:    2016-10-16 21:28 by Christian Berndt
+    Version:     1.1.1
 --%>
 
 <%-- Import required classes --%>
@@ -11,6 +11,8 @@
 <%@page import="ch.inofix.portlet.newsletter.model.Mailing"%>
 <%@page import="ch.inofix.portlet.newsletter.model.Newsletter"%>
 <%@page import="ch.inofix.portlet.newsletter.model.Subscriber"%>
+<%@page import="ch.inofix.portlet.newsletter.search.MailingSearch"%>
+<%@page import="ch.inofix.portlet.newsletter.search.NewsletterSearch"%>
 <%@page import="ch.inofix.portlet.newsletter.security.permission.ActionKeys"%>
 <%@page import="ch.inofix.portlet.newsletter.service.MailingServiceUtil"%>
 <%@page import="ch.inofix.portlet.newsletter.service.NewsletterServiceUtil"%>
@@ -19,12 +21,17 @@
 <%@page import="ch.inofix.portlet.newsletter.service.permission.NewsletterPermission"%>
 <%@page import="ch.inofix.portlet.newsletter.service.permission.NewsletterPortletPermission"%>
 
+<%@page import="com.liferay.portal.kernel.exception.SystemException"%>
+<%@page import="com.liferay.portal.kernel.exception.PortalException"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.log.Log"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
+<%@page import="com.liferay.portal.kernel.search.Field"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
+<%@page import="com.liferay.portal.kernel.search.Indexer"%>
+<%@page import="com.liferay.portal.kernel.search.IndexerRegistryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.search.Sort"%>

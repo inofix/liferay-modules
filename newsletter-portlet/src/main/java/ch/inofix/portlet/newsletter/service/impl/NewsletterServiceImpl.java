@@ -1,7 +1,5 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
-import java.util.List;
-
 import ch.inofix.portlet.newsletter.model.Newsletter;
 import ch.inofix.portlet.newsletter.security.permission.ActionKeys;
 import ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil;
@@ -30,11 +28,11 @@ import com.liferay.portal.service.ServiceContext;
  * </p>
  *
  * @author Christian Berndt
+ * @created 2016-10-08 01:25
+ * @modified 2016-10-16 23:46
+ * @version 1.0.4
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
- * @created 2016-10-08 01:25
- * @modified 2016-10-15 13:46
- * @version 1.0.3
  */
 public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
     /*
@@ -109,24 +107,6 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
 
         return newsletter;
 
-    }
-
-    /**
-     *
-     * @param groupId
-     * @param start
-     * @param end
-     * @return
-     * @throws PortalException
-     * @throws SystemException
-     */
-    @Override
-    public List<Newsletter> getGroupNewsletters(long groupId, int start, int end)
-            throws PortalException, SystemException {
-
-        // TODO: check permissions?
-        // TODO: filter by group
-        return NewsletterLocalServiceUtil.getNewsletters(start, end);
     }
 
     /**
