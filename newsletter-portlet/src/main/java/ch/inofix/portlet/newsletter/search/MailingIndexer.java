@@ -6,9 +6,9 @@ import java.util.Locale;
 
 import javax.portlet.PortletURL;
 
-import ch.inofix.portlet.newsletter.model.Newsletter;
-import ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil;
-import ch.inofix.portlet.newsletter.service.persistence.NewsletterActionableDynamicQuery;
+import ch.inofix.portlet.newsletter.model.Mailing;
+import ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil;
+import ch.inofix.portlet.newsletter.service.persistence.MailingActionableDynamicQuery;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -30,9 +30,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
  * @modified 2016-10-15 23:14
  * @version 1.0.0
  */
-public class NewsletterIndexer extends BaseIndexer {
+public class MailingIndexer extends BaseIndexer {
 
-    public NewsletterIndexer() {
+    public MailingIndexer() {
         setPermissionAware(true);
     }
 
@@ -49,19 +49,19 @@ public class NewsletterIndexer extends BaseIndexer {
     @Override
     protected void doDelete(Object obj) throws Exception {
 
-        Newsletter newsletter = (Newsletter) obj;
+        Mailing mailing = (Mailing) obj;
 
-        deleteDocument(newsletter.getCompanyId(), newsletter.getNewsletterId());
+        deleteDocument(mailing.getCompanyId(), mailing.getMailingId());
 
     }
 
     @Override
     protected Document doGetDocument(Object obj) throws Exception {
 
-        Newsletter newsletter = (Newsletter) obj;
+        Mailing mailing = (Mailing) obj;
 
-        Document document = getBaseModelDocument(PORTLET_ID, newsletter);
-        document.addText(Field.TITLE, newsletter.getTitle());
+        Document document = getBaseModelDocument(PORTLET_ID, mailing);
+        document.addText(Field.TITLE, mailing.getTitle());
 
         return document;
     }
@@ -80,12 +80,12 @@ public class NewsletterIndexer extends BaseIndexer {
     @Override
     protected void doReindex(Object obj) throws Exception {
 
-        Newsletter newsletter = (Newsletter) obj;
+        Mailing mailing = (Mailing) obj;
 
-        Document document = getDocument(newsletter);
+        Document document = getDocument(mailing);
 
         SearchEngineUtil.updateDocument(getSearchEngineId(),
-                newsletter.getCompanyId(), document);
+                mailing.getCompanyId(), document);
     }
 
     @Override
@@ -99,10 +99,9 @@ public class NewsletterIndexer extends BaseIndexer {
     @Override
     protected void doReindex(String className, long classPK) throws Exception {
 
-        Newsletter newsletter = NewsletterLocalServiceUtil
-                .getNewsletter(classPK);
+        Mailing mailing = MailingLocalServiceUtil.getMailing(classPK);
 
-        doReindex(newsletter);
+        doReindex(mailing);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class NewsletterIndexer extends BaseIndexer {
 
         final Collection<Document> documents = new ArrayList<Document>();
 
-        ActionableDynamicQuery actionableDynamicQuery = new NewsletterActionableDynamicQuery() {
+        ActionableDynamicQuery actionableDynamicQuery = new MailingActionableDynamicQuery() {
 
             @Override
             protected void addCriteria(DynamicQuery dynamicQuery) {
@@ -125,9 +124,9 @@ public class NewsletterIndexer extends BaseIndexer {
             @Override
             protected void performAction(Object object) throws PortalException {
 
-                Newsletter newsletter = (Newsletter) object;
+                Mailing mailing = (Mailing) object;
 
-                Document document = getDocument(newsletter);
+                Document document = getDocument(mailing);
 
                 documents.add(document);
 
@@ -145,10 +144,10 @@ public class NewsletterIndexer extends BaseIndexer {
 
     }
 
-    private static final Log _log = LogFactoryUtil
-            .getLog(NewsletterIndexer.class.getName());
+    private static final Log _log = LogFactoryUtil.getLog(MailingIndexer.class
+            .getName());
 
-    public static final String[] CLASS_NAMES = { Newsletter.class.getName() };
+    public static final String[] CLASS_NAMES = { Mailing.class.getName() };
 
     public static final String PORTLET_ID = "newsletter";
 

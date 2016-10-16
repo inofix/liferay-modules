@@ -6,9 +6,9 @@ import java.util.Locale;
 
 import javax.portlet.PortletURL;
 
-import ch.inofix.portlet.newsletter.model.Newsletter;
-import ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil;
-import ch.inofix.portlet.newsletter.service.persistence.NewsletterActionableDynamicQuery;
+import ch.inofix.portlet.newsletter.model.Subscriber;
+import ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil;
+import ch.inofix.portlet.newsletter.service.persistence.SubscriberActionableDynamicQuery;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -26,13 +26,13 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 /**
  * @author Christian Berndt
- * @created 2016-10-15 23:14
- * @modified 2016-10-15 23:14
+ * @created 2016-10-16 00:14
+ * @modified 2016-10-16 00:14
  * @version 1.0.0
  */
-public class NewsletterIndexer extends BaseIndexer {
+public class SubscriberIndexer extends BaseIndexer {
 
-    public NewsletterIndexer() {
+    public SubscriberIndexer() {
         setPermissionAware(true);
     }
 
@@ -49,19 +49,19 @@ public class NewsletterIndexer extends BaseIndexer {
     @Override
     protected void doDelete(Object obj) throws Exception {
 
-        Newsletter newsletter = (Newsletter) obj;
+        Subscriber subscriber = (Subscriber) obj;
 
-        deleteDocument(newsletter.getCompanyId(), newsletter.getNewsletterId());
+        deleteDocument(subscriber.getCompanyId(), subscriber.getSubscriberId());
 
     }
 
     @Override
     protected Document doGetDocument(Object obj) throws Exception {
 
-        Newsletter newsletter = (Newsletter) obj;
+        Subscriber subscriber = (Subscriber) obj;
 
-        Document document = getBaseModelDocument(PORTLET_ID, newsletter);
-        document.addText(Field.TITLE, newsletter.getTitle());
+        Document document = getBaseModelDocument(PORTLET_ID, subscriber);
+        document.addText(Field.TITLE, subscriber.getName());
 
         return document;
     }
@@ -80,12 +80,12 @@ public class NewsletterIndexer extends BaseIndexer {
     @Override
     protected void doReindex(Object obj) throws Exception {
 
-        Newsletter newsletter = (Newsletter) obj;
+        Subscriber subscriber = (Subscriber) obj;
 
-        Document document = getDocument(newsletter);
+        Document document = getDocument(subscriber);
 
         SearchEngineUtil.updateDocument(getSearchEngineId(),
-                newsletter.getCompanyId(), document);
+                subscriber.getCompanyId(), document);
     }
 
     @Override
@@ -99,10 +99,9 @@ public class NewsletterIndexer extends BaseIndexer {
     @Override
     protected void doReindex(String className, long classPK) throws Exception {
 
-        Newsletter newsletter = NewsletterLocalServiceUtil
-                .getNewsletter(classPK);
+        Subscriber subscriber = SubscriberLocalServiceUtil.getSubscriber(classPK);
 
-        doReindex(newsletter);
+        doReindex(subscriber);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class NewsletterIndexer extends BaseIndexer {
 
         final Collection<Document> documents = new ArrayList<Document>();
 
-        ActionableDynamicQuery actionableDynamicQuery = new NewsletterActionableDynamicQuery() {
+        ActionableDynamicQuery actionableDynamicQuery = new SubscriberActionableDynamicQuery() {
 
             @Override
             protected void addCriteria(DynamicQuery dynamicQuery) {
@@ -125,9 +124,9 @@ public class NewsletterIndexer extends BaseIndexer {
             @Override
             protected void performAction(Object object) throws PortalException {
 
-                Newsletter newsletter = (Newsletter) object;
+                Subscriber subscriber = (Subscriber) object;
 
-                Document document = getDocument(newsletter);
+                Document document = getDocument(subscriber);
 
                 documents.add(document);
 
@@ -145,10 +144,10 @@ public class NewsletterIndexer extends BaseIndexer {
 
     }
 
-    private static final Log _log = LogFactoryUtil
-            .getLog(NewsletterIndexer.class.getName());
+    private static final Log _log = LogFactoryUtil.getLog(SubscriberIndexer.class
+            .getName());
 
-    public static final String[] CLASS_NAMES = { Newsletter.class.getName() };
+    public static final String[] CLASS_NAMES = { Subscriber.class.getName() };
 
     public static final String PORTLET_ID = "newsletter";
 
