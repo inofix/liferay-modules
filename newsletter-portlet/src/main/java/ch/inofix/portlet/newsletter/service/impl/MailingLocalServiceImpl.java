@@ -91,7 +91,9 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     @Override
     public void checkMailings() throws PortalException, SystemException {
 
-        _log.info("checkMailings()");
+        if (_log.isDebugEnabled()) {
+            _log.debug("checkMailings()");
+        }
 
         Date now = new Date();
     }

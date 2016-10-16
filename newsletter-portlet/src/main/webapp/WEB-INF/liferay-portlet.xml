@@ -7,6 +7,9 @@
         <portlet-name>newsletter-portlet</portlet-name>
         <icon>/icon.png</icon>
         <configuration-action-class>ch.inofix.portlet.newsletter.action.ConfigurationActionImpl</configuration-action-class>
+        <indexer-class>ch.inofix.portlet.newsletter.search.MailingIndexer</indexer-class>
+        <indexer-class>ch.inofix.portlet.newsletter.search.NewsletterIndexer</indexer-class>
+        <indexer-class>ch.inofix.portlet.newsletter.search.SubscriberIndexer</indexer-class>
         <scheduler-entry>
             <scheduler-event-listener-class>ch.inofix.portlet.newsletter.messaging.CheckMailingMessageListener</scheduler-event-listener-class>
             <trigger>
