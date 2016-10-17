@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.inofix.portlet.newsletter.model.Subscriber;
+import ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil;
 import ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -41,8 +42,8 @@ import ezvcard.property.Member;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-10-13 16:13
- * @version 1.0.2
+ * @modified 2016-10-17 23:07
+ * @version 1.0.3
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
@@ -61,6 +62,15 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
 
         return subscriberLocalService
                 .search(groupId, searchContext, start, end);
+    }
+
+    @Override
+    public Subscriber createSubscriber() throws PortalException,
+            SystemException {
+
+        // Create an empty newsletter - no permission check required
+        return SubscriberLocalServiceUtil.createSubscriber(0);
+
     }
 
     private Document getDocument(long groupId, SearchContext searchContext,
