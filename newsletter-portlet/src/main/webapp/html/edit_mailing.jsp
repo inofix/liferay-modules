@@ -2,30 +2,32 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-17 15:49 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-10-17 22:22 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@include file="/html/init.jsp"%>
 
+<%@page import="ch.inofix.portlet.newsletter.model.impl.NewsletterModelImpl"%>
 <%@page import="ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil"%>
 
 <%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
-<%@page import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
+<%@page import="com.liferay.portlet.journal.service.JournalArticleServiceUtil"%>
 
 <%@page import="java.io.StringWriter"%>
 <%@page import="java.io.PrintWriter"%>
+
 <%
     String redirect = ParamUtil.getString(request, "redirect");
 
     String backURL = ParamUtil.getString(request, "backURL", redirect);
 
     Mailing mailing = (Mailing) request.getAttribute("MAILING");
-    
+
     String articleId = mailing.getArticleId();
-    
+
     Log log = LogFactoryUtil.getLog("docroot.html.edit_mailing.jsp");
-    
+
     String windowId = "";
     windowId = ParamUtil.getString(request, "windowId");
 
@@ -42,23 +44,28 @@
         portletURL.setParameter("windowId", windowId);
         backURL = portletURL.toString();
     }
-    
+
     String tabs1 = ParamUtil.getString(request, "tabs1", "mailing");
 
     PortletURL portletURL = renderResponse.createActionURL();
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("mvcPath", "/html/edit_mailing.jsp");
     portletURL.setParameter("backURL", backURL);
-    portletURL.setParameter("mailingId", String.valueOf(mailing.getMailingId()));
+    portletURL.setParameter("mailingId",
+            String.valueOf(mailing.getMailingId()));
     portletURL.setParameter("javax.portlet.action", "editMailing");
 
     String mvcPath = ParamUtil.getString(request, "mvcPath");
 
-    List<JournalArticle> articles = JournalArticleLocalServiceUtil
-            .getArticles(themeDisplay.getScopeGroupId(), 0, 20);
+    OrderByComparator obc = OrderByComparatorFactoryUtil.create(
+            NewsletterModelImpl.TABLE_NAME, "modifiedDate", false);
 
-    SearchContext searchContext =
-        SearchContextFactory.getInstance(request);
+    List<JournalArticle> articles = JournalArticleServiceUtil
+            .getGroupArticles(themeDisplay.getScopeGroupId(),
+                    themeDisplay.getUserId(), 0, 0, 20, obc);
+
+    SearchContext searchContext = SearchContextFactory
+            .getInstance(request);
 
     boolean reverse = false;
 
@@ -72,32 +79,31 @@
     Indexer indexer = IndexerRegistryUtil.getIndexer(Newsletter.class);
 
     Hits hits = indexer.search(searchContext);
-    
-    List<Newsletter> newsletters = new ArrayList<Newsletter>(); 
-    
+
+    List<Newsletter> newsletters = new ArrayList<Newsletter>();
+
     for (int i = 0; i < hits.getDocs().length; i++) {
-        
+
         Document doc = hits.doc(i);
 
-        long newsletterId =
-            GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
-        
+        long newsletterId = GetterUtil.getLong(doc
+                .get(Field.ENTRY_CLASS_PK));
+
         Newsletter newsletter = null;
 
         try {
-            newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
-        }
-        catch (PortalException pe) {
+            newsletter = NewsletterServiceUtil
+                    .getNewsletter(newsletterId);
+        } catch (PortalException pe) {
             log.error(pe.getLocalizedMessage());
-        }
-        catch (SystemException se) {
+        } catch (SystemException se) {
             log.error(se.getLocalizedMessage());
         }
 
         if (newsletter != null) {
             newsletters.add(newsletter);
-        }        
-    } 
+        }
+    }
 %>
 
 <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
