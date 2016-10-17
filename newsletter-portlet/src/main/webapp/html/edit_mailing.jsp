@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-17 22:22 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2015-10-17 23:09 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -103,7 +103,7 @@
         if (newsletter != null) {
             newsletters.add(newsletter);
         }
-    }
+    }   
 %>
 
 <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
@@ -162,9 +162,7 @@
                             }
                         %>
                     </aui:select>
-                </aui:col>
 
-                <aui:col span="4">
                     <div class="editor-wrapper">
                         <aui:input name="template" type="textarea"
                             helpMessage="mailing-template-help" inlineField="true"
@@ -182,63 +180,9 @@
             </aui:button-row>
 
         </aui:form>
-                
-        <%
-            Newsletter newsletter = null; 
         
-            if (mailing.getNewsletterId() > 0) {
-                newsletter = NewsletterServiceUtil.getNewsletter(mailing.getNewsletterId());
-            }
-        %>
+        <%@include file="/html/edit_mailing_send.jspf" %>
         
-        <c:if test="<%= newsletter != null %>">        
-                
-            <hr>
-
-            <portlet:actionURL var="sendMailingURL" name="sendMailing">
-            </portlet:actionURL>
-
-            <aui:form action="<%=sendMailingURL%>" name="fm1">
-    
-                <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
-                <aui:input name="mailingId" type="hidden"
-                    value="<%=String.valueOf(mailing.getMailingId())%>" />
-                <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
-                <aui:input name="windowId" type="hidden"
-                    value="<%=windowId%>" />
-                                    
-                <aui:input name="email" 
-                    label="send-test-mail-to"
-                    helpMessage="send-test-mail-to-help"
-                    inlineField="true" required="true" 
-                    value="berndt@kulturtechniker.de"/>
-    
-                <aui:button type="submit" value="send" />
-            </aui:form>
-       
-        
-            <hr>
-    
-            <aui:form action="<%=sendMailingURL%>" name="fm2">
-    
-                <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
-                <aui:input name="mailingId" type="hidden"
-                    value="<%=String.valueOf(mailing.getMailingId())%>" />
-                <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
-                <aui:input name="windowId" type="hidden"
-                    value="<%=windowId%>" />
-    
-                <aui:field-wrapper inlineField="true">
-                    <liferay-ui:message
-                        key="send-the-mailing-to-the-subscribers-of-newsletter-x"
-                        arguments="<%=newsletter.getTitle() %>" />
-                </aui:field-wrapper>
-    
-                <aui:button type="submit" value="send" />
-            </aui:form>
-        
-        </c:if>
-
     </c:when>
 
     <c:otherwise>
@@ -286,8 +230,9 @@
             <div class="alert alert-warn">
                 <liferay-ui:message key="no-article-selected"/>
             </div>
-        </c:if>        
+        </c:if>  
         
+        <%@include file="/html/edit_mailing_send.jspf" %>
         
     </c:otherwise>
     

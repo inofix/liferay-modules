@@ -1,0 +1,63 @@
+<%--
+    edit_mailing_send.jspf: send the mailing. 
+    
+    Created:    2016-10-17 22:36 by Christian Berndt
+    Modified:   2015-10-17 22:36 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<%
+    Newsletter newsletter = null; 
+
+    if (mailing.getNewsletterId() > 0) {
+        newsletter = NewsletterServiceUtil.getNewsletter(mailing.getNewsletterId());
+    }
+%>
+
+<c:if test="<%= newsletter != null %>">        
+        
+    <hr>
+
+    <portlet:actionURL var="sendMailingURL" name="sendMailing">
+    </portlet:actionURL>
+
+    <aui:form action="<%=sendMailingURL%>" name="fm1">
+
+        <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+        <aui:input name="mailingId" type="hidden"
+            value="<%=String.valueOf(mailing.getMailingId())%>" />
+        <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+        <aui:input name="windowId" type="hidden"
+            value="<%=windowId%>" />
+                            
+        <aui:input name="email" 
+            label="send-test-mail-to"
+            helpMessage="send-test-mail-to-help"
+            inlineField="true" required="true" 
+            value="berndt@kulturtechniker.de"/>
+
+        <aui:button type="submit" value="send" />
+    </aui:form>
+
+
+    <hr>
+
+    <aui:form action="<%=sendMailingURL%>" name="fm2">
+
+        <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+        <aui:input name="mailingId" type="hidden"
+            value="<%=String.valueOf(mailing.getMailingId())%>" />
+        <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+        <aui:input name="windowId" type="hidden"
+            value="<%=windowId%>" />
+
+        <aui:field-wrapper inlineField="true">
+            <liferay-ui:message
+                key="send-the-mailing-to-the-subscribers-of-newsletter-x"
+                arguments="<%=newsletter.getTitle() %>" />
+        </aui:field-wrapper>
+
+        <aui:button type="submit" value="send" />
+    </aui:form>
+
+</c:if>
