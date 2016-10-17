@@ -2,8 +2,8 @@
     edit_newsletter.jsp: edit the newsletter settings. 
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-17 22:47 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-10-17 23:16 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -49,33 +49,42 @@
     <aui:input name="windowId" type="hidden" value="<%=windowId%>" />
 
     <aui:row>
-        <aui:col span="3">
+        <aui:col span="6">
+
             <aui:input name="title" helpMessage="newsletter-title-help"
-                required="true" value="<%=newsletter.getTitle()%>" />
-            <aui:input name="template" type="textarea"
-                helpMessage="newsletter-template-help"
-                value="<%=newsletter.getTemplate()%>" />
-        </aui:col>
-        <aui:col span="3">
-            <liferay-ui:error exception="<%= EmailAddressException.class %>">
-                <liferay-ui:message key="the-email-address-is-not-valid"/>
-            </liferay-ui:error>
-            <aui:input name="fromAddress" helpMessage="from-address-help"
-                required="true" value="<%=newsletter.getFromAddress()%>" />
+                inlineField="true" required="true"
+                value="<%=newsletter.getTitle()%>" />
+
+            <aui:field-wrapper name="fromAddress"
+                helpMessage="from-address-help" inlineField="true">
+                <liferay-ui:error
+                    exception="<%=EmailAddressException.class%>">
+                    <liferay-ui:message
+                        key="the-email-address-is-not-valid" />
+                </liferay-ui:error>
+                <aui:input name="fromAddress" label="" required="true"
+                    value="<%=newsletter.getFromAddress()%>" />
+            </aui:field-wrapper>
+
             <aui:input name="fromName" helpMessage="from-name-help"
-                required="true" value="<%=newsletter.getFromName()%>" />
-        </aui:col>
-        <aui:col span="3">
+                inlineField="true" required="true"
+                value="<%=newsletter.getFromName()%>" />
+
             <aui:input name="vCardGroupId" label="group-v-card"
-                helpMessage="group-v-card-help"
+                helpMessage="group-v-card-help" inlineField="true"
                 value="<%=newsletter.getVCardGroupId()%>" />
+
+            <div class="editor-wrapper">
+                <aui:input name="template" type="textarea"
+                    helpMessage="newsletter-template-help"
+                    value="<%=newsletter.getTemplate()%>" />
+            </div>
         </aui:col>
-        <aui:col span="3">
-            <aui:button-row>
-                <aui:button type="submit" />
-            </aui:button-row>        
-        </aui:col>
-    </aui:row>    
+    </aui:row>
+
+    <aui:button-row>
+        <aui:button type="submit" />
+    </aui:button-row>        
                 
 </aui:form>
 
