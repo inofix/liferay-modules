@@ -2,8 +2,8 @@
     edit_newsletter.jsp: edit the newsletter settings. 
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-15 23:02 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-10-17 22:47 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -57,6 +57,9 @@
                 value="<%=newsletter.getTemplate()%>" />
         </aui:col>
         <aui:col span="3">
+            <liferay-ui:error exception="<%= EmailAddressException.class %>">
+                <liferay-ui:message key="the-email-address-is-not-valid"/>
+            </liferay-ui:error>
             <aui:input name="fromAddress" helpMessage="from-address-help"
                 required="true" value="<%=newsletter.getFromAddress()%>" />
             <aui:input name="fromName" helpMessage="from-name-help"

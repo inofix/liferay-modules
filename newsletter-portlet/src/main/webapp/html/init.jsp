@@ -8,6 +8,7 @@
 
 <%-- Import required classes --%>
 
+<%@page import="ch.inofix.portlet.newsletter.EmailAddressException"%>
 <%@page import="ch.inofix.portlet.newsletter.model.Mailing"%>
 <%@page import="ch.inofix.portlet.newsletter.model.Newsletter"%>
 <%@page import="ch.inofix.portlet.newsletter.model.Subscriber"%>
