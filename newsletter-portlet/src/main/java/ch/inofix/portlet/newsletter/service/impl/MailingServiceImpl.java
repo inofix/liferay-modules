@@ -43,8 +43,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-16 23:45
- * @version 1.0.6
+ * @modified 2016-10-17 16:33
+ * @version 1.0.7
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -148,8 +148,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
                 introduction = TemplateUtil.transform(contextObjects, script,
                         TemplateConstants.LANG_TYPE_FTL);
             } catch (Exception e) {
-                _log.error(e);
-                throw new SystemException(e);
+                throw new PortalException(e);
             }
         }
 
