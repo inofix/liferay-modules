@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-14 17:20 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-10-17 15:49 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -17,6 +17,8 @@
     String backURL = ParamUtil.getString(request, "backURL", redirect);
 
     Mailing mailing = (Mailing) request.getAttribute("MAILING");
+    
+    Log log = LogFactoryUtil.getLog("docroot.html.edit_mailing.jsp");
     
     String windowId = "";
     windowId = ParamUtil.getString(request, "windowId");
@@ -49,9 +51,47 @@
     List<JournalArticle> articles = JournalArticleLocalServiceUtil
             .getArticles(themeDisplay.getScopeGroupId(), 0, 20);
 
-    List<Newsletter> newsletters = NewsletterServiceUtil
-            .getGroupNewsletters(themeDisplay.getScopeGroupId(), 0,
-                    Integer.MAX_VALUE);
+    SearchContext searchContext =
+        SearchContextFactory.getInstance(request);
+
+    boolean reverse = false;
+
+    Sort sort = new Sort("title_sortable", reverse);
+
+    searchContext.setAttribute("paginationType", "more");
+    searchContext.setStart(0);
+    searchContext.setEnd(20);
+    searchContext.setSorts(sort);
+
+    Indexer indexer = IndexerRegistryUtil.getIndexer(Newsletter.class);
+
+    Hits hits = indexer.search(searchContext);
+    
+    List<Newsletter> newsletters = new ArrayList<Newsletter>(); 
+    
+    for (int i = 0; i < hits.getDocs().length; i++) {
+        
+        Document doc = hits.doc(i);
+
+        long newsletterId =
+            GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+        
+        Newsletter newsletter = null;
+
+        try {
+            newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+        }
+        catch (PortalException pe) {
+            log.error(pe.getLocalizedMessage());
+        }
+        catch (SystemException se) {
+            log.error(se.getLocalizedMessage());
+        }
+
+        if (newsletter != null) {
+            newsletters.add(newsletter);
+        }        
+    } 
 %>
 
 
@@ -78,7 +118,8 @@
             <aui:row>
     
                 <aui:input name="title" helpMessage="title-help"
-                    inlineField="true" value="<%=mailing.getTitle()%>" />
+                    inlineField="true" required="true" 
+                    value="<%=mailing.getTitle()%>" />
     
                 <aui:select name="newsletterId" helpMessage="newsletter-help"
                     label="newsletter" inlineField="true">
@@ -122,30 +163,6 @@
             </aui:row>
 
         </aui:form>
-        
-        <hr>
-
-        <portlet:actionURL var="sendMailingURL" name="sendMailing">
-        </portlet:actionURL>
-
-        <aui:form action="<%=sendMailingURL%>" name="fm1">
-
-            <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
-            <aui:input name="mailingId" type="hidden"
-                value="<%=String.valueOf(mailing.getMailingId())%>" />
-            <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
-            <aui:input name="windowId" type="hidden"
-                value="<%=windowId%>" />
-                                
-            <aui:input name="email" 
-                label="send-test-mail-to"
-                helpMessage="send-test-mail-to-help"
-                inlineField="true" required="true" 
-                value="berndt@kulturtechniker.de"/>
-
-            <aui:button type="submit" value="send" />
-        </aui:form>
-        
                 
         <%
             Newsletter newsletter = null; 
@@ -155,7 +172,31 @@
             }
         %>
         
-        <c:if test="<%= newsletter != null %>">
+        <c:if test="<%= newsletter != null %>">        
+                
+            <hr>
+
+            <portlet:actionURL var="sendMailingURL" name="sendMailing">
+            </portlet:actionURL>
+
+            <aui:form action="<%=sendMailingURL%>" name="fm1">
+    
+                <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+                <aui:input name="mailingId" type="hidden"
+                    value="<%=String.valueOf(mailing.getMailingId())%>" />
+                <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+                <aui:input name="windowId" type="hidden"
+                    value="<%=windowId%>" />
+                                    
+                <aui:input name="email" 
+                    label="send-test-mail-to"
+                    helpMessage="send-test-mail-to-help"
+                    inlineField="true" required="true" 
+                    value="berndt@kulturtechniker.de"/>
+    
+                <aui:button type="submit" value="send" />
+            </aui:form>
+       
         
             <hr>
     
@@ -182,6 +223,7 @@
     </c:when>
 
     <c:otherwise>
+    
         <div class="alert alert-info">
             <liferay-ui:message key="the-preview-does-not-include-settings-of-the-site-theme"/>
         </div>
