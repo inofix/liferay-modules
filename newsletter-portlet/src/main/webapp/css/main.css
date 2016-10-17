@@ -2,8 +2,8 @@
  * main.css: css specific to the newsletter-portlet.
  *
  * Created:     2016-10-06 16:54 by Christian Berndt
- * Modified:    2016-10-11 10:55 by Christian Berndt
- * Version:     1.0.3
+ * Modified:    2016-10-17 21:00 by Christian Berndt
+ * Version:     1.0.4
  * 
  */
 .aui {
@@ -27,10 +27,22 @@
         margin-right: 20px;
     }
     
+    .editor-wrapper {
+        .control-group,
+        textarea {
+            min-height: 10em;
+            width: 100%;
+        }
+    }
+    
     .last {
         .btn-group {
             float: right;
         }
+    }
+    
+    .newsletter-introduction {
+        margin-bottom: 20px;
     }
     
     .portlet-newsletter {

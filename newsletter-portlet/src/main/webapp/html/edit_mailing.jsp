@@ -8,15 +8,21 @@
 
 <%@include file="/html/init.jsp"%>
 
+<%@page import="ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil"%>
+
 <%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 <%@page import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
 
+<%@page import="java.io.StringWriter"%>
+<%@page import="java.io.PrintWriter"%>
 <%
     String redirect = ParamUtil.getString(request, "redirect");
 
     String backURL = ParamUtil.getString(request, "backURL", redirect);
 
     Mailing mailing = (Mailing) request.getAttribute("MAILING");
+    
+    String articleId = mailing.getArticleId();
     
     Log log = LogFactoryUtil.getLog("docroot.html.edit_mailing.jsp");
     
@@ -94,7 +100,6 @@
     } 
 %>
 
-
 <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
 
 <liferay-ui:tabs names="mailing,preview"
@@ -116,51 +121,59 @@
                 value="<%=windowId%>" />
                 
             <aui:row>
-    
-                <aui:input name="title" helpMessage="title-help"
-                    inlineField="true" required="true" 
-                    value="<%=mailing.getTitle()%>" />
-    
-                <aui:select name="newsletterId" helpMessage="newsletter-help"
-                    label="newsletter" inlineField="true">
-                    <aui:option label="select-newsletter" value="0" />
-                    <%
-                        for (Newsletter newsletter : newsletters) {
-                    %>
-                    <aui:option label="<%=newsletter.getTitle()%>"
-                        value="<%=newsletter.getNewsletterId()%>"
-                        selected="<%=mailing.getNewsletterId() == newsletter
-                                            .getNewsletterId()%>" />
-                    <%
-                        }
-                    %>
-                </aui:select>
-    
-                <aui:select name="articleId" helpMessage="article-help"
-                    label="article" inlineField="true">
-                    <aui:option label="select-article" value="0" />
-                    <%
-                        for (JournalArticle article : articles) {
-                    %>
-                    <aui:option label="<%=article.getTitle(locale)%>"
-                        value="<%=article.getArticleId()%>"
-                        selected="<%=article.getArticleId().equals(
-                                            mailing.getArticleId())%>" />
-                    <%
-                        }
-                    %>
-                </aui:select>
+            
+                <aui:col span="6">       
+                    <aui:input name="title" helpMessage="title-help"
+                        inlineField="true" required="true" 
+                        value="<%=mailing.getTitle()%>" />                   
 
-                <aui:input name="template" type="textarea"
-                    helpMessage="mailing-template-help" inlineField="true"
-                    value="<%=mailing.getTemplate()%>" />
+                    <aui:select name="newsletterId" helpMessage="newsletter-help"
+                        label="newsletter" inlineField="true">
+                        <aui:option label="select-newsletter" value="0" />
+                        <%
+                            for (Newsletter newsletter : newsletters) {
+                        %>
+                        <aui:option label="<%=newsletter.getTitle()%>"
+                            value="<%=newsletter.getNewsletterId()%>"
+                            selected="<%=mailing.getNewsletterId() == newsletter
+                                                .getNewsletterId()%>" />
+                        <%
+                            }
+                        %>
+                    </aui:select>
+
+                    <aui:select name="articleId" helpMessage="article-help"
+                        label="article" inlineField="true">
+                        <aui:option label="select-article" value="" />
+                        <%
+                            for (JournalArticle article : articles) {
+                        %>
+                        <aui:option label="<%=article.getTitle(locale)%>"
+                            value="<%=article.getArticleId()%>"
+                            selected="<%=article.getArticleId().equals(
+                                                mailing.getArticleId())%>" />
+                        <%
+                            }
+                        %>
+                    </aui:select>
+                </aui:col>
+
+                <aui:col span="4">
+                    <div class="editor-wrapper">
+                        <aui:input name="template" type="textarea"
+                            helpMessage="mailing-template-help" inlineField="true"
+                            value="<%=mailing.getTemplate()%>" />
+                    </div>
+                </aui:col>
 
                 <%
                     // TODO: sendDate
                 %>
-
-                <aui:button type="submit" />
             </aui:row>
+
+            <aui:button-row>
+                <aui:button type="submit" />
+            </aui:button-row>
 
         </aui:form>
                 
@@ -223,22 +236,52 @@
     </c:when>
 
     <c:otherwise>
-    
+        
         <div class="alert alert-info">
             <liferay-ui:message key="the-preview-does-not-include-settings-of-the-site-theme"/>
         </div>
         
         <%
-            Map<String, String> contact_ = new HashMap<String, String>();
-            contact_.put("firstname", "Christian");
-            contact_.put("lastname", "Berndt");
-            contact_.put("gender", "male");
+            Subscriber subscriber = SubscriberLocalServiceUtil.createSubscriber(0);
+            subscriber.setEmail("firstname.lastname@example.com"); 
+            subscriber.setFirstname("Firstname"); 
+            subscriber.setLastname("Lastname"); 
+            subscriber.setMiddlename("Middlename"); 
+            subscriber.setName("Firstname Lastname");
+            subscriber.setSalutation("Mr. / Ms.");           
 
             Map<String, Object> contextObjects = new HashMap<String, Object>();
-            contextObjects.put("contact", contact_);        
+            contextObjects.put("subscriber", subscriber); 
+            
+            StringBuilder preview = new StringBuilder();
+            if (mailing.getNewsletterId() > 0 ) {
+                try {
+                    preview.append(MailingServiceUtil.prepareMailing(contextObjects, mailing.getMailingId())); 
+                } catch (Exception e) {
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    e.printStackTrace(pw);
+                    preview.append("<pre>");
+                    preview.append(sw.toString());
+                    preview.append("</pre>");
+                }
+            }
         %>
         
-        <%= MailingServiceUtil.prepareMailing(contextObjects, mailing.getMailingId()) %>
+        <%= preview.toString() %>
+        
+        <c:if test="<%= mailing.getNewsletterId() <= 0 %>">
+            <div class="alert alert-warn">
+                <liferay-ui:message key="no-newsletter-selected"/>
+            </div>
+        </c:if>        
+        
+        <c:if test="<%= Validator.isNull(articleId)  %>">
+            <div class="alert alert-warn">
+                <liferay-ui:message key="no-article-selected"/>
+            </div>
+        </c:if>        
+        
         
     </c:otherwise>
     
