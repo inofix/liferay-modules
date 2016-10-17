@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2016-10-11 22:58 by Christian Berndt
-    Version:     1.1.1
+    Modified:    2016-10-17 15:55 by Christian Berndt
+    Version:     1.1.2
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -19,7 +19,7 @@
     portletURL.setParameter("mvcPath", "/view.jsp");
     portletURL.setParameter("backURL", backURL);
 
-    Log log = LogFactoryUtil.getLog("docroot.html.view.jsp");
+    Log log = LogFactoryUtil.getLog("docroot.view.jsp");
 %>
 
 <div id="<portlet:namespace />newsletterContainer">
