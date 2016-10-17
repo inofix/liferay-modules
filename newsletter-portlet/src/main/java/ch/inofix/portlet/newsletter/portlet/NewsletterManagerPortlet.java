@@ -8,6 +8,7 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import ch.inofix.portlet.newsletter.EmailAddressException;
 import ch.inofix.portlet.newsletter.model.Mailing;
 import ch.inofix.portlet.newsletter.model.Newsletter;
 import ch.inofix.portlet.newsletter.portlet.util.PortletUtil;
@@ -34,8 +35,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-15 13:48
- * @version 1.1.0
+ * @modified 2016-10-17 23:12
+ * @version 1.1.1
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -275,6 +276,12 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String windowId = ParamUtil.getString(actionRequest, "windowId");
 
         Newsletter newsletter = null;
+        if (newsletterId > 0) {
+            newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+        } else {
+            newsletter = NewsletterServiceUtil.createNewsletter();
+        }
+        boolean hasErrors = false;
 
         String title = ParamUtil.getString(actionRequest, "title");
         String template = ParamUtil.getString(actionRequest, "template");
@@ -282,6 +289,11 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String fromName = ParamUtil.getString(actionRequest, "fromName");
         String vCardGroupId = ParamUtil
                 .getString(actionRequest, "vCardGroupId");
+
+        if (!Validator.isEmailAddress(fromAddress)) {
+            SessionErrors.add(actionRequest, EmailAddressException.class);
+            hasErrors = true;
+        }
 
         // Pass the required parameters to the render phase
 
@@ -298,21 +310,30 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                 Newsletter.class.getName(), actionRequest);
 
         if (newsletterId > 0) {
-            newsletter = NewsletterServiceUtil.updateNewsletter(userId,
-                    groupId, newsletterId, title, template, fromAddress,
-                    fromName, vCardGroupId, serviceContext);
-            SessionMessages.add(actionRequest, REQUEST_PROCESSED, PortletUtil
-                    .translate("successfully-updated-the-newsletter"));
+
+            if (!hasErrors) {
+
+                newsletter = NewsletterServiceUtil.updateNewsletter(userId,
+                        groupId, newsletterId, title, template, fromAddress,
+                        fromName, vCardGroupId, serviceContext);
+
+                SessionMessages.add(actionRequest,REQUEST_PROCESSED,
+                                PortletUtil.translate("successfully-updated-the-newsletter"));
+            }
         } else {
-            newsletter = NewsletterServiceUtil.addNewsletter(userId, groupId,
-                    title, template, fromAddress, fromName, vCardGroupId,
-                    serviceContext);
-            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                    PortletUtil.translate("successfully-added-the-newsletter"));
+
+            if (!hasErrors) {
+
+                newsletter = NewsletterServiceUtil.addNewsletter(userId, groupId,
+                        title, template, fromAddress, fromName, vCardGroupId,
+                        serviceContext);
+
+                SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                        PortletUtil.translate("successfully-added-the-newsletter"));
+            }
         }
 
         actionRequest.setAttribute("NEWSLETTER", newsletter);
-
     }
 
     /**
