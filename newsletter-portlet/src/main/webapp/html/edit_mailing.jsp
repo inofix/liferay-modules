@@ -2,14 +2,13 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-17 23:09 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2015-10-17 23:32 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@include file="/html/init.jsp"%>
 
 <%@page import="ch.inofix.portlet.newsletter.model.impl.NewsletterModelImpl"%>
-<%@page import="ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil"%>
 
 <%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 <%@page import="com.liferay.portlet.journal.service.JournalArticleServiceUtil"%>
@@ -192,7 +191,7 @@
         </div>
         
         <%
-            Subscriber subscriber = SubscriberLocalServiceUtil.createSubscriber(0);
+            Subscriber subscriber = SubscriberServiceUtil.createSubscriber();
             subscriber.setEmail("firstname.lastname@example.com"); 
             subscriber.setFirstname("Firstname"); 
             subscriber.setLastname("Lastname"); 
