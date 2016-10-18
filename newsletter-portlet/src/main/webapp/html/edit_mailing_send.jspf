@@ -2,8 +2,8 @@
     edit_mailing_send.jspf: send the mailing. 
     
     Created:    2016-10-17 22:36 by Christian Berndt
-    Modified:   2015-10-17 22:36 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2015-10-18 13:40 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%
@@ -12,6 +12,8 @@
     if (mailing.getNewsletterId() > 0) {
         newsletter = NewsletterServiceUtil.getNewsletter(mailing.getNewsletterId());
     }
+    
+    String email = ParamUtil.getString(request, "email");
 %>
 
 <c:if test="<%= newsletter != null %>">        
@@ -27,15 +29,20 @@
         <aui:input name="mailingId" type="hidden"
             value="<%=String.valueOf(mailing.getMailingId())%>" />
         <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+        <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
         <aui:input name="windowId" type="hidden"
             value="<%=windowId%>" />
-                            
-        <aui:input name="email" 
-            label="send-test-mail-to"
-            helpMessage="send-test-mail-to-help"
-            inlineField="true" required="true" 
-            value="berndt@kulturtechniker.de"/>
-
+            
+        <aui:field-wrapper name="email"
+            helpMessage="send-test-mail-to-help" label="send-test-mail-to" inlineField="true" inlineLabel="true">
+            <liferay-ui:error
+                exception="<%=EmailAddressException.class%>">
+                <liferay-ui:message
+                    key="the-email-address-is-not-valid" />
+            </liferay-ui:error>
+            <aui:input name="email" label="" required="true" />
+        </aui:field-wrapper>
+        
         <aui:button type="submit" value="send" />
     </aui:form>
 
@@ -48,13 +55,16 @@
         <aui:input name="mailingId" type="hidden"
             value="<%=String.valueOf(mailing.getMailingId())%>" />
         <aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+        <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
         <aui:input name="windowId" type="hidden"
             value="<%=windowId%>" />
 
         <aui:field-wrapper inlineField="true">
-            <liferay-ui:message
-                key="send-the-mailing-to-the-subscribers-of-newsletter-x"
-                arguments="<%=newsletter.getTitle() %>" />
+            <div class="control-label">
+                <liferay-ui:message
+                    key="send-the-mailing-to-the-subscribers-of-newsletter-x"
+                    arguments="<%=newsletter.getTitle() %>" />
+            </div>
         </aui:field-wrapper>
 
         <aui:button type="submit" value="send" />

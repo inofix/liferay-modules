@@ -27,8 +27,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 /**
  * @author Christian Berndt
  * @created 2016-10-15 23:14
- * @modified 2016-10-15 23:14
- * @version 1.0.0
+ * @modified 2016-10-18 14:39
+ * @version 1.0.1
  */
 public class MailingIndexer extends BaseIndexer {
 
@@ -62,6 +62,7 @@ public class MailingIndexer extends BaseIndexer {
 
         Document document = getBaseModelDocument(PORTLET_ID, mailing);
         document.addText(Field.TITLE, mailing.getTitle());
+        document.addDate(MailingDisplayTerms.SEND_DATE, mailing.getSendDate());
 
         return document;
     }
