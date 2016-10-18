@@ -2,12 +2,9 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-16 23:55 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2015-10-18 11:28 by Christian Berndt
+    Version:    1.0.9
 --%>
-
-<%-- <%@include file="/html/init.jsp"%> --%>
-
 <%
     SearchContext searchContext =
         SearchContextFactory.getInstance(request);
@@ -64,7 +61,7 @@
                 selectURL.setParameter("tabs1", tabs1);
                 boolean selected = vCardGroupId.equalsIgnoreCase(currentVCardGroupId);
         %>       
-            <aui:option label="<%= newsletter.getTitle() %>" selected="<%= selected %>" value="<%= selectURL.toString() %>" />
+            <option <%= selected ? "selected" : StringPool.BLANK %> value="<%= selectURL.toString() %>" ><%= newsletter.getTitle() %></option>
         <%  } %>
     </aui:select>
 </aui:form>
@@ -132,4 +129,3 @@
         </liferay-ui:search-container>    
     </c:otherwise>
 </c:choose>
-        

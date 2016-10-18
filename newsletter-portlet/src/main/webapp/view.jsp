@@ -39,7 +39,7 @@
             <%@include file="/html/mailings.jspf"%>
         </c:when>
 
-        <c:otherwise>        
+        <c:otherwise>       
             <%@include file="/html/subscribers.jspf"%>
         </c:otherwise>
 
