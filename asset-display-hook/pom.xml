@@ -4,7 +4,7 @@
 	<parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>0.9.9-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 	<artifactId>asset-display-hook</artifactId>
 	<packaging>war</packaging>
