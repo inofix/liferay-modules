@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-17 23:32 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2015-10-20 15:28 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -107,7 +107,7 @@
 
 <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
 
-<liferay-ui:tabs names="mailing,preview"
+<liferay-ui:tabs names="mailing,preview,send"
     param="tabs1" url="<%=portletURL.toString()%>" />
 
 <c:choose>
@@ -180,8 +180,14 @@
 
         </aui:form>
         
+        <hr>
+        
         <%@include file="/html/edit_mailing_send.jspf" %>
         
+    </c:when>
+    
+    <c:when test='<%=tabs1.equals("send")%>'>
+        <%@include file="/html/edit_mailing_send.jspf" %>    
     </c:when>
 
     <c:otherwise>
@@ -230,6 +236,8 @@
                 <liferay-ui:message key="no-article-selected"/>
             </div>
         </c:if>  
+        
+        <hr/>
         
         <%@include file="/html/edit_mailing_send.jspf" %>
         

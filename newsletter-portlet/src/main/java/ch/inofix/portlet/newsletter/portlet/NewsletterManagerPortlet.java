@@ -350,8 +350,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     public void sendMailing(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
 
-        _log.info("sendMailing");
-
         HttpServletRequest request = PortalUtil
                 .getHttpServletRequest(actionRequest);
 
