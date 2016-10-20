@@ -2,8 +2,8 @@
     mailings.jspf: the mailings panel.
     
     Created:    2016-10-10 17:47 by Christian Berndt
-    Modified:   2015-10-20 16:01 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2015-10-20 18:14 by Christian Berndt
+    Version:    1.0.7
 --%>
 <portlet:actionURL var="addMailingURL" name="editMailing"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -151,20 +151,29 @@
             if (Validator.isNotNull(mailing.getSendDate())) {
                 sendDate = mailing.getSendDate().toString(); 
             }
+            
+            String cssClass = ""; 
+            if (mailing.isSent()) {
+                cssClass="muted"; 
+            }
         %>
 
             <liferay-ui:search-container-column-text
+                cssClass="<%= cssClass %>"
                 href="<%=detailURL%>" property="title"
                 orderable="true" orderableProperty="title" />
             <liferay-ui:search-container-column-text
+                cssClass="<%= cssClass %>"
                 href="<%=detailURL%>" name="user-name"
                 orderable="true" orderableProperty="userName"
                 property="userName" />
             <liferay-ui:search-container-column-text
+                cssClass="<%= cssClass %>"
                 href="<%=detailURL%>" name="modified-date"
                 orderable="true" orderableProperty="modified_sortable"
                 property="modifiedDate" />
             <liferay-ui:search-container-column-text
+                cssClass="<%= cssClass %>"
                 href="<%=detailURL%>" name="sent-date"
                 orderable="true" orderableProperty="sendDate_sortable"
                 value="<%= sendDate %>" />              
