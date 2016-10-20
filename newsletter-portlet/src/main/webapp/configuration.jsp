@@ -3,8 +3,8 @@
     newsletter-portlet.
 
     Created:    2016-10-05 15:43 by Christian Berndt
-    Modified:   2016-10-12 00:04 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-10-20 17:37 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -29,13 +29,12 @@
     <liferay-ui:panel-container id="newsletterSettingsPanelContainer"
         persistState="<%=true%>">
 
-        <liferay-ui:panel id="newsletterContextPanel" title="context"
+        <liferay-ui:panel id="newsletterArticlesPanel" title="articles"
             extended="true">
 
-            <aui:input name="contextProperties"
-                helpMessage="context-properties-help"
-                value="<%=StringUtil.merge(contextProperties,
-                                StringPool.COMMA)%>" />
+            <aui:input name="newsletterStructureId"
+                helpMessage="newsletter-structure-id-help"
+                value="<%= newsletterStructureId %>" />
 
         </liferay-ui:panel>
 

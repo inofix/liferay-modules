@@ -9,8 +9,8 @@ import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 /**
  * @author Christian Berndt
  * @created 2016-10-05 15:38
- * @modified 2016-10-11 22:46
- * @version 1.0.3
+ * @modified 2016-10-20 17:33
+ * @version 1.0.4
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
 
@@ -19,10 +19,10 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
             ActionRequest actionRequest, ActionResponse actionResponse)
             throws Exception {
 
-        String contextProperties = actionRequest
-                .getParameter("contextProperties");
+        String newsletterStructureId = actionRequest
+                .getParameter("newsletterStructureId");
 
-        setPreference(actionRequest, "contextProperties", contextProperties);
+        setPreference(actionRequest, "newsletterStructureId", newsletterStructureId);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
 
