@@ -2,52 +2,62 @@
  * main.css: css specific to the newsletter-portlet.
  *
  * Created:     2016-10-06 16:54 by Christian Berndt
- * Modified:    2016-10-19 20:02 by Christian Berndt
- * Version:     1.0.5
+ * Modified:    2016-10-20 15:34 by Christian Berndt
+ * Version:     1.0.6
  * 
  */
 .aui {
     
-    .alert-info {
-        margin-top: 20px;
-    }
-    
-    .control-group-inline {
-        margin-right: 20px;
-    }
-    
+        
     .dialog-iframe-popup h3 { 
         color:#8D8D8D;
         font-weight: normal;
         font-size: 20px;
     }
- 
-    dl.build-info dfn, 
-    dl.build-info dt {
-        display: inline;
-        font-weight: normal;
-        font-style: normal;
-    }
-    
-    dl.build-info dfn {
-        margin-right: 20px;
-    }
-    
-    .editor-wrapper {
-        .control-group,
-        textarea {
-            min-height: 10em;
-            width: 100%;
-        }
-    }
-    
-    .last {
-        .btn-group {
-            float: right;
-        }
-    }
     
     .portlet-newsletter {
+            
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .control-group-inline {
+            margin-right: 20px;
+        }
+     
+        dl.build-info dfn, 
+        dl.build-info dt {
+            display: inline;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        dl.build-info dfn {
+            margin-right: 20px;
+        }
+        
+        .editor-wrapper {
+            .control-group,
+            textarea {
+                min-height: 10em;
+                width: 100%;
+            }
+        }
+        
+        form {
+            margin: 0; 
+        }
+        
+        hr {
+            margin: 0 0 25px;
+        }
+        
+        .last {
+            .btn-group {
+                float: right;
+            }
+        }    
+    
         .searchcontainer {
             .table {
                 td {
