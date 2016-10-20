@@ -68,7 +68,6 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="theme"%>
 
-
 <%-- Common setup code --%>
 
 <portlet:defineObjects />
@@ -76,7 +75,6 @@
 
 <%
     String currentURL = PortalUtil.getCurrentURL(request);
-    String[] contextProperties = StringUtil.split(portletPreferences
-            .getValue("contextProperties", "firstname,lastname"),
-            StringPool.COMMA);
+    String newsletterStructureId = portletPreferences
+            .getValue("newsletterStructureId", "");
 %>
