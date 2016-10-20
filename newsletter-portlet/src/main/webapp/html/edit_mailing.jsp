@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-20 15:28 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2015-10-20 17:26 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -22,6 +22,8 @@
     String backURL = ParamUtil.getString(request, "backURL", redirect);
 
     Mailing mailing = (Mailing) request.getAttribute("MAILING");
+    
+    boolean disabled = mailing.isSent();
 
     String articleId = mailing.getArticleId();
 
@@ -107,6 +109,12 @@
 
 <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
 
+<c:if test="<%= disabled %>">
+    <div class="alert alert-warn">
+        <liferay-ui:message key="the-mailing-has-been-sent-already"/>
+    </div>
+</c:if>
+
 <liferay-ui:tabs names="mailing,preview,send"
     param="tabs1" url="<%=portletURL.toString()%>" />
 
@@ -127,13 +135,15 @@
                 
             <aui:row>
             
-                <aui:col span="6">       
-                    <aui:input name="title" helpMessage="title-help"
-                        inlineField="true" required="true" 
-                        value="<%=mailing.getTitle()%>" />                   
+                <aui:col span="6">
+                    <aui:input name="title" disabled="<%= disabled%>"
+                        helpMessage="title-help" inlineField="true"
+                        required="true" value="<%=mailing.getTitle()%>" />
 
-                    <aui:select name="newsletterId" helpMessage="newsletter-help"
-                        label="newsletter" inlineField="true">
+                    <aui:select name="newsletterId"
+                        disabled="<%=disabled%>"
+                        helpMessage="newsletter-help" label="newsletter"
+                        inlineField="true">
                         <aui:option label="select-newsletter" value="0" />
                         <%
                             for (Newsletter newsletter : newsletters) {
@@ -147,13 +157,16 @@
                         %>
                     </aui:select>
 
-                    <aui:select name="articleId" helpMessage="article-help"
-                        label="article" inlineField="true">
+                    <aui:select name="articleId"
+                        disabled="<%=disabled%>"
+                        helpMessage="article-help" label="article"
+                        inlineField="true">
                         <aui:option label="select-article" value="" />
                         <%
                             for (JournalArticle article : articles) {
                         %>
-                        <aui:option label="<%=article.getTitle(locale)%>"
+                        <aui:option
+                            label="<%=article.getTitle(locale)%>"
                             value="<%=article.getArticleId()%>"
                             selected="<%=article.getArticleId().equals(
                                                 mailing.getArticleId())%>" />
@@ -163,8 +176,10 @@
                     </aui:select>
 
                     <div class="editor-wrapper">
-                        <aui:input name="template" type="textarea"
-                            helpMessage="mailing-template-help" inlineField="true"
+                        <aui:input name="template"
+                            disabled="<%=disabled%>"
+                            helpMessage="mailing-template-help"
+                            inlineField="true" type="textarea"
                             value="<%=mailing.getTemplate()%>" />
                     </div>
                 </aui:col>
@@ -175,12 +190,14 @@
             </aui:row>
 
             <aui:button-row>
-                <aui:button type="submit" />
+                <aui:button disabled="<%= disabled %>" type="submit" />
             </aui:button-row>
 
         </aui:form>
         
-        <hr>
+        <c:if test="<%= mailing.getMailingId() > 0%>">
+            <hr>
+        </c:if>
         
         <%@include file="/html/edit_mailing_send.jspf" %>
         

@@ -2,8 +2,8 @@
     edit_mailing_send.jspf: send the mailing. 
     
     Created:    2016-10-17 22:36 by Christian Berndt
-    Modified:   2015-10-20 15:50 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-10-20 16:23 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%
@@ -38,10 +38,11 @@
                 <liferay-ui:message
                     key="the-email-address-is-not-valid" />
             </liferay-ui:error>
-            <aui:input name="email" label="" required="true" />
+            <aui:input name="email" disabled="<%=disabled%>" label=""
+                required="true" />
         </aui:field-wrapper>
         
-        <aui:button type="submit" value="send" />
+        <aui:button type="submit" disabled="<%=disabled%>"  value="send" />
     </aui:form>
 
 
@@ -65,7 +66,7 @@
             </div>
         </aui:field-wrapper>
 
-        <aui:button type="submit" value="send" />
+        <aui:button type="submit" disabled="<%=disabled%>" value="send" />
     </aui:form>
 
 </c:if>

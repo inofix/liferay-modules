@@ -2,8 +2,8 @@
     mailings.jspf: the mailings panel.
     
     Created:    2016-10-10 17:47 by Christian Berndt
-    Modified:   2015-10-18 14:28 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2015-10-20 16:01 by Christian Berndt
+    Version:    1.0.6
 --%>
 <portlet:actionURL var="addMailingURL" name="editMailing"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -128,6 +128,7 @@
         
         <%
             String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editMailing', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", mailing.getTitle())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+            String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editMailing', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "view-x", mailing.getTitle())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
         
             boolean hasDeletePermission = MailingPermission.contains(permissionChecker,
                     mailing.getMailingId(), ActionKeys.DELETE);   
@@ -135,10 +136,14 @@
                     mailing.getMailingId(), ActionKeys.PERMISSIONS);  
             boolean hasUpdatePermission = MailingPermission.contains(permissionChecker,
                     mailing.getMailingId(), ActionKeys.UPDATE);
+            boolean hasViewPermission = MailingPermission.contains(permissionChecker,
+                    mailing.getMailingId(), ActionKeys.VIEW);
             
             String detailURL = null;
 
-            if (hasUpdatePermission && !mailing.isSent()) {                   
+            if (hasViewPermission) {                   
+                detailURL = taglibViewURL;
+            } else if (hasUpdatePermission) {
                 detailURL = taglibEditURL;                  
             }
             
@@ -168,9 +173,12 @@
 
             <liferay-ui:icon-menu>
 
-                <c:if test="<%= hasUpdatePermission %>">
+                <c:if test="<%= hasUpdatePermission && !mailing.isSent() %>">
                     <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" />
                 </c:if>
+                <c:if test="<%= hasUpdatePermission && mailing.isSent() %>">
+                    <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
+                </c:if>                
                 <c:if test="<%= hasPermissionsPermission %>">
                     <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
                 </c:if>                                    
