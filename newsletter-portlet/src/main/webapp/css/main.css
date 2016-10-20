@@ -2,8 +2,8 @@
  * main.css: css specific to the newsletter-portlet.
  *
  * Created:     2016-10-06 16:54 by Christian Berndt
- * Modified:    2016-10-17 21:00 by Christian Berndt
- * Version:     1.0.4
+ * Modified:    2016-10-19 20:02 by Christian Berndt
+ * Version:     1.0.5
  * 
  */
 .aui {
@@ -14,6 +14,12 @@
     
     .control-group-inline {
         margin-right: 20px;
+    }
+    
+    .dialog-iframe-popup h3 { 
+        color:#8D8D8D;
+        font-weight: normal;
+        font-size: 20px;
     }
  
     dl.build-info dfn, 
@@ -39,10 +45,6 @@
         .btn-group {
             float: right;
         }
-    }
-    
-    .newsletter-introduction {
-        margin-bottom: 20px;
     }
     
     .portlet-newsletter {
