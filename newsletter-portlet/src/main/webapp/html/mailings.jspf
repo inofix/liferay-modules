@@ -2,8 +2,8 @@
     mailings.jspf: the mailings panel.
     
     Created:    2016-10-10 17:47 by Christian Berndt
-    Modified:   2015-10-20 18:14 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-10-20 21:52 by Christian Berndt
+    Version:    1.0.8
 --%>
 <portlet:actionURL var="addMailingURL" name="editMailing"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -30,7 +30,7 @@
     int idx = ParamUtil.getInteger(request, "cur");
     int delta = ParamUtil.getInteger(request, "delta", 20); 
     String orderByCol = ParamUtil.getString(request, "orderByCol", "modified_sortable"); 
-    String orderByType = ParamUtil.getString(request, "orderByType", "desc"); 
+    String orderByType = ParamUtil.getString(request, "orderByType", "asc"); 
 
     if (idx > 0) {
         idx = idx - 1;
