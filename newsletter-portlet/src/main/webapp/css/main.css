@@ -2,8 +2,8 @@
  * main.css: css specific to the newsletter-portlet.
  *
  * Created:     2016-10-06 16:54 by Christian Berndt
- * Modified:    2016-10-20 18:12 by Christian Berndt
- * Version:     1.0.7
+ * Modified:    2016-10-21 18:48 by Christian Berndt
+ * Version:     1.0.8
  * 
  */
 .aui {
@@ -70,6 +70,10 @@
                     }
                 }
             }
-        }   
+        } 
+        
+        .taglib-search-iterator-page-iterator-bottom {
+            margin-bottom: 20px;
+        }  
     }
 }
