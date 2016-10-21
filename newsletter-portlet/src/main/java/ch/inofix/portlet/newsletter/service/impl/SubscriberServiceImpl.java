@@ -26,7 +26,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Gender;
 import ezvcard.property.Member;
+import ezvcard.property.StructuredName;
+import ezvcard.property.Uid;
 
 /**
  * The implementation of the subscriber remote service.
@@ -44,8 +48,8 @@ import ezvcard.property.Member;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-10-20 18:41
- * @version 1.0.4
+ * @modified 2016-10-21 20:00
+ * @version 1.0.5
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
@@ -82,18 +86,45 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
 
         VCard vCard = Ezvcard.parse(document.get(Field.CONTENT)).first();
 
+        String firstname = null;
+        String genderStr = null;
+        String lastname = null;
+        String name = null;
+        String vCardUID = null;
+
+        FormattedName formattedName = vCard.getFormattedName();
+        if (formattedName != null) {
+            name = formattedName.getValue();
+        }
+        
+        Gender gender = vCard.getGender(); 
+        if (gender != null) {
+            genderStr = gender.getGender();
+        }
+
+        StructuredName structuredName = vCard.getStructuredName();
+        if (structuredName != null) {
+            firstname = structuredName.getGiven();
+            lastname = structuredName.getFamily();
+        }
+        
+        Uid uid = vCard.getUid(); 
+        if (uid != null) {
+            vCardUID = uid.getValue();
+        }
+
         subscriber.setCreateDate(new Date(GetterUtil.getLong(document
                 .get("createDate_sortable"))));
         subscriber.setEmail(document.get("email"));
-        subscriber.setFirstname(vCard.getStructuredName().getGiven());
-        subscriber.setGender(vCard.getGender().getText());
-        subscriber.setLastname(vCard.getStructuredName().getFamily());
+        subscriber.setFirstname(firstname);
+        subscriber.setGender(genderStr);
+        subscriber.setLastname(lastname);
         // TODO: set middlename (from additionalNames)
         subscriber.setModifiedDate(new Date(GetterUtil.getLong(document
                 .get("modified_sortable"))));
-        subscriber.setName(vCard.getFormattedName().getValue());
+        subscriber.setName(name);
         // TODO: set title (from prefixes)
-        subscriber.setVCardUID(vCard.getUid().getValue());
+        subscriber.setVCardUID(vCardUID);
 
         return subscriber;
 
