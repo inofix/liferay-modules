@@ -2,9 +2,10 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-18 11:28 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2015-10-20 18:30 by Christian Berndt
+    Version:    1.1.0
 --%>
+       
 <%
     SearchContext searchContext =
         SearchContextFactory.getInstance(request);
@@ -93,30 +94,41 @@
             <liferay-ui:search-container-row
                 className="ch.inofix.portlet.newsletter.model.Subscriber"
                 modelVar="subscriber">
-        
-                <liferay-ui:search-container-column-text name="name"
-                    value='<%=subscriber.getName() %>' />
-        
-                <liferay-ui:search-container-column-text name="email" 
-                    value='<%=subscriber.getEmail() %>' /> 
-                    
-                <liferay-ui:search-container-column-text
-                    name="modified-date" 
-                    value='<%= subscriber.getModifiedDate().toString() %>' />   
-                    
-                <liferay-ui:search-container-column-text> 
                 
-                    <portlet:renderURL var="previewURL" 
-                        windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
-                        <portlet:param name="mvcPath" value="/html/preview_mailing.jsp"/>
-                    </portlet:renderURL>               
+                <portlet:actionURL var="previewMailingURL" name="previewMailing"
+                    windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+                    <portlet:param name="mvcPath" value="/html/preview_mailing.jsp"/>
+                    <portlet:param name="redirect" value="<%= currentURL %>" />
+                    <portlet:param name="subscriberId" value="<%= String.valueOf(subscriber.getSubscriberId())  %>"/>
+                    <portlet:param name="vCardUID" value="<%= subscriber.getVCardUID()  %>"/>
+                    <portlet:param name="vCardGroupId" value="<%= vCardGroupId %>"/>
+                    <portlet:param name="windowId" value="previewMailing" />
+                </portlet:actionURL> 
+                
+                <%
+                    String taglibPreviewMailingURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "previewMailing', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "preview-mailing", "")) + "', uri:'" + HtmlUtil.escapeJS(previewMailingURL) + "'});";
+                %>               
+
+                <liferay-ui:search-container-column-text
+                    href="<%=taglibPreviewMailingURL%>" name="name"
+                    value='<%=subscriber.getName()%>' />
+
+                <liferay-ui:search-container-column-text
+                    href="<%=taglibPreviewMailingURL%>" name="email"
+                    value='<%=subscriber.getEmail()%>' />
+
+                <liferay-ui:search-container-column-text
+                    href="<%=taglibPreviewMailingURL%>" name="modified-date"
+                    value='<%=subscriber.getModifiedDate().toString()%>' />
+
+                <liferay-ui:search-container-column-text>            
         
                     <liferay-ui:icon-menu>
 
                         <liferay-ui:icon iconCssClass="icon-binoculars"
                             message="preview" label="true"
                             useDialog="true" image="preview"
-                            url="<%=previewURL%>" />
+                            url="<%=taglibPreviewMailingURL%>" />
 
                     </liferay-ui:icon-menu>
         

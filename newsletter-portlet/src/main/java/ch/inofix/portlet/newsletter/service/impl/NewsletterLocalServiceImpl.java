@@ -34,8 +34,8 @@ import com.liferay.portlet.asset.model.AssetLinkConstants;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2016-10-15 13:45
- * @version 1.0.2
+ * @modified 2016-10-20 23:16
+ * @version 1.0.3
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -43,7 +43,7 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     /*
      * NOTE FOR DEVELOPERS:
-     *
+     * 
      * Never reference this interface directly. Always use {@link
      * ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil} to
      * access the newsletter local service.
@@ -95,6 +95,13 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         assetEntryLocalService.deleteEntry(assetEntry);
 
         return newsletter;
+    }
+
+    public Newsletter getNewsletter(String vCardGroupId)
+            throws PortalException, SystemException {
+
+        return newsletterPersistence.fetchByvCardGroupId(vCardGroupId);
+
     }
 
     private Newsletter saveNewsletter(long userId, long groupId,

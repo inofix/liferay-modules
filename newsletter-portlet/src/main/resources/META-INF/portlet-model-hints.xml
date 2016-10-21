@@ -51,10 +51,11 @@
 		<field name="status" type="int" />
 		<field name="email" type="String" />
 		<field name="firstname" type="String" />
-		<field name="middlename" type="String" />
+		<field name="gender" type="String" />
 		<field name="lastname" type="String" />
-		<field name="salutation" type="String" />
-		<field name="title" type="String" />
+		<field name="middlename" type="String" />
 		<field name="newsletterId" type="long" />
+		<field name="title" type="String" />
+		<field name="vCardUID" type="String" />
 	</model>
 </model-hints>

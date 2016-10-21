@@ -29,15 +29,15 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2016-10-08 01:25
- * @modified 2016-10-16 23:46
- * @version 1.0.4
+ * @modified 2016-10-20 23:18
+ * @version 1.0.5
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
  */
 public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
     /*
      * NOTE FOR DEVELOPERS:
-     *
+     * 
      * Never reference this interface directly. Always use {@link
      * ch.inofix.portlet.newsletter.service.NewsletterServiceUtil} to access the
      * newsletter remote service.
@@ -126,6 +126,29 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
                 ActionKeys.VIEW);
 
         return NewsletterLocalServiceUtil.getNewsletter(newsletterId);
+
+    }
+
+    /**
+     * 
+     * @param vCardGroupId
+     * @return
+     * @since 1.0.5
+     * @throws PortalException
+     * @throws SystemException
+     */
+    public Newsletter getNewsletter(String vCardGroupId)
+            throws PortalException, SystemException {
+
+        Newsletter newsletter = NewsletterLocalServiceUtil
+                .getNewsletter(vCardGroupId);
+
+        long newsletterId = newsletter.getNewsletterId();
+
+        NewsletterPermission.check(getPermissionChecker(), newsletterId,
+                ActionKeys.VIEW);
+
+        return newsletter;
 
     }
 

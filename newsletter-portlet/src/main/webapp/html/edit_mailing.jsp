@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-20 17:26 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2015-10-21 00:09 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -12,9 +12,6 @@
 
 <%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 <%@page import="com.liferay.portlet.journal.service.JournalArticleServiceUtil"%>
-
-<%@page import="java.io.StringWriter"%>
-<%@page import="java.io.PrintWriter"%>
 
 <%
     String redirect = ParamUtil.getString(request, "redirect");
@@ -220,7 +217,6 @@
             subscriber.setLastname("Lastname"); 
             subscriber.setMiddlename("Middlename"); 
             subscriber.setName("Firstname Lastname");
-            subscriber.setSalutation("Mr. / Ms.");           
 
             Map<String, Object> contextObjects = new HashMap<String, Object>();
             contextObjects.put("subscriber", subscriber); 
