@@ -1,7 +1,7 @@
 package ch.inofix.portlet.newsletter.service.permission;
 
-import ch.inofix.portlet.newsletter.model.Mailing;
-import ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil;
+import ch.inofix.portlet.newsletter.model.Subscriber;
+import ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -11,27 +11,27 @@ import com.liferay.portal.security.permission.PermissionChecker;
 /**
  *
  * @author Christian Berndt
- * @created 2016-10-10 17:37
- * @modified 2016-10-10 17:37
+ * @created 2016-10-20 18:43
+ * @modified 2016-10-20 18:43
  * @version 1.0.0
  *
  */
-public class MailingPermission {
+public class SubscriberPermission {
 
     /**
      *
      * @param permissionChecker
-     * @param mailingId
+     * @param subscriberId
      * @param actionId
      * @since 1.0.0
      * @throws PortalException
      * @throws SystemException
      */
     public static void check(PermissionChecker permissionChecker,
-            long mailingId, String actionId) throws PortalException,
+            long subscriberId, String actionId) throws PortalException,
             SystemException {
 
-        if (!contains(permissionChecker, mailingId, actionId)) {
+        if (!contains(permissionChecker, subscriberId, actionId)) {
             throw new PrincipalException();
         }
     }
@@ -39,7 +39,7 @@ public class MailingPermission {
     /**
      *
      * @param permissionChecker
-     * @param mailingId
+     * @param subscriberId
      * @param actionId
      * @return
      * @since 1.0.0
@@ -47,20 +47,22 @@ public class MailingPermission {
      * @throws SystemException
      */
     public static boolean contains(PermissionChecker permissionChecker,
-            long mailingId, String actionId) throws PortalException,
+            long subscriberId, String actionId) throws PortalException,
             SystemException {
 
-        Mailing mailing = MailingLocalServiceUtil.getMailing(mailingId);
+        Subscriber subscriber = SubscriberLocalServiceUtil
+                .getSubscriber(subscriberId);
 
-        if (permissionChecker.hasOwnerPermission(mailing.getCompanyId(),
-                Mailing.class.getName(), mailing.getMailingId(),
-                mailing.getUserId(), actionId)) {
+        if (permissionChecker.hasOwnerPermission(subscriber.getCompanyId(),
+                Subscriber.class.getName(), subscriber.getSubscriberId(),
+                subscriber.getUserId(), actionId)) {
 
             return true;
         }
 
-        return permissionChecker.hasPermission(mailing.getGroupId(),
-                Mailing.class.getName(), mailing.getMailingId(), actionId);
+        return permissionChecker.hasPermission(subscriber.getGroupId(),
+                Subscriber.class.getName(), subscriber.getSubscriberId(),
+                actionId);
 
     }
 }

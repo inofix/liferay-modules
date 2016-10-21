@@ -11,14 +11,18 @@ import javax.servlet.http.HttpServletRequest;
 import ch.inofix.portlet.newsletter.EmailAddressException;
 import ch.inofix.portlet.newsletter.model.Mailing;
 import ch.inofix.portlet.newsletter.model.Newsletter;
+import ch.inofix.portlet.newsletter.model.Subscriber;
 import ch.inofix.portlet.newsletter.portlet.util.PortletUtil;
 import ch.inofix.portlet.newsletter.service.MailingServiceUtil;
 import ch.inofix.portlet.newsletter.service.NewsletterServiceUtil;
+import ch.inofix.portlet.newsletter.service.SubscriberServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -35,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-18 14:00
- * @version 1.1.2
+ * @modified 2016-10-20 18:32
+ * @version 1.1.3
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -184,6 +188,84 @@ public class NewsletterManagerPortlet extends MVCPortlet {
             ActionResponse actionResponse) {
 
         return null;
+    }
+
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.1.3
+     * @throws Exception
+     */
+    public void previewMailing(ActionRequest actionRequest,
+            ActionResponse actionResponse) throws Exception {
+        
+        _log.info("previewMailing()");
+
+        HttpServletRequest request = PortalUtil
+                .getHttpServletRequest(actionRequest);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) request
+                .getAttribute(WebKeys.THEME_DISPLAY);
+
+        SearchContext searchContext = SearchContextFactory.getInstance(request);
+
+        String backURL = ParamUtil.getString(actionRequest, "backURL");
+        long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+        String redirect = ParamUtil.getString(actionRequest, "redirect");
+        long subscriberId = ParamUtil.getLong(actionRequest, "subscriberId");
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+        String vCardGroupId = ParamUtil.getString(actionRequest, "vCardGroupId");
+        String vCardUID = ParamUtil.getString(actionRequest, "vCardUID");
+        String windowId = ParamUtil.getString(actionRequest, "windowId");
+        
+        _log.info("mvcPath = " + mvcPath);
+
+        Mailing mailing = null;
+
+        if (mailingId > 0) {
+            mailing = MailingServiceUtil.getMailing(mailingId);
+        }
+
+        actionRequest.setAttribute("MAILING", mailing);
+
+        Subscriber subscriber = null;
+
+        if (subscriberId > 0) {
+            subscriber = SubscriberServiceUtil.getSubscriber(subscriberId);
+        }
+        if (Validator.isNotNull(vCardUID)) {
+            subscriber = SubscriberServiceUtil.getSubscriber(
+                    themeDisplay.getScopeGroupId(), searchContext, vCardUID);
+        }
+
+        actionRequest.setAttribute("SUBSCRIBER", subscriber);
+
+        Newsletter newsletter = null;
+
+        if (newsletterId > 0) {
+            newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+        }
+
+        if (newsletter == null && Validator.isNotNull(vCardGroupId)) {
+            newsletter = NewsletterServiceUtil.getNewsletter(vCardGroupId);
+        }
+
+        actionRequest.setAttribute("NEWSLETTER", newsletter);
+
+        actionResponse.setRenderParameter("backURL", backURL);
+        actionResponse.setRenderParameter("mailingId", String.valueOf(mailingId));
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("newsletterId", String.valueOf(newsletterId));
+        actionResponse.setRenderParameter("subscriberId", String.valueOf(subscriberId));
+        actionResponse.setRenderParameter("redirect", redirect);
+        actionResponse.setRenderParameter("tabs1", tabs1);
+        actionResponse.setRenderParameter("vCardGroupId", vCardGroupId);
+        actionResponse.setRenderParameter("vCardUID", vCardUID);
+        actionResponse.setRenderParameter("windowId", windowId);
+
     }
 
     /**
@@ -419,15 +501,16 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         if (!hasErrors) {
 
-            MailingServiceUtil.sendMailingsInBackground(userId, taskName, groupId,
-                    parameterMap);
+            MailingServiceUtil.sendMailingsInBackground(userId, taskName,
+                    groupId, parameterMap);
 
             if (Validator.isNotNull(email)) {
 
                 // test mail
 
                 SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                        PortletUtil.translate("the-mailing-has-been-sent-to-x", email));
+                        PortletUtil.translate("the-mailing-has-been-sent-to-x",
+                                email));
 
                 email = "";
 
@@ -435,8 +518,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
                 // mark mailing as sent
 
-                ServiceContext serviceContext = ServiceContextFactory.getInstance(
-                    Newsletter.class.getName(), actionRequest);
+                ServiceContext serviceContext = ServiceContextFactory
+                        .getInstance(Newsletter.class.getName(), actionRequest);
 
                 MailingServiceUtil.updateMailing(mailing.getUserId(),
                         mailing.getGroupId(), mailing.getMailingId(),
@@ -444,8 +527,13 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                         mailing.getNewsletterId(), mailing.getArticleId(),
                         new Date(), true, serviceContext);
 
-                SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                                PortletUtil.translate("the-mailing-has-been-sent-to-the-subscribers-of-x", newsletter.getTitle()));
+                SessionMessages
+                        .add(actionRequest,
+                                REQUEST_PROCESSED,
+                                PortletUtil
+                                        .translate(
+                                                "the-mailing-has-been-sent-to-the-subscribers-of-x",
+                                                newsletter.getTitle()));
             }
         } else {
             SessionErrors.add(actionRequest, "an-error-occurred");
@@ -454,7 +542,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         // Pass the required parameters to the render phase
 
         actionResponse.setRenderParameter("backURL", backURL);
-        actionResponse.setRenderParameter("mailingId", String.valueOf(mailingId));
+        actionResponse.setRenderParameter("mailingId",
+                String.valueOf(mailingId));
         actionResponse.setRenderParameter("mvcPath", mvcPath);
         actionResponse.setRenderParameter("redirect", redirect);
         actionResponse.setRenderParameter("tabs1", tabs1);

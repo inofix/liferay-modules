@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import ch.inofix.portlet.newsletter.model.Subscriber;
+import ch.inofix.portlet.newsletter.security.permission.ActionKeys;
 import ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil;
 import ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl;
+import ch.inofix.portlet.newsletter.service.permission.SubscriberPermission;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -42,15 +44,15 @@ import ezvcard.property.Member;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-10-17 23:07
- * @version 1.0.3
+ * @modified 2016-10-20 18:41
+ * @version 1.0.4
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
 public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
     /*
      * NOTE FOR DEVELOPERS:
-     *
+     * 
      * Never reference this interface directly. Always use {@link
      * ch.inofix.portlet.newsletter.service.SubscriberServiceUtil} to access the
      * subscriber remote service.
@@ -68,8 +70,32 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
     public Subscriber createSubscriber() throws PortalException,
             SystemException {
 
-        // Create an empty newsletter - no permission check required
+        // Create an empty subscriber - no permission check required
         return SubscriberLocalServiceUtil.createSubscriber(0);
+
+    }
+
+    private Subscriber documentToSubscriber(Document document)
+            throws PortalException, SystemException {
+
+        Subscriber subscriber = createSubscriber();
+
+        VCard vCard = Ezvcard.parse(document.get(Field.CONTENT)).first();
+
+        subscriber.setCreateDate(new Date(GetterUtil.getLong(document
+                .get("createDate_sortable"))));
+        subscriber.setEmail(document.get("email"));
+        subscriber.setFirstname(vCard.getStructuredName().getGiven());
+        subscriber.setGender(vCard.getGender().getText());
+        subscriber.setLastname(vCard.getStructuredName().getFamily());
+        // TODO: set middlename (from additionalNames)
+        subscriber.setModifiedDate(new Date(GetterUtil.getLong(document
+                .get("modified_sortable"))));
+        subscriber.setName(vCard.getFormattedName().getValue());
+        // TODO: set title (from prefixes)
+        subscriber.setVCardUID(vCard.getUid().getValue());
+
+        return subscriber;
 
     }
 
@@ -88,6 +114,28 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         } else {
             return null;
         }
+
+    }
+
+    @Override
+    public Subscriber getSubscriber(long subscriberId) throws PortalException,
+            SystemException {
+
+        SubscriberPermission.check(getPermissionChecker(), subscriberId,
+                ActionKeys.VIEW);
+
+        return SubscriberLocalServiceUtil.getSubscriber(subscriberId);
+
+    }
+
+    public Subscriber getSubscriber(long groupId, SearchContext searchContext,
+            String vCardUID) throws PortalException, SystemException {
+
+        Document document = getDocument(groupId, searchContext, vCardUID);
+
+        Subscriber subscriber = documentToSubscriber(document);
+
+        return subscriber;
 
     }
 
@@ -134,13 +182,8 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
                             String email = document.get("email");
                             if (Validator.isNotNull(email)) {
 
-                                Subscriber subscriber = subscriberLocalService
-                                        .createSubscriber(0);
-                                subscriber.setEmail(email);
-                                subscriber.setModifiedDate(new Date(GetterUtil
-                                        .getLong(document
-                                                .get("modified_sortable"))));
-                                subscriber.setName(document.get("name"));
+                                Subscriber subscriber = documentToSubscriber(document);
+
                                 subscribers.add(subscriber);
                             }
                         }

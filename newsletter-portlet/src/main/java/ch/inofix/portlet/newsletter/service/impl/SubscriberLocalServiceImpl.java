@@ -1,5 +1,6 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
+import ch.inofix.portlet.newsletter.model.Subscriber;
 import ch.inofix.portlet.newsletter.service.base.SubscriberLocalServiceBaseImpl;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -30,15 +31,15 @@ import com.liferay.portal.kernel.search.facet.ScopeFacet;
  *
  * @author Christian Berndt
  * @created 2016-10-09 20:49
- * @modified 2016-10-09 23:02
- * @version 1.0.1
+ * @modified 2016-10-20 22:08
+ * @version 1.0.2
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil
  */
 public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
     /*
      * NOTE FOR DEVELOPERS:
-     *
+     * 
      * Never reference this interface directly. Always use {@link
      * ch.inofix.portlet.newsletter.service.SubscriberLocalServiceUtil} to
      * access the subscriber local service.
