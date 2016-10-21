@@ -19,6 +19,10 @@
                 </simple>
             </trigger>
         </scheduler-entry>
+        <!-- site wide newsletter-portlet preferences -->
+        <preferences-company-wide>false</preferences-company-wide>
+        <preferences-unique-per-layout>false</preferences-unique-per-layout>
+        <preferences-owned-by-group>true</preferences-owned-by-group>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
         <css-class-wrapper>portlet-newsletter</css-class-wrapper>
