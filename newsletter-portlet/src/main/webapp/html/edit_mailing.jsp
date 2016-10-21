@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-21 00:09 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2015-10-21 19:24 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -19,7 +19,7 @@
     String backURL = ParamUtil.getString(request, "backURL", redirect);
 
     Mailing mailing = (Mailing) request.getAttribute("MAILING");
-    
+
     boolean disabled = mailing.isSent();
 
     String articleId = mailing.getArticleId();
@@ -58,9 +58,20 @@
     OrderByComparator obc = OrderByComparatorFactoryUtil.create(
             NewsletterModelImpl.TABLE_NAME, "modifiedDate", false);
 
-    List<JournalArticle> articles = JournalArticleServiceUtil
-            .getGroupArticles(themeDisplay.getScopeGroupId(),
-                    themeDisplay.getUserId(), 0, 0, 20, obc);
+    List<JournalArticle> articles = new ArrayList<JournalArticle>();
+
+    if (Validator.isNotNull(newsletterStructureId)) {
+
+        articles = JournalArticleServiceUtil.getArticlesByStructureId(
+                themeDisplay.getScopeGroupId(), newsletterStructureId,
+                0, 20, obc);
+
+    } else {
+
+        articles = JournalArticleServiceUtil.getGroupArticles(
+                themeDisplay.getScopeGroupId(),
+                themeDisplay.getUserId(), 0, 0, 20, obc);
+    }
 
     SearchContext searchContext = SearchContextFactory
             .getInstance(request);
@@ -101,7 +112,7 @@
         if (newsletter != null) {
             newsletters.add(newsletter);
         }
-    }   
+    }
 %>
 
 <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
