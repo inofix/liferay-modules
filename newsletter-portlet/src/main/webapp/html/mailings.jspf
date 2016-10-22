@@ -156,12 +156,25 @@
             if (mailing.isSent()) {
                 cssClass="muted"; 
             }
+            
+            Newsletter newsletter = null; 
+            long newsletterId = mailing.getNewsletterId();
+            String newsletterTitle = ""; 
+            
+            if (newsletterId > 0) {
+                newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+                newsletterTitle = newsletter.getTitle(); 
+            }
         %>
 
             <liferay-ui:search-container-column-text
                 cssClass="<%= cssClass %>"
                 href="<%=detailURL%>" property="title"
                 orderable="true" orderableProperty="title" />
+            <liferay-ui:search-container-column-text
+                cssClass="<%=cssClass%>" href="<%=detailURL%>"
+                orderable="false" name="newsletter"
+                value="<%=newsletterTitle%>" />
             <liferay-ui:search-container-column-text
                 cssClass="<%= cssClass %>"
                 href="<%=detailURL%>" name="user-name"
