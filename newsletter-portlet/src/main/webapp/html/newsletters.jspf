@@ -2,8 +2,8 @@
     newsletters.jspf: the newsletters panel.
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-16 23:31 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-10-22 16:43 by Christian Berndt
+    Version:    1.0.3
 --%>
 <portlet:actionURL var="addNewsletterURL" name="editNewsletter"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -28,7 +28,7 @@
 <%
     int idx = ParamUtil.getInteger(request, "cur");
     int delta = ParamUtil.getInteger(request, "delta", 20); 
-    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified_sortable"); 
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified"); 
     String orderByType = ParamUtil.getString(request, "orderByType", "desc"); 
 
     if (idx > 0) {
@@ -149,7 +149,7 @@
                 property="userName" />
             <liferay-ui:search-container-column-text
                 href="<%=detailURL%>" name="modified-date"
-                orderable="true" orderableProperty="modified_sortable"
+                orderable="true" orderableProperty="modified"
                 property="modifiedDate" />
 
             <liferay-ui:search-container-column-text>      
