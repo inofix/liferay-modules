@@ -47,8 +47,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-10-22 17:15
- * @version 1.0.6
+ * @modified 2016-10-22 23:15
+ * @version 1.0.7
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
@@ -133,6 +133,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
             String vCardUID) throws PortalException, SystemException {
 
         searchContext.setAttribute("vCardUID", vCardUID);
+        searchContext.setGroupIds(new long[] {groupId});
         Facet simpleFacet = new SimpleFacet(searchContext);
         simpleFacet.setFieldName("vCardUID");
         searchContext.addFacet(simpleFacet);
@@ -177,6 +178,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         SearchContext searchContext = new SearchContext();
 
         searchContext.setCompanyId(companyId);
+        searchContext.setGroupIds(new long[] {groupId});
         searchContext.setEnd(end);
         searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
 
@@ -235,6 +237,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         SearchContext searchContext = new SearchContext();
 
         searchContext.setCompanyId(companyId);
+        searchContext.setGroupIds(new long[] {groupId});
         searchContext.setEnd(1);
         searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
 
