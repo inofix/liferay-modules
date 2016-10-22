@@ -2,8 +2,8 @@
     preview_mailing.jsp: preview a mailing personalized for a subscriber.
     
     Created:    2016-10-13 17:02 by Christian Berndt
-    Modified:   2015-10-20 18:21 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2015-10-22 17:21 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -23,8 +23,10 @@
         mailingId = mailing.getMailingId();
     }
     
+    long newsletterId = 0;
     String vCardGroupId = null; 
     if (newsletter != null) {
+        newsletterId = newsletter.getNewsletterId();
         vCardGroupId = newsletter.getVCardGroupId(); 
     }
     
@@ -112,23 +114,28 @@
         <aui:option value="" label="select-mailing"/>
         <%  for (Mailing mailing_ : mailings) { 
             
-                PortletURL selectURL = renderResponse.createActionURL();
-                selectURL.setWindowState(LiferayWindowState.POP_UP);
-                selectURL.setParameter("javax.portlet.action", "previewMailing");
-                selectURL.setParameter("mailingId", String.valueOf(mailing_.getMailingId()));
-                selectURL.setParameter("mvcPath", "/html/preview_mailing.jsp");
-                selectURL.setParameter("redirect", backURL);
-                if (Validator.isNotNull(vCardGroupId)) {
-                    selectURL.setParameter("vCardGroupId", vCardGroupId );
-                }                
-                if (Validator.isNotNull(vCardUID)) {
-                    selectURL.setParameter("vCardUID", vCardUID );
-                }
-                
-                boolean selected = mailing_.getMailingId() == mailingId;
+                if (mailing_.getNewsletterId() == newsletterId) {
+            
+                    PortletURL selectURL = renderResponse.createActionURL();
+                    selectURL.setWindowState(LiferayWindowState.POP_UP);
+                    selectURL.setParameter("javax.portlet.action", "previewMailing");
+                    selectURL.setParameter("mailingId", String.valueOf(mailing_.getMailingId()));
+                    selectURL.setParameter("mvcPath", "/html/preview_mailing.jsp");
+                    selectURL.setParameter("redirect", backURL);
+                    if (Validator.isNotNull(vCardGroupId)) {
+                        selectURL.setParameter("vCardGroupId", vCardGroupId );
+                    }                
+                    if (Validator.isNotNull(vCardUID)) {
+                        selectURL.setParameter("vCardUID", vCardUID );
+                    }
+                    
+                    boolean selected = mailing_.getMailingId() == mailingId;
         %>       
             <option <%= selected ? "selected" : StringPool.BLANK %> value="<%= selectURL.toString() %>" ><%= mailing_.getTitle() %></option>
-        <%  } %>
+        <%  
+                }
+            } 
+        %>
     </aui:select>
 </aui:form>
 
