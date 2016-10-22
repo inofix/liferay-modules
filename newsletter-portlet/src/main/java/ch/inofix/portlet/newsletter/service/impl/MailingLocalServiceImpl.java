@@ -49,15 +49,15 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-15 22:39
- * @version 1.0.5
+ * @modified 2016-10-22 17:04
+ * @version 1.0.6
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
 public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     /*
      * NOTE FOR DEVELOPERS:
-     *
+     * 
      * Never reference this interface directly. Always use {@link
      * ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil} to access
      * the mailing local service.
@@ -162,8 +162,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     public void sendEmail(Mailing mailing, Subscriber subscriber)
             throws PortalException, SystemException {
 
-        _log.info("sendEmail");
-
         Newsletter newsletter = null;
 
         if (mailing.getNewsletterId() > 0) {
@@ -180,34 +178,36 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             fromName = newsletter.getFromName();
         }
 
-        _log.info("fromName = " + fromName);
-        _log.info("fromAddress = " + fromAddress);
-
         String toName = subscriber.getName();
         String toAddress = subscriber.getEmail();
 
-        String subject = mailing.getTitle();
+        if (Validator.isEmailAddress(toAddress)) {
 
-        Map<String, Object> contextObjects = new HashMap<String, Object>();
-        contextObjects.put("subscriber", subscriber);
+            String subject = mailing.getTitle();
 
-        String body = mailingService.prepareMailing(contextObjects,
-                mailing.getMailingId());
+            Map<String, Object> contextObjects = new HashMap<String, Object>();
+            contextObjects.put("subscriber", subscriber);
 
-        SubscriptionSender subscriptionSender = new SubscriptionSender();
+            String body = mailingService.prepareMailing(contextObjects,
+                    mailing.getMailingId());
 
-        subscriptionSender.setSubject(subject);
-        subscriptionSender.setCompanyId(companyId);
-        subscriptionSender.setBody(body);
-        subscriptionSender.setFrom(fromAddress, fromName);
-        subscriptionSender.setHtmlFormat(true);
-        subscriptionSender.setMailId("newsletter", mailing.getMailingId());
-        subscriptionSender.setPortletId(PortletKey.NEWSLETTER);
-        subscriptionSender.setScopeGroupId(mailing.getGroupId());
-        subscriptionSender.addRuntimeSubscribers(toAddress, toName);
+            SubscriptionSender subscriptionSender = new SubscriptionSender();
 
-        subscriptionSender.flushNotificationsAsync();
+            subscriptionSender.setSubject(subject);
+            subscriptionSender.setCompanyId(companyId);
+            subscriptionSender.setBody(body);
+            subscriptionSender.setFrom(fromAddress, fromName);
+            subscriptionSender.setHtmlFormat(true);
+            subscriptionSender.setMailId("newsletter", mailing.getMailingId());
+            subscriptionSender.setPortletId(PortletKey.NEWSLETTER);
+            subscriptionSender.setScopeGroupId(mailing.getGroupId());
+            subscriptionSender.addRuntimeSubscribers(toAddress, toName);
 
+            subscriptionSender.flushNotificationsAsync();
+
+        } else {
+            _log.warn("The to-address " + toAddress + " is not valid");
+        }
     }
 
     @Override
