@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.search.facet.SimpleFacet;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -48,8 +47,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-10-21 20:00
- * @version 1.0.5
+ * @modified 2016-10-22 17:15
+ * @version 1.0.6
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
@@ -96,8 +95,8 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         if (formattedName != null) {
             name = formattedName.getValue();
         }
-        
-        Gender gender = vCard.getGender(); 
+
+        Gender gender = vCard.getGender();
         if (gender != null) {
             genderStr = gender.getGender();
         }
@@ -107,8 +106,8 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
             firstname = structuredName.getGiven();
             lastname = structuredName.getFamily();
         }
-        
-        Uid uid = vCard.getUid(); 
+
+        Uid uid = vCard.getUid();
         if (uid != null) {
             vCardUID = uid.getValue();
         }
@@ -191,7 +190,14 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
             VCard vCard = Ezvcard.parse(content).first();
 
             if (vCard != null) {
-                List<Member> members = vCard.getMembers();
+
+                List<Member> allMembers = vCard.getMembers();
+
+                if (end > allMembers.size()) {
+                    end = allMembers.size();
+                }
+
+                List<Member> members = allMembers.subList(start, end);
 
                 for (Member member : members) {
 
@@ -208,36 +214,48 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
                                 uuid);
                         if (document != null) {
 
-                            // Only add members with email-address
+                            Subscriber subscriber = documentToSubscriber(document);
 
-                            String email = document.get("email");
-                            if (Validator.isNotNull(email)) {
-
-                                Subscriber subscriber = documentToSubscriber(document);
-
-                                subscribers.add(subscriber);
-                            }
+                            subscribers.add(subscriber);
                         }
                     }
                 }
             }
         }
 
-        if (end > subscribers.size()) {
-            end = subscribers.size();
-        }
-
-        return subscribers.subList(start, end);
+        return subscribers;
     }
 
     @Override
     public int getSubscribersFromVCardGroupCount(long companyId, long groupId,
             String vCardGroupId) throws PortalException, SystemException {
 
-        List<Subscriber> subscribers = getSubscribersFromVCardGroup(companyId,
-                groupId, vCardGroupId, 0, Integer.MAX_VALUE);
+        int numSubscribers = 0;
 
-        return subscribers.size();
+        SearchContext searchContext = new SearchContext();
+
+        searchContext.setCompanyId(companyId);
+        searchContext.setEnd(1);
+        searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
+
+        Document group = getDocument(groupId, searchContext, vCardGroupId);
+
+        if (group != null) {
+
+            String content = group.get(Field.CONTENT);
+
+            VCard vCard = Ezvcard.parse(content).first();
+
+            if (vCard != null) {
+                List<Member> members = vCard.getMembers();
+                if (members != null) {
+                    numSubscribers = members.size();
+                }
+            }
+
+        }
+
+        return numSubscribers;
 
     }
 
