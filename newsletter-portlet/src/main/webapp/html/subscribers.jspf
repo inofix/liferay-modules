@@ -2,17 +2,17 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2015-10-20 18:30 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2015-10-22 17:06 by Christian Berndt
+    Version:    1.1.1
 --%>
        
 <%
     SearchContext searchContext =
         SearchContextFactory.getInstance(request);
 
-    boolean reverse = false;
+    boolean reverse = true;
 
-    Sort sort = new Sort("title", reverse);
+    Sort sort = new Sort("modified", reverse);
 
     searchContext.setAttribute("paginationType", "more");
     searchContext.setStart(0);
