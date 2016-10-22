@@ -52,8 +52,8 @@
         backURL = portletURL.toString();
     }
 
-    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified_sortable"); 
-    String orderByType = ParamUtil.getString(request, "orderByType", "asc"); 
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified"); 
+    String orderByType = ParamUtil.getString(request, "orderByType", "desc"); 
 
     int start = 0;
     int end = 20;

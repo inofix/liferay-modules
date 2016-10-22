@@ -200,8 +200,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     public void previewMailing(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
         
-        _log.info("previewMailing()");
-
         HttpServletRequest request = PortalUtil
                 .getHttpServletRequest(actionRequest);
 
@@ -221,8 +219,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String vCardUID = ParamUtil.getString(actionRequest, "vCardUID");
         String windowId = ParamUtil.getString(actionRequest, "windowId");
         
-        _log.info("mvcPath = " + mvcPath);
-
         Mailing mailing = null;
 
         if (mailingId > 0) {
