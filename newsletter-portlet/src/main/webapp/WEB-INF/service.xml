@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service-builder
+     PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" 
+     "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+<!--  
+    service.xml: Model description for the newsletter-portlet.
+    
+    Created:    2016-10-07 23:13 by Christian Berndt
+    Modified:   2016-10-23 23:50 by Christian Berndt
+    Version:    1.1.0
+-->
+<service-builder package-path="ch.inofix.portlet.newsletter">
+
+    <author>Christian Berndt</author>
+
+    <namespace>inofix</namespace>
+    
+    <entity name="Mailing" local-service="true"
+        remote-service="true" uuid="true">
+
+        <!-- Primary key -->
+
+        <column name="mailingId" type="long" primary="true" />
+
+        <!-- Group instance -->
+
+        <column name="groupId" type="long" />
+
+        <!-- Audit fields -->
+
+        <column name="companyId" type="long" />
+        <column name="userId" type="long" />
+        <column name="userName" type="String" />
+        <column name="createDate" type="Date" />
+        <column name="modifiedDate" type="Date" />
+        <column name="status" type="int" />
+
+        <!-- Other fields -->
+
+        <column name="title" type="String" />
+        <column name="template" type="String" />
+        <column name="publishDate" type="String" />
+        <column name="newsletterId" type="long"/>
+        <column name="articleId" type="String"/>
+        <column name="sent" type="boolean"></column>
+        <column name="sendDate" type="Date"></column>
+        
+        <!-- Order -->
+        <order by="desc">
+            <order-column name="modifiedDate"/>            
+        </order>
+
+        <!-- Finder methods -->
+
+
+        <!-- References -->
+
+        <reference package-path="com.liferay.portlet.asset"
+            entity="AssetEntry" />
+
+    </entity>    
+
+    <entity name="Newsletter" local-service="true"
+        remote-service="true" uuid="true">
+
+        <!-- Primary key -->
+
+        <column name="newsletterId" type="long" primary="true" />
+
+        <!-- Group instance -->
+
+        <column name="groupId" type="long" />
+
+        <!-- Audit fields -->
+
+        <column name="companyId" type="long" />
+        <column name="userId" type="long" />
+        <column name="userName" type="String" />
+        <column name="createDate" type="Date" />
+        <column name="modifiedDate" type="Date" />
+        <column name="status" type="int" />
+
+        <!-- Other fields -->
+
+        <column name="title" type="String" />
+        <column name="template" type="String" />
+        <column name="fromAddress" type="String"/>
+        <column name="fromName" type="String" />
+        <column name="useHttps" type="boolean"/>
+        <column name="vCardGroupId" type="String" />
+
+        <!-- Order -->
+
+        <!-- Finder methods -->
+        
+        <finder return-type="Newsletter" name="vCardGroupId">
+            <finder-column name="vCardGroupId"/>
+        </finder>
+
+
+        <!-- References -->
+
+        <reference package-path="com.liferay.portlet.asset"
+            entity="AssetEntry" />
+        <reference package-path="com.liferay.portlet.asset"
+            entity="AssetLink" />
+
+    </entity>
+    
+    <entity name="Subscriber" local-service="true"
+        remote-service="true" uuid="true">
+
+        <!-- Primary key -->
+
+        <column name="subscriberId" type="long" primary="true" />
+
+        <!-- Group instance -->
+
+        <column name="groupId" type="long" />
+
+        <!-- Audit fields -->
+
+        <column name="companyId" type="long" />
+        <column name="userId" type="long" />
+        <column name="userName" type="String" />
+        <column name="createDate" type="Date" />
+        <column name="modifiedDate" type="Date" />
+        <column name="status" type="int" />
+
+        <!-- Other fields -->
+
+        <column name="email" type="String" />
+        <column name="firstname" type="String" />
+        <column name="gender" type="String" />
+        <column name="lastname" type="String" />
+        <column name="middlename" type="String" />
+        <column name="newsletterId" type="long"/>
+        <column name="title" type="String" />
+        <column name="vCardUID" type="String" />
+        
+        <!-- Order -->
+
+        <!-- Finder methods -->
+
+        <!-- References -->
+
+        <reference package-path="com.liferay.portlet.asset"
+            entity="AssetEntry" />
+
+    </entity>    
+
+    <exceptions>
+        <exception>EmailAddress</exception>
+    </exceptions>
+
+</service-builder>
