@@ -2,8 +2,8 @@
     newsletters.jspf: the newsletters panel.
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-22 16:43 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2015-10-24 17:29 by Christian Berndt
+    Version:    1.0.4
 --%>
 <portlet:actionURL var="addNewsletterURL" name="editNewsletter"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -18,10 +18,12 @@
     String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "editNewsletter', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addNewsletterURL) + "'});";
 %>
 
-    <aui:a href="<%=taglibAddURL%>"
-        cssClass="btn btn-primary add-newsletter">
-        <liferay-ui:message key="add-newsletter" />
-    </aui:a>
+    <div class="control-group">
+        <aui:a href="<%=taglibAddURL%>"
+            cssClass="btn btn-primary add-newsletter">
+            <liferay-ui:message key="add-newsletter" />
+        </aui:a>
+    </div>
 
 </c:if>
 
