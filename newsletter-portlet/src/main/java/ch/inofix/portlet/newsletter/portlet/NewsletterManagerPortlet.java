@@ -39,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-20 18:32
- * @version 1.1.3
+ * @modified 2016-10-24 15:48
+ * @version 1.1.4
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -199,7 +199,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      */
     public void previewMailing(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
-        
+
         HttpServletRequest request = PortalUtil
                 .getHttpServletRequest(actionRequest);
 
@@ -215,10 +215,11 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String redirect = ParamUtil.getString(actionRequest, "redirect");
         long subscriberId = ParamUtil.getLong(actionRequest, "subscriberId");
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-        String vCardGroupId = ParamUtil.getString(actionRequest, "vCardGroupId");
+        String vCardGroupId = ParamUtil
+                .getString(actionRequest, "vCardGroupId");
         String vCardUID = ParamUtil.getString(actionRequest, "vCardUID");
         String windowId = ParamUtil.getString(actionRequest, "windowId");
-        
+
         Mailing mailing = null;
 
         if (mailingId > 0) {
@@ -252,10 +253,13 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         actionRequest.setAttribute("NEWSLETTER", newsletter);
 
         actionResponse.setRenderParameter("backURL", backURL);
-        actionResponse.setRenderParameter("mailingId", String.valueOf(mailingId));
+        actionResponse.setRenderParameter("mailingId",
+                String.valueOf(mailingId));
         actionResponse.setRenderParameter("mvcPath", mvcPath);
-        actionResponse.setRenderParameter("newsletterId", String.valueOf(newsletterId));
-        actionResponse.setRenderParameter("subscriberId", String.valueOf(subscriberId));
+        actionResponse.setRenderParameter("newsletterId",
+                String.valueOf(newsletterId));
+        actionResponse.setRenderParameter("subscriberId",
+                String.valueOf(subscriberId));
         actionResponse.setRenderParameter("redirect", redirect);
         actionResponse.setRenderParameter("tabs1", tabs1);
         actionResponse.setRenderParameter("vCardGroupId", vCardGroupId);
@@ -366,9 +370,11 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String template = ParamUtil.getString(actionRequest, "template");
         String fromAddress = ParamUtil.getString(actionRequest, "fromAddress");
         String fromName = ParamUtil.getString(actionRequest, "fromName");
+        boolean useHttps = ParamUtil.getBoolean(actionRequest, "useHttps",
+                false);
         String vCardGroupId = ParamUtil
                 .getString(actionRequest, "vCardGroupId");
-
+        
         if (!Validator.isEmailAddress(fromAddress)) {
             SessionErrors.add(actionRequest, EmailAddressException.class);
             hasErrors = true;
@@ -394,7 +400,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
                 newsletter = NewsletterServiceUtil.updateNewsletter(userId,
                         groupId, newsletterId, title, template, fromAddress,
-                        fromName, vCardGroupId, serviceContext);
+                        fromName, useHttps, vCardGroupId, serviceContext);
 
                 SessionMessages
                         .add(actionRequest,
@@ -408,7 +414,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
                 newsletter = NewsletterServiceUtil.addNewsletter(userId,
                         groupId, title, template, fromAddress, fromName,
-                        vCardGroupId, serviceContext);
+                        useHttps, vCardGroupId, serviceContext);
 
                 SessionMessages
                         .add(actionRequest, REQUEST_PROCESSED, PortletUtil

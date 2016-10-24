@@ -21,6 +21,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.model.Company;
+import com.liferay.portal.model.Group;
+import com.liferay.portal.model.LayoutSet;
+import com.liferay.portal.service.CompanyLocalServiceUtil;
+import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.JournalArticleDisplay;
@@ -43,8 +48,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-17 16:33
- * @version 1.0.7
+ * @modified 2016-10-24 17:05
+ * @version 1.0.8
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -52,7 +57,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     /*
      * NOTE FOR DEVELOPERS:
-     *
+     * 
      * Never reference this interface directly. Always use {@link
      * ch.inofix.portlet.newsletter.service.MailingServiceUtil} to access the
      * mailing remote service.
@@ -107,9 +112,10 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     public String prepareMailing(Map<String, Object> contextObjects,
             long mailingId) throws PortalException, SystemException {
 
-        Newsletter newsletter = null;
         JournalArticle article = null;
+        Newsletter newsletter = null;
 
+        String protocol = "http://";
         String script = null;
 
         if (mailingId > 0) {
@@ -124,6 +130,9 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
                 newsletter = newsletterService.getNewsletter(newsletterId);
                 script = newsletter.getTemplate();
+                if (newsletter.isUseHttps()) {
+                    protocol = "https://";
+                }
             }
 
             // mailing.template overrides newsletter.template
@@ -171,8 +180,28 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
                     .getArticleDisplay(article, null, null, languageId, 1,
                             null, null);
 
+            String content = articleDisplay.getContent();
+
+            Company company = CompanyLocalServiceUtil.getCompany(article
+                    .getCompanyId());
+            String virtualHostname = company.getVirtualHostname();
+
+            Group group = GroupLocalServiceUtil.getGroup(article.getGroupId());
+            LayoutSet layoutSet = group.getPublicLayoutSet();
+
+            if (layoutSet != null) {
+                if (Validator.isNotNull(layoutSet.getVirtualHostname())) {
+                    virtualHostname = layoutSet.getVirtualHostname();
+                }
+            }
+
+            // Prefix all local image sources with the group's virtualhost
+
+            content = content.replaceAll("/documents", protocol
+                    + virtualHostname + "/documents");
+
             sb.append("<div class=\"newsletter-content\">");
-            sb.append(articleDisplay.getContent());
+            sb.append(content);
             sb.append("</div>");
 
         }

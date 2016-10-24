@@ -49,8 +49,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-22 17:04
- * @version 1.0.6
+ * @modified 2016-10-24 17:04
+ * @version 1.0.7
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -169,17 +169,19 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
                     .getNewsletterId());
         }
 
-        long companyId = newsletter.getCompanyId();
+        long companyId = 0;
+
         String fromAddress = null;
         String fromName = null;
 
         if (newsletter != null) {
+            companyId = newsletter.getCompanyId();
             fromAddress = newsletter.getFromAddress();
             fromName = newsletter.getFromName();
         }
 
-        String toName = subscriber.getName();
         String toAddress = subscriber.getEmail();
+        String toName = subscriber.getName();
 
         if (Validator.isEmailAddress(toAddress)) {
 

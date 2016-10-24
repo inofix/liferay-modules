@@ -37,6 +37,7 @@
 		</field>
 		<field name="fromAddress" type="String" />
 		<field name="fromName" type="String" />
+		<field name="useHttps" type="boolean" />
 		<field name="vCardGroupId" type="String" />
 	</model>
 	<model name="ch.inofix.portlet.newsletter.model.Subscriber">
