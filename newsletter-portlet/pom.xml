@@ -10,7 +10,7 @@
     <artifactId>newsletter-portlet</artifactId>
     <packaging>war</packaging>
     <name>Newsletter Portlet</name>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.6.4-SNAPSHOT</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->
