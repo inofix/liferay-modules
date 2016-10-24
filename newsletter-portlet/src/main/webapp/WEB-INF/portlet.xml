@@ -6,7 +6,7 @@
     version="2.0">
     <portlet>
         <portlet-name>newsletter-portlet</portlet-name>
-        <display-name>Newsletter</display-name>
+        <display-name>Newsletter Manager</display-name>
         <portlet-class>ch.inofix.portlet.newsletter.portlet.NewsletterManagerPortlet</portlet-class>
         <init-param>
             <name>add-process-action-success-action</name>
@@ -22,9 +22,44 @@
         </supports>
         <resource-bundle>Language</resource-bundle>
         <portlet-info>
-            <title>Newsletter</title>
-            <short-title>Newsletter</short-title>
-            <keywords>Newsletter</keywords>
+            <title>Newsletter Manager</title>
+            <short-title>Newsletter Manager</short-title>
+            <keywords>Newsletter Manager</keywords>
+        </portlet-info>
+        <security-role-ref>
+            <role-name>administrator</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>guest</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>power-user</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>user</role-name>
+        </security-role-ref>
+    </portlet>
+    <portlet>
+        <portlet-name>newsletter-viewer</portlet-name>
+        <display-name>Newsletter Viewer</display-name>
+        <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+        <init-param>
+            <name>add-process-action-success-action</name>
+            <value>false</value>
+        </init-param>
+        <init-param>
+            <name>view-template</name>
+            <value>/html/viewer/view.jsp</value>
+        </init-param>
+        <expiration-cache>0</expiration-cache>
+        <supports>
+            <mime-type>text/html</mime-type>
+        </supports>
+        <resource-bundle>Language</resource-bundle>
+        <portlet-info>
+            <title>Newsletter Viewer</title>
+            <short-title>Newsletter Viewer</short-title>
+            <keywords>Newsletter Viewer</keywords>
         </portlet-info>
         <security-role-ref>
             <role-name>administrator</role-name>

@@ -2,8 +2,8 @@
     preview_mailing.jsp: preview a mailing personalized for a subscriber.
     
     Created:    2016-10-13 17:02 by Christian Berndt
-    Modified:   2015-10-22 17:21 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2015-10-24 00:16 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -35,7 +35,7 @@
         vCardUID = subscriber.getVCardUID();
     }
     
-    Log log = LogFactoryUtil.getLog("docroot.html.edit_mailing.jsp");
+    Log log = LogFactoryUtil.getLog("docroot.html.preview_mailing_jsp");
 
     String windowId = "";
     windowId = ParamUtil.getString(request, "windowId");
