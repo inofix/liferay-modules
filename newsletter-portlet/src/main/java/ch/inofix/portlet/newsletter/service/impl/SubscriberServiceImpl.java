@@ -133,7 +133,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
             String vCardUID) throws PortalException, SystemException {
 
         searchContext.setAttribute("vCardUID", vCardUID);
-        searchContext.setGroupIds(new long[] {groupId});
+        searchContext.setGroupIds(new long[] { groupId });
         Facet simpleFacet = new SimpleFacet(searchContext);
         simpleFacet.setFieldName("vCardUID");
         searchContext.addFacet(simpleFacet);
@@ -178,7 +178,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         SearchContext searchContext = new SearchContext();
 
         searchContext.setCompanyId(companyId);
-        searchContext.setGroupIds(new long[] {groupId});
+        searchContext.setGroupIds(new long[] { groupId });
         searchContext.setEnd(end);
         searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
 
@@ -237,7 +237,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         SearchContext searchContext = new SearchContext();
 
         searchContext.setCompanyId(companyId);
-        searchContext.setGroupIds(new long[] {groupId});
+        searchContext.setGroupIds(new long[] { groupId });
         searchContext.setEnd(1);
         searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
 

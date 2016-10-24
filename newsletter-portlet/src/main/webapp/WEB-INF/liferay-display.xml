@@ -4,5 +4,6 @@
 <display>
     <category name="category.inofix">
         <portlet id="newsletter-portlet" />
+        <portlet id="newsletter-viewer" />
     </category>
 </display>

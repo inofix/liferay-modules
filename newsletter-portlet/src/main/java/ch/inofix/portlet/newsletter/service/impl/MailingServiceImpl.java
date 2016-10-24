@@ -48,8 +48,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-24 17:39
- * @version 1.0.9
+ * @modified 2016-10-25 00:14
+ * @version 1.1.0
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -120,7 +120,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
         if (mailingId > 0) {
 
-            Mailing mailing = getMailing(mailingId);
+            // TODO: resolve permission handling
+            Mailing mailing = mailingLocalService.getMailing(mailingId);
 
             contextObjects.put("mailing", mailing);
 
@@ -130,7 +131,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
             if (newsletterId > 0) {
 
-                newsletter = newsletterService.getNewsletter(newsletterId);
+                // TODO: resolve permission handling
+                newsletter = newsletterLocalService.getNewsletter(newsletterId);
                 script = newsletter.getTemplate();
                 if (newsletter.isUseHttps()) {
                     protocol = "https://";

@@ -35,7 +35,7 @@ import com.liferay.portal.util.WebKeys;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 /**
- * NewsletterManagerPortlet: MVC-Controller of the newsletter-portlet.
+ * NewsletterManagerPortlet: MVC-Controller of the newsletter-manager.
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
