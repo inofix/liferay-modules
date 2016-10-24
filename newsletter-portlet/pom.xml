@@ -10,7 +10,7 @@
     <artifactId>newsletter-portlet</artifactId>
     <packaging>war</packaging>
     <name>Newsletter Portlet</name>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.3-SNAPSHOT</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->
@@ -190,6 +190,14 @@
             <artifactId>taglib-util</artifactId>
             <version>0.0.2-SNAPSHOT</version>
         </dependency> 
+        
+        <!-- mail support -->
+<!--         <dependency> -->
+<!--             <groupId>javax.mail</groupId> -->
+<!--             <artifactId>mail</artifactId> -->
+<!--             <version>1.4</version> -->
+<!--             <scope>provided</scope>         -->
+<!--         </dependency> -->
         
         <!-- vcard support -->
         <dependency>
