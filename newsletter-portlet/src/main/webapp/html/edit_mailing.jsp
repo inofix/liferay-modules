@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-24 15:55 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2015-10-24 17:52 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -182,19 +182,43 @@
                             }
                         %>
                     </aui:select>
-                    
+
+                    <aui:field-wrapper name="publishDate"
+                        helpMessage="publish-date-help"
+                        inlineField="true">
+                        <liferay-ui:input-date name="publishDate"
+                            dayParam="publishDate.day"
+                            dayValue="<%=mailing.getPublishDateDay()%>"
+                            monthParam="publishDate.month"
+                            monthValue="<%=mailing.getPublishDateMonth()%>"
+                            yearParam="publishDate.year"
+                            yearValue="<%=mailing.getPublishDateYear()%>"
+                            disabled="<%=disabled%>"
+                            nullable="<%=mailing.getPublishDate() == null%>" />
+                    </aui:field-wrapper>
+
+                    <aui:field-wrapper name="sendDate"
+                        helpMessage="send-date-help" inlineField="true">
+                        <liferay-ui:input-date name="sendDate"
+                            dayParam="sendDate.day"
+                            dayValue="<%=mailing.getSendDateDay()%>"
+                            monthParam="sendDate.month"
+                            monthValue="<%=mailing.getSendDateMonth()%>"
+                            yearParam="sendDate.year"
+                            yearValue="<%=mailing.getSendDateYear()%>"
+                            disabled="<%=disabled%>"
+                            nullable="<%=mailing.getSendDate() == null%>" />
+                    </aui:field-wrapper>
+
                     <div class="editor-wrapper">
                         <aui:input name="template"
                             disabled="<%=disabled%>"
                             helpMessage="mailing-template-help"
                             inlineField="true" type="textarea"
                             value="<%=mailing.getTemplate()%>" />
-                    </div>
-                </aui:col>
-
-                <%
-                    // TODO: sendDate
-                %>
+                    </div>                    
+                    
+                </aui:col>       
             </aui:row>
 
             <aui:button-row>
