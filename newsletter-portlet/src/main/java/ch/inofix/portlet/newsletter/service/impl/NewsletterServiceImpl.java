@@ -29,8 +29,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2016-10-08 01:25
- * @modified 2016-10-24 13:55
- * @version 1.0.5
+ * @modified 2016-10-24 15:45
+ * @version 1.0.6
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
  */
@@ -59,14 +59,15 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
     @Override
     public Newsletter addNewsletter(long userId, long groupId, String title,
             String template, String fromAddress, String fromName,
-            String vCardGroupId, ServiceContext serviceContext)
+            boolean useHttps, String vCardGroupId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), groupId,
                 ActionKeys.ADD_NEWSLETTER);
 
         return NewsletterLocalServiceUtil.addNewsletter(userId, groupId, title,
-                template, fromAddress, fromName, vCardGroupId, serviceContext);
+                template, fromAddress, fromName, useHttps, vCardGroupId,
+                serviceContext);
 
     }
 
@@ -158,15 +159,15 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
     @Override
     public Newsletter updateNewsletter(long userId, long groupId,
             long newsletterId, String title, String template,
-            String fromAddress, String fromName, String vCardGroupId,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            String fromAddress, String fromName, boolean useHttps,
+            String vCardGroupId, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         NewsletterPermission.check(getPermissionChecker(), newsletterId,
                 ActionKeys.UPDATE);
 
         return NewsletterLocalServiceUtil.updateNewsletter(userId, groupId,
-                newsletterId, title, template, fromAddress, fromName,
+                newsletterId, title, template, fromAddress, fromName, useHttps,
                 vCardGroupId, serviceContext);
 
     }

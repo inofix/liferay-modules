@@ -2,8 +2,8 @@
     edit_newsletter.jsp: edit the newsletter settings. 
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2015-10-17 23:16 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2015-10-24 15:58 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -73,6 +73,10 @@
             <aui:input name="vCardGroupId" label="group-v-card"
                 helpMessage="group-v-card-help" inlineField="true"
                 value="<%=newsletter.getVCardGroupId()%>" />
+
+            <aui:input name="useHttps" helpMessage="use-https-help"
+                type="checkbox" checked="<%=newsletter.isUseHttps()%>"
+                value="<%=newsletter.isUseHttps()%>" />
 
             <div class="editor-wrapper">
                 <aui:input name="template" type="textarea"

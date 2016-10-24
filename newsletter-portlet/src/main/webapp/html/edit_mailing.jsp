@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-21 19:24 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2015-10-24 15:55 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -24,7 +24,7 @@
 
     String articleId = mailing.getArticleId();
 
-    Log log = LogFactoryUtil.getLog("docroot.html.edit_mailing.jsp");
+    Log log = LogFactoryUtil.getLog("docroot.html.edit_mailing_jsp");
 
     String windowId = "";
     windowId = ParamUtil.getString(request, "windowId");
@@ -44,7 +44,7 @@
     }
 
     String tabs1 = ParamUtil.getString(request, "tabs1", "mailing");
-
+    
     PortletURL portletURL = renderResponse.createActionURL();
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("mvcPath", "/html/edit_mailing.jsp");
@@ -182,7 +182,7 @@
                             }
                         %>
                     </aui:select>
-
+                    
                     <div class="editor-wrapper">
                         <aui:input name="template"
                             disabled="<%=disabled%>"
