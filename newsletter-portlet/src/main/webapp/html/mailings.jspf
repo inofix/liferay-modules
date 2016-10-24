@@ -2,8 +2,8 @@
     mailings.jspf: the mailings panel.
     
     Created:    2016-10-10 17:47 by Christian Berndt
-    Modified:   2015-10-22 15:27 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2015-10-24 14:13 by Christian Berndt
+    Version:    1.1.0
 --%>
 <portlet:actionURL var="addMailingURL" name="editMailing"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -162,8 +162,12 @@
             String newsletterTitle = ""; 
             
             if (newsletterId > 0) {
-                newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
-                newsletterTitle = newsletter.getTitle(); 
+                try {
+                    newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+                    newsletterTitle = newsletter.getTitle();
+                } catch (NoSuchNewsletterException ignore) {
+                    // ignored
+                }
             }
         %>
 

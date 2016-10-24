@@ -34,8 +34,8 @@ import com.liferay.portlet.asset.model.AssetLinkConstants;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2016-10-20 23:16
- * @version 1.0.3
+ * @modified 2016-10-24 13:56
+ * @version 1.0.4
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -51,12 +51,12 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     @Override
     public Newsletter addNewsletter(long userId, long groupId, String title,
-            String template, String fromName, String fromAddress,
+            String template, String fromAddress, String fromName,
             String vCardGroupId, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         Newsletter newsletter = saveNewsletter(userId, groupId, 0, title,
-                template, fromName, fromAddress, vCardGroupId, serviceContext);
+                template, fromAddress, fromName, vCardGroupId, serviceContext);
 
         // Asset
 
@@ -105,8 +105,8 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     }
 
     private Newsletter saveNewsletter(long userId, long groupId,
-            long newsletterId, String title, String template, String fromName,
-            String fromAddress, String vCardGroupId,
+            long newsletterId, String title, String template,
+            String fromAddress, String fromName, String vCardGroupId,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
@@ -187,13 +187,13 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     @Override
     public Newsletter updateNewsletter(long userId, long groupId,
-            long newsletterId, String title, String template, String fromName,
-            String fromAddress, String vCardGroupId,
+            long newsletterId, String title, String template,
+            String fromAddress, String fromName, String vCardGroupId,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
         Newsletter newsletter = saveNewsletter(userId, groupId, newsletterId,
-                title, template, fromName, fromAddress, vCardGroupId,
+                title, template, fromAddress, fromName, vCardGroupId,
                 serviceContext);
 
         // Asset

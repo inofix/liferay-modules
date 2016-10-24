@@ -29,7 +29,7 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2016-10-08 01:25
- * @modified 2016-10-20 23:18
+ * @modified 2016-10-24 13:55
  * @version 1.0.5
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
@@ -166,7 +166,7 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
                 ActionKeys.UPDATE);
 
         return NewsletterLocalServiceUtil.updateNewsletter(userId, groupId,
-                newsletterId, title, template, fromName, fromAddress,
+                newsletterId, title, template, fromAddress, fromName,
                 vCardGroupId, serviceContext);
 
     }
