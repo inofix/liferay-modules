@@ -1,5 +1,8 @@
 package ch.inofix.portlet.newsletter.model.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * The extended model implementation for the Mailing service. Represents a row
  * in the &quot;inofix_Mailing&quot; database table, with each column mapped to
@@ -13,8 +16,8 @@ package ch.inofix.portlet.newsletter.model.impl;
  *
  * @author Christian Berndt
  * @created 2016-10-22 17:27
- * @modified 2016-10-22 17:27
- * @version 1.0.0
+ * @modified 2016-10-24 18:11
+ * @version 1.0.1
  */
 public class MailingImpl extends MailingBaseImpl {
     /*
@@ -25,5 +28,154 @@ public class MailingImpl extends MailingBaseImpl {
      * ch.inofix.portlet.newsletter.model.Mailing} interface instead.
      */
     public MailingImpl() {
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.1
+     */
+    public int getPublishDateDay() {
+
+        Date publishDate = getPublishDate();
+
+        if (publishDate != null) {
+            return getDay(publishDate);
+        } else {
+            return -1;
+        }
+
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.1
+     */
+    public int getPublishDateMonth() {
+
+        Date publishDate = getPublishDate();
+
+        if (publishDate != null) {
+            return getMonth(publishDate);
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.1
+     */
+    public int getPublishDateYear() {
+
+        Date publishDate = getPublishDate();
+
+        if (publishDate != null) {
+            return getYear(publishDate);
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.1
+     */
+    public int getSendDateDay() {
+
+        Date sendDate = getSendDate();
+
+        if (sendDate != null) {
+            return getDay(sendDate);
+        } else {
+            return 1;
+        }
+
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.1
+     */
+    public int getSendDateMonth() {
+
+        Date sendDate = getSendDate();
+
+        if (sendDate != null) {
+            return getMonth(sendDate);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.1
+     */
+    public int getSendDateYear() {
+
+        Date sendDate = getSendDate();
+
+        if (sendDate != null) {
+            return getYear(sendDate);
+        } else {
+            return 1970;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.0
+     */
+    private int getDay(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.DAY_OF_MONTH);
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.1
+     */
+    private int getMonth(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.MONTH);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.1
+     */
+    private int getYear(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.YEAR);
+        } else {
+            return 1970;
+        }
     }
 }

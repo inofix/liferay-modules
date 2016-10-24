@@ -6,8 +6,8 @@
     service.xml: Model description for the newsletter-portlet.
     
     Created:    2016-10-07 23:13 by Christian Berndt
-    Modified:   2016-10-23 23:50 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2016-10-24 17:36 by Christian Berndt
+    Version:    1.1.1
 -->
 <service-builder package-path="ch.inofix.portlet.newsletter">
 
@@ -39,11 +39,11 @@
 
         <column name="title" type="String" />
         <column name="template" type="String" />
-        <column name="publishDate" type="String" />
         <column name="newsletterId" type="long"/>
         <column name="articleId" type="String"/>
-        <column name="sent" type="boolean"></column>
-        <column name="sendDate" type="Date"></column>
+        <column name="publishDate" type="Date" />
+        <column name="sent" type="boolean"/>
+        <column name="sendDate" type="Date"/>
         
         <!-- Order -->
         <order by="desc">

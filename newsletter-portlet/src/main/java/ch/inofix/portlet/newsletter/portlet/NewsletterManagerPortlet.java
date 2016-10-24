@@ -39,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-24 15:48
- * @version 1.1.4
+ * @modified 2016-10-24 19:43
+ * @version 1.1.5
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -294,13 +294,28 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         Mailing mailing = null;
 
+        String articleId = ParamUtil.getString(actionRequest, "articleId");
+
+        int publishDateDay = ParamUtil.getInteger(request, "publishDate.day",
+                -1);
+        int publishDateMonth = ParamUtil.getInteger(request,
+                "publishDate.month", -1);
+        int publishDateYear = ParamUtil.getInteger(request, "publishDate.year",
+                -1);
+        Date publishDate = PortalUtil.getDate(publishDateMonth, publishDateDay,
+                publishDateYear);
+
+        int sendDateDay = ParamUtil.getInteger(request, "sendDate.day", -1);
+        int sendDateMonth = ParamUtil.getInteger(request, "sendDate.month", -1);
+        int sendDateYear = ParamUtil.getInteger(request, "sendDate.year", -1);
+        Date sendDate = PortalUtil.getDate(sendDateMonth, sendDateDay,
+                sendDateYear);
+
+        boolean sent = ParamUtil.getBoolean(actionRequest, "sent");
+
         String title = ParamUtil.getString(actionRequest, "title");
         String template = ParamUtil.getString(actionRequest, "template");
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
-        String articleId = ParamUtil.getString(actionRequest, "articleId");
-        // TODO:
-        Date sendDate = null;
-        boolean sent = ParamUtil.getBoolean(actionRequest, "sent");
 
         // Pass the required parameters to the render phase
 
@@ -319,7 +334,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         if (mailingId > 0) {
             mailing = MailingServiceUtil.updateMailing(userId, groupId,
                     mailingId, title, template, newsletterId, articleId,
-                    sendDate, sent, serviceContext);
+                    publishDate, sendDate, sent, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-updated-the-mailing"));
         } else {
@@ -374,7 +389,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                 false);
         String vCardGroupId = ParamUtil
                 .getString(actionRequest, "vCardGroupId");
-        
+
         if (!Validator.isEmailAddress(fromAddress)) {
             SessionErrors.add(actionRequest, EmailAddressException.class);
             hasErrors = true;
@@ -527,7 +542,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                         mailing.getGroupId(), mailing.getMailingId(),
                         mailing.getTitle(), mailing.getTemplate(),
                         mailing.getNewsletterId(), mailing.getArticleId(),
-                        new Date(), true, serviceContext);
+                        mailing.getPublishDate(), new Date(), true,
+                        serviceContext);
 
                 SessionMessages
                         .add(actionRequest,

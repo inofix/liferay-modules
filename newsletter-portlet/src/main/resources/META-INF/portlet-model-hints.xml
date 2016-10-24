@@ -15,9 +15,9 @@
 		<field name="template" type="String">
 			<hint name="max-length">5000</hint>
 		</field>
-		<field name="publishDate" type="String" />
 		<field name="newsletterId" type="long" />
 		<field name="articleId" type="String" />
+		<field name="publishDate" type="Date" />
 		<field name="sent" type="boolean" />
 		<field name="sendDate" type="Date" />
 	</model>

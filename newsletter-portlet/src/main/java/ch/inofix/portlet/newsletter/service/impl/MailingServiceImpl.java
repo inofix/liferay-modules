@@ -48,8 +48,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-24 17:05
- * @version 1.0.8
+ * @modified 2016-10-24 17:39
+ * @version 1.0.9
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -121,6 +121,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
         if (mailingId > 0) {
 
             Mailing mailing = getMailing(mailingId);
+
+            contextObjects.put("mailing", mailing);
 
             long groupId = mailing.getGroupId();
 
@@ -223,15 +225,16 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
             String title, String template, long newsletterId, String articleId,
-            Date sendDate, boolean sent, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            Date publishDate, Date sendDate, boolean sent,
+            ServiceContext serviceContext) throws PortalException,
+            SystemException {
 
         MailingPermission.check(getPermissionChecker(), mailingId,
                 ActionKeys.UPDATE);
 
         return MailingLocalServiceUtil.updateMailing(userId, groupId,
-                mailingId, title, template, newsletterId, articleId, sendDate,
-                sent, serviceContext);
+                mailingId, title, template, newsletterId, articleId,
+                publishDate, sendDate, sent, serviceContext);
 
     }
 
