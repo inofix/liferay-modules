@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit the mailing settings. 
     
     Created:    2016-10-10 18:34 by Christian Berndt
-    Modified:   2015-10-24 17:52 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2015-10-31 17:39 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@include file="/html/init.jsp"%>
@@ -188,7 +188,7 @@
                         inlineField="true">
                         <liferay-ui:input-date name="publishDate"
                             dayParam="publishDate.day"
-                            dayValue="<%=mailing.getPublishDateDay()%>"
+                            dayValue="<%=mailing.getPublishDateDay()%>"                           
                             monthParam="publishDate.month"
                             monthValue="<%=mailing.getPublishDateMonth()%>"
                             yearParam="publishDate.year"
@@ -199,6 +199,7 @@
 
                     <aui:field-wrapper name="sendDate"
                         helpMessage="send-date-help" inlineField="true">
+                        
                         <liferay-ui:input-date name="sendDate"
                             dayParam="sendDate.day"
                             dayValue="<%=mailing.getSendDateDay()%>"
@@ -208,6 +209,19 @@
                             yearValue="<%=mailing.getSendDateYear()%>"
                             disabled="<%=disabled%>"
                             nullable="<%=mailing.getSendDate() == null%>" />
+
+                    </aui:field-wrapper>
+                    
+                    <aui:field-wrapper inlineField="true">
+                    
+                        <liferay-ui:input-time
+                            minuteParam="sendDate.minute"
+                            minuteValue="<%= mailing.getSendDateMinute() %>"      
+                            amPmParam="sendDate.ampm" 
+                            hourParam="sendDate.hour"
+                            hourValue="<%= mailing.getSendDateHour() %>"
+                            disabled="<%= disabled %>" />  
+                                              
                     </aui:field-wrapper>
 
                     <div class="editor-wrapper">

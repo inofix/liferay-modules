@@ -39,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-24 19:43
- * @version 1.1.5
+ * @modified 2016-10-31 18:25
+ * @version 1.1.6
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -305,11 +305,27 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         Date publishDate = PortalUtil.getDate(publishDateMonth, publishDateDay,
                 publishDateYear);
 
+        int sendDateAmPm = ParamUtil.getInteger(request, "sendDate.ampm", 0);
+        int sendDateHour = ParamUtil.getInteger(request, "sendDate.hour", -1);
         int sendDateDay = ParamUtil.getInteger(request, "sendDate.day", -1);
+        int sendDateMinute = ParamUtil.getInteger(request, "sendDate.minute",
+                -1);
         int sendDateMonth = ParamUtil.getInteger(request, "sendDate.month", -1);
         int sendDateYear = ParamUtil.getInteger(request, "sendDate.year", -1);
-        Date sendDate = PortalUtil.getDate(sendDateMonth, sendDateDay,
-                sendDateYear);
+
+        if (sendDateAmPm == 1) {
+            sendDateHour = sendDateHour + 12;
+        }
+
+        Date sendDate = null;
+
+        try {
+            sendDate = PortalUtil.getDate(sendDateMonth, sendDateDay,
+                    sendDateYear, sendDateHour, sendDateMinute,
+                    PortalException.class);
+        } catch (PortalException pe) {
+            // ignore
+        }
 
         boolean sent = ParamUtil.getBoolean(actionRequest, "sent");
 

@@ -16,8 +16,8 @@ import java.util.Date;
  *
  * @author Christian Berndt
  * @created 2016-10-22 17:27
- * @modified 2016-10-31 17:12
- * @version 1.0.2
+ * @modified 2016-10-31 17:49
+ * @version 1.0.3
  */
 public class MailingImpl extends MailingBaseImpl {
     /*
@@ -61,7 +61,6 @@ public class MailingImpl extends MailingBaseImpl {
         } else {
             return -1;
         }
-
     }
 
     /**
@@ -99,6 +98,22 @@ public class MailingImpl extends MailingBaseImpl {
     /**
      * 
      * @return
+     * @since 1.0.3
+     */
+    public int getSendDateAmPm() {
+
+        Date sendDate = getSendDate();
+
+        if (sendDate != null) {
+            return getAmPm(sendDate);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 
+     * @return
      * @since 1.0.1
      */
     public int getSendDateDay() {
@@ -110,7 +125,38 @@ public class MailingImpl extends MailingBaseImpl {
         } else {
             return 1;
         }
+    }
 
+    /**
+     * 
+     * @return
+     * @since 1.0.3
+     */
+    public int getSendDateHour() {
+
+        Date sendDate = getSendDate();
+
+        if (sendDate != null) {
+            return getHour(sendDate);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.3
+     */
+    public int getSendDateMinute() {
+
+        Date sendDate = getSendDate();
+
+        if (sendDate != null) {
+            return getMinute(sendDate);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -149,6 +195,23 @@ public class MailingImpl extends MailingBaseImpl {
      * 
      * @param date
      * @return
+     * @since 1.0.3
+     */
+    private int getAmPm(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.AM_PM);
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
      * @since 1.0.0
      */
     private int getDay(Date date) {
@@ -159,6 +222,40 @@ public class MailingImpl extends MailingBaseImpl {
             return cal.get(Calendar.DAY_OF_MONTH);
         } else {
             return 1;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.3
+     */
+    private int getHour(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.HOUR_OF_DAY);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.3
+     */
+    private int getMinute(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.MINUTE);
+        } else {
+            return 0;
         }
     }
 
