@@ -16,8 +16,8 @@ import java.util.Date;
  *
  * @author Christian Berndt
  * @created 2016-10-22 17:27
- * @modified 2016-10-24 18:11
- * @version 1.0.1
+ * @modified 2016-10-31 17:12
+ * @version 1.0.2
  */
 public class MailingImpl extends MailingBaseImpl {
     /*
@@ -28,6 +28,23 @@ public class MailingImpl extends MailingBaseImpl {
      * ch.inofix.portlet.newsletter.model.Mailing} interface instead.
      */
     public MailingImpl() {
+    }
+
+    /**
+     * @return
+     * @since 1.0.2
+     */
+    @Override
+    public Date getPublishDate() {
+
+        Date publishDate = super.getPublishDate();
+
+        if (publishDate == null) {
+            publishDate = new Date();
+        }
+
+        return publishDate;
+
     }
 
     /**
