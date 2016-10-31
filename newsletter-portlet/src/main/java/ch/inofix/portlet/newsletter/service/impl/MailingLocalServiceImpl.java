@@ -195,8 +195,14 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             Map<String, Object> contextObjects = new HashMap<String, Object>();
             contextObjects.put("subscriber", subscriber);
 
-            String body = mailingService.prepareMailing(contextObjects,
-                    mailing.getMailingId());
+            String body = "";
+
+            try {
+                body = mailingService.prepareMailing(contextObjects,
+                        mailing.getMailingId());
+            } catch (Exception e) {
+                _log.error(e);
+            }
 
             SubscriptionSender subscriptionSender = new SubscriptionSender();
 
@@ -261,9 +267,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             }
         }
 
-        
-        _log.info("subscribers.size() = " + subscribers.size());
-
         for (Subscriber subscriber : subscribers) {
 
             sendEmail(mailing, subscriber);
@@ -275,8 +278,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     public long sendMailingsInBackground(long userId, String taskName,
             long groupId, Map<String, String[]> parameterMap)
             throws PortalException, SystemException {
-
-        _log.info("sendMailingsInBackground()");
 
         Map<String, Serializable> taskContextMap = new HashMap<String, Serializable>();
         taskContextMap.put("userId", userId);
