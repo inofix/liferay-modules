@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.messaging.Message;
  *
  * @author Christian Berndt
  * @created 2016-10-14 18:08
- * @modified 2018-10-14 18:08
+ * @modified 2016-10-14 18:08
  * @version 1.0.0
  */
 public class CheckMailingMessageListener extends BaseMessageListener {

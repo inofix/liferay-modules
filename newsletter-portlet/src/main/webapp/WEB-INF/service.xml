@@ -6,8 +6,8 @@
     service.xml: Model description for the newsletter-portlet.
     
     Created:    2016-10-07 23:13 by Christian Berndt
-    Modified:   2016-10-24 17:36 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2016-10-31 23:06 by Christian Berndt
+    Version:    1.1.2
 -->
 <service-builder package-path="ch.inofix.portlet.newsletter">
 
@@ -51,7 +51,9 @@
         </order>
 
         <!-- Finder methods -->
-
+        <finder return-type="Collection" name="Sent">
+            <finder-column name="sent"/>
+        </finder>
 
         <!-- References -->
 

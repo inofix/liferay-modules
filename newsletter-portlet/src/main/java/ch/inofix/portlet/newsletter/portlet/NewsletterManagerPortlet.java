@@ -39,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-10-31 18:25
- * @version 1.1.6
+ * @modified 2016-11-01 15:54
+ * @version 1.1.7
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -549,25 +549,11 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
             } else if (newsletter != null) {
 
-                // mark mailing as sent
+                String message = PortletUtil.translate(
+                        "the-mailing-has-been-sent-to-the-subscribers-of-x",
+                        newsletter.getTitle());
 
-                ServiceContext serviceContext = ServiceContextFactory
-                        .getInstance(Newsletter.class.getName(), actionRequest);
-
-                MailingServiceUtil.updateMailing(mailing.getUserId(),
-                        mailing.getGroupId(), mailing.getMailingId(),
-                        mailing.getTitle(), mailing.getTemplate(),
-                        mailing.getNewsletterId(), mailing.getArticleId(),
-                        mailing.getPublishDate(), new Date(), true,
-                        serviceContext);
-
-                SessionMessages
-                        .add(actionRequest,
-                                REQUEST_PROCESSED,
-                                PortletUtil
-                                        .translate(
-                                                "the-mailing-has-been-sent-to-the-subscribers-of-x",
-                                                newsletter.getTitle()));
+                SessionMessages.add(actionRequest, REQUEST_PROCESSED, message);
             }
         } else {
             SessionErrors.add(actionRequest, "an-error-occurred");

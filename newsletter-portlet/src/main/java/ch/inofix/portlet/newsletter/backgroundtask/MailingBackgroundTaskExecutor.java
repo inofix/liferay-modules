@@ -1,6 +1,7 @@
 package ch.inofix.portlet.newsletter.backgroundtask;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 
 import ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil;
@@ -15,8 +16,8 @@ import com.liferay.portal.model.BackgroundTask;
 /**
  * @author Christian Berndt
  * @created 2016-10-13 15:15
- * @modified 2016-10-13 15:15
- * @version 1.0.0
+ * @modified 2016-11-01 12:35
+ * @version 1.0.1
  */
 public class MailingBackgroundTaskExecutor extends BaseBackgroundTaskExecutor {
 
@@ -27,13 +28,14 @@ public class MailingBackgroundTaskExecutor extends BaseBackgroundTaskExecutor {
         Map<String, Serializable> taskContextMap = backgroundTask
                 .getTaskContextMap();
 
-        long userId = MapUtil.getLong(taskContextMap, "userId");
         long groupId = MapUtil.getLong(taskContextMap, "groupId");
         @SuppressWarnings("unchecked")
         Map<String, String[]> parameterMap = (Map<String, String[]>) taskContextMap
                 .get("parameterMap");
+        
+        Date now = new Date();
 
-        MailingLocalServiceUtil.sendMailings(userId, groupId, parameterMap);
+        MailingLocalServiceUtil.sendMailings(groupId, parameterMap, now);
 
         return BackgroundTaskResult.SUCCESS;
     }
