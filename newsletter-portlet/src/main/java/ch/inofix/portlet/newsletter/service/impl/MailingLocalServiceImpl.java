@@ -26,9 +26,11 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BackgroundTask;
+import com.liferay.portal.model.Company;
 import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.BackgroundTaskLocalServiceUtil;
+import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.SubscriptionSender;
 import com.liferay.portlet.asset.model.AssetEntry;
@@ -49,8 +51,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-24 18:50
- * @version 1.0.8
+ * @modified 2016-10-31 22:52
+ * @version 1.0.9
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -97,8 +99,41 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             _log.debug("checkMailings()");
         }
 
-        // TODO:
+        // Get the list of unsent mailings.
+
+        List<Mailing> mailings = mailingPersistence.findBySent(false);
+
         Date now = new Date();
+
+        for (Mailing mailing : mailings) {
+
+            if (mailing.getSendDate() != null) {
+
+                Company company = CompanyLocalServiceUtil.getCompany(mailing
+                        .getCompanyId());
+
+                int offset = company.getTimeZone().getOffset(now.getTime());
+
+                Date compareDate = new Date(now.getTime() + offset);
+
+                if (compareDate.after(mailing.getSendDate())) {
+
+                    _log.info("Sending mailing because " + compareDate
+                            + " is after " + mailing.getSendDate());
+
+                    Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+                    parameterMap.put("mailingId", new String[] { String
+                            .valueOf(mailing.getMailingId()) });
+
+                    sendMailings(mailing.getGroupId(), parameterMap, now);
+
+                } else {
+
+                    _log.info("Not sending mailing because " + compareDate
+                            + " is before " + mailing.getSendDate());
+                }
+            }
+        }
     }
 
     @Override
@@ -224,9 +259,12 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     @Override
-    public void sendMailings(long userId, long groupId,
-            Map<String, String[]> parameterMap) throws PortalException,
-            SystemException {
+    public void sendMailings(long groupId, Map<String, String[]> parameterMap,
+            Date sendDate) throws PortalException, SystemException {
+
+        if (sendDate == null) {
+            sendDate = new Date();
+        }
 
         long mailingId = GetterUtil.getLong(ArrayUtil.getValue(
                 parameterMap.get("mailingId"), 0));
@@ -272,6 +310,21 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             sendEmail(mailing, subscriber);
 
         }
+
+        // Mark mailing sent
+
+        boolean sent = true;
+
+        ServiceContext serviceContext = new ServiceContext();
+        serviceContext.setCompanyId(mailing.getCompanyId());
+        serviceContext.setScopeGroupId(mailing.getGroupId());
+        serviceContext.setModifiedDate(sendDate);
+
+        updateMailing(mailing.getUserId(), mailing.getGroupId(),
+                mailing.getMailingId(), mailing.getTitle(),
+                mailing.getTemplate(), mailing.getNewsletterId(),
+                mailing.getArticleId(), mailing.getPublishDate(), sendDate,
+                sent, serviceContext);
     }
 
     @Override
