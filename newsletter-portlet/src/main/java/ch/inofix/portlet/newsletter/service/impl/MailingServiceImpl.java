@@ -30,7 +30,6 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.JournalArticleDisplay;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
-import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
 
 /**
  * The implementation of the mailing remote service.
@@ -48,8 +47,8 @@ import com.liferay.portlet.journal.service.JournalArticleServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-10-25 00:14
- * @version 1.1.0
+ * @modified 2016-11-01 16:48
+ * @version 1.1.1
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -108,6 +107,9 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     }
 
+    // TODO: move this method to separate utility class and perform mailing,
+    // article and newsletter lookup before.
+
     @Override
     public String prepareMailing(Map<String, Object> contextObjects,
             long mailingId) throws PortalException, SystemException {
@@ -120,7 +122,6 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
         if (mailingId > 0) {
 
-            // TODO: resolve permission handling
             Mailing mailing = mailingLocalService.getMailing(mailingId);
 
             contextObjects.put("mailing", mailing);
@@ -148,8 +149,9 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
             String articleId = mailing.getArticleId();
 
             if (Validator.isNotNull(articleId)) {
-                article = JournalArticleServiceUtil.getLatestArticle(groupId,
-                        articleId, WorkflowConstants.STATUS_APPROVED);
+
+                article = JournalArticleLocalServiceUtil.getLatestArticle(
+                        groupId, articleId, WorkflowConstants.STATUS_APPROVED);
             }
         }
 
