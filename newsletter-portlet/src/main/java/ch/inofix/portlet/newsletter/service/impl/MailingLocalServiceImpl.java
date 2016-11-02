@@ -51,8 +51,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-10-31 22:52
- * @version 1.0.9
+ * @modified 2016-11-01 16:42
+ * @version 1.1.0
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -311,20 +311,23 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
         }
 
-        // Mark mailing sent
+        // Mark mailing sent if it wasn't sent for testing
 
-        boolean sent = true;
+        if (Validator.isNull(email)) {
+            
+            boolean sent = true;
 
-        ServiceContext serviceContext = new ServiceContext();
-        serviceContext.setCompanyId(mailing.getCompanyId());
-        serviceContext.setScopeGroupId(mailing.getGroupId());
-        serviceContext.setModifiedDate(sendDate);
+            ServiceContext serviceContext = new ServiceContext();
+            serviceContext.setCompanyId(mailing.getCompanyId());
+            serviceContext.setScopeGroupId(mailing.getGroupId());
+            serviceContext.setModifiedDate(sendDate);
 
-        updateMailing(mailing.getUserId(), mailing.getGroupId(),
-                mailing.getMailingId(), mailing.getTitle(),
-                mailing.getTemplate(), mailing.getNewsletterId(),
-                mailing.getArticleId(), mailing.getPublishDate(), sendDate,
-                sent, serviceContext);
+            updateMailing(mailing.getUserId(), mailing.getGroupId(),
+                    mailing.getMailingId(), mailing.getTitle(),
+                    mailing.getTemplate(), mailing.getNewsletterId(),
+                    mailing.getArticleId(), mailing.getPublishDate(), sendDate,
+                    sent, serviceContext);
+        }
     }
 
     @Override
