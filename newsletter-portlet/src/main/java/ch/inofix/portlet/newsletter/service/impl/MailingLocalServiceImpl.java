@@ -51,8 +51,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-11-01 16:42
- * @version 1.1.0
+ * @modified 2016-11-03 23:20
+ * @version 1.1.1
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -198,8 +198,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
     }
 
-    @Override
-    public void sendEmail(Mailing mailing, Subscriber subscriber)
+    private void sendEmail(Mailing mailing, Subscriber subscriber)
             throws PortalException, SystemException {
 
         Newsletter newsletter = null;
@@ -232,12 +231,8 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
             String body = "";
 
-            try {
-                body = mailingService.prepareMailing(contextObjects,
-                        mailing.getMailingId());
-            } catch (Exception e) {
-                _log.error(e);
-            }
+            body = mailingService.prepareMailing(contextObjects,
+                    mailing.getMailingId());
 
             SubscriptionSender subscriptionSender = new SubscriptionSender();
 
@@ -305,16 +300,29 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             }
         }
 
+        int numSent = 0;
+        int numFailed = 0;
+
         for (Subscriber subscriber : subscribers) {
 
-            sendEmail(mailing, subscriber);
-
+            try {
+                sendEmail(mailing, subscriber);
+                numSent++;
+            } catch (Exception e) {
+                _log.error("Send mailing failed for subscriber "
+                        + subscriber.getEmail());
+                _log.error(e);
+                numFailed++;
+            }
         }
+
+        _log.info("Sent " + numSent + " mailings");
+        _log.info("Sending failed for " + numFailed + " mailings");
 
         // Mark mailing sent if it wasn't sent for testing
 
         if (Validator.isNull(email)) {
-            
+
             boolean sent = true;
 
             ServiceContext serviceContext = new ServiceContext();
