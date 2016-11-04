@@ -2,5 +2,12 @@
 <!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
 
 <hook>
+    <language-properties>Language.properties</language-properties>
     <custom-jsp-dir>/META-INF/custom_jsps</custom-jsp-dir>
+    <struts-action>
+        <struts-action-path>/login/login</struts-action-path>
+        <struts-action-impl>
+            ch.inofix.hook.login.action.CustomLoginAction
+        </struts-action-impl>
+    </struts-action>
 </hook>
