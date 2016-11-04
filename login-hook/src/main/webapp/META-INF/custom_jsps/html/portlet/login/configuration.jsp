@@ -5,11 +5,11 @@
     
     The following customizations have been applied
     
-    - added groups panel
+    - added sites panel
         
     Created:    2016-11-04 16:55 by Christian Berndt
-    Modified:   2016-11-04 16:55 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-11-04 22:55 by Christian Berndt
+    Version:    1.0.1
 --%>
 <%--
 /**
@@ -73,11 +73,11 @@ String emailBody = PrefsParamUtil.getString(portletPreferences, request, emailBo
     <aui:input name="tabs2" type="hidden" value="<%= tabs2 %>" />
 
 <%
-   // Customized: added groups tab.
+   // Customized: added sites tab.
    String groups = portletPreferences.getValue("groups", StringPool.BLANK);
 %>
     <liferay-ui:tabs
-        names="general,email-notifications,groups"
+        names="general,email-notifications,sites"
         param="tabs1"
         url="<%= configurationRenderURL %>"
     />
@@ -92,8 +92,9 @@ String emailBody = PrefsParamUtil.getString(portletPreferences, request, emailBo
 
     <c:choose>
     
-        <c:when test='<%= tabs1.equals("groups") %>'>
-            <aui:input name="preferences--groups--" value="<%= groups %>"/>
+        <c:when test='<%= tabs1.equals("sites") %>'>
+            <aui:input name="preferences--groups--" value="<%= groups %>" 
+                label="sites" helpMessage="enter-a-comma-separated-list-of-default-site-names-that-are-associated-with-newly-created-users"/>
         </c:when>    
         
         <c:when test='<%= tabs1.equals("email-notifications") %>'>
