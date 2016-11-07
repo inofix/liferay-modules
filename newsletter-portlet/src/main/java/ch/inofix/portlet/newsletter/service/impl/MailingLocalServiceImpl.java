@@ -51,8 +51,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2016-11-03 23:20
- * @version 1.1.1
+ * @modified 2016-11-07 22:03
+ * @version 1.1.2
  * @see ch.inofix.portlet.newsletter.service.base.MailingLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingLocalServiceUtil
  */
@@ -68,11 +68,9 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
             String template, long newsletterId, String articleId,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            Date publishDate, Date sendDate, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
-        Date sendDate = null;
-        Date publishDate = null;
         boolean sent = false;
 
         Mailing mailing = saveMailing(userId, groupId, 0, title, template,
