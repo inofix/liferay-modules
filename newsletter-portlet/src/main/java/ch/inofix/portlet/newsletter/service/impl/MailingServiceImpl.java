@@ -47,8 +47,8 @@ import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-11-01 16:48
- * @version 1.1.1
+ * @modified 2016-11-07 22:06
+ * @version 1.1.2
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -64,14 +64,15 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
             String template, long newsletterId, String articleId,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            Date publishDate, Date sendDate, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), groupId,
                 ActionKeys.ADD_NEWSLETTER);
 
         return MailingLocalServiceUtil.addMailing(userId, groupId, title,
-                template, newsletterId, articleId, serviceContext);
+                template, newsletterId, articleId, publishDate, sendDate,
+                serviceContext);
 
     }
 

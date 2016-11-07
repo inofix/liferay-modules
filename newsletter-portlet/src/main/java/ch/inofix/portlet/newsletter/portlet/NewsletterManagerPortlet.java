@@ -39,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-11-01 15:54
- * @version 1.1.7
+ * @modified 2016-11-07 22:06
+ * @version 1.1.8
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -355,7 +355,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                     PortletUtil.translate("successfully-updated-the-mailing"));
         } else {
             mailing = MailingServiceUtil.addMailing(userId, groupId, title,
-                    template, newsletterId, articleId, serviceContext);
+                    template, newsletterId, articleId, publishDate, sendDate,
+                    serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-added-the-mailing"));
         }

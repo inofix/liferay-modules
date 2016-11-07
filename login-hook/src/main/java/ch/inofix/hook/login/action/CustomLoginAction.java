@@ -104,7 +104,7 @@ public class CustomLoginAction extends BaseStrutsPortletAction {
                     if ((group != null)
                             && !UserLocalServiceUtil.hasGroupUser(
                                     group.getGroupId(), user.getUserId())) {
-                        
+
                         groupIdsSet.add(group.getGroupId());
                     }
                 }
