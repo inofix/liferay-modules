@@ -5,12 +5,12 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.4-SNAPSHOT</version>
     </parent>
     <artifactId>login-hook</artifactId>
     <packaging>war</packaging>
     <name>Login Hook</name>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->

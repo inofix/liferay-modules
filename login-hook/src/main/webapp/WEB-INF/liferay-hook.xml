@@ -3,6 +3,8 @@
 
 <hook>
     <language-properties>Language.properties</language-properties>
+    <language-properties>Language_de.properties</language-properties>
+    <language-properties></language-properties>
     <custom-jsp-dir>/META-INF/custom_jsps</custom-jsp-dir>
     <struts-action>
         <struts-action-path>/login/login</struts-action-path>
