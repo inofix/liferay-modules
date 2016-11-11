@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-11-07 22:39 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2016-11-11 16:17 by Christian Berndt
+    Version:    1.1.4
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -12,7 +12,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -124,7 +124,6 @@
         <module>download-filter-hook</module>
         <module>geotag-hook</module>
         <module>inofix-theme</module>
-        <module>login-hook</module>
 	    <module>map-portlet</module>
         <module>map-search-portlet</module>
         <module>my-sites-hook</module>
