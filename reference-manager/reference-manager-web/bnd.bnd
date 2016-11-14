@@ -1,5 +1,3 @@
-Bundle-Version: 0.1.3
--jsp: *.jsp,*.jspf
--plugin.bundle: com.liferay.ant.bnd.resource.bundle.ResourceBundleLoaderAnalyzerPlugin
--plugin.jsp: com.liferay.ant.bnd.jsp.JspAnalyzerPlugin
--sources: true
+Bundle-SymbolicName: reference-manager-web
+Bundle-Version: 1.0.0
+Include-Resource: @jbibtex-1.0.15.jar

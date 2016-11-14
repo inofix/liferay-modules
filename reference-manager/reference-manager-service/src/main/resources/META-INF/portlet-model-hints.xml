@@ -10,7 +10,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="bibtex" type="String" />
 		<field name="status" type="int" />
+		<field name="bibtex" type="String" />
 	</model>
 </model-hints>
