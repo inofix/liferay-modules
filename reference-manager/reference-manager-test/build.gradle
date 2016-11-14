@@ -1,0 +1,7 @@
+dependencies {
+    compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
+    compile project(":modules:reference-manager:reference-manager-api")
+    compile 'org.osgi:osgi.cmpn:6.0.0'    
+}
+
+version = '1.0.0'
