@@ -1,4 +1,4 @@
-package ch.inofix.referencemanager.util;
+package ch.inofix.referencemanager.web.util;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,14 +18,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
  */
 public class BibTeXUtil {
 
-    private static Log _log = LogFactoryUtil.getLog(BibTeXUtil.class.getName());
-
     public static final String format(BibTeXEntry bibTeXEntry) {
-                
+
         Map<Key, Value> fields = bibTeXEntry.getFields();
 
         Set<Key> keys = fields.keySet();
-        
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("@");
@@ -49,4 +47,7 @@ public class BibTeXUtil {
         return sb.toString();
 
     }
+
+    private static Log _log = LogFactoryUtil.getLog(BibTeXUtil.class.getName());
+
 }
