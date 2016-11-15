@@ -52,16 +52,23 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceLocalService;
+import ch.inofix.referencemanager.web.util.BibTeXUtil;
 
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 
+/**
+ * @author Christian Berndt
+ * @created 2016-04-10 22:32
+ * @modified 2016-11-15 01:47
+ * @version 1.0.1
+ */
 @Component(
     immediate = true, 
     property = { 
-        "com.liferay.portlet.display-category=category.osgi",
+        "com.liferay.portlet.display-category=category.inofix",
         "com.liferay.portlet.instanceable=true", 
         "javax.portlet.security-role-ref=power-user,user",
         "javax.portlet.init-param.template-path=/", 
@@ -70,22 +77,11 @@ import com.liferay.portal.kernel.util.StringPool;
     }, 
     service = Portlet.class
 )
-
-/**
- * @author Christian Berndt
- * @created 2016-04-10 22:32
- * @modified 2016-04-10 22:32
- * @version 1.0.0
- */
 public class JSPPortlet extends MVCPortlet {
-
-    private static Log _log = LogFactoryUtil.getLog(JSPPortlet.class.getName());
 
     @Override
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse)
             throws IOException, PortletException {
-
-        _log.info("processAction().");
 
         try {
             String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
@@ -117,9 +113,6 @@ public class JSPPortlet extends MVCPortlet {
     @Override
     public void render(RenderRequest request, RenderResponse response) throws IOException, PortletException {
 
-        _log.info("render().");
-
-        // set service bean
         request.setAttribute("referenceLocalService", getReferenceLocalService());
 
         super.render(request, response);
@@ -127,8 +120,7 @@ public class JSPPortlet extends MVCPortlet {
 
     protected void deleteAllReferences(ActionRequest actionRequest) throws Exception {
 
-        _log.info("Executing deleteAllReferences().");
-
+        // TODO: use remote service
         List<Reference> references = getReferenceLocalService().getReferences(0, Integer.MAX_VALUE);
 
         for (Reference reference : references) {
@@ -179,9 +171,7 @@ public class JSPPortlet extends MVCPortlet {
 
                 Reference reference = getReferenceLocalService().createReference(0);
 
-                String bibTeX = "BibTeX";
-
-                // String bibTeX = BibTeXUtil.format(bibTeXEntry);
+                String bibTeX = BibTeXUtil.format(bibTeXEntry);
 
                 reference.setBibtex(bibTeX);
 
@@ -256,5 +246,7 @@ public class JSPPortlet extends MVCPortlet {
     }
 
     private ReferenceLocalService _referenceLocalService;
+
+    private static Log _log = LogFactoryUtil.getLog(JSPPortlet.class.getName());
 
 }

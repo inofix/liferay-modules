@@ -8,6 +8,7 @@ dependencies {
     compileOnly project(":modules:reference-manager:reference-manager-api") 
     compileOnly project(":modules:reference-manager:reference-manager-service")
     compile project(':modules:reference-manager:reference-manager-api')   
+    compile project(':modules:reference-manager:reference-manager-service')   
     // https://mvnrepository.com/artifact/org.jbibtex/jbibtex
     compile group: 'org.jbibtex', name: 'jbibtex', version: '1.0.15'
 }
