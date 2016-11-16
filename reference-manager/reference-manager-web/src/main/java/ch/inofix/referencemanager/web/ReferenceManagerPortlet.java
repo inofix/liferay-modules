@@ -68,8 +68,9 @@ import com.liferay.portal.kernel.util.StringPool;
 @Component(
     immediate = true, 
     property = { 
+        "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
         "com.liferay.portlet.display-category=category.inofix",
-        "com.liferay.portlet.instanceable=true", 
+        "com.liferay.portlet.instanceable=false", 
         "javax.portlet.security-role-ref=power-user,user",
         "javax.portlet.init-param.template-path=/", 
         "javax.portlet.init-param.view-template=/view.jsp",
@@ -77,7 +78,7 @@ import com.liferay.portal.kernel.util.StringPool;
     }, 
     service = Portlet.class
 )
-public class JSPPortlet extends MVCPortlet {
+public class ReferenceManagerPortlet extends MVCPortlet {
 
     @Override
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse)
@@ -247,6 +248,6 @@ public class JSPPortlet extends MVCPortlet {
 
     private ReferenceLocalService _referenceLocalService;
 
-    private static Log _log = LogFactoryUtil.getLog(JSPPortlet.class.getName());
+    private static Log _log = LogFactoryUtil.getLog(ReferenceManagerPortlet.class.getName());
 
 }
