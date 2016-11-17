@@ -1,4 +1,3 @@
-
 package ch.inofix.hook.fmtools.search;
 
 import java.util.ArrayList;
@@ -30,11 +29,13 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.SearchResultPermissionFilter;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.model.AssetCategory;
 import com.liferay.portlet.asset.model.AssetTag;
 import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
@@ -51,8 +52,8 @@ import com.liferay.portlet.asset.service.persistence.AssetEntryQuery;
 public class AssetSearcher extends BaseIndexer {
 
     // Enable logging for this class
-    private static final Log _log =
-        LogFactoryUtil.getLog(AssetSearcher.class.getName());
+    private static final Log _log = LogFactoryUtil.getLog(AssetSearcher.class
+            .getName());
 
     public static Indexer getInstance() {
 
@@ -95,39 +96,34 @@ public class AssetSearcher extends BaseIndexer {
 
     @Override
     public void registerIndexerPostProcessor(
-        IndexerPostProcessor indexerPostProcessor) {
+            IndexerPostProcessor indexerPostProcessor) {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Hits search(SearchContext searchContext)
-        throws SearchException {
-        
+    public Hits search(SearchContext searchContext) throws SearchException {
+
         try {
             Hits hits = null;
 
-            if ((_permissionChecker != null) &&
-                isUseSearchResultPermissionFilter(searchContext)) {
-                
-                SearchResultPermissionFilter searchResultPermissionFilter =
-                    new DefaultSearchResultPermissionFilter(
+            if ((_permissionChecker != null)
+                    && isUseSearchResultPermissionFilter(searchContext)) {
+
+                SearchResultPermissionFilter searchResultPermissionFilter = new DefaultSearchResultPermissionFilter(
                         this, _permissionChecker);
 
                 hits = searchResultPermissionFilter.search(searchContext);
-            }
-            else {
+            } else {
                 hits = doSearch(searchContext);
             }
 
             processHits(searchContext, hits);
 
             return hits;
-        }
-        catch (SearchException se) {
+        } catch (SearchException se) {
             throw se;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new SearchException(e);
         }
     }
@@ -143,14 +139,13 @@ public class AssetSearcher extends BaseIndexer {
     }
 
     protected void addImpossibleTerm(BooleanQuery contextQuery, String field)
-        throws Exception {
+            throws Exception {
 
         contextQuery.addTerm(field, "-1", false, BooleanClauseOccur.MUST);
     }
 
-    protected void addSearchAllCategories(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchAllCategories(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[] allCategoryIds = _assetEntryQuery.getAllCategoryIds();
 
@@ -158,8 +153,8 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        long[] filteredAllCategoryIds =
-            filterCategoryIds(_permissionChecker, allCategoryIds);
+        long[] filteredAllCategoryIds = filterCategoryIds(_permissionChecker,
+                allCategoryIds);
 
         if (allCategoryIds.length != filteredAllCategoryIds.length) {
             addImpossibleTerm(contextQuery, Field.ASSET_CATEGORY_IDS);
@@ -167,12 +162,12 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery categoryIdsQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery categoryIdsQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long allCategoryId : filteredAllCategoryIds) {
-            AssetCategory assetCategory =
-                AssetCategoryLocalServiceUtil.fetchAssetCategory(allCategoryId);
+            AssetCategory assetCategory = AssetCategoryLocalServiceUtil
+                    .fetchAssetCategory(allCategoryId);
 
             if (assetCategory == null) {
                 continue;
@@ -180,16 +175,18 @@ public class AssetSearcher extends BaseIndexer {
 
             List<Long> categoryIds = new ArrayList<Long>();
 
-            if (PropsValues.ASSET_CATEGORIES_SEARCH_HIERARCHICAL) {
-                categoryIds.addAll(AssetCategoryLocalServiceUtil.getSubcategoryIds(allCategoryId));
+            if (GetterUtil.getBoolean(PropsUtil
+                    .get(PropsKeys.ASSET_CATEGORIES_SEARCH_HIERARCHICAL))) {
+                categoryIds.addAll(AssetCategoryLocalServiceUtil
+                        .getSubcategoryIds(allCategoryId));
             }
 
             if (categoryIds.isEmpty()) {
                 categoryIds.add(allCategoryId);
             }
 
-            BooleanQuery categoryIdQuery =
-                BooleanQueryFactoryUtil.create(searchContext);
+            BooleanQuery categoryIdQuery = BooleanQueryFactoryUtil
+                    .create(searchContext);
 
             for (long categoryId : categoryIds) {
                 categoryIdQuery.addTerm(Field.ASSET_CATEGORY_IDS, categoryId);
@@ -201,9 +198,8 @@ public class AssetSearcher extends BaseIndexer {
         contextQuery.add(categoryIdsQuery, BooleanClauseOccur.MUST);
     }
 
-    protected void addSearchAllTags(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchAllTags(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[][] allTagIdsArray = _assetEntryQuery.getAllTagIdsArray();
 
@@ -211,16 +207,16 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery tagIdsArrayQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery tagIdsArrayQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long[] allTagIds : allTagIdsArray) {
             if (allTagIds.length == 0) {
                 continue;
             }
 
-            long[] filteredAllTagIds =
-                filterTagIds(_permissionChecker, allTagIds);
+            long[] filteredAllTagIds = filterTagIds(_permissionChecker,
+                    allTagIds);
 
             if (allTagIds.length != filteredAllTagIds.length) {
                 addImpossibleTerm(contextQuery, Field.ASSET_TAG_IDS);
@@ -228,8 +224,8 @@ public class AssetSearcher extends BaseIndexer {
                 return;
             }
 
-            BooleanQuery tagIdsQuery =
-                BooleanQueryFactoryUtil.create(searchContext);
+            BooleanQuery tagIdsQuery = BooleanQueryFactoryUtil
+                    .create(searchContext);
 
             for (long tagId : allTagIds) {
                 tagIdsQuery.addTerm(Field.ASSET_TAG_IDS, tagId);
@@ -241,9 +237,8 @@ public class AssetSearcher extends BaseIndexer {
         contextQuery.add(tagIdsArrayQuery, BooleanClauseOccur.MUST);
     }
 
-    protected void addSearchAnyCategories(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchAnyCategories(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[] anyCategoryIds = _assetEntryQuery.getAnyCategoryIds();
 
@@ -251,8 +246,8 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        long[] filteredAnyCategoryIds =
-            filterCategoryIds(_permissionChecker, anyCategoryIds);
+        long[] filteredAnyCategoryIds = filterCategoryIds(_permissionChecker,
+                anyCategoryIds);
 
         if (filteredAnyCategoryIds.length == 0) {
             addImpossibleTerm(contextQuery, Field.ASSET_CATEGORY_IDS);
@@ -260,12 +255,12 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery categoryIdsQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery categoryIdsQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long anyCategoryId : filteredAnyCategoryIds) {
-            AssetCategory assetCategory =
-                AssetCategoryLocalServiceUtil.fetchAssetCategory(anyCategoryId);
+            AssetCategory assetCategory = AssetCategoryLocalServiceUtil
+                    .fetchAssetCategory(anyCategoryId);
 
             if (assetCategory == null) {
                 continue;
@@ -273,8 +268,10 @@ public class AssetSearcher extends BaseIndexer {
 
             List<Long> categoryIds = new ArrayList<Long>();
 
-            if (PropsValues.ASSET_CATEGORIES_SEARCH_HIERARCHICAL) {
-                categoryIds.addAll(AssetCategoryLocalServiceUtil.getSubcategoryIds(anyCategoryId));
+            if (GetterUtil.getBoolean(PropsUtil
+                    .get(PropsKeys.ASSET_CATEGORIES_SEARCH_HIERARCHICAL))) {
+                categoryIds.addAll(AssetCategoryLocalServiceUtil
+                        .getSubcategoryIds(anyCategoryId));
             }
 
             if (categoryIds.isEmpty()) {
@@ -289,9 +286,8 @@ public class AssetSearcher extends BaseIndexer {
         contextQuery.add(categoryIdsQuery, BooleanClauseOccur.MUST);
     }
 
-    protected void addSearchAnyTags(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchAnyTags(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[] anyTagIds = _assetEntryQuery.getAnyTagIds();
 
@@ -307,8 +303,8 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery tagIdsQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery tagIdsQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long tagId : anyTagIds) {
             tagIdsQuery.addTerm(Field.ASSET_TAG_IDS, tagId);
@@ -318,9 +314,8 @@ public class AssetSearcher extends BaseIndexer {
     }
 
     @Override
-    protected void addSearchAssetCategoryIds(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchAssetCategoryIds(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         addSearchAllCategories(contextQuery, searchContext);
         addSearchAnyCategories(contextQuery, searchContext);
@@ -329,9 +324,8 @@ public class AssetSearcher extends BaseIndexer {
     }
 
     @Override
-    protected void addSearchAssetTagNames(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchAssetTagNames(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         addSearchAllTags(contextQuery, searchContext);
         addSearchAnyTags(contextQuery, searchContext);
@@ -340,9 +334,8 @@ public class AssetSearcher extends BaseIndexer {
     }
 
     @Override
-    protected void addSearchKeywords(
-        BooleanQuery searchQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchKeywords(BooleanQuery searchQuery,
+            SearchContext searchContext) throws Exception {
 
         String keywords = searchContext.getKeywords();
 
@@ -352,29 +345,26 @@ public class AssetSearcher extends BaseIndexer {
 
         super.addSearchKeywords(searchQuery, searchContext);
 
-        String field =
-            DocumentImpl.getLocalizedName(
-                searchContext.getLocale(), "localized_title");
+        String field = DocumentImpl.getLocalizedName(searchContext.getLocale(),
+                "localized_title");
 
         searchQuery.addTerm(field, keywords, true);
     }
 
     @Override
-    protected void addSearchLayout(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchLayout(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
-        String layoutUuid =
-            (String) searchContext.getAttribute(Field.LAYOUT_UUID);
+        String layoutUuid = (String) searchContext
+                .getAttribute(Field.LAYOUT_UUID);
 
         if (Validator.isNotNull(layoutUuid)) {
             contextQuery.addRequiredTerm(Field.LAYOUT_UUID, layoutUuid);
         }
     }
 
-    protected void addSearchNotAllCategories(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchNotAllCategories(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[] notAllCategoryIds = _assetEntryQuery.getNotAllCategoryIds();
 
@@ -382,12 +372,12 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery categoryIdsQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery categoryIdsQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long notAllCategoryId : notAllCategoryIds) {
-            AssetCategory assetCategory =
-                AssetCategoryLocalServiceUtil.fetchAssetCategory(notAllCategoryId);
+            AssetCategory assetCategory = AssetCategoryLocalServiceUtil
+                    .fetchAssetCategory(notAllCategoryId);
 
             if (assetCategory == null) {
                 continue;
@@ -395,16 +385,18 @@ public class AssetSearcher extends BaseIndexer {
 
             List<Long> categoryIds = new ArrayList<Long>();
 
-            if (PropsValues.ASSET_CATEGORIES_SEARCH_HIERARCHICAL) {
-                categoryIds.addAll(AssetCategoryLocalServiceUtil.getSubcategoryIds(notAllCategoryId));
+            if (GetterUtil.getBoolean(PropsUtil
+                    .get(PropsKeys.ASSET_CATEGORIES_SEARCH_HIERARCHICAL))) {
+                categoryIds.addAll(AssetCategoryLocalServiceUtil
+                        .getSubcategoryIds(notAllCategoryId));
             }
 
             if (categoryIds.isEmpty()) {
                 categoryIds.add(notAllCategoryId);
             }
 
-            BooleanQuery categoryIdQuery =
-                BooleanQueryFactoryUtil.create(searchContext);
+            BooleanQuery categoryIdQuery = BooleanQueryFactoryUtil
+                    .create(searchContext);
 
             for (long categoryId : categoryIds) {
                 categoryIdQuery.addTerm(Field.ASSET_CATEGORY_IDS, categoryId);
@@ -416,9 +408,8 @@ public class AssetSearcher extends BaseIndexer {
         contextQuery.add(categoryIdsQuery, BooleanClauseOccur.MUST_NOT);
     }
 
-    protected void addSearchNotAllTags(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchNotAllTags(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[][] notAllTagIdsArray = _assetEntryQuery.getNotAllTagIdsArray();
 
@@ -426,16 +417,16 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery tagIdsArrayQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery tagIdsArrayQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long[] notAllTagIds : notAllTagIdsArray) {
             if (notAllTagIds.length == 0) {
                 continue;
             }
 
-            BooleanQuery tagIdsQuery =
-                BooleanQueryFactoryUtil.create(searchContext);
+            BooleanQuery tagIdsQuery = BooleanQueryFactoryUtil
+                    .create(searchContext);
 
             for (long tagId : notAllTagIds) {
                 tagIdsQuery.addTerm(Field.ASSET_TAG_IDS, tagId);
@@ -447,9 +438,8 @@ public class AssetSearcher extends BaseIndexer {
         contextQuery.add(tagIdsArrayQuery, BooleanClauseOccur.MUST_NOT);
     }
 
-    protected void addSearchNotAnyCategories(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchNotAnyCategories(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[] notAnyCategoryIds = _assetEntryQuery.getNotAnyCategoryIds();
 
@@ -457,12 +447,12 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery categoryIdsQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery categoryIdsQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long notAnyCategoryId : notAnyCategoryIds) {
-            AssetCategory assetCategory =
-                AssetCategoryLocalServiceUtil.fetchAssetCategory(notAnyCategoryId);
+            AssetCategory assetCategory = AssetCategoryLocalServiceUtil
+                    .fetchAssetCategory(notAnyCategoryId);
 
             if (assetCategory == null) {
                 continue;
@@ -470,8 +460,10 @@ public class AssetSearcher extends BaseIndexer {
 
             List<Long> categoryIds = new ArrayList<Long>();
 
-            if (PropsValues.ASSET_CATEGORIES_SEARCH_HIERARCHICAL) {
-                categoryIds.addAll(AssetCategoryLocalServiceUtil.getSubcategoryIds(notAnyCategoryId));
+            if (GetterUtil.getBoolean(PropsUtil
+                    .get(PropsKeys.ASSET_CATEGORIES_SEARCH_HIERARCHICAL))) {
+                categoryIds.addAll(AssetCategoryLocalServiceUtil
+                        .getSubcategoryIds(notAnyCategoryId));
             }
 
             if (categoryIds.isEmpty()) {
@@ -486,9 +478,8 @@ public class AssetSearcher extends BaseIndexer {
         contextQuery.add(categoryIdsQuery, BooleanClauseOccur.MUST_NOT);
     }
 
-    protected void addSearchNotAnyTags(
-        BooleanQuery contextQuery, SearchContext searchContext)
-        throws Exception {
+    protected void addSearchNotAnyTags(BooleanQuery contextQuery,
+            SearchContext searchContext) throws Exception {
 
         long[] notAnyTagIds = _assetEntryQuery.getNotAnyTagIds();
 
@@ -496,8 +487,8 @@ public class AssetSearcher extends BaseIndexer {
             return;
         }
 
-        BooleanQuery tagIdsQuery =
-            BooleanQueryFactoryUtil.create(searchContext);
+        BooleanQuery tagIdsQuery = BooleanQueryFactoryUtil
+                .create(searchContext);
 
         for (long tagId : _assetEntryQuery.getNotAnyTagIds()) {
             tagIdsQuery.addTerm(Field.ASSET_TAG_IDS, tagId);
@@ -507,52 +498,45 @@ public class AssetSearcher extends BaseIndexer {
     }
 
     @Override
-    protected void postProcessFullQuery(
-        BooleanQuery fullQuery, SearchContext searchContext)
-        throws Exception {
+    protected void postProcessFullQuery(BooleanQuery fullQuery,
+            SearchContext searchContext) throws Exception {
 
         fullQuery.addRequiredTerm("visible", true);
     }
 
     @Override
-    protected void doDelete(Object obj)
-        throws Exception {
+    protected void doDelete(Object obj) throws Exception {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected Document doGetDocument(Object obj)
-        throws Exception {
+    protected Document doGetDocument(Object obj) throws Exception {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected Summary doGetSummary(
-        Document document, Locale locale, String snippet, PortletURL portletURL)
-        throws Exception {
+    protected Summary doGetSummary(Document document, Locale locale,
+            String snippet, PortletURL portletURL) throws Exception {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void doReindex(Object obj)
-        throws Exception {
+    protected void doReindex(Object obj) throws Exception {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void doReindex(String className, long classPK)
-        throws Exception {
+    protected void doReindex(String className, long classPK) throws Exception {
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void doReindex(String[] ids)
-        throws Exception {
+    protected void doReindex(String[] ids) throws Exception {
 
         throw new UnsupportedOperationException();
     }
@@ -565,45 +549,46 @@ public class AssetSearcher extends BaseIndexer {
 
     // from com.liferay.portlet.asset.util.AssetUtil
     private static long[] filterCategoryIds(
-        PermissionChecker permissionChecker, long[] categoryIds)
-        throws PortalException, SystemException {
+            PermissionChecker permissionChecker, long[] categoryIds)
+            throws PortalException, SystemException {
 
         List<Long> viewableCategoryIds = new ArrayList<Long>();
 
         for (long categoryId : categoryIds) {
-            AssetCategory category =
-                AssetCategoryLocalServiceUtil.fetchCategory(categoryId);
+            AssetCategory category = AssetCategoryLocalServiceUtil
+                    .fetchCategory(categoryId);
 
-            if ((category != null) &&
-                AssetCategoryPermission.contains(
-                    permissionChecker, categoryId, ActionKeys.VIEW)) {
+            if ((category != null)
+                    && AssetCategoryPermission.contains(permissionChecker,
+                            categoryId, ActionKeys.VIEW)) {
 
                 viewableCategoryIds.add(categoryId);
             }
         }
 
-        return ArrayUtil.toArray(viewableCategoryIds.toArray(new Long[viewableCategoryIds.size()]));
+        return ArrayUtil.toArray(viewableCategoryIds
+                .toArray(new Long[viewableCategoryIds.size()]));
     }
 
     // from com.liferay.portlet.asset.util.AssetUtil
-    private static long[] filterTagIds(
-        PermissionChecker permissionChecker, long[] tagIds)
-        throws PortalException, SystemException {
+    private static long[] filterTagIds(PermissionChecker permissionChecker,
+            long[] tagIds) throws PortalException, SystemException {
 
         List<Long> viewableTagIds = new ArrayList<Long>();
 
         for (long tagId : tagIds) {
             AssetTag tag = AssetTagLocalServiceUtil.fetchAssetTag(tagId);
 
-            if ((tag != null) &&
-                AssetTagPermission.contains(
-                    permissionChecker, tagId, ActionKeys.VIEW)) {
+            if ((tag != null)
+                    && AssetTagPermission.contains(permissionChecker, tagId,
+                            ActionKeys.VIEW)) {
 
                 viewableTagIds.add(tagId);
             }
         }
 
-        return ArrayUtil.toArray(viewableTagIds.toArray(new Long[viewableTagIds.size()]));
+        return ArrayUtil.toArray(viewableTagIds.toArray(new Long[viewableTagIds
+                .size()]));
     }
 
     private AssetEntryQuery _assetEntryQuery;
