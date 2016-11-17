@@ -10,7 +10,7 @@
     <artifactId>freemarker-tools-hook</artifactId>
     <packaging>war</packaging>
     <name>Freemarker Tools Hook</name>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->

@@ -1,4 +1,3 @@
-
 package ch.inofix.hook.fmtools;
 
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -25,47 +25,48 @@ import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil;
+import com.liferay.portlet.asset.model.AssetCategory;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetRendererFactory;
+import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
 import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
 import com.liferay.portlet.asset.service.AssetTagLocalServiceUtil;
 import com.liferay.portlet.asset.service.persistence.AssetEntryQuery;
 
 /**
  * @author Christian Berndt
+ * @created 2016-06-12 18:46
+ * @modified 2016-11-17 19:21
+ * @version 1.0.1
  */
 @Service
 public class AssetSearchTool {
 
     // Enable logging for this class
-    private static final Log _log =
-        LogFactoryUtil.getLog(AssetSearchTool.class.getName());
+    private static final Log _log = LogFactoryUtil.getLog(AssetSearchTool.class
+            .getName());
 
-    public List<AssetEntry> search(
-        long companyId, long[] groupIds, long userId,
-        PermissionChecker permissionChecker, String className, String userName,
-        String title, String description, String assetCategoryIds,
-        String assetTagNames, boolean anyTag, int status, boolean andSearch,
-        int start, int end)
-        throws PortalException, SystemException {
+    public List<AssetEntry> search(long companyId, long[] groupIds,
+            long userId, PermissionChecker permissionChecker, String className,
+            String userName, String title, String description,
+            String assetCategoryIds, String assetTagNames, boolean anyTag,
+            int status, boolean andSearch, int start, int end)
+            throws PortalException, SystemException {
 
-        Hits hits =
-            doSearch(
-                companyId, groupIds, userId, permissionChecker, className,
-                userName, title, description, assetCategoryIds, assetTagNames,
-                anyTag, status, andSearch, start, end);
+        Hits hits = doSearch(companyId, groupIds, userId, permissionChecker,
+                className, userName, title, description, assetCategoryIds,
+                assetTagNames, anyTag, status, andSearch, start, end);
 
         return getAssetEntries(hits);
 
     }
 
-    private Hits doSearch(
-        long companyId, long[] groupIds, long userId,
-        PermissionChecker permissionChecker, String className, String userName,
-        String title, String description, String assetCategoryIds,
-        String assetTagNames, boolean anyTag, int status, boolean andSearch,
-        int start, int end)
-        throws PortalException, SystemException {
+    private Hits doSearch(long companyId, long[] groupIds, long userId,
+            PermissionChecker permissionChecker, String className,
+            String userName, String title, String description,
+            String assetCategoryIds, String assetTagNames, boolean anyTag,
+            int status, boolean andSearch, int start, int end)
+            throws PortalException, SystemException {
 
         try {
 
@@ -73,28 +74,32 @@ public class AssetSearchTool {
                 userId = UserLocalServiceUtil.getDefaultUserId(companyId);
             }
 
+            long[] allAssetCategoryIds = GetterUtil.getLongValues(StringUtil
+                    .split(assetCategoryIds));
+
             Indexer searcher = AssetSearcher.getInstance();
 
             AssetSearcher assetSearcher = (AssetSearcher) searcher;
 
             AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
-            assetEntryQuery.setClassNameIds(getClassNameIds(
-                companyId, className));
+            assetEntryQuery.setClassNameIds(getClassNameIds(companyId,
+                    className));
+
+            allAssetCategoryIds = _filterAssetCategoryIds(allAssetCategoryIds);
+
+            assetEntryQuery.setAllCategoryIds(allAssetCategoryIds);
 
             String[] assetTagNamesArray = StringUtil.split(assetTagNames);
 
-            long[] tagIds =
-                AssetTagLocalServiceUtil.getTagIds(groupIds, assetTagNamesArray);
+            long[] tagIds = AssetTagLocalServiceUtil.getTagIds(groupIds,
+                    assetTagNamesArray);
 
             if (anyTag) {
                 assetEntryQuery.setAnyTagIds(tagIds);
-            }
-            else {
+            } else {
                 assetEntryQuery.setAllTagIds(tagIds);
             }
-
-            // TODO: process categoryIds
 
             SearchContext searchContext = new SearchContext();
 
@@ -122,7 +127,13 @@ public class AssetSearchTool {
             assetSearcher.setPermissionChecker(permissionChecker);
             assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
-            return assetSearcher.search(searchContext);
+            Hits hits = assetSearcher.search(searchContext);
+
+            if (_log.isDebugEnabled()) {
+                _log.debug(hits.getQuery());
+            }
+
+            return hits;
         }
 
         catch (Exception e) {
@@ -131,24 +142,44 @@ public class AssetSearchTool {
 
     }
 
+    // from AssetPublisherImpl
+    private static long[] _filterAssetCategoryIds(long[] assetCategoryIds)
+            throws SystemException {
+
+        List<Long> assetCategoryIdsList = new ArrayList<Long>();
+
+        for (long assetCategoryId : assetCategoryIds) {
+            AssetCategory category = AssetCategoryLocalServiceUtil
+                    .fetchAssetCategory(assetCategoryId);
+
+            if (category == null) {
+                continue;
+            }
+
+            assetCategoryIdsList.add(assetCategoryId);
+        }
+
+        return ArrayUtil.toArray(assetCategoryIdsList
+                .toArray(new Long[assetCategoryIdsList.size()]));
+    }
+
     // From AssetUtil
     public static List<AssetEntry> getAssetEntries(Hits hits) {
 
         List<AssetEntry> assetEntries = new ArrayList<AssetEntry>();
 
         for (Document document : hits.getDocs()) {
-            String className =
-                GetterUtil.getString(document.get(Field.ENTRY_CLASS_NAME));
-            long classPK =
-                GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
+            String className = GetterUtil.getString(document
+                    .get(Field.ENTRY_CLASS_NAME));
+            long classPK = GetterUtil.getLong(document
+                    .get(Field.ENTRY_CLASS_PK));
 
             try {
-                AssetEntry assetEntry =
-                    AssetEntryLocalServiceUtil.getEntry(className, classPK);
+                AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
+                        className, classPK);
 
                 assetEntries.add(assetEntry);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
             }
         }
 
@@ -159,21 +190,19 @@ public class AssetSearchTool {
     private long[] getClassNameIds(long companyId, String className) {
 
         if (Validator.isNotNull(className)) {
-            return new long[] {
-                PortalUtil.getClassNameId(className)
-            };
+            return new long[] { PortalUtil.getClassNameId(className) };
         }
 
-        List<AssetRendererFactory> rendererFactories =
-            AssetRendererFactoryRegistryUtil.getAssetRendererFactories(companyId);
+        List<AssetRendererFactory> rendererFactories = AssetRendererFactoryRegistryUtil
+                .getAssetRendererFactories(companyId);
 
         long[] classNameIds = new long[rendererFactories.size()];
 
         for (int i = 0; i < rendererFactories.size(); i++) {
             AssetRendererFactory rendererFactory = rendererFactories.get(i);
 
-            classNameIds[i] =
-                PortalUtil.getClassNameId(rendererFactory.getClassName());
+            classNameIds[i] = PortalUtil.getClassNameId(rendererFactory
+                    .getClassName());
         }
 
         return classNameIds;
