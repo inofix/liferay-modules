@@ -39,7 +39,7 @@
 
 		<!-- Other fields -->
         
-        <column name="bibtex" type="String" />
+        <column name="bibTeX" type="String" />
         
         <!-- Order -->
 

@@ -1,40 +1,24 @@
 <%--
-    export.jsp: The export-gui of the reference manager portlet.
+    export.jsp: The import-gui of the reference manager portlet.
     
     Created:    2016-01-10 23:33 by Christian Berndt
-    Modified:   2016-03-29 22:57 by Christian Berndt
-    Version:    0.0.3
+    Modified:   2016-11-18 18:39 by Christian Berndt
+    Version:    0.1.0
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
+    // TODO: Check upload permission
     String tabs1 = ParamUtil.getString(request, "tabs1", "import");
 %>
 
-<portlet:actionURL name="importBibtexFile" var="importBibtexFileURL" />
+<portlet:actionURL name="importBibTeXFile" var="importBibTeXFileURL" />
 
-<aui:form action="<%= importBibtexFileURL %>" enctype="multipart/form-data" method="post" name="fm1">
-<%--     <aui:input name="mvcPath" type="hidden" value="/install_local_app.jsp" /> --%>
-
-    <%-- 
-    <c:if test="<%= CompanyLocalServiceUtil.getCompaniesCount(false) > 1 %>">
-        <div class="alert alert-info">
-            <liferay-ui:message key="installed-apps-are-available-to-all-portal-instances.-go-to-plugins-configuration-within-each-portal-instance-to-enable-disable-each-app" />
-        </div>
-    </c:if>
-    --%>
-
-<%--     <liferay-ui:error exception="<%= FileExtensionException.class %>" message="please-upload-a-file-with-a-valid-extension-jar-lpkg-or-war" /> --%>
-<%--     <liferay-ui:error exception="<%= UploadException.class %>" message="an-unexpected-error-occurred-while-uploading-your-file" /> --%>
-
-    <%-- 
-    <liferay-ui:success key="pluginDownloaded" message="the-plugin-was-downloaded-successfully-and-is-now-being-installed" />
-    <liferay-ui:success key="pluginUploaded" message="the-plugin-was-uploaded-successfully-and-is-now-being-installed" />
-    --%>
+<aui:form action="<%= importBibTeXFileURL %>" enctype="multipart/form-data" method="post" name="fm1">
     
     <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
-    <aui:input name="<%= Constants.CMD %>" type="hidden" value="importBibtexFile" />
+    <aui:input name="<%= Constants.CMD %>" type="hidden" value="importBibTeXFile" />
     
     <aui:fieldset label="import">
         <aui:input cssClass="file-input" label="" name="file" type="file" />
