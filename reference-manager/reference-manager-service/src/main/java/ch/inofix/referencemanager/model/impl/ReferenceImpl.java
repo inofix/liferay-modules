@@ -14,6 +14,24 @@
 
 package ch.inofix.referencemanager.model.impl;
 
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.jbibtex.BibTeXDatabase;
+import org.jbibtex.BibTeXEntry;
+import org.jbibtex.BibTeXParser;
+import org.jbibtex.Key;
+import org.jbibtex.ObjectResolutionException;
+import org.jbibtex.ParseException;
+import org.jbibtex.TokenMgrException;
+import org.jbibtex.Value;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
 import aQute.bnd.annotation.ProviderType;
 
 /**
@@ -30,8 +48,8 @@ import aQute.bnd.annotation.ProviderType;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-03-29 14:43
- * @version 0.1.0
+ * @modified 2016-11-18 18:15
+ * @version 0.3.0
  */
 @ProviderType
 public class ReferenceImpl extends ReferenceBaseImpl {
@@ -43,5 +61,88 @@ public class ReferenceImpl extends ReferenceBaseImpl {
      * ch.inofix.referencemanager.model.Reference} interface instead.
      */
     public ReferenceImpl() {
+       
     }
+
+    public String getAuthor() {       
+        return getValue("author");
+    }
+
+    public String getCitation() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(getAuthor());
+        sb.append(StringPool.COMMA_AND_SPACE);
+        sb.append(getTitle());
+        sb.append(StringPool.COMMA_AND_SPACE);
+        sb.append(getYear());
+
+        return sb.toString();
+
+    }
+
+    public String getTitle() {
+        return getValue("title");
+    }
+
+    public String getYear() {
+        return getValue("year");
+    }
+
+    public boolean isApproved() {
+        if (getStatus() == WorkflowConstants.STATUS_APPROVED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private String getValue(String field) {
+        
+        String str = "";
+
+        Key key = new Key(field);
+        
+        if (_bibTeXEntry == null) {
+            _bibTeXEntry = getBibTeXEntry();
+        }
+        
+        if (_bibTeXEntry != null) {
+            Value value = _bibTeXEntry.getField(key);
+            if (value != null) {
+                str = value.toUserString();
+            }
+        }
+
+        return str;
+
+    }
+    
+    private BibTeXEntry getBibTeXEntry() {
+        
+        _log.info("getBibTeXEntry()"); 
+
+        try {
+                        
+            StringReader bibTeXReader = new StringReader(getBibTeX());
+            BibTeXParser bibtexParser = new BibTeXParser();
+            BibTeXDatabase bibTeXDatabase = bibtexParser.parse(bibTeXReader);
+            Collection<BibTeXEntry> bibTeXEntries = bibTeXDatabase.getEntries().values();
+            Iterator<BibTeXEntry> iterator = bibTeXEntries.iterator();
+            while (iterator.hasNext()) {
+                _bibTeXEntry = iterator.next();
+            }
+
+        } catch (ObjectResolutionException | TokenMgrException | ParseException e) {
+            _log.error(e);
+        }
+        
+        return _bibTeXEntry;
+    }
+
+    private BibTeXEntry _bibTeXEntry = null;
+
+    private static Log _log = LogFactoryUtil.getLog(ReferenceImpl.class.getName());
+
 }

@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-04-10 14:11 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-11-18 19:33 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -57,10 +57,21 @@
 
 				<liferay-ui:search-container-column-text name="id"
 					property="referenceId" valign="top" />
+                    
+                <liferay-ui:search-container-column-text
+                    name="author" property="author"
+                />
+                <liferay-ui:search-container-column-text
+                    name="title" property="title"
+                />
+                <liferay-ui:search-container-column-text
+                    name="year" property="year"
+                />
 
+                <%-- 
 				<liferay-ui:search-container-column-text name="bibtex" valign="top">
-					<strong><%= reference.getBibtex() %></strong>
-
+					<strong><%= reference.getBibTeX() %></strong>
+        
 					<br />
 
 					<div class="lfr-asset-categories">
@@ -75,13 +86,8 @@
 							classPK="<%=reference.getReferenceId()%>" message="tags" />
 					</div>
 				</liferay-ui:search-container-column-text>
+                --%>
 
-			<%--
-					<liferay-ui:search-container-column-text
-						property="field2"
-						valign="top"
-					/>
-                   --%>
 			
 
 				<liferay-ui:search-container-column-jsp cssClass="entry-action"

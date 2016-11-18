@@ -40,8 +40,11 @@ import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.Constants;
@@ -62,22 +65,14 @@ import com.liferay.portal.kernel.util.StringPool;
 /**
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-11-15 01:47
- * @version 1.0.1
+ * @modified 2016-11-18 19:32
+ * @version 1.0.2
  */
-@Component(
-    immediate = true, 
-    property = { 
-        "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
-        "com.liferay.portlet.display-category=category.inofix",
-        "com.liferay.portlet.instanceable=false", 
-        "javax.portlet.security-role-ref=power-user,user",
-        "javax.portlet.init-param.template-path=/", 
+@Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
+        "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.instanceable=false",
+        "javax.portlet.security-role-ref=power-user,user", "javax.portlet.init-param.template-path=/",
         "javax.portlet.init-param.view-template=/view.jsp",
-        "javax.portlet.resource-bundle=content.Language" 
-    }, 
-    service = Portlet.class
-)
+        "javax.portlet.resource-bundle=content.Language" }, service = Portlet.class)
 public class ReferenceManagerPortlet extends MVCPortlet {
 
     @Override
@@ -90,8 +85,8 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
             if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
                 updateReference(actionRequest);
-            } else if (cmd.equals("importBibtexFile")) {
-                importBibtexFile(actionRequest);
+            } else if (cmd.equals("importBibTeXFile")) {
+                importBibTeXFile(actionRequest);
             } else if (cmd.equals("deleteAllReferences")) {
                 deleteAllReferences(actionRequest);
             } else if (cmd.equals(Constants.DELETE)) {
@@ -137,9 +132,16 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         getReferenceLocalService().deleteReference(referenceId);
     }
 
-    protected void importBibtexFile(ActionRequest actionRequest) throws Exception {
+    protected void importBibTeXFile(ActionRequest actionRequest) throws Exception {
 
         UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), actionRequest);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        long userId = themeDisplay.getUserId();
+        long groupId = themeDisplay.getScopeGroupId();
 
         String sourceFileName = uploadPortletRequest.getFileName("file");
 
@@ -160,9 +162,9 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
-            BibTeXParser bibtexParser = new BibTeXParser();
+            BibTeXParser bibTeXParser = new BibTeXParser();
 
-            BibTeXDatabase database = bibtexParser.parse(bufferedReader);
+            BibTeXDatabase database = bibTeXParser.parse(bufferedReader);
 
             _log.info("database.getEntries().size() = " + database.getEntries().size());
 
@@ -170,18 +172,14 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
             for (BibTeXEntry bibTeXEntry : entries) {
 
-                Reference reference = getReferenceLocalService().createReference(0);
-
                 String bibTeX = BibTeXUtil.format(bibTeXEntry);
-
-                reference.setBibtex(bibTeX);
-
-                reference.isNew();
 
                 // TODO: check whether a reference with the same uid has
                 // already been uploaded
 
-                getReferenceLocalService().addReferenceWithoutId(reference);
+                // TODO: perform upload in background thread
+
+                getReferenceLocalService().addReference(userId, groupId, bibTeX, serviceContext);
 
             }
 
@@ -215,23 +213,25 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
     protected void updateReference(ActionRequest actionRequest) throws Exception {
 
-        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), actionRequest);
 
-        String bibtex = ParamUtil.getString(actionRequest, "bibtex");
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+        String bibTeX = ParamUtil.getString(actionRequest, "bibTeX");
+
+        long userId = themeDisplay.getUserId();
+        long groupId = themeDisplay.getScopeGroupId();
 
         if (referenceId <= 0) {
-            Reference reference = getReferenceLocalService().createReference(0);
 
-            reference.setBibtex(bibtex);
-
-            reference.isNew();
-            getReferenceLocalService().addReferenceWithoutId(reference);
+            // TODO: use remote service
+            getReferenceLocalService().addReference(userId, groupId, bibTeX, serviceContext);
         } else {
-            Reference reference = getReferenceLocalService().fetchReference(referenceId);
-            reference.setReferenceId(referenceId);
-            reference.setBibtex(bibtex);
 
-            getReferenceLocalService().updateReference(reference);
+            // TODO: use remote service
+            //
+
         }
     }
 
