@@ -48,9 +48,10 @@ import aQute.bnd.annotation.ProviderType;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-11-18 18:15
- * @version 0.3.0
+ * @modified 2016-11-20 16:34
+ * @version 0.3.1
  */
+@SuppressWarnings("serial")
 @ProviderType
 public class ReferenceImpl extends ReferenceBaseImpl {
     /*
@@ -61,10 +62,10 @@ public class ReferenceImpl extends ReferenceBaseImpl {
      * ch.inofix.referencemanager.model.Reference} interface instead.
      */
     public ReferenceImpl() {
-       
+
     }
 
-    public String getAuthor() {       
+    public String getAuthor() {
         return getValue("author");
     }
 
@@ -99,15 +100,15 @@ public class ReferenceImpl extends ReferenceBaseImpl {
     }
 
     private String getValue(String field) {
-        
+
         String str = "";
 
         Key key = new Key(field);
-        
+
         if (_bibTeXEntry == null) {
             _bibTeXEntry = getBibTeXEntry();
         }
-        
+
         if (_bibTeXEntry != null) {
             Value value = _bibTeXEntry.getField(key);
             if (value != null) {
@@ -118,13 +119,11 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         return str;
 
     }
-    
+
     private BibTeXEntry getBibTeXEntry() {
-        
-        _log.info("getBibTeXEntry()"); 
 
         try {
-                        
+
             StringReader bibTeXReader = new StringReader(getBibTeX());
             BibTeXParser bibtexParser = new BibTeXParser();
             BibTeXDatabase bibTeXDatabase = bibtexParser.parse(bibTeXReader);
@@ -135,9 +134,11 @@ public class ReferenceImpl extends ReferenceBaseImpl {
             }
 
         } catch (ObjectResolutionException | TokenMgrException | ParseException e) {
-            _log.error(e);
+            _log.error(e.getMessage());
+        } catch (Exception e) {
+            _log.error(e.getMessage());
         }
-        
+
         return _bibTeXEntry;
     }
 

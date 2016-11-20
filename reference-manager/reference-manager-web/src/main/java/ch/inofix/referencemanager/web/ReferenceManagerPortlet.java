@@ -172,7 +172,9 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
             for (BibTeXEntry bibTeXEntry : entries) {
 
-                String bibTeX = BibTeXUtil.format(bibTeXEntry);
+                String bibTeX = "";
+
+                bibTeX = BibTeXUtil.format(bibTeXEntry);
 
                 // TODO: check whether a reference with the same uid has
                 // already been uploaded
