@@ -21,6 +21,8 @@ import com.liferay.asset.kernel.model.AssetLinkConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -29,7 +31,6 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import aQute.bnd.annotation.ProviderType;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceLocalServiceBaseImpl;
 import ch.inofix.referencemanager.social.ReferenceActivityKeys;
@@ -51,12 +52,11 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-18 19:30
- * @version 0.2.0
+ * @modified 2016-11-19 22:51
+ * @version 0.3.0
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
-@ProviderType
 public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     /*
      * NOTE FOR DEVELOPERS:
@@ -112,6 +112,13 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
                 ReferenceActivityKeys.ADD_REFERENCE, extraDataJSONObject.toString(), 0);
 
         return reference;
+
+    }
+
+    @Override
+    public Reference getReference(long referenceId) throws PortalException {
+
+        return referencePersistence.findByPrimaryKey(referenceId);
 
     }
 
@@ -186,7 +193,6 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
     }
 
-    public String referenceLocal() {
-        return "referenceLocal";
-    }
+    private static final Log _log = LogFactoryUtil.getLog(ReferenceLocalServiceImpl.class);
+
 }
