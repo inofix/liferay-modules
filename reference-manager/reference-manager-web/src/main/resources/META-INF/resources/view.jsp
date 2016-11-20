@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-18 19:33 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2016-11-21 00:17 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -11,6 +11,11 @@
 <%
 	String backURL = ParamUtil.getString(request, "backURL");
 	String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    
+	SearchContainer searchContainer = new ReferenceSearch(renderRequest, "cur", portletURL);
+
+	ReferenceSearchTerms searchTerms = (ReferenceSearchTerms)searchContainer.getSearchTerms();
+
 %>
 
 
@@ -45,8 +50,12 @@
 			<aui:button href="<%= editReferenceURL %>" value="add-reference" />
 		</aui:button-row>
 
-		<liferay-ui:search-container
-			total="<%= referenceLocalService.getReferencesCount() %>">
+    <liferay-ui:search-container
+        cssClass="references-search-container"
+        id="references"
+        searchContainer="<%= searchContainer %>"
+        var="referenceSearchContainer"
+    >
 
 			<liferay-ui:search-container-results
 				results="<%= referenceLocalService.getReferences(searchContainer.getStart(), searchContainer.getEnd()) %>" />
@@ -56,16 +65,16 @@
 				escapedModel="true" modelVar="reference">
 
 				<liferay-ui:search-container-column-text name="id"
-					property="referenceId" valign="top" />
+					property="referenceId" orderable="true" valign="top" />
                     
                 <liferay-ui:search-container-column-text
-                    name="author" property="author"
+                    name="author" property="author" orderable="true"
                 />
                 <liferay-ui:search-container-column-text
-                    name="title" property="title"
+                    name="title" property="title" orderable="true"
                 />
                 <liferay-ui:search-container-column-text
-                    name="year" property="year"
+                    name="year" property="year" orderable="true"
                 />
 
                 <%-- 
