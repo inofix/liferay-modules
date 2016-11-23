@@ -19,7 +19,6 @@ import ch.inofix.portlet.contact.SoundFileFormatException;
 import ch.inofix.portlet.contact.model.Contact;
 import ch.inofix.portlet.contact.service.ContactLocalServiceUtil;
 import ch.inofix.portlet.contact.service.ContactServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -48,8 +47,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2015-05-07 15:38
- * @modified 2016-10-08 14:31
- * @version 1.2.2
+ * @modified 2016-11-23 19:14
+ * @version 1.2.3
  */
 public class ContactManagerPortlet extends MVCPortlet {
 
@@ -64,21 +63,16 @@ public class ContactManagerPortlet extends MVCPortlet {
 
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(
-                Contact.class.getName(), actionRequest);
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest
+                .getAttribute(WebKeys.THEME_DISPLAY);
 
-        List<Contact> contacts = ContactLocalServiceUtil
-                .getContacts(serviceContext.getScopeGroupId());
+        List<Contact> contacts = ContactServiceUtil
+                .deleteAllContacts(themeDisplay.getScopeGroupId());
 
-        for (Contact contact : contacts) {
+        Integer numContacts = contacts.size();
 
-            // TODO: Add try-catch and count failed deletions
-            contact = ContactServiceUtil.deleteContact(contact.getContactId());
-
-        }
-
-        SessionMessages.add(actionRequest, "request_processed",
-                PortletUtil.translate("successfully-deleted-x-contacts"));
+        SessionMessages.add(actionRequest, "request_processed", PortletUtil
+                .translate("successfully-deleted-x-contacts", numContacts));
 
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
@@ -276,9 +270,8 @@ public class ContactManagerPortlet extends MVCPortlet {
                                 "found-x-v-cards-the-import-will-finish-in-separate-thread",
                                 vCards.size());
 
-                // TODO: use remote service and check permissions
-                ContactLocalServiceUtil.importContactsInBackground(userId,
-                        fileName, groupId, privateLayout, parameterMap, file);
+                ContactServiceUtil.importContactsInBackground(userId, fileName,
+                        groupId, privateLayout, parameterMap, file);
             }
 
             SessionMessages.add(actionRequest, "request_processed", message);
