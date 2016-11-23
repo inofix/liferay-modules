@@ -22,6 +22,8 @@ import ch.inofix.portlet.contact.dto.StructuredNameDTO;
 import ch.inofix.portlet.contact.dto.UriDTO;
 import ch.inofix.portlet.contact.dto.UrlDTO;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import ezvcard.Ezvcard;
@@ -61,6 +63,7 @@ import ezvcard.property.Nickname;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
 import ezvcard.property.Photo;
+import ezvcard.property.RawProperty;
 import ezvcard.property.Role;
 import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
@@ -84,1450 +87,1474 @@ import ezvcard.util.DataUri;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2015-05-07 22:17
- * @modified 2015-07-04 14:48
- * @version 1.1.8
+ * @modified 2016-11-23 18:06
+ * @version 1.1.9
  */
 @SuppressWarnings("serial")
 public class ContactImpl extends ContactBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 * 
-	 * Never reference this class directly. All methods that expect a contact
-	 * model instance should use the {@link
-	 * ch.inofix.portlet.contact.model.Contact} interface instead.
-	 */
-
-	public ContactImpl() {
-	}
-
-	/**
-	 * 
-	 * @param address
-	 * @return
-	 * @since 1.0.8
-	 */
-	private AddressDTO getAddress(Address address) {
-
-		AddressDTO addressDTO = new AddressDTO();
-
-		if (address != null) {
-
-			addressDTO.setCountry(address.getCountry());
-			addressDTO.setLabel(address.getLabel());
-			addressDTO.setLanguage(address.getLanguage());
-			addressDTO.setLocality(address.getLocality());
-			addressDTO.setPoBox(address.getPoBox());
-			addressDTO.setPostalCode(address.getPostalCode());
-			addressDTO.setRegion(address.getRegion());
-			addressDTO.setStreetAddress(address.getStreetAddress());
-			addressDTO.setTimezone(address.getTimezone());
-
-			// TODO: Add multi-type support
-			StringBuilder sb = new StringBuilder();
-			Set<AddressType> types = address.getTypes();
-			if (types.size() > 0) {
-				for (AddressType type : types) {
-					sb.append(type.getValue());
-				}
-			} else {
-				sb.append("other");
-			}
-
-			addressDTO.setType(sb.toString());
-		}
-
-		return addressDTO;
-	}
-
-	/**
-	 * 
-	 * @return the preferred address.
-	 * @since 1.0.8
-	 */
-	public AddressDTO getAddress() {
-		
-		List<Address> addresses = getVCard().getAddresses(); 
-		
-		if (addresses != null) {
-			
-			for (Address address : addresses) {
-				Integer pref = address.getPref(); 
-				if (pref != null) {
-					if (pref == 1) {
-						return getAddress(address); 
-					}
-				}				
-			}			
-		}
-
-		Address address = getVCard().getProperty(Address.class);
-
-		return getAddress(address);
-
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<AddressDTO> getAddresses() {
-
-		List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();
-
-		List<Address> addresses = getVCard().getAddresses();
-
-		for (Address address : addresses) {
-
-			AddressDTO addressDTO = getAddress(address);
-
-			addressDTOs.add(addressDTO);
-
-		}
-
-		// an empty default address
-		if (addressDTOs.size() == 0) {
-			addressDTOs.add(new AddressDTO());
-		}
-
-		return addressDTOs;
-
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getAnniversaryDay() {
-
-		Anniversary anniversary = getVCard().getAnniversary();
-
-		if (anniversary != null) {
-			Date date = anniversary.getDate();
-			return getDay(date);
-		} else {
-			return 1;
-		}
-
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getAnniversaryMonth() {
-
-		Anniversary anniversary = getVCard().getAnniversary();
-
-		if (anniversary != null) {
-			Date date = anniversary.getDate();
-			return getMonth(date);
-		} else {
-			return 0;
-		}
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getAnniversaryYear() {
-
-		Anniversary anniversary = getVCard().getAnniversary();
-
-		if (anniversary != null) {
-			Date date = anniversary.getDate();
-			return getYear(date);
-		} else {
-			return 1970;
-		}
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getBirthdayDay() {
-
-		Birthday birthday = getVCard().getBirthday();
-
-		if (birthday != null) {
-			Date date = birthday.getDate();
-			return getDay(date);
-		} else {
-			return 1;
-		}
+    /*
+     * NOTE FOR DEVELOPERS:
+     * 
+     * Never reference this class directly. All methods that expect a contact
+     * model instance should use the {@link
+     * ch.inofix.portlet.contact.model.Contact} interface instead.
+     */
+
+    public ContactImpl() {
+    }
+
+    /**
+     * 
+     * @param address
+     * @return
+     * @since 1.0.8
+     */
+    private AddressDTO getAddress(Address address) {
+
+        AddressDTO addressDTO = new AddressDTO();
+
+        if (address != null) {
+
+            addressDTO.setCountry(address.getCountry());
+            addressDTO.setLabel(address.getLabel());
+            addressDTO.setLanguage(address.getLanguage());
+            addressDTO.setLocality(address.getLocality());
+            addressDTO.setPoBox(address.getPoBox());
+            addressDTO.setPostalCode(address.getPostalCode());
+            addressDTO.setRegion(address.getRegion());
+            addressDTO.setStreetAddress(address.getStreetAddress());
+            addressDTO.setTimezone(address.getTimezone());
+
+            // TODO: Add multi-type support
+            StringBuilder sb = new StringBuilder();
+            Set<AddressType> types = address.getTypes();
+            if (types.size() > 0) {
+                for (AddressType type : types) {
+                    sb.append(type.getValue());
+                }
+            } else {
+                sb.append("other");
+            }
+
+            addressDTO.setType(sb.toString());
+        }
+
+        return addressDTO;
+    }
+
+    /**
+     * 
+     * @return the preferred address.
+     * @since 1.0.8
+     */
+    public AddressDTO getAddress() {
+
+        List<Address> addresses = getVCard().getAddresses();
+
+        if (addresses != null) {
+
+            for (Address address : addresses) {
+                Integer pref = address.getPref();
+                if (pref != null) {
+                    if (pref == 1) {
+                        return getAddress(address);
+                    }
+                }
+            }
+        }
+
+        Address address = getVCard().getProperty(Address.class);
+
+        return getAddress(address);
+
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<AddressDTO> getAddresses() {
+
+        List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();
+
+        List<Address> addresses = getVCard().getAddresses();
+
+        for (Address address : addresses) {
+
+            AddressDTO addressDTO = getAddress(address);
+
+            addressDTOs.add(addressDTO);
+
+        }
+
+        // an empty default address
+        if (addressDTOs.size() == 0) {
+            addressDTOs.add(new AddressDTO());
+        }
+
+        return addressDTOs;
+
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getAnniversaryDay() {
+
+        Anniversary anniversary = getVCard().getAnniversary();
+
+        if (anniversary != null) {
+            Date date = anniversary.getDate();
+            return getDay(date);
+        } else {
+            return 1;
+        }
+
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getAnniversaryMonth() {
+
+        Anniversary anniversary = getVCard().getAnniversary();
+
+        if (anniversary != null) {
+            Date date = anniversary.getDate();
+            return getMonth(date);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getAnniversaryYear() {
+
+        Anniversary anniversary = getVCard().getAnniversary();
+
+        if (anniversary != null) {
+            Date date = anniversary.getDate();
+            return getYear(date);
+        } else {
+            return 1970;
+        }
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getBirthdayDay() {
+
+        Birthday birthday = getVCard().getBirthday();
+
+        if (birthday != null) {
+            Date date = birthday.getDate();
+            return getDay(date);
+        } else {
+            return 1;
+        }
 
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getBirthdayMonth() {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getBirthdayMonth() {
 
-		Birthday birthday = getVCard().getBirthday();
+        Birthday birthday = getVCard().getBirthday();
 
-		if (birthday != null) {
-			Date date = birthday.getDate();
-			return getMonth(date);
-		} else {
-			return 0;
-		}
-	}
+        if (birthday != null) {
+            Date date = birthday.getDate();
+            return getMonth(date);
+        } else {
+            return 0;
+        }
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getBirthdayYear() {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getBirthdayYear() {
 
-		Birthday birthday = getVCard().getBirthday();
+        Birthday birthday = getVCard().getBirthday();
 
-		if (birthday != null) {
-			Date date = birthday.getDate();
-			return getYear(date);
-		} else {
-			return 1970;
-		}
-	}
+        if (birthday != null) {
+            Date date = birthday.getDate();
+            return getYear(date);
+        } else {
+            return 1970;
+        }
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.5
-	 */
-	public String getBirthplace() {
+    /**
+     * 
+     * @return
+     * @since 1.0.5
+     */
+    public String getBirthplace() {
 
-		String str = "";
+        String str = "";
 
-		Birthplace birthplace = getVCard().getBirthplace();
+        Birthplace birthplace = getVCard().getBirthplace();
 
-		if (birthplace != null) {
-			str = birthplace.getText();
-		}
+        if (birthplace != null) {
+            str = birthplace.getText();
+        }
 
-		return str;
+        return str;
 
-	}
+    }
 
-	/**
-	 * @since 1.0.0
-	 */
-	public List<UriDTO> getCalendarRequestUris() {
+    /**
+     * @since 1.0.0
+     */
+    public List<UriDTO> getCalendarRequestUris() {
 
-		List<UriDTO> uriDTOs = new ArrayList<UriDTO>();
+        List<UriDTO> uriDTOs = new ArrayList<UriDTO>();
 
-		List<CalendarRequestUri> calendarRequestUris = getVCard()
-				.getCalendarRequestUris();
+        List<CalendarRequestUri> calendarRequestUris = getVCard()
+                .getCalendarRequestUris();
 
-		for (CalendarRequestUri calendarRequestUri : calendarRequestUris) {
+        for (CalendarRequestUri calendarRequestUri : calendarRequestUris) {
 
-			UriDTO uriDTO = new UriDTO();
+            UriDTO uriDTO = new UriDTO();
 
-			uriDTO.setUri(calendarRequestUri.getValue());
-			uriDTO.setType(calendarRequestUri.getType());
+            uriDTO.setUri(calendarRequestUri.getValue());
+            uriDTO.setType(calendarRequestUri.getType());
 
-			uriDTOs.add(uriDTO);
-		}
+            uriDTOs.add(uriDTO);
+        }
 
-		// an empty default calendarRequestUri
-		if (uriDTOs.size() == 0) {
-			uriDTOs.add(new UriDTO());
-		}
+        // an empty default calendarRequestUri
+        if (uriDTOs.size() == 0) {
+            uriDTOs.add(new UriDTO());
+        }
 
-		return uriDTOs;
+        return uriDTOs;
 
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<UriDTO> getCalendarUris() {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<UriDTO> getCalendarUris() {
 
-		List<UriDTO> uriDTOs = new ArrayList<UriDTO>();
+        List<UriDTO> uriDTOs = new ArrayList<UriDTO>();
 
-		List<CalendarUri> calendarUris = getVCard().getCalendarUris();
+        List<CalendarUri> calendarUris = getVCard().getCalendarUris();
 
-		for (CalendarUri calendarUri : calendarUris) {
+        for (CalendarUri calendarUri : calendarUris) {
 
-			UriDTO uriDTO = new UriDTO();
+            UriDTO uriDTO = new UriDTO();
 
-			uriDTO.setUri(calendarUri.getValue());
-			uriDTO.setType(calendarUri.getType());
+            uriDTO.setUri(calendarUri.getValue());
+            uriDTO.setType(calendarUri.getType());
 
-			uriDTOs.add(uriDTO);
-		}
+            uriDTOs.add(uriDTO);
+        }
 
-		// an empty default calendarUri
-		if (uriDTOs.size() == 0) {
-			uriDTOs.add(new UriDTO());
-		}
+        // an empty default calendarUri
+        if (uriDTOs.size() == 0) {
+            uriDTOs.add(new UriDTO());
+        }
 
-		return uriDTOs;
+        return uriDTOs;
 
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.1.0
-	 */
-	public List<CategoriesDTO> getCategoriesList() {
+    /**
+     * 
+     * @return
+     * @since 1.1.0
+     */
+    public List<CategoriesDTO> getCategoriesList() {
 
-		List<CategoriesDTO> categoriesDTOs = new ArrayList<CategoriesDTO>();
+        List<CategoriesDTO> categoriesDTOs = new ArrayList<CategoriesDTO>();
 
-		List<Categories> categoriesList = getVCard().getCategoriesList();
+        List<Categories> categoriesList = getVCard().getCategoriesList();
 
-		for (Categories categories : categoriesList) {
+        for (Categories categories : categoriesList) {
 
-			CategoriesDTO categoriesDTO = new CategoriesDTO();
+            CategoriesDTO categoriesDTO = new CategoriesDTO();
 
-			StringBuilder sb = new StringBuilder();
-			List<String> values = categories.getValues();
-			Iterator<String> iterator = values.iterator();
+            StringBuilder sb = new StringBuilder();
+            List<String> values = categories.getValues();
+            Iterator<String> iterator = values.iterator();
 
-			while (iterator.hasNext()) {
-				sb.append(iterator.next());
-				if (iterator.hasNext()) {
-					sb.append(", ");
-				}
-			}
+            while (iterator.hasNext()) {
+                sb.append(iterator.next());
+                if (iterator.hasNext()) {
+                    sb.append(", ");
+                }
+            }
 
-			categoriesDTO.setValue(sb.toString());
-			categoriesDTO.setType(categories.getType());
+            categoriesDTO.setValue(sb.toString());
+            categoriesDTO.setType(categories.getType());
 
-			categoriesDTOs.add(categoriesDTO);
-		}
+            categoriesDTOs.add(categoriesDTO);
+        }
 
-		// an empty default categories
-		if (categoriesDTOs.size() == 0) {
-			categoriesDTOs.add(new CategoriesDTO());
-		}
+        // an empty default categories
+        if (categoriesDTOs.size() == 0) {
+            categoriesDTOs.add(new CategoriesDTO());
+        }
 
-		return categoriesDTOs;
+        return categoriesDTOs;
 
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getCompany() {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getCompany() {
 
-		String str = "";
+        String str = "";
 
-		List<Organization> organizations = getVCard().getOrganizations();
+        List<Organization> organizations = getVCard().getOrganizations();
 
-		if (organizations.size() > 0) {
-			List<String> values = organizations.get(0).getValues();
-			if (values.size() > 0) {
-				str = values.get(0);
-			}
-		}
+        if (organizations.size() > 0) {
+            List<String> values = organizations.get(0).getValues();
+            if (values.size() > 0) {
+                str = values.get(0);
+            }
+        }
 
-		return str;
+        return str;
 
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getDeathdateDay() {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getDeathdateDay() {
 
-		Deathdate deathdate = getVCard().getDeathdate();
-
-		if (deathdate != null) {
-			Date date = deathdate.getDate();
-			return getDay(date);
-		} else {
-			return 1;
-		}
-
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getDeathdateMonth() {
-
-		Deathdate deathdate = getVCard().getDeathdate();
-
-		if (deathdate != null) {
-			Date date = deathdate.getDate();
-			return getMonth(date);
-		} else {
-			return 0;
-		}
-	}
+        Deathdate deathdate = getVCard().getDeathdate();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public int getDeathdateYear() {
-
-		Deathdate deathdate = getVCard().getDeathdate();
-
-		if (deathdate != null) {
-			Date date = deathdate.getDate();
-			return getYear(date);
-		} else {
-			return 1970;
-		}
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getDepartment() {
-
-		String str = "";
-
-		List<Organization> organizations = getVCard().getOrganizations();
-
-		if (organizations.size() > 0) {
-			List<String> values = organizations.get(0).getValues();
-			if (values.size() > 1) {
-				str = values.get(1);
-			}
-		}
+        if (deathdate != null) {
+            Date date = deathdate.getDate();
+            return getDay(date);
+        } else {
+            return 1;
+        }
 
-		return str;
+    }
 
-	}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getDeathdateMonth() {
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.5
-	 */
-	public String getDeathplace() {
+        Deathdate deathdate = getVCard().getDeathdate();
 
-		String str = "";
+        if (deathdate != null) {
+            Date date = deathdate.getDate();
+            return getMonth(date);
+        } else {
+            return 0;
+        }
+    }
 
-		Deathplace deathplace = getVCard().getDeathplace();
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public int getDeathdateYear() {
 
-		if (deathplace != null) {
-			str = deathplace.getText();
-		}
+        Deathdate deathdate = getVCard().getDeathdate();
 
-		return str;
+        if (deathdate != null) {
+            Date date = deathdate.getDate();
+            return getYear(date);
+        } else {
+            return 1970;
+        }
+    }
 
-	}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getDepartment() {
 
-	/**
-	 * 
-	 * @return the preferred email.
-	 * @since 1.0.8
-	 */
-	public EmailDTO getEmail() {
-		
-		List<Email> emails = getVCard().getEmails(); 
-		
-		if (emails != null) {
-			
-			for (Email email : emails) {
-				Integer pref = email.getPref(); 
-				if (pref != null) {
-					if (pref == 1) {
-						return getEmail(email); 
-					}
-				}				
-			}			
-		}
-
-		Email email = getVCard().getProperty(Email.class);
-
-		return getEmail(email);
-
-	}
-
-	/**
-	 * 
-	 * @param email
-	 * @return
-	 * @since 1.0.8
-	 */
-	private EmailDTO getEmail(Email email) {
+        String str = "";
 
-		EmailDTO emailDTO = new EmailDTO();
+        List<Organization> organizations = getVCard().getOrganizations();
 
-		if (email != null) {
-			emailDTO.setAddress(email.getValue());
-
-			emailDTO.setAddress(email.getValue());
+        if (organizations.size() > 0) {
+            List<String> values = organizations.get(0).getValues();
+            if (values.size() > 1) {
+                str = values.get(1);
+            }
+        }
 
-			// TODO: Add multi-type support
-			StringBuilder sb = new StringBuilder();
-			Set<EmailType> types = email.getTypes();
-			if (types.size() > 0) {
-				for (EmailType type : types) {
-					sb.append(type.getValue());
-				}
-			} else {
-				sb.append("other");
-			}
+        return str;
 
-			emailDTO.setType(sb.toString());
-		}
+    }
 
-		return emailDTO;
-	}
+    /**
+     * 
+     * @return
+     * @since 1.0.5
+     */
+    public String getDeathplace() {
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<EmailDTO> getEmails() {
+        String str = "";
 
-		List<EmailDTO> emailDTOs = new ArrayList<EmailDTO>();
+        Deathplace deathplace = getVCard().getDeathplace();
 
-		List<Email> emails = getVCard().getEmails();
+        if (deathplace != null) {
+            str = deathplace.getText();
+        }
 
-		for (Email email : emails) {
+        return str;
 
-			EmailDTO emailDTO = getEmail(email);
+    }
 
-			emailDTOs.add(emailDTO);
-		}
+    /**
+     * 
+     * @return the preferred email.
+     * @since 1.0.8
+     */
+    public EmailDTO getEmail() {
 
-		// an empty default email
-		if (emailDTOs.size() == 0) {
-			emailDTOs.add(new EmailDTO());
-		}
+        List<Email> emails = getVCard().getEmails();
 
-		return emailDTOs;
+        if (emails != null) {
 
-	}
+            for (Email email : emails) {
+                Integer pref = email.getPref();
+                if (pref != null) {
+                    if (pref == 1) {
+                        return getEmail(email);
+                    }
+                }
+            }
+        }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<ExpertiseDTO> getExpertises() {
+        Email email = getVCard().getProperty(Email.class);
 
-		List<Expertise> expertises = getVCard().getExpertise();
-		List<ExpertiseDTO> expertiseDTOs = new ArrayList<ExpertiseDTO>();
-
-		for (Expertise expertise : expertises) {
-			ExpertiseDTO expertiseDTO = new ExpertiseDTO();
-			expertiseDTO.setValue(expertise.getValue());
-			ExpertiseLevel level = expertise.getLevel();
-			if (level != null) {
-				expertiseDTO.setLevel(level.getValue());
-			}
-			expertiseDTOs.add(expertiseDTO);
-		}
+        return getEmail(email);
 
-		// an empty default expertise
-		if (expertiseDTOs.size() == 0) {
-			expertiseDTOs.add(new ExpertiseDTO());
-		}
+    }
 
-		return expertiseDTOs;
-	}
+    /**
+     * 
+     * @param email
+     * @return
+     * @since 1.0.8
+     */
+    private EmailDTO getEmail(Email email) {
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getFormattedName() {
+        EmailDTO emailDTO = new EmailDTO();
 
-		String formattedName = "";
+        if (email != null) {
+            emailDTO.setAddress(email.getValue());
 
-		FormattedName fn = getVCard().getFormattedName();
+            emailDTO.setAddress(email.getValue());
 
-		if (fn != null) {
-			formattedName = fn.getValue();
-		}
+            // TODO: Add multi-type support
+            StringBuilder sb = new StringBuilder();
+            Set<EmailType> types = email.getTypes();
+            if (types.size() > 0) {
+                for (EmailType type : types) {
+                    sb.append(type.getValue());
+                }
+            } else {
+                sb.append("other");
+            }
 
-		return formattedName;
+            emailDTO.setType(sb.toString());
+        }
 
-	}
+        return emailDTO;
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.6
-	 */
-	public List<UrlDTO> getFreeBusyUrls() {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<EmailDTO> getEmails() {
 
-		List<UrlDTO> urlDTOs = new ArrayList<UrlDTO>();
+        List<EmailDTO> emailDTOs = new ArrayList<EmailDTO>();
 
-		List<FreeBusyUrl> urls = getVCard().getFbUrls();
+        List<Email> emails = getVCard().getEmails();
 
-		for (FreeBusyUrl url : urls) {
+        for (Email email : emails) {
 
-			UrlDTO urlDTO = new UrlDTO();
+            EmailDTO emailDTO = getEmail(email);
 
-			urlDTO.setAddress(url.getValue());
-			urlDTO.setType(url.getType());
+            emailDTOs.add(emailDTO);
+        }
 
-			urlDTOs.add(urlDTO);
-		}
+        // an empty default email
+        if (emailDTOs.size() == 0) {
+            emailDTOs.add(new EmailDTO());
+        }
 
-		// an empty default freeBusyURL
-		if (urlDTOs.size() == 0) {
-			urlDTOs.add(new UrlDTO());
-		}
+        return emailDTOs;
 
-		return urlDTOs;
+    }
 
-	}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<ExpertiseDTO> getExpertises() {
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getFullName() {
-		return getFullName(false);
-	}
+        List<Expertise> expertises = getVCard().getExpertise();
+        List<ExpertiseDTO> expertiseDTOs = new ArrayList<ExpertiseDTO>();
 
-	/**
-	 * 
-	 * @param firstLast
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getFullName(boolean firstLast) {
+        for (Expertise expertise : expertises) {
+            ExpertiseDTO expertiseDTO = new ExpertiseDTO();
+            expertiseDTO.setValue(expertise.getValue());
+            ExpertiseLevel level = expertise.getLevel();
+            if (level != null) {
+                expertiseDTO.setLevel(level.getValue());
+            }
+            expertiseDTOs.add(expertiseDTO);
+        }
 
-		StringBuilder sb = new StringBuilder();
+        // an empty default expertise
+        if (expertiseDTOs.size() == 0) {
+            expertiseDTOs.add(new ExpertiseDTO());
+        }
 
-		StructuredName sn = getVCard().getStructuredName();
+        return expertiseDTOs;
+    }
 
-		if (sn != null) {
-			if (firstLast) {
-				sb.append(sn.getGiven());
-				sb.append(" ");
-				sb.append(sn.getFamily());
-			} else {
-				sb.append(sn.getFamily());
-				sb.append(", ");
-				sb.append(sn.getGiven());
-			}
-		}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getFormattedName() {
 
-		String fullName = sb.toString();
+        String formattedName = "";
 
-		if (Validator.isNull(fullName)) {
+        FormattedName fn = getVCard().getFormattedName();
 
-			Organization organization = getVCard().getOrganization();
+        if (fn != null) {
+            formattedName = fn.getValue();
+        }
 
-			if (organization != null) {
+        return formattedName;
 
-				List<String> values = organization.getValues();
+    }
 
-				Iterator<String> iterator = values.iterator();
+    /**
+     * 
+     * @return
+     * @since 1.0.6
+     */
+    public List<UrlDTO> getFreeBusyUrls() {
 
-				while (iterator.hasNext()) {
+        List<UrlDTO> urlDTOs = new ArrayList<UrlDTO>();
 
-					sb.append(iterator.next());
-					if (iterator.hasNext()) {
-						sb.append(", ");
-					}
+        List<FreeBusyUrl> urls = getVCard().getFbUrls();
 
-				}
-			}
+        for (FreeBusyUrl url : urls) {
 
-		}
+            UrlDTO urlDTO = new UrlDTO();
 
-		return fullName;
+            urlDTO.setAddress(url.getValue());
+            urlDTO.setType(url.getType());
 
-	}
+            urlDTOs.add(urlDTO);
+        }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.1.5
-	 */
-	public String getGender() {
+        // an empty default freeBusyURL
+        if (urlDTOs.size() == 0) {
+            urlDTOs.add(new UrlDTO());
+        }
 
-		String str = Gender.UNKNOWN;
+        return urlDTOs;
 
-		Gender gender = getVCard().getGender();
+    }
 
-		if (gender != null) {
-			str = gender.getGender();
-		}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getFullName() {
+        return getFullName(false);
+    }
 
-		return str;
+    /**
+     * 
+     * @param firstLast
+     * @return
+     * @since 1.0.0
+     */
+    public String getFullName(boolean firstLast) {
 
-	}
+        StringBuilder sb = new StringBuilder();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<HobbyDTO> getHobbies() {
+        StructuredName sn = getVCard().getStructuredName();
 
-		List<Hobby> hobbies = getVCard().getHobbies();
-		List<HobbyDTO> hobbyDTOs = new ArrayList<HobbyDTO>();
+        if (sn != null) {
+            if (firstLast) {
+                sb.append(sn.getGiven());
+                sb.append(" ");
+                sb.append(sn.getFamily());
+            } else {
+                sb.append(sn.getFamily());
+                sb.append(", ");
+                sb.append(sn.getGiven());
+            }
+        }
 
-		for (Hobby hobby : hobbies) {
-			HobbyDTO hobbyDTO = new HobbyDTO();
-			hobbyDTO.setValue(hobby.getValue());
-			HobbyLevel level = hobby.getLevel();
-			if (level != null) {
-				hobbyDTO.setLevel(level.getValue());
-			}
-			hobbyDTOs.add(hobbyDTO);
-		}
+        String fullName = sb.toString();
 
-		// an empty default hobby
-		if (hobbyDTOs.size() == 0) {
-			hobbyDTOs.add(new HobbyDTO());
-		}
+        if (Validator.isNull(fullName)) {
 
-		return hobbyDTOs;
-	}
+            Organization organization = getVCard().getOrganization();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<ImppDTO> getImpps() {
+            if (organization != null) {
 
-		List<ImppDTO> imppDTOs = new ArrayList<ImppDTO>();
+                List<String> values = organization.getValues();
 
-		List<Impp> impps = getVCard().getImpps();
+                Iterator<String> iterator = values.iterator();
 
-		for (Impp impp : impps) {
+                while (iterator.hasNext()) {
 
-			ImppDTO imppDTO = new ImppDTO();
+                    sb.append(iterator.next());
+                    if (iterator.hasNext()) {
+                        sb.append(", ");
+                    }
 
-			StringBuilder sb = new StringBuilder();
+                }
+            }
 
-			Set<ImppType> types = impp.getTypes();
+        }
 
-			// TODO: Add support for multiple types e.g.
-			// home-skype, work-jabber, etc.
-			if (types.size() > 0) {
-				for (ImppType type : types) {
-					sb.append(type.getValue());
-				}
-			} else {
-				sb.append("other");
-			}
+        return fullName;
 
-			imppDTO.setProtocol(impp.getProtocol());
-			imppDTO.setType(sb.toString());
+    }
 
-			String protocol = impp.getProtocol();
-			String uri = impp.getUri().toString();
+    /**
+     * 
+     * @return
+     * @since 1.1.5
+     */
+    public String getGender() {
 
-			// TODO: find a cleaner solution for this
-			uri = uri.replace(protocol + ":", "");
+        String str = Gender.UNKNOWN;
 
-			imppDTO.setUri(uri);
+        Gender gender = getVCard().getGender();
 
-			imppDTOs.add(imppDTO);
-		}
+        if (gender != null) {
+            str = gender.getGender();
+        }
 
-		// an empty default impp
-		if (imppDTOs.size() == 0) {
-			imppDTOs.add(new ImppDTO());
-		}
+        return str;
 
-		return imppDTOs;
+    }
 
-	}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<HobbyDTO> getHobbies() {
 
-	public List<FileDTO> getKeys() {
+        List<Hobby> hobbies = getVCard().getHobbies();
+        List<HobbyDTO> hobbyDTOs = new ArrayList<HobbyDTO>();
 
-		List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
+        for (Hobby hobby : hobbies) {
+            HobbyDTO hobbyDTO = new HobbyDTO();
+            hobbyDTO.setValue(hobby.getValue());
+            HobbyLevel level = hobby.getLevel();
+            if (level != null) {
+                hobbyDTO.setLevel(level.getValue());
+            }
+            hobbyDTOs.add(hobbyDTO);
+        }
 
-		List<Key> keys = getVCard().getKeys();
+        // an empty default hobby
+        if (hobbyDTOs.size() == 0) {
+            hobbyDTOs.add(new HobbyDTO());
+        }
 
-		for (Key key : keys) {
+        return hobbyDTOs;
+    }
 
-			FileDTO fileDTO = new FileDTO();
-			fileDTO.setUrl(key.getUrl());
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<ImppDTO> getImpps() {
 
-			KeyType contentType = key.getContentType();
+        List<ImppDTO> imppDTOs = new ArrayList<ImppDTO>();
 
-			if (Validator.isNotNull(contentType)) {
-				DataUri dataUri = new DataUri(contentType.getMediaType(),
-						key.getData());
-				fileDTO.setData(dataUri.toString());
-			}
+        List<Impp> impps = getVCard().getImpps();
 
-			fileDTOs.add(fileDTO);
-		}
+        for (Impp impp : impps) {
 
-		// an empty default key
-		if (fileDTOs.size() == 0) {
-			fileDTOs.add(new FileDTO());
-		}
+            ImppDTO imppDTO = new ImppDTO();
 
-		return fileDTOs;
+            StringBuilder sb = new StringBuilder();
 
-	}
+            Set<ImppType> types = impp.getTypes();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getKind() {
+            // TODO: Add support for multiple types e.g.
+            // home-skype, work-jabber, etc.
+            if (types.size() > 0) {
+                for (ImppType type : types) {
+                    sb.append(type.getValue());
+                }
+            } else {
+                sb.append("other");
+            }
 
-		String str = "individual";
+            imppDTO.setProtocol(impp.getProtocol());
+            imppDTO.setType(sb.toString());
 
-		Kind kind = getVCard().getKind();
+            String protocol = impp.getProtocol();
+            String uri = impp.getUri().toString();
 
-		if (kind != null) {
-			str = kind.getValue();
-		}
+            // TODO: find a cleaner solution for this
+            uri = uri.replace(protocol + ":", "");
 
-		return str;
+            imppDTO.setUri(uri);
 
-	}
+            imppDTOs.add(imppDTO);
+        }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<InterestDTO> getInterests() {
+        // an empty default impp
+        if (imppDTOs.size() == 0) {
+            imppDTOs.add(new ImppDTO());
+        }
 
-		List<Interest> interests = getVCard().getInterests();
-		List<InterestDTO> interestDTOs = new ArrayList<InterestDTO>();
+        return imppDTOs;
 
-		for (Interest interest : interests) {
-			InterestDTO interestDTO = new InterestDTO();
-			interestDTO.setValue(interest.getValue());
-			InterestLevel level = interest.getLevel();
-			if (level != null) {
-				interestDTO.setLevel(level.getValue());
-			}
-			interestDTOs.add(interestDTO);
-		}
+    }
 
-		// an empty default interest
-		if (interestDTOs.size() == 0) {
-			interestDTOs.add(new InterestDTO());
-		}
+    public List<FileDTO> getKeys() {
 
-		return interestDTOs;
-	}
+        List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.1.1
-	 */
-	public List<LanguageDTO> getLanguages() {
+        List<Key> keys = getVCard().getKeys();
 
-		List<Language> languages = getVCard().getLanguages();
-		List<LanguageDTO> languageDTOs = new ArrayList<LanguageDTO>();
+        for (Key key : keys) {
 
-		for (Language language : languages) {
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setUrl(key.getUrl());
 
-			LanguageDTO languageDTO = new LanguageDTO();
-			languageDTO.setKey(language.getValue());
+            KeyType contentType = key.getContentType();
 
-			languageDTOs.add(languageDTO);
-		}
+            if (Validator.isNotNull(contentType)) {
+                DataUri dataUri = new DataUri(contentType.getMediaType(),
+                        key.getData());
+                fileDTO.setData(dataUri.toString());
+            }
 
-		return languageDTOs;
-	}
+            fileDTOs.add(fileDTO);
+        }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.1.3
-	 */
-	public List<FileDTO> getLogos() {
+        // an empty default key
+        if (fileDTOs.size() == 0) {
+            fileDTOs.add(new FileDTO());
+        }
 
-		List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
+        return fileDTOs;
 
-		List<Logo> logos = getVCard().getLogos();
+    }
 
-		for (Logo logo : logos) {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getKind() {
 
-			FileDTO fileDTO = new FileDTO();
-			fileDTO.setUrl(logo.getUrl());
+        String str = "individual";
 
-			ImageType contentType = logo.getContentType();
+        Kind kind = getVCard().getKind();
 
-			if (Validator.isNotNull(contentType)) {
-				DataUri dataUri = new DataUri(contentType.getMediaType(),
-						logo.getData());
-				fileDTO.setData(dataUri.toString());
-			}
+        if (kind != null) {
+            str = kind.getValue();
+        }
 
-			fileDTOs.add(fileDTO);
-		}
+        return str;
 
-		// an empty default logo
-		if (fileDTOs.size() == 0) {
-			fileDTOs.add(new FileDTO());
-		}
+    }
 
-		return fileDTOs;
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<InterestDTO> getInterests() {
 
-	}
+        List<Interest> interests = getVCard().getInterests();
+        List<InterestDTO> interestDTOs = new ArrayList<InterestDTO>();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.4
-	 */
-	public String getName() {
+        for (Interest interest : interests) {
+            InterestDTO interestDTO = new InterestDTO();
+            interestDTO.setValue(interest.getValue());
+            InterestLevel level = interest.getLevel();
+            if (level != null) {
+                interestDTO.setLevel(level.getValue());
+            }
+            interestDTOs.add(interestDTO);
+        }
 
-		String firstLast = getFullName(true);
-		String lastFirst = getFullName(false);
+        // an empty default interest
+        if (interestDTOs.size() == 0) {
+            interestDTOs.add(new InterestDTO());
+        }
 
-		String name = lastFirst;
+        return interestDTOs;
+    }
 
-		if (Validator.isNull(firstLast)) {
+    /**
+     * 
+     * @return
+     * @since 1.1.1
+     */
+    public List<LanguageDTO> getLanguages() {
 
-			Organization organization = getVCard().getOrganization();
+        List<Language> languages = getVCard().getLanguages();
+        List<LanguageDTO> languageDTOs = new ArrayList<LanguageDTO>();
 
-			if (organization != null) {
+        for (Language language : languages) {
 
-				List<String> values = organization.getValues();
+            LanguageDTO languageDTO = new LanguageDTO();
+            languageDTO.setKey(language.getValue());
 
-				Iterator<String> iterator = values.iterator();
+            languageDTOs.add(languageDTO);
+        }
 
-				StringBuilder sb = new StringBuilder();
+        return languageDTOs;
+    }
 
-				while (iterator.hasNext()) {
+    /**
+     * 
+     * @return
+     * @since 1.1.3
+     */
+    public List<FileDTO> getLogos() {
 
-					sb.append(iterator.next());
-					if (iterator.hasNext()) {
-						sb.append(", ");
-					}
+        List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
 
-				}
+        List<Logo> logos = getVCard().getLogos();
 
-				name = sb.toString();
+        for (Logo logo : logos) {
 
-			}
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setUrl(logo.getUrl());
 
-		}
+            ImageType contentType = logo.getContentType();
 
-		return name;
+            if (Validator.isNotNull(contentType)) {
+                DataUri dataUri = new DataUri(contentType.getMediaType(),
+                        logo.getData());
+                fileDTO.setData(dataUri.toString());
+            }
 
-	}
+            fileDTOs.add(fileDTO);
+        }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getNickname() {
+        // an empty default logo
+        if (fileDTOs.size() == 0) {
+            fileDTOs.add(new FileDTO());
+        }
 
-		StringBuilder sb = new StringBuilder();
+        return fileDTOs;
 
-		Nickname nickname = getVCard().getNickname();
+    }
 
-		if (nickname != null) {
-			List<String> names = nickname.getValues();
-			Iterator<String> iterator = names.iterator(); 
-			
-			while (iterator.hasNext()) {
-				sb.append(iterator.next());
-				if (iterator.hasNext()) {
-					sb.append(", "); 
-				}
+    /**
+     * 
+     * @return
+     * @since 1.0.4
+     */
+    public String getName() {
 
-			}
+        String firstLast = getFullName(true);
+        String lastFirst = getFullName(false);
 
-		}
+        String name = lastFirst;
 
-		return sb.toString();
+        if (Validator.isNull(firstLast)) {
 
-	}
+            Organization organization = getVCard().getOrganization();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<NoteDTO> getNotes() {
+            if (organization != null) {
 
-		List<Note> notes = getVCard().getNotes();
-		List<NoteDTO> noteDTOs = new ArrayList<NoteDTO>();
+                List<String> values = organization.getValues();
 
-		for (Note note : notes) {
-			NoteDTO noteDTO = new NoteDTO();
-			noteDTO.setValue(note.getValue());
-			noteDTOs.add(noteDTO);
-		}
+                Iterator<String> iterator = values.iterator();
 
-		// an empty default note
-		if (noteDTOs.size() == 0) {
-			noteDTOs.add(new NoteDTO());
-		}
+                StringBuilder sb = new StringBuilder();
 
-		return noteDTOs;
-	}
+                while (iterator.hasNext()) {
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getOffice() {
+                    sb.append(iterator.next());
+                    if (iterator.hasNext()) {
+                        sb.append(", ");
+                    }
 
-		String str = "";
+                }
 
-		List<Organization> organizations = getVCard().getOrganizations();
+                name = sb.toString();
 
-		if (organizations.size() > 0) {
-			List<String> values = organizations.get(0).getValues();
-			if (values.size() > 2) {
-				str = values.get(2);
-			}
-		}
+            }
 
-		return str;
+        }
 
-	}
+        return name;
 
-	/**
-	 * 
-	 * @return the preferred phone.
-	 * @since 1.0.8
-	 */
-	public PhoneDTO getPhone() {
-		
-		List<Telephone> phones = getVCard().getTelephoneNumbers(); 
-		
-		if (phones != null) {
-			
-			for (Telephone phone : phones) {
-				Integer pref = phone.getPref(); 
-				if (pref != null) {
-					if (pref == 1) {
-						return getPhone(phone); 
-					}
-				}				
-			}			
-		}
+    }
 
-		Telephone phone = getVCard().getProperty(Telephone.class);
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getNickname() {
 
-		return getPhone(phone);
+        StringBuilder sb = new StringBuilder();
 
-	}
+        Nickname nickname = getVCard().getNickname();
 
-	/**
-	 * 
-	 * @param phone
-	 * @return
-	 * @since 1.0.8
-	 */
-	private PhoneDTO getPhone(Telephone phone) {
+        if (nickname != null) {
+            List<String> names = nickname.getValues();
+            Iterator<String> iterator = names.iterator();
 
-		PhoneDTO phoneDTO = new PhoneDTO();
+            while (iterator.hasNext()) {
+                sb.append(iterator.next());
+                if (iterator.hasNext()) {
+                    sb.append(", ");
+                }
 
-		if (phone != null) {
-			phoneDTO.setNumber(phone.getText());
+            }
 
-			StringBuilder sb = new StringBuilder();
+        }
 
-			Set<TelephoneType> types = phone.getTypes();
+        return sb.toString();
 
-			// TODO: Add support for multiple telephone types
-			// e.g. home-fax, work-mobile, etc.
-			if (types.size() > 0) {
-				for (TelephoneType type : types) {
-					sb.append(type.getValue());
-				}
-			} else {
-				sb.append("other");
-			}
+    }
 
-			phoneDTO.setType(sb.toString());
-		}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<NoteDTO> getNotes() {
 
-		return phoneDTO;
-	}
+        List<Note> notes = getVCard().getNotes();
+        List<NoteDTO> noteDTOs = new ArrayList<NoteDTO>();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public List<PhoneDTO> getPhones() {
+        for (Note note : notes) {
+            NoteDTO noteDTO = new NoteDTO();
+            noteDTO.setValue(note.getValue());
+            noteDTOs.add(noteDTO);
+        }
 
-		List<PhoneDTO> phoneDTOs = new ArrayList<PhoneDTO>();
+        // an empty default note
+        if (noteDTOs.size() == 0) {
+            noteDTOs.add(new NoteDTO());
+        }
 
-		List<Telephone> phones = getVCard().getTelephoneNumbers();
+        return noteDTOs;
+    }
 
-		for (Telephone phone : phones) {
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getOffice() {
 
-			PhoneDTO phoneDTO = getPhone(phone);
+        String str = "";
 
-			phoneDTOs.add(phoneDTO);
-		}
+        List<Organization> organizations = getVCard().getOrganizations();
 
-		// an empty default phone
-		if (phoneDTOs.size() == 0) {
-			phoneDTOs.add(new PhoneDTO());
-		}
+        if (organizations.size() > 0) {
+            List<String> values = organizations.get(0).getValues();
+            if (values.size() > 2) {
+                str = values.get(2);
+            }
+        }
 
-		return phoneDTOs;
+        return str;
 
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.1.2
-	 */
-	public List<FileDTO> getPhotos() {
+    /**
+     * 
+     * @return the preferred phone.
+     * @since 1.0.8
+     */
+    public PhoneDTO getPhone() {
 
-		List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
+        List<Telephone> phones = getVCard().getTelephoneNumbers();
 
-		List<Photo> photos = getVCard().getPhotos();
+        if (phones != null) {
 
-		for (Photo photo : photos) {
+            for (Telephone phone : phones) {
+                Integer pref = phone.getPref();
+                if (pref != null) {
+                    if (pref == 1) {
+                        return getPhone(phone);
+                    }
+                }
+            }
+        }
 
-			FileDTO fileDTO = new FileDTO();
-			fileDTO.setUrl(photo.getUrl());
+        Telephone phone = getVCard().getProperty(Telephone.class);
 
-			ImageType contentType = photo.getContentType();
+        return getPhone(phone);
 
-			if (Validator.isNotNull(contentType)) {
-				DataUri dataUri = new DataUri(contentType.getMediaType(),
-						photo.getData());
-				fileDTO.setData(dataUri.toString());
-			}
+    }
 
-			fileDTOs.add(fileDTO);
-		}
+    /**
+     * 
+     * @param phone
+     * @return
+     * @since 1.0.8
+     */
+    private PhoneDTO getPhone(Telephone phone) {
 
-		// an empty default photo
-		if (fileDTOs.size() == 0) {
-			fileDTOs.add(new FileDTO());
-		}
+        PhoneDTO phoneDTO = new PhoneDTO();
 
-		return fileDTOs;
+        if (phone != null) {
+            phoneDTO.setNumber(phone.getText());
 
-	}
+            StringBuilder sb = new StringBuilder();
 
-	/**
-	 * 
-	 * @return a dataURI for the entity the vCard represents, i.e. the first
-	 *         photo if the vCard represents a person or a logo if the vCard
-	 *         represents an organization.
-	 * @since 1.1.6
-	 */
-	public String getPortrait() {
+            Set<TelephoneType> types = phone.getTypes();
 
-		String portrait = null;
+            // TODO: Add support for multiple telephone types
+            // e.g. home-fax, work-mobile, etc.
+            if (types.size() > 0) {
+                for (TelephoneType type : types) {
+                    sb.append(type.getValue());
+                }
+            } else {
+                sb.append("other");
+            }
 
-		List<Photo> photos = getVCard().getPhotos();
-		List<Logo> logos = getVCard().getLogos();
+            phoneDTO.setType(sb.toString());
+        }
 
-		if (logos.size() > 0) {
-			portrait = getLogos().get(0).getData();
-		} else if (photos.size() > 0) {
-			portrait = getPhotos().get(0).getData();
-		}
+        return phoneDTO;
+    }
 
-		return portrait;
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public List<PhoneDTO> getPhones() {
 
-	}
+        List<PhoneDTO> phoneDTOs = new ArrayList<PhoneDTO>();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getRole() {
+        List<Telephone> phones = getVCard().getTelephoneNumbers();
 
-		StringBuilder sb = new StringBuilder();
+        for (Telephone phone : phones) {
 
-		// TODO: How must we handle multiple roles?
-		List<Role> roles = getVCard().getRoles();
-		if (roles != null) {
-			for (Role role : roles) {
-				sb.append(role.getValue());
-			}
-		}
+            PhoneDTO phoneDTO = getPhone(phone);
 
-		return sb.toString();
-	}
+            phoneDTOs.add(phoneDTO);
+        }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getSortAs() {
+        // an empty default phone
+        if (phoneDTOs.size() == 0) {
+            phoneDTOs.add(new PhoneDTO());
+        }
 
-		StringBuilder sb = new StringBuilder();
+        return phoneDTOs;
 
-		StructuredName sn = getVCard().getStructuredName();
+    }
 
-		if (sn != null) {
-			List<String> list = sn.getSortAs();
-			for (String str : list) {
-				sb.append(str);
-			}
-		}
+    /**
+     * 
+     * @return
+     * @since 1.1.2
+     */
+    public List<FileDTO> getPhotos() {
 
-		return sb.toString();
+        List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
 
-	}
+        List<Photo> photos = getVCard().getPhotos();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.1.3
-	 */
-	public List<FileDTO> getSounds() {
+        for (Photo photo : photos) {
 
-		List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setUrl(photo.getUrl());
 
-		List<Sound> sounds = getVCard().getSounds();
+            ImageType contentType = photo.getContentType();
 
-		for (Sound sound : sounds) {
+            if (Validator.isNotNull(contentType)) {
+                DataUri dataUri = new DataUri(contentType.getMediaType(),
+                        photo.getData());
+                fileDTO.setData(dataUri.toString());
+            }
 
-			FileDTO fileDTO = new FileDTO();
-			fileDTO.setUrl(sound.getUrl());
+            fileDTOs.add(fileDTO);
+        }
 
-			SoundType contentType = sound.getContentType();
+        // an empty default photo
+        if (fileDTOs.size() == 0) {
+            fileDTOs.add(new FileDTO());
+        }
 
-			if (Validator.isNotNull(contentType)) {
-				DataUri dataUri = new DataUri(contentType.getMediaType(),
-						sound.getData());
-				fileDTO.setData(dataUri.toString());
-			}
+        return fileDTOs;
 
-			fileDTOs.add(fileDTO);
-		}
+    }
 
-		// an empty default sound
-		if (fileDTOs.size() == 0) {
-			fileDTOs.add(new FileDTO());
-		}
+    /**
+     * 
+     * @return a dataURI for the entity the vCard represents, i.e. the first
+     *         photo if the vCard represents a person or a logo if the vCard
+     *         represents an organization.
+     * @since 1.1.6
+     */
+    public String getPortrait() {
 
-		return fileDTOs;
+        String portrait = null;
 
-	}
+        List<Photo> photos = getVCard().getPhotos();
+        List<Logo> logos = getVCard().getLogos();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public StructuredNameDTO getStructuredName() {
+        if (logos.size() > 0) {
+            portrait = getLogos().get(0).getData();
+        } else if (photos.size() > 0) {
+            portrait = getPhotos().get(0).getData();
+        }
 
-		StructuredNameDTO structuredNameDTO = new StructuredNameDTO();
-		StructuredName sn = getVCard().getStructuredName();
+        return portrait;
 
-		if (sn != null) {
+    }
 
-			StringBuilder sb = new StringBuilder();
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getRole() {
 
-			List<String> additionals = sn.getAdditional();
-			for (String additional : additionals) {
-				sb.append(additional);
-			}
+        StringBuilder sb = new StringBuilder();
 
-			String additional = sb.toString();
+        // TODO: How must we handle multiple roles?
+        List<Role> roles = getVCard().getRoles();
+        if (roles != null) {
+            for (Role role : roles) {
+                sb.append(role.getValue());
+            }
+        }
 
-			sb = new StringBuilder();
+        return sb.toString();
+    }
 
-			List<String> prefixes = sn.getPrefixes();
-			for (String prefix : prefixes) {
-				sb.append(prefix);
-			}
+    /**
+     * 
+     * @return
+     * @since 1.1.9
+     */
+    public String getSalutation() {
 
-			String prefix = sb.toString();
+        String salutation = "";
 
-			sb = new StringBuilder();
+        VCard vCard = getVCard();
 
-			List<String> suffixes = sn.getSuffixes();
-			for (String suffix : suffixes) {
-				sb.append(suffix);
-			}
+        RawProperty rawProperty = vCard.getExtendedProperty("x-salutation");
 
-			String suffix = sb.toString();
+        if (rawProperty != null) {
+            salutation = rawProperty.getValue();
+        }
 
-			structuredNameDTO.setAdditional(additional);
-			structuredNameDTO.setFamily(sn.getFamily());
-			structuredNameDTO.setGiven(sn.getGiven());
-			structuredNameDTO.setPrefix(prefix);
-			structuredNameDTO.setSuffix(suffix);
+        return salutation;
 
-		}
+    }
 
-		return structuredNameDTO;
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getSortAs() {
 
-	}
+        StringBuilder sb = new StringBuilder();
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getTitle() {
+        StructuredName sn = getVCard().getStructuredName();
 
-		StringBuilder sb = new StringBuilder();
+        if (sn != null) {
+            List<String> list = sn.getSortAs();
+            for (String str : list) {
+                sb.append(str);
+            }
+        }
 
-		// TODO: How do we handle multiple titles?
-		List<Title> titles = getVCard().getTitles();
-		if (titles != null) {
-			for (Title title : titles) {
-				sb.append(title.getValue());
-			}
-		}
+        return sb.toString();
 
-		return sb.toString();
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 * @since 1.0.0
-	 */
-	public String getTimezone() {
+    /**
+     * 
+     * @return
+     * @since 1.1.3
+     */
+    public List<FileDTO> getSounds() {
 
-		String str = "";
-		Timezone timezone = getVCard().getTimezone();
+        List<FileDTO> fileDTOs = new ArrayList<FileDTO>();
 
-		if (timezone != null) {
-			str = timezone.getText();
-		}
+        List<Sound> sounds = getVCard().getSounds();
 
-		return str;
-	}
+        for (Sound sound : sounds) {
 
-	/**
-	 * @since 1.0.0
-	 */
-	public VCard getVCard() {
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setUrl(sound.getUrl());
 
-		String str = getCard();
-		VCard vCard = null;
+            SoundType contentType = sound.getContentType();
 
-		if (Validator.isNotNull(str)) {
-			vCard = Ezvcard.parse(str).first();
-		} else {
-			vCard = new VCard();
-		}
+            if (Validator.isNotNull(contentType)) {
+                DataUri dataUri = new DataUri(contentType.getMediaType(),
+                        sound.getData());
+                fileDTO.setData(dataUri.toString());
+            }
 
-		return vCard;
+            fileDTOs.add(fileDTO);
+        }
 
-	}
+        // an empty default sound
+        if (fileDTOs.size() == 0) {
+            fileDTOs.add(new FileDTO());
+        }
 
-	/**
-	 * @since 1.0.0
-	 */
-	public String getVCardHTML() {
+        return fileDTOs;
 
-		VCard vCard = getVCard();
-		List<VCard> vcards = new ArrayList<VCard>();
-		vcards.add(vCard);
-		return Ezvcard.writeHtml(vcards).go();
+    }
 
-	}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public StructuredNameDTO getStructuredName() {
 
-	/**
-	 * @since 1.0.0
-	 */
-	public List<UrlDTO> getUrls() {
+        StructuredNameDTO structuredNameDTO = new StructuredNameDTO();
+        StructuredName sn = getVCard().getStructuredName();
 
-		List<UrlDTO> urlDTOs = new ArrayList<UrlDTO>();
+        if (sn != null) {
 
-		List<Url> urls = getVCard().getUrls();
+            StringBuilder sb = new StringBuilder();
 
-		for (Url url : urls) {
+            List<String> additionals = sn.getAdditional();
+            for (String additional : additionals) {
+                sb.append(additional);
+            }
 
-			UrlDTO urlDTO = new UrlDTO();
+            String additional = sb.toString();
 
-			urlDTO.setAddress(url.getValue());
-			urlDTO.setType(url.getType());
+            sb = new StringBuilder();
 
-			urlDTOs.add(urlDTO);
-		}
+            List<String> prefixes = sn.getPrefixes();
+            for (String prefix : prefixes) {
+                sb.append(prefix);
+            }
 
-		// an empty default url
-		if (urlDTOs.size() == 0) {
-			urlDTOs.add(new UrlDTO());
-		}
+            String prefix = sb.toString();
 
-		return urlDTOs;
+            sb = new StringBuilder();
 
-	}
+            List<String> suffixes = sn.getSuffixes();
+            for (String suffix : suffixes) {
+                sb.append(suffix);
+            }
 
-	/**
-	 * 
-	 * @param date
-	 * @return
-	 * @since 1.0.0
-	 */
-	private int getDay(Date date) {
+            String suffix = sb.toString();
 
-		if (date != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			return cal.get(Calendar.DAY_OF_MONTH);
-		} else {
-			return 1;
-		}
-	}
+            structuredNameDTO.setAdditional(additional);
+            structuredNameDTO.setFamily(sn.getFamily());
+            structuredNameDTO.setGiven(sn.getGiven());
+            structuredNameDTO.setPrefix(prefix);
+            structuredNameDTO.setSuffix(suffix);
 
-	/**
-	 * 
-	 * @param date
-	 * @return
-	 * @since 1.0.0
-	 */
-	private int getMonth(Date date) {
+        }
 
-		if (date != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			return cal.get(Calendar.MONTH);
-		} else {
-			return 0;
-		}
-	}
+        return structuredNameDTO;
 
-	/**
-	 * 
-	 * @param date
-	 * @return
-	 * @since 1.0.0
-	 */
-	private int getYear(Date date) {
+    }
 
-		if (date != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			return cal.get(Calendar.YEAR);
-		} else {
-			return 1970;
-		}
-	}
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getTitle() {
+
+        StringBuilder sb = new StringBuilder();
+
+        // TODO: How do we handle multiple titles?
+        List<Title> titles = getVCard().getTitles();
+        if (titles != null) {
+            for (Title title : titles) {
+                sb.append(title.getValue());
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 
+     * @return
+     * @since 1.0.0
+     */
+    public String getTimezone() {
+
+        String str = "";
+        Timezone timezone = getVCard().getTimezone();
+
+        if (timezone != null) {
+            str = timezone.getText();
+        }
+
+        return str;
+    }
+
+    /**
+     * @since 1.0.0
+     */
+    public VCard getVCard() {
+
+        String str = getCard();
+        VCard vCard = null;
+
+        if (Validator.isNotNull(str)) {
+            vCard = Ezvcard.parse(str).first();
+        } else {
+            vCard = new VCard();
+        }
+
+        return vCard;
+
+    }
+
+    /**
+     * @since 1.0.0
+     */
+    public String getVCardHTML() {
+
+        VCard vCard = getVCard();
+        List<VCard> vcards = new ArrayList<VCard>();
+        vcards.add(vCard);
+        return Ezvcard.writeHtml(vcards).go();
+
+    }
+
+    /**
+     * @since 1.0.0
+     */
+    public List<UrlDTO> getUrls() {
+
+        List<UrlDTO> urlDTOs = new ArrayList<UrlDTO>();
+
+        List<Url> urls = getVCard().getUrls();
+
+        for (Url url : urls) {
+
+            UrlDTO urlDTO = new UrlDTO();
+
+            urlDTO.setAddress(url.getValue());
+            urlDTO.setType(url.getType());
+
+            urlDTOs.add(urlDTO);
+        }
+
+        // an empty default url
+        if (urlDTOs.size() == 0) {
+            urlDTOs.add(new UrlDTO());
+        }
+
+        return urlDTOs;
+
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.0
+     */
+    private int getDay(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.DAY_OF_MONTH);
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.0
+     */
+    private int getMonth(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.MONTH);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     * @since 1.0.0
+     */
+    private int getYear(Date date) {
+
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.YEAR);
+        } else {
+            return 1970;
+        }
+    }
+
+    private static final Log _log = LogFactoryUtil.getLog(ContactImpl.class
+            .getName());
 
 }
