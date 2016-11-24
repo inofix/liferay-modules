@@ -1,7 +1,10 @@
 package ch.inofix.portlet.newsletter.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
+import ch.inofix.portlet.newsletter.NewsletterReferencedByMailingException;
+import ch.inofix.portlet.newsletter.model.Mailing;
 import ch.inofix.portlet.newsletter.model.Newsletter;
 import ch.inofix.portlet.newsletter.service.base.NewsletterLocalServiceBaseImpl;
 
@@ -34,8 +37,8 @@ import com.liferay.portlet.asset.model.AssetLinkConstants;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2016-10-24 15:45
- * @version 1.0.5
+ * @modified 2016-11-24 13:02
+ * @version 1.0.6
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterLocalServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -75,6 +78,16 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     @Override
     public Newsletter deleteNewsletter(long newsletterId)
             throws PortalException, SystemException {
+
+        // Do no delete a newsletter, if it's referenced by one or more
+        // mailings.
+
+        List<Mailing> mailings = mailingPersistence
+                .findByNewsletterId(newsletterId);
+
+        if (mailings.size() > 0) {
+            throw new NewsletterReferencedByMailingException();
+        }
 
         Newsletter newsletter = newsletterPersistence.remove(newsletterId);
 
@@ -127,7 +140,7 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
             newsletter.setCreateDate(now);
 
         }
-        
+
         newsletter.setModifiedDate(now);
 
         // TODO: validate the template string
@@ -190,9 +203,9 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     @Override
     public Newsletter updateNewsletter(long userId, long groupId,
             long newsletterId, String title, String template,
-            String fromAddress, String fromName, boolean useHttps, String vCardGroupId,
-            ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            String fromAddress, String fromName, boolean useHttps,
+            String vCardGroupId, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         Newsletter newsletter = saveNewsletter(userId, groupId, newsletterId,
                 title, template, fromAddress, fromName, useHttps, vCardGroupId,
