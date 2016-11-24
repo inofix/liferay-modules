@@ -28,6 +28,7 @@ import ezvcard.VCard;
 import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Member;
+import ezvcard.property.RawProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Uid;
 
@@ -47,8 +48,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-10-22 23:15
- * @version 1.0.7
+ * @modified 2016-11-24 14:33
+ * @version 1.0.8
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
@@ -89,6 +90,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         String genderStr = null;
         String lastname = null;
         String name = null;
+        String salutation = null;
         String vCardUID = null;
 
         FormattedName formattedName = vCard.getFormattedName();
@@ -99,6 +101,12 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         Gender gender = vCard.getGender();
         if (gender != null) {
             genderStr = gender.getGender();
+        }
+
+        RawProperty rawProperty = vCard.getExtendedProperty("x-salutation");
+
+        if (rawProperty != null) {
+            salutation = rawProperty.getValue();
         }
 
         StructuredName structuredName = vCard.getStructuredName();
@@ -118,11 +126,10 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         subscriber.setFirstname(firstname);
         subscriber.setGender(genderStr);
         subscriber.setLastname(lastname);
-        // TODO: set middlename (from additionalNames)
         subscriber.setModifiedDate(new Date(GetterUtil.getLong(document
                 .get("modified_sortable"))));
         subscriber.setName(name);
-        // TODO: set title (from prefixes)
+        subscriber.setSalutation(salutation);
         subscriber.setVCardUID(vCardUID);
 
         return subscriber;
