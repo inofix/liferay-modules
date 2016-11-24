@@ -8,6 +8,7 @@
 
 <%@ include file="/html/init.jsp"%>
 
+<%@page import="ch.inofix.portlet.newsletter.NewsletterReferencedByMailingException"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
@@ -25,6 +26,12 @@
 <div id="<portlet:namespace />newsletterContainer">
 
     <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" />
+    
+    <liferay-ui:error exception="<%= PrincipalException.class %>" 
+       message="you-dont-have-the-required-permissions"/>
+       
+    <liferay-ui:error exception="<%= NewsletterReferencedByMailingException.class %>"
+        message="the-newsletter-is-referenced-by-one-or-more-mailings"/>    
 
     <liferay-ui:tabs names="mailings,newsletters,subscribers"
         param="tabs1" url="<%=portletURL.toString()%>" />
