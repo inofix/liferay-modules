@@ -7,8 +7,18 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
@@ -29,8 +39,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-11-13 00:41
- * @version 1.5.0
+ * @modified 2016-11-26 14:49
+ * @version 1.5.1
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -46,21 +56,21 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public TaskRecord addTaskRecord(long userId, long groupId, String workPackage, String description, String ticketURL,
             Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException, SystemException {
-        
-        _log.info("add taskRecord");
 
         TaskRecord taskRecord = saveTaskRecord(userId, groupId, 0, description, duration, endDate, startDate, status,
                 workPackage, serviceContext);
 
         // Asset
-        
+
         // TODO: re-enable asset framework
-//
-//        resourceLocalService.addResources(taskRecord.getCompanyId(), groupId, userId, TaskRecord.class.getName(),
-//                taskRecord.getTaskRecordId(), false, true, true);
-//
-//        updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
-//                serviceContext.getAssetLinkEntryIds());
+        //
+        // resourceLocalService.addResources(taskRecord.getCompanyId(), groupId,
+        // userId, TaskRecord.class.getName(),
+        // taskRecord.getTaskRecordId(), false, true, true);
+        //
+        // updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(),
+        // serviceContext.getAssetTagNames(),
+        // serviceContext.getAssetLinkEntryIds());
 
         return taskRecord;
 
@@ -73,46 +83,36 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         return deleteTaskRecord(taskRecord);
     }
 
-    private TaskRecord saveTaskRecord(long userId, long groupId, long taskRecordId, String description, long duration,
-            Date endDate, Date startDate, int status, String workPackage, ServiceContext serviceContext)
-            throws PortalException, SystemException {
-        
-        _log.info("add saveTaskRecord");
+    @Override
+    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+            throws PortalException {
 
-
-        User user = userPersistence.findByPrimaryKey(userId);
-        Date now = new Date();
-        TaskRecord taskRecord = null;
-
-//        if (duration <= 0) {
-//            duration = endDate.getTime() - startDate.getTime();
-//        }
-
-        if (taskRecordId > 0) {
-            taskRecord = taskRecordLocalService.getTaskRecord(taskRecordId);
-        } else {
-            taskRecordId = counterLocalService.increment();
-            taskRecord = taskRecordPersistence.create(taskRecordId);
-            taskRecord.setCompanyId(user.getCompanyId());
-            taskRecord.setGroupId(groupId);
-            taskRecord.setUserId(user.getUserId());
-            taskRecord.setUserName(user.getFullName());
-            taskRecord.setCreateDate(now);
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
-        taskRecord.setModifiedDate(now);
+        Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class.getName());
 
-        taskRecord.setDescription(description);
-        taskRecord.setDuration(duration);
-        taskRecord.setEndDate(endDate);
-        taskRecord.setStartDate(startDate);
-        taskRecord.setStatus(status);
-        taskRecord.setWorkPackage(workPackage);
-        taskRecord.setExpandoBridgeAttributes(serviceContext);
+        SearchContext searchContext = new SearchContext();
 
-        taskRecordPersistence.update(taskRecord);
+        searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
 
-        return taskRecord;
+        searchContext.setAttribute("paginationType", "more");
+
+        Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+        searchContext.setCompanyId(group.getCompanyId());
+
+        searchContext.setEnd(end);
+        searchContext.setGroupIds(new long[] { groupId });
+        searchContext.setSorts(sort);
+        searchContext.setStart(start);
+        searchContext.setEnd(end);
+        searchContext.setGroupIds(new long[] { groupId });
+        searchContext.setStart(start);
+        searchContext.setUserId(userId);
+
+        return indexer.search(searchContext);
 
     }
 
@@ -187,6 +187,48 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
                 serviceContext.getAssetLinkEntryIds());
+
+        return taskRecord;
+
+    }
+
+    private TaskRecord saveTaskRecord(long userId, long groupId, long taskRecordId, String description, long duration,
+            Date endDate, Date startDate, int status, String workPackage, ServiceContext serviceContext)
+            throws PortalException, SystemException {
+
+        _log.info("add saveTaskRecord");
+
+        User user = userPersistence.findByPrimaryKey(userId);
+        Date now = new Date();
+        TaskRecord taskRecord = null;
+
+        // if (duration <= 0) {
+        // duration = endDate.getTime() - startDate.getTime();
+        // }
+
+        if (taskRecordId > 0) {
+            taskRecord = taskRecordLocalService.getTaskRecord(taskRecordId);
+        } else {
+            taskRecordId = counterLocalService.increment();
+            taskRecord = taskRecordPersistence.create(taskRecordId);
+            taskRecord.setCompanyId(user.getCompanyId());
+            taskRecord.setGroupId(groupId);
+            taskRecord.setUserId(user.getUserId());
+            taskRecord.setUserName(user.getFullName());
+            taskRecord.setCreateDate(now);
+        }
+
+        taskRecord.setModifiedDate(now);
+
+        taskRecord.setDescription(description);
+        taskRecord.setDuration(duration);
+        taskRecord.setEndDate(endDate);
+        taskRecord.setStartDate(startDate);
+        taskRecord.setStatus(status);
+        taskRecord.setWorkPackage(workPackage);
+        taskRecord.setExpandoBridgeAttributes(serviceContext);
+
+        taskRecordPersistence.update(taskRecord);
 
         return taskRecord;
 

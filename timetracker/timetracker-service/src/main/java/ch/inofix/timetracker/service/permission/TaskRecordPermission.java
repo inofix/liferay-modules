@@ -11,45 +11,49 @@ import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-13 17:55
- * @modified 2016-11-13 17:55
- * @version 1.0.0
+ * @modified 2016-11-26 23:25
+ * @version 1.0.1
  *
  */
 public class TaskRecordPermission {
 
-    public static void check(PermissionChecker permissionChecker, TaskRecord calendarResource, String actionId)
+    public static void check(PermissionChecker permissionChecker, TaskRecord taskRecord, String actionId)
             throws PortalException {
 
-        if (!contains(permissionChecker, calendarResource, actionId)) {
+        if (!contains(permissionChecker, taskRecord, actionId)) {
             throw new PrincipalException();
         }
     }
 
-    public static void check(PermissionChecker permissionChecker, long calendarResourceId, String actionId)
+    public static void check(PermissionChecker permissionChecker, long taskRecordId, String actionId)
             throws PortalException {
 
-        if (!contains(permissionChecker, calendarResourceId, actionId)) {
+        if (!contains(permissionChecker, taskRecordId, actionId)) {
             throw new PrincipalException();
         }
     }
 
-    public static boolean contains(PermissionChecker permissionChecker, TaskRecord calendarResource, String actionId) {
+    public static boolean contains(PermissionChecker permissionChecker, TaskRecord taskRecord, String actionId) {
 
-        if (permissionChecker.hasOwnerPermission(calendarResource.getCompanyId(), TaskRecord.class.getName(),
-                calendarResource.getTaskRecordId(), calendarResource.getUserId(), actionId)) {
+        if (permissionChecker.hasOwnerPermission(taskRecord.getCompanyId(), TaskRecord.class.getName(),
+                taskRecord.getTaskRecordId(), taskRecord.getUserId(), actionId)) {
 
             return true;
         }
+        
+        return true; 
+        
+        // TODO
 
-        return permissionChecker.hasPermission(calendarResource.getGroupId(), TaskRecord.class.getName(),
-                calendarResource.getTaskRecordId(), actionId);
+//        return permissionChecker.hasPermission(taskRecord.getGroupId(), TaskRecord.class.getName(),
+//                taskRecord.getTaskRecordId(), actionId);
     }
 
-    public static boolean contains(PermissionChecker permissionChecker, long calendarResourceId, String actionId)
+    public static boolean contains(PermissionChecker permissionChecker, long taskRecordId, String actionId)
             throws PortalException {
 
-        TaskRecord calendarResource = TaskRecordLocalServiceUtil.getTaskRecord(calendarResourceId);
+        TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
 
-        return contains(permissionChecker, calendarResource, actionId);
+        return contains(permissionChecker, taskRecord, actionId);
     }
 }
