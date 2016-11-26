@@ -131,6 +131,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
     }
 
+    @Override
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException {
 
@@ -158,10 +159,10 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         searchContext.setGroupIds(new long[] { groupId });
         searchContext.setStart(start);
         searchContext.setUserId(userId);
-        
-        Hits hits = indexer.search(searchContext); 
-        
-//        _log.info(hits.getQuery());
+
+        Hits hits = indexer.search(searchContext);
+
+        // _log.info(hits.getQuery());
 
         return hits;
 

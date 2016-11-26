@@ -2,12 +2,13 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-21 00:17 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-11-26 16:59 by Christian Berndt
+    Version:    1.0.7
 --%>
 
-<%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@ include file="/init.jsp" %>
+
+<%@page import="com.liferay.portal.kernel.search.Sort"%>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
