@@ -17,22 +17,21 @@ import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import ch.inofix.referencemanager.model.Reference;
-
 /**
  * 
  * @author Christian Berndt
  * @created 2016-11-18 00:58
- * @modified 2016-11-18 00:58
- * @version 1.0.0
+ * @modified 2016-11-26 12:00
+ * @version 1.0.1
  *
  */
-public class ReferenceSearch extends SearchContainer<Reference> {
+public class ReferenceSearch extends SearchContainer<Document> {
 
     public static final String EMPTY_RESULTS_MESSAGE = "no-references-were-found";
 

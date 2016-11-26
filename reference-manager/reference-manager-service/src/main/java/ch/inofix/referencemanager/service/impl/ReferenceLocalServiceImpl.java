@@ -23,13 +23,22 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceLocalServiceBaseImpl;
@@ -52,8 +61,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-19 22:51
- * @version 0.3.0
+ * @modified 2016-11-26 11:59
+ * @version 0.4.0
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -119,6 +128,42 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     public Reference getReference(long referenceId) throws PortalException {
 
         return referencePersistence.findByPrimaryKey(referenceId);
+
+    }
+
+    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+            throws PortalException {
+
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
+        }
+
+        Indexer<Reference> indexer = IndexerRegistryUtil.getIndexer(Reference.class.getName());
+
+        SearchContext searchContext = new SearchContext();
+
+        searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
+
+        searchContext.setAttribute("paginationType", "more");
+
+        Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+        searchContext.setCompanyId(group.getCompanyId());
+
+        searchContext.setEnd(end);
+        searchContext.setGroupIds(new long[] { groupId });
+        searchContext.setSorts(sort);
+        searchContext.setStart(start);
+        searchContext.setEnd(end);
+        searchContext.setGroupIds(new long[] { groupId });
+        searchContext.setStart(start);
+        searchContext.setUserId(userId);
+        
+        Hits hits = indexer.search(searchContext); 
+        
+//        _log.info(hits.getQuery());
+
+        return hits;
 
     }
 

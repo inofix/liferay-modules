@@ -6,18 +6,33 @@
     Version:    1.0.6
 --%>
 
+<%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@ include file="/init.jsp" %>
 
 <%
-	String backURL = ParamUtil.getString(request, "backURL");
-	String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    String backURL = ParamUtil.getString(request, "backURL");
+    String keywords = ParamUtil.getString(request, "keywords");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
-	SearchContainer searchContainer = new ReferenceSearch(renderRequest, "cur", portletURL);
+    SearchContainer referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
+    
+    boolean reverse = false; 
+    if (referenceSearch.getOrderByType().equals("desc")) {
+        reverse = true;
+    }
+    
+    Sort sort = new Sort(referenceSearch.getOrderByCol(), reverse);
+    
+    ReferenceSearchTerms searchTerms = (ReferenceSearchTerms) referenceSearch.getSearchTerms();
 
-	ReferenceSearchTerms searchTerms = (ReferenceSearchTerms)searchContainer.getSearchTerms();
+    Hits hits = referenceLocalService.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
+            referenceSearch.getStart(), referenceSearch.getEnd(), sort);
+    
+    List<Document> documents = ListUtil.toList(hits.getDocs());
 
+    referenceSearch.setResults(documents); 
+    referenceSearch.setTotal(hits.getLength());
 %>
-
 
 <liferay-ui:error exception="<%= PrincipalException.class %>"
 	message="you-dont-have-the-required-permissions" />
@@ -49,33 +64,45 @@
 
 			<aui:button href="<%= editReferenceURL %>" value="add-reference" />
 		</aui:button-row>
+        
+        <div class="search-results">
+            <liferay-ui:search-speed hits="<%= hits %>" searchContainer="<%= referenceSearch %>" />
+        </div>
 
-    <liferay-ui:search-container
-        cssClass="references-search-container"
-        id="references"
-        searchContainer="<%= searchContainer %>"
-        var="referenceSearchContainer"
-    >
+        <liferay-ui:search-container
+            cssClass="references-search-container"
+            id="references"
+            searchContainer="<%= referenceSearch %>"
+            var="referenceSearchContainer">
 
+        <%-- -
 			<liferay-ui:search-container-results
 				results="<%= referenceLocalService.getReferences(searchContainer.getStart(), searchContainer.getEnd()) %>" />
+        --%>
 
+        <liferay-ui:search-container-row
+            className="com.liferay.portal.kernel.search.Document"
+            keyProperty="entryClassPK"
+            modelVar="document">
+            
+            <%-- 
 			<liferay-ui:search-container-row
 				className="ch.inofix.referencemanager.model.Reference"
 				escapedModel="true" modelVar="reference">
+--%>
+                <liferay-ui:search-container-column-text name="id"
+                    value="<%=document.get("entryClassPK")%>"
+                    orderable="true" valign="top" />
 
-				<liferay-ui:search-container-column-text name="id"
-					property="referenceId" orderable="true" valign="top" />
-                    
-                <liferay-ui:search-container-column-text
-                    name="author" property="author" orderable="true"
-                />
-                <liferay-ui:search-container-column-text
-                    name="title" property="title" orderable="true"
-                />
-                <liferay-ui:search-container-column-text
-                    name="year" property="year" orderable="true"
-                />
+                <liferay-ui:search-container-column-text name="author"
+                    value="<%=document.get("author")%>"
+                    orderable="true" orderableProperty="author_sortable" />
+                <liferay-ui:search-container-column-text name="title"
+                    value="<%=document.get("title")%>"
+                    orderable="true" orderableProperty="title_sortable" />
+                <liferay-ui:search-container-column-text name="year"
+                    value="<%=document.get("year")%>" orderable="true"
+                    orderableProperty="year_sortable" />
 
                 <%-- 
 				<liferay-ui:search-container-column-text name="bibtex" valign="top">
@@ -98,14 +125,15 @@
                 --%>
 
 			
-
+                <%-- 
 				<liferay-ui:search-container-column-jsp cssClass="entry-action"
 					path="/reference_action.jsp" valign="top" />
+                --%>
 
 			</liferay-ui:search-container-row>
 
-			<liferay-ui:search-iterator />
-			
+            <liferay-ui:search-iterator/>
+            			
 		</liferay-ui:search-container>
 	</c:otherwise>
 </c:choose>
