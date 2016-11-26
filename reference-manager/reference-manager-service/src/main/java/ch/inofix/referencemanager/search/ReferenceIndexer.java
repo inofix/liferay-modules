@@ -34,8 +34,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-18 01:15
- * @modified 2016-11-18 01:16
- * @version 1.0.0
+ * @modified 2016-11-26 11:58
+ * @version 1.0.1
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -44,9 +44,9 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
     public static final String CLASS_NAME = Reference.class.getName();
 
     public ReferenceIndexer() {
-        setDefaultSelectedFieldNames(Field.ASSET_TAG_NAMES, Field.COMPANY_ID, Field.ENTRY_CLASS_NAME,
+        setDefaultSelectedFieldNames(Field.ASSET_TAG_NAMES, "author", Field.COMPANY_ID, Field.ENTRY_CLASS_NAME,
                 Field.ENTRY_CLASS_PK, Field.GROUP_ID, Field.MODIFIED_DATE, Field.SCOPE_GROUP_ID, Field.TITLE, Field.UID,
-                Field.URL);
+                Field.URL, "year");
         setFilterSearch(true);
         setPermissionAware(true);
     }
@@ -59,7 +59,6 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
     @Override
     public boolean hasPermission(PermissionChecker permissionChecker, String entryClassName, long entryClassPK,
             String actionId) throws Exception {
-
         return ReferencePermission.contains(permissionChecker, entryClassPK, ActionKeys.VIEW);
     }
 
@@ -74,9 +73,9 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
 
         Document document = getBaseModelDocument(CLASS_NAME, reference);
         document.addText(Field.CONTENT, reference.getBibTeX());
-        document.addText("author", reference.getAuthor());
-        document.addText(Field.TITLE, reference.getCitation());
-        document.addText("year", reference.getYear());
+        document.addTextSortable("author", reference.getAuthor());
+        document.addTextSortable(Field.TITLE, reference.getCitation());
+        document.addTextSortable("year", reference.getYear());
 
         return document;
 
