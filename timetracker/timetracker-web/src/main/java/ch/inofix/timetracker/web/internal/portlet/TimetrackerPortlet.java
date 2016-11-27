@@ -1,18 +1,20 @@
-package ch.inofix.timetracker.web.internal.portlet.portlet;
+package ch.inofix.timetracker.web.internal.portlet;
 
+import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-//import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -21,6 +23,7 @@ import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.thoughtworks.xstream.XStream;
 
+import ch.inofix.timetracker.constants.TimetrackerPortletKeys;
 import ch.inofix.timetracker.exception.NoSuchTaskRecordException;
 import ch.inofix.timetracker.exception.TaskRecordEndDateException;
 import ch.inofix.timetracker.exception.TaskRecordStartDateException;
@@ -28,6 +31,7 @@ import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.model.impl.TaskRecordImpl;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
 import ch.inofix.timetracker.service.TaskRecordService;
+import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
 import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
 
 import java.io.File;
@@ -39,6 +43,7 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -88,6 +93,12 @@ public class TimetrackerPortlet extends MVCPortlet {
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
 
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @throws Exception
+     */
     public void deleteTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
         long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
@@ -95,9 +106,15 @@ public class TimetrackerPortlet extends MVCPortlet {
         _taskRecordService.deleteTaskRecord(taskRecordId);
     }
 
-    public TaskRecord editTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @throws Exception
+     */
+    public void updateTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("editTaskRecord()");
+        _log.info("updateTaskRecord()");
 
         long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
 
@@ -151,6 +168,8 @@ public class TimetrackerPortlet extends MVCPortlet {
             _log.error(e);
         }
 
+        TaskRecord taskRecord = null;
+
         if (taskRecordId <= 0) {
 
             // Add taskRecord
@@ -158,8 +177,8 @@ public class TimetrackerPortlet extends MVCPortlet {
             _log.info("add taskRecord");
 
             // TODO: Use remote service
-            return _taskRecordLocalService.addTaskRecord(userId, groupId, workPackage, description, ticketURL, endDate,
-                    startDate, status, duration, serviceContext);
+            taskRecord = _taskRecordLocalService.addTaskRecord(userId, groupId, workPackage, description, ticketURL,
+                    endDate, startDate, status, duration, serviceContext);
 
         } else {
 
@@ -168,17 +187,13 @@ public class TimetrackerPortlet extends MVCPortlet {
             _log.info("update taskRecord");
 
             // TODO: Use remote service
-            return _taskRecordLocalService.updateTaskRecord(userId, groupId, taskRecordId, workPackage, description,
-                    ticketURL, endDate, startDate, status, duration, serviceContext);
+            taskRecord = _taskRecordLocalService.updateTaskRecord(userId, groupId, taskRecordId, workPackage,
+                    description, ticketURL, endDate, startDate, status, duration, serviceContext);
         }
-    }
 
-    public TaskRecordLocalService getTaskRecordLocalService() {
-        return _taskRecordLocalService;
-    }
+        String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
 
-    public TaskRecordService getTaskRecordService() {
-        return _taskRecordService;
+        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
     }
 
     /**
@@ -188,23 +203,17 @@ public class TimetrackerPortlet extends MVCPortlet {
      */
     public void importXML(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("importXML");
-
         ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
 
         UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
 
         File file = uploadPortletRequest.getFile("file");
 
-        _log.info("file = " + file);
-
         if (Validator.isNotNull(file)) {
 
             com.liferay.portal.kernel.xml.Document document = SAXReaderUtil.read(file);
 
             List<Node> nodes = document.selectNodes("/taskRecords/" + TaskRecordImpl.class.getName());
-
-            _log.info("nodes.size() = " + nodes.size());
 
             int numRecords = 0;
 
@@ -295,23 +304,86 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     @Override
-    public void render(RenderRequest request, RenderResponse response) throws IOException, PortletException {
+    public void render(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
 
-        // set service bean
+        try {
+            getTaskRecord(renderRequest);
+        } catch (Exception e) {
+            if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
+                SessionErrors.add(renderRequest, e.getClass());
+            } else {
+                throw new PortletException(e);
+            }
+        }
 
-        request.setAttribute("taskRecordLocaleService", getTaskRecordLocalService());
-        request.setAttribute("taskRecordService", getTaskRecordService());
+        super.render(renderRequest, renderResponse);
+    }
 
-        super.render(request, response);
+    @Override
+    protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+
+        _log.info("doDispatch()");
+
+        if (SessionErrors.contains(renderRequest, PrincipalException.getNestedClasses())
+                || SessionErrors.contains(renderRequest, NoSuchTaskRecordException.class)) {
+            include("/error.jsp", renderRequest, renderResponse);
+        } else {
+            super.doDispatch(renderRequest, renderResponse);
+        }
+    }
+
+    protected String getEditTaskRecordURL(ActionRequest actionRequest, ActionResponse actionResponse,
+            TaskRecord taskRecord) throws Exception {
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        String editTaskRecordURL = getRedirect(actionRequest, actionResponse);
+
+        if (Validator.isNull(editTaskRecordURL)) {
+            editTaskRecordURL = PortalUtil.getLayoutFullURL(themeDisplay);
+        }
+
+        String namespace = actionResponse.getNamespace();
+        String windowState = actionResponse.getWindowState().toString();
+
+        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, "p_p_id", TimetrackerPortletKeys.TIMETRACKER);
+        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, "p_p_state", windowState);
+        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, namespace + "mvcPath",
+                templatePath + "edit_task_record.jsp");
+        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, namespace + "redirect",
+                getRedirect(actionRequest, actionResponse));
+        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, namespace + "backURL",
+                ParamUtil.getString(actionRequest, "backURL"));
+        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, namespace + "taskRecordId",
+                taskRecord.getTaskRecordId());
+
+        _log.info(editTaskRecordURL);
+
+        return editTaskRecordURL;
+    }
+
+    protected void getTaskRecord(PortletRequest portletRequest) throws Exception {
+
+        long taskRecordId = ParamUtil.getLong(portletRequest, "taskRecordId");
+
+        if (taskRecordId <= 0) {
+            return;
+        }
+
+        TaskRecord taskRecord = _taskRecordService.getTaskRecord(taskRecordId);
+
+        portletRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
     }
 
     @Reference
-    public void setTaskRecordLocalService(TaskRecordLocalService taskRecordLocalService) {
+    protected void setTaskRecordLocalService(TaskRecordLocalService taskRecordLocalService) {
         this._taskRecordLocalService = taskRecordLocalService;
     }
 
     @Reference
-    public void setTaskRecordService(TaskRecordService taskRecordService) {
+    protected void setTaskRecordService(TaskRecordService taskRecordService) {
         this._taskRecordService = taskRecordService;
     }
 
