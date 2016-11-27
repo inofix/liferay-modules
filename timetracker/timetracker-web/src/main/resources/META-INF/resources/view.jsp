@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2016-11-26 14:24 by Christian Berndt
-    Version:     1.5.1
+    Modified:    2016-11-27 17:36 by Christian Berndt
+    Version:     1.5.2
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -69,7 +69,7 @@
         <c:when test='<%=tabs1.equals("import-export")%>'>
         
             <%
-            // TODO: re-enabled permission check
+            // TODO: re-enable permission check
             %>
              <%--
             <c:if test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
@@ -83,10 +83,16 @@
             
              <%--
             
+             <%
+            // TODO: re-enable permission check
+            %>           
             <c:if
                 test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
                                 ActionKeys.DELETE)%>'>
+            --%>
                 <%@include file="/delete_task_records.jspf"%>
+                
+            <%-- 
             </c:if>
             --%>
             
