@@ -4,7 +4,7 @@
     service.xml: Model description of Inofix' timetracker
     
     Created:    2013-10-21 14:16 by Christian Berndt
-    Modified:   2016-11-12 18:43 by Christian Berndt   
+    Modified:   2016-11-27 11:45 by Christian Berndt   
 -->
 
 <!DOCTYPE service-builder 
@@ -53,6 +53,10 @@
         </order>
 
         <!-- Finder methods -->
+        
+        <finder name="GroupId" return-type="Collection">
+            <finder-column name="groupId" />
+        </finder>         
 
         <!-- References -->
 

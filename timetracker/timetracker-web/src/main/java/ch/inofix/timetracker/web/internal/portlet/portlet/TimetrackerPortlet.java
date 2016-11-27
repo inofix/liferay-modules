@@ -50,8 +50,8 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @author Christian Berndt
  * @created 2013-10-07 10:47
- * @modified 2016-11-26 13:58
- * @version 1.5.1
+ * @modified 2016-11-27 17:35
+ * @version 1.5.5
  */
 @Component(immediate = true, property = { "com.liferay.portlet.display-category=category.inofix",
         "com.liferay.portlet.instanceable=false", "javax.portlet.display-name=Timetracker",
@@ -59,6 +59,34 @@ import org.osgi.service.component.annotations.Reference;
         "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class TimetrackerPortlet extends MVCPortlet {
+
+    /**
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.8
+     * @throws Exception
+     */
+    public void deleteAllTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
+
+        // TODO: use remote service
+        List<TaskRecord> taskRecords = _taskRecordLocalService.getGroupTaskRecords(serviceContext.getScopeGroupId());
+
+        for (TaskRecord taskRecord : taskRecords) {
+
+            // TODO: Add try-catch and count failed deletions
+            taskRecord = _taskRecordLocalService.deleteTaskRecord(taskRecord.getTaskRecordId());
+
+        }
+
+        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                PortletUtil.translate("successfully-deleted-x-task-records"));
+
+        actionResponse.setRenderParameter("tabs1", tabs1);
+    }
 
     public void deleteTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
@@ -258,7 +286,7 @@ public class TimetrackerPortlet extends MVCPortlet {
                 numRecords++;
             }
 
-            SessionMessages.add(actionRequest, "requestProcessed",
+            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-imported-x-task-records", numRecords));
         } else {
             SessionErrors.add(actionRequest, PortletUtil.translate("file-not-found"));
@@ -286,6 +314,8 @@ public class TimetrackerPortlet extends MVCPortlet {
     public void setTaskRecordService(TaskRecordService taskRecordService) {
         this._taskRecordService = taskRecordService;
     }
+
+    private static final String REQUEST_PROCESSED = "request_processed";
 
     private static final Log _log = LogFactoryUtil.getLog(TimetrackerPortlet.class.getName());
 

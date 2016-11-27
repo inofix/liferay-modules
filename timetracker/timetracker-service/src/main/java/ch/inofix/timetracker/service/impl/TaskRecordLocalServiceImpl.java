@@ -1,6 +1,7 @@
 package ch.inofix.timetracker.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -39,8 +40,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-11-26 14:49
- * @version 1.5.1
+ * @modified 2016-11-27 11:41
+ * @version 1.5.2
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -76,11 +77,26 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
     }
 
+    /**
+     * @param taskRecordId
+     * @return
+     */
     public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException, SystemException {
 
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
         return deleteTaskRecord(taskRecord);
+    }
+
+    /**
+     * 
+     * @param groupId
+     * @return
+     * @since 1.5.2
+     */
+    public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException, SystemException {
+
+        return taskRecordPersistence.findByGroupId(groupId);
     }
 
     @Override
