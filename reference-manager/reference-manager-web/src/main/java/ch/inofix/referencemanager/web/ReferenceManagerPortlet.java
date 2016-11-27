@@ -232,7 +232,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         } else {
 
             // TODO: use remote service
-            //
+            getReferenceLocalService().updateReference(referenceId, userId, groupId, bibTeX, serviceContext);
 
         }
     }

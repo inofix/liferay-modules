@@ -2,9 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2016-11-27 00:28 by Christian Berndt
-    Version:     1.5.1
-
+    Modified:    2016-11-27 20:19 by Christian Berndt
+    Version:     1.5.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -24,11 +23,11 @@
     if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp() &&
         "editTaskRecord".equals(windowId)) {
 
-        PortletURL portletURL = renderResponse.createRenderURL();
-        portletURL.setParameter("mvcPath", "/html/close_popup.jsp");
-        portletURL.setParameter("redirect", redirect);
-        portletURL.setParameter("windowId", windowId);
-        backURL = portletURL.toString();
+        PortletURL closeURL = renderResponse.createRenderURL();
+        closeURL.setParameter("mvcPath", "/html/close_popup.jsp");
+        closeURL.setParameter("redirect", redirect);
+        closeURL.setParameter("windowId", windowId);
+        backURL = closeURL.toString();
     }
 
     String historyKey = ParamUtil.getString(request, "historyKey");
@@ -48,10 +47,8 @@
                 request, portletResource);
     }
 
-    // Retrieve the task record from the request
-    // (Stored there by the MVC Controller portlet).
     TaskRecord taskRecord =
-        (TaskRecord) request.getAttribute(TimetrackerPortletKeys.TASK_RECORD);
+        (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
 
     String durationInMinutes = null;
 
@@ -85,9 +82,9 @@
     }
 %>
 
-<%-- Compose the saveTaskRecordURL --%>
-<portlet:actionURL var="saveTaskRecordURL" name="saveTaskRecord">
-    <portlet:param name="mvcPath" value="/html/edit_task_record.jsp" />
+<portlet:actionURL name="updateTaskRecord" var="updateTaskRecordURL"
+    windowState="<%=LiferayWindowState.POP_UP.toString() %>">
+    <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
 </portlet:actionURL>
 
 <div class="timetracker-portlet">
@@ -95,9 +92,9 @@
     <liferay-ui:header title="timetracker" backURL="<%=backURL%>"
         showBackURL="<%=true%>" />
 
-    <aui:form method="post" action="<%=saveTaskRecordURL%>" name="fm">
+    <aui:form method="post" action="<%=updateTaskRecordURL%>" name="fm">
 
-        <aui:input name="<%=CommonFields.USER_ID%>"
+        <aui:input name="userId"
             value="<%=String.valueOf(themeDisplay.getUserId())%>"
             type="hidden" />
 
@@ -112,25 +109,25 @@
                     <aui:input name="backURL" type="hidden"
                         value="<%=backURL%>" />
                         
-                    <aui:input name="<%=TaskRecordFields.END_DATE%>"
+                    <aui:input name="endDate"
                         type="hidden" />
                         
                     <aui:input name="redirect" type="hidden"
                         value="<%=redirect%>" />
                         
                     <aui:input
-                        name="<%=TaskRecordFields.TASK_RECORD_ID%>"
+                        name="taskRecordId"
                         type="hidden" />
 
-                    <aui:input name="<%=TaskRecordFields.WORK_PACKAGE%>"
+                    <aui:input name="workPackage"
                         helpMessage="work-package-help"
                         cssClass="timetracker-input" />
                         
-                    <aui:input name="<%=TaskRecordFields.TICKET_URL%>"
+                    <aui:input name="titleURL"
                         label="ticket-url" helpMessage="ticket-url-help"
                         cssClass="timetracker-input" />
                         
-                    <aui:input name="<%=TaskRecordFields.DESCRIPTION%>" />
+                    <aui:input name="description" />
 
                 </aui:fieldset>
             </aui:col>
@@ -138,12 +135,10 @@
             <aui:col span="6">
                 <aui:fieldset>
                 
-                    <aui:input name="<%=TaskRecordFields.START_DATE%>"
+                    <aui:input name="startDate"
                         label="date" />                
 
-                    <c:if
-                        test="<%=Validator.equals(
-                                    TimeFormat.FROM_UNTIL, timeFormat)%>">
+                    <c:if test="<%=Validator.equals("from-until", timeFormat)%>">
                         <aui:field-wrapper name="from-until">
                             <iu:time-picker deltaMinutes="<%=15%>"
                                 firstHour="<%=0%>"
@@ -162,10 +157,9 @@
                         </aui:field-wrapper>
                     </c:if>
                     <c:if
-                        test="<%=!Validator.equals(
-                                    TimeFormat.FROM_UNTIL, timeFormat)%>">
+                        test="<%=!Validator.equals("from-until", timeFormat)%>">
                         <aui:field-wrapper
-                            label="<%=TaskRecordFields.DURATION%>"
+                            label="duration"
                             helpMessage="duration-help">
                             <input name="<portlet:namespace/>duration"
                                 value="<%=durationInMinutes%>"

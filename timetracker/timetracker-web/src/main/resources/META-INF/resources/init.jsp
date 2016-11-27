@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2016-11-26 14:42 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2016-11-27 18:57 by Christian Berndt
+    Version:     1.0.4
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -14,16 +14,18 @@
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="ch.inofix.timetracker.exception.NoSuchTaskRecordException"%>
 <%@page import="ch.inofix.timetracker.model.TaskRecord"%>
 <%@page import="ch.inofix.timetracker.service.permission.TaskRecordPermission"%>
-<%@page import="ch.inofix.timetracker.service.TaskRecordService"%>
-<%@page import="ch.inofix.timetracker.service.TaskRecordLocalService"%>
+<%@page import="ch.inofix.timetracker.service.TaskRecordLocalServiceUtil"%>
+<%@page import="ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearchTerms"%>
 
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
+<%@page import="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
@@ -37,6 +39,7 @@
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
+<%@page import="com.liferay.portal.kernel.workflow.WorkflowConstants"%>
 
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.ParseException"%>
@@ -57,10 +60,8 @@
 
     String[] columns = portletPreferences.getValues("columns", new String[] { "task-record-id", "work-package",
             "start-date", "duration", "create-date", "modified-date", "user-name", "status" });
-
+    
     String currentURL = portletURL.toString();
-    // TODO: remove local service
-    TaskRecordLocalService taskRecordLocalService = (TaskRecordLocalService) request
-            .getAttribute("taskRecordLocaleService");
-    TaskRecordService taskRecordService = (TaskRecordService) request.getAttribute("taskRecordService");
+    
+    String timeFormat = portletPreferences.getValue("time-format", "from-until");
 %>

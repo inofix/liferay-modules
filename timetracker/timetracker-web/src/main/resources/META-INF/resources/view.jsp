@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2016-11-27 17:36 by Christian Berndt
-    Version:     1.5.2
+    Modified:    2016-11-27 22:26 by Christian Berndt
+    Version:     1.5.3
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -32,7 +32,7 @@
     TaskRecordSearchTerms searchTerms = (TaskRecordSearchTerms) taskRecordSearch.getSearchTerms();
 
     // TODO: use remote service
-    Hits hits = taskRecordLocalService.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
+    Hits hits = TaskRecordLocalServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
             taskRecordSearch.getStart(), taskRecordSearch.getEnd(), sort);
         
     List<Document> documents = ListUtil.toList(hits.getDocs());
@@ -43,7 +43,7 @@
         try {
             long taskRecordId = GetterUtil.getLong(document.get("entryClassPK"));
             // TODO: use remote service
-            TaskRecord taskRecord = taskRecordLocalService.getTaskRecord(taskRecordId);
+            TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
             taskRecords.add(taskRecord); 
         } catch (Exception e) {
             System.out.println(e); 
@@ -149,15 +149,18 @@
                                 <portlet:param name="taskRecordId"
                                     value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
                             </portlet:resourceURL>
-
-                            <portlet:actionURL var="editURL" name="editTaskRecord"
+                            
+                            <%-- 
+                            <portlet:renderURL var="editURL">
+                                --%>
+                            <portlet:renderURL var="editURL"
                                 windowState="<%= LiferayWindowState.POP_UP.toString() %>">
                                 <portlet:param name="redirect" value="<%= currentURL %>" />
                                 <portlet:param name="taskRecordId"
                                     value="<%= String.valueOf(taskRecord.getTaskRecordId()) %>" />
                                 <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
                                 <portlet:param name="windowId" value="editTaskRecord" />
-                            </portlet:actionURL>
+                            </portlet:renderURL>
         
                             <%
                                 StringBuilder sb = new StringBuilder(); 
@@ -187,7 +190,9 @@
                             <%                  
                                 String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
                                 String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
-                                
+
+//                                 taglibEditURL = editURL;
+                                        
                                 boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker,
                                         taskRecord.getTaskRecordId(), ActionKeys.DELETE);   
                                 boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker,
