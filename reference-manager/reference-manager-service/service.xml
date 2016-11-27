@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2016-11-14 23:26 by Christian Berndt 
-    Version:    1.0.1
+    Modified:   2016-11-27 17:31 by Christian Berndt 
+    Version:    1.0.2
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -44,6 +44,9 @@
         <!-- Order -->
 
         <!-- Finder methods -->
+        <finder name="GroupId" return-type="Collection">
+            <finder-column name="groupId" />
+        </finder>        
 
 		<!-- References -->
 
