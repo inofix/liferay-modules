@@ -20,8 +20,8 @@
     <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
     <aui:input name="<%= Constants.CMD %>" type="hidden" value="importBibTeXFile" />
     
-    <aui:fieldset label="import">
-        <aui:input cssClass="file-input" label="" name="file" type="file" />
+    <div class="upload">
+        <aui:input label="" name="file" type="file" inlineField="true"/>
         <aui:button type="submit" value="import" />
-    </aui:fieldset>
+    </div>
 </aui:form>

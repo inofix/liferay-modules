@@ -66,13 +66,22 @@ import com.liferay.portal.kernel.util.StringPool;
  * @author Christian Berndt
  * @created 2016-04-10 22:32
  * @modified 2016-11-18 19:32
- * @version 1.0.2
+ * @version 1.0.3
  */
-@Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
-        "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.instanceable=false",
-        "javax.portlet.security-role-ref=power-user,user", "javax.portlet.init-param.template-path=/",
+@Component(
+    immediate = true, 
+    property = { 
+        "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
+        "com.liferay.portlet.display-category=category.inofix", 
+        "com.liferay.portlet.header-portlet-css=/css/main.css",
+        "com.liferay.portlet.instanceable=false",
+        "javax.portlet.security-role-ref=power-user,user", 
+        "javax.portlet.init-param.template-path=/",
         "javax.portlet.init-param.view-template=/view.jsp",
-        "javax.portlet.resource-bundle=content.Language" }, service = Portlet.class)
+        "javax.portlet.resource-bundle=content.Language" 
+    }, 
+    service = Portlet.class
+)
 public class ReferenceManagerPortlet extends MVCPortlet {
 
     @Override
