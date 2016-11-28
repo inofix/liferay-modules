@@ -19,6 +19,8 @@
                 </simple>
             </trigger>
         </scheduler-entry>
+        <control-panel-entry-category>site_administration.content</control-panel-entry-category>
+        <control-panel-entry-weight>100</control-panel-entry-weight>
         <!-- site wide newsletter-portlet preferences -->
         <preferences-company-wide>false</preferences-company-wide>
         <preferences-unique-per-layout>false</preferences-unique-per-layout>
