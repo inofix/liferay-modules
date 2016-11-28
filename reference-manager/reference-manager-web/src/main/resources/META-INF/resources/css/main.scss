@@ -1,0 +1,30 @@
+@import "bourbon";
+@import "mixins";
+
+.reference-manager-portlet {
+    
+    input[type="file"] {
+        height: auto;
+    }
+               
+    .search-results {
+        margin-bottom: 20px; 
+    }
+    
+    .table-bordered {
+        > thead {
+            > tr {
+                th, td {
+                    border-bottom-width: 1px;
+                }
+            }        
+        }  
+    } 
+    
+    .upload {
+        .btn {
+            margin-bottom: 16px;
+            margin-left: 15px;
+        }
+    }
+}
