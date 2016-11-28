@@ -6,8 +6,8 @@
     service.xml: Model description for the newsletter-portlet.
     
     Created:    2016-10-07 23:13 by Christian Berndt
-    Modified:   2016-11-24 13:26 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2016-11-28 12:40 by Christian Berndt
+    Version:    1.1.5
 -->
 <service-builder package-path="ch.inofix.portlet.newsletter">
 
@@ -41,6 +41,7 @@
         <column name="template" type="String" />
         <column name="newsletterId" type="long"/>
         <column name="articleId" type="String"/>
+        <column name="articleGroupId" type="long"/>
         <column name="publishDate" type="Date" />
         <column name="sent" type="boolean"/>
         <column name="sendDate" type="Date"/>

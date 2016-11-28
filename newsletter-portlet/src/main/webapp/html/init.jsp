@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2016-10-24 14:14 by Christian Berndt
-    Version:     1.1.4
+    Modified:    2016-11-28 12:18 by Christian Berndt
+    Version:     1.1.5
 --%>
 
 <%-- Import required classes --%>
@@ -78,7 +78,11 @@
 <theme:defineObjects />
 
 <%
+    long articleGroupId = GetterUtil.getLong(portletPreferences
+            .getValue("articleGroupId", ""));
+
     String currentURL = PortalUtil.getCurrentURL(request);
-    String newsletterStructureId = portletPreferences
-            .getValue("newsletterStructureId", "");
+    
+    String newsletterStructureId = portletPreferences.getValue(
+            "newsletterStructureId", "");
 %>
