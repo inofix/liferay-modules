@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-26 16:59 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-11-28 22:56 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -57,15 +57,20 @@
 
 	<c:otherwise>
 
-		<aui:button-row>
-			<portlet:renderURL var="editReferenceURL">
-				<portlet:param name="mvcPath" value="/edit_reference.jsp" />
-				<portlet:param name="redirect" value="<%= currentURL %>" />
-			</portlet:renderURL>
+        <aui:button-row>
+            <portlet:renderURL var="editReferenceURL">
+                <portlet:param name="mvcPath"
+                    value="/edit_reference.jsp" />
+                <portlet:param name="redirect" value="<%=currentURL%>" />
+            </portlet:renderURL>
 
-			<aui:button href="<%= editReferenceURL %>" value="add-reference" />
-		</aui:button-row>
-        
+            <aui:button href="<%=editReferenceURL%>"
+                cssClass="btn-primary"
+                value="add-reference"
+                disabled="<%=!ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
+                                ReferenceActionKeys.ADD_REFERENCE)%>" />
+        </aui:button-row>
+
         <div class="search-results">
             <liferay-ui:search-speed hits="<%= hits %>" searchContainer="<%= referenceSearch %>" />
         </div>
