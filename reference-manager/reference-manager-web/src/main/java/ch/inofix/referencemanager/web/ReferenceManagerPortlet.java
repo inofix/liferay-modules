@@ -65,12 +65,13 @@ import com.liferay.portal.kernel.util.StringPool;
 /**
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-11-18 19:32
- * @version 1.0.3
+ * @modified 2016-11-28 23:11
+ * @version 1.0.4
  */
 @Component(
     immediate = true, 
-    property = { 
+    property = {
+        "com.liferay.portlet.add-default-resource=true",            
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
         "com.liferay.portlet.display-category=category.inofix", 
         "com.liferay.portlet.header-portlet-css=/css/main.css",

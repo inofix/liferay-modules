@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-27 14:42 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-11-28 23:12 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -13,7 +13,10 @@
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="ch.inofix.referencemanager.constants.ReferenceActionKeys"%>
 <%@page import="ch.inofix.referencemanager.model.Reference"%>
+<%@page import="ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission"%>
+<%@page import="ch.inofix.referencemanager.service.permission.ReferencePermission"%>
 <%@page import="ch.inofix.referencemanager.service.ReferenceLocalService"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearch"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearchTerms"%>
