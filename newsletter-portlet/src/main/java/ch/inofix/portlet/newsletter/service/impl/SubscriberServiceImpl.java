@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchEngineUtil;
+//import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.search.facet.SimpleFacet;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -48,8 +48,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-11-24 14:33
- * @version 1.0.8
+ * @modified 2016-11-28 17:40
+ * @version 1.1.0
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
@@ -146,7 +146,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         searchContext.addFacet(simpleFacet);
 
         Hits hits = search(groupId, searchContext, 0, 1);
-
+        
         if (hits.getLength() > 0) {
             return hits.doc(0);
         } else {
@@ -187,7 +187,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         searchContext.setCompanyId(companyId);
         searchContext.setGroupIds(new long[] { groupId });
         searchContext.setEnd(end);
-        searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
+        // searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
 
         Document group = getDocument(groupId, searchContext, vCardGroupId);
         List<Subscriber> subscribers = new ArrayList<Subscriber>();
@@ -246,7 +246,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         searchContext.setCompanyId(companyId);
         searchContext.setGroupIds(new long[] { groupId });
         searchContext.setEnd(1);
-        searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
+        // searchContext.setEntryClassNames(SearchEngineUtil.getEntryClassNames());
 
         Document group = getDocument(groupId, searchContext, vCardGroupId);
 
@@ -259,10 +259,28 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
             if (vCard != null) {
                 List<Member> members = vCard.getMembers();
                 if (members != null) {
-                    numSubscribers = members.size();
+
+                    // Loop over the members and check whether
+                    // the vCard exists in this group
+                    for (Member member : members) {
+
+                        String uri = member.getUri();
+
+                        if (uri != null) {
+                            vCardGroupId = uri.replace("urn:uuid:", "");
+                        }
+
+                        Document document = getDocument(groupId, searchContext,
+                                vCardGroupId);
+
+                        if (document != null) {
+
+                            numSubscribers++;
+
+                        }
+                    }
                 }
             }
-
         }
 
         return numSubscribers;
