@@ -17,6 +17,7 @@
 		</field>
 		<field name="newsletterId" type="long" />
 		<field name="articleId" type="String" />
+		<field name="articleGroupId" type="long" />
 		<field name="publishDate" type="Date" />
 		<field name="sent" type="boolean" />
 		<field name="sendDate" type="Date" />

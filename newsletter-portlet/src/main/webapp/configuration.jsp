@@ -3,8 +3,8 @@
     newsletter-portlet.
 
     Created:    2016-10-05 15:43 by Christian Berndt
-    Modified:   2016-10-20 17:37 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-11-28 12:26 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -31,6 +31,10 @@
 
         <liferay-ui:panel id="newsletterArticlesPanel" title="articles"
             extended="true">
+            
+            <aui:input name="articleGroupId"
+                helpMessage="article-group-id-help"
+                value="<%= String.valueOf(articleGroupId) %>" />
 
             <aui:input name="newsletterStructureId"
                 helpMessage="newsletter-structure-id-help"

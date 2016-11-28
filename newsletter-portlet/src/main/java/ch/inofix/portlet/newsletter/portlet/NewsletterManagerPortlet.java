@@ -39,8 +39,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2016-11-07 22:06
- * @version 1.1.8
+ * @modified 2016-11-28 13:02
+ * @version 1.1.9
  */
 public class NewsletterManagerPortlet extends MVCPortlet {
 
@@ -295,6 +295,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         Mailing mailing = null;
 
         String articleId = ParamUtil.getString(actionRequest, "articleId");
+        long articleGroupId = ParamUtil
+                .getLong(actionRequest, "articleGroupId");
 
         int publishDateDay = ParamUtil.getInteger(request, "publishDate.day",
                 -1);
@@ -348,15 +350,16 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                 Mailing.class.getName(), actionRequest);
 
         if (mailingId > 0) {
-            mailing = MailingServiceUtil.updateMailing(userId, groupId,
-                    mailingId, title, template, newsletterId, articleId,
-                    publishDate, sendDate, sent, serviceContext);
+            mailing = MailingServiceUtil
+                    .updateMailing(userId, groupId, mailingId, title, template,
+                            newsletterId, articleId, articleGroupId,
+                            publishDate, sendDate, sent, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-updated-the-mailing"));
         } else {
             mailing = MailingServiceUtil.addMailing(userId, groupId, title,
-                    template, newsletterId, articleId, publishDate, sendDate,
-                    serviceContext);
+                    template, newsletterId, articleId, articleGroupId,
+                    publishDate, sendDate, serviceContext);
             SessionMessages.add(actionRequest, REQUEST_PROCESSED,
                     PortletUtil.translate("successfully-added-the-mailing"));
         }
@@ -574,5 +577,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
     private static Log _log = LogFactoryUtil
             .getLog(NewsletterManagerPortlet.class.getName());
+    
     private static String REQUEST_PROCESSED = "request_processed";
 }

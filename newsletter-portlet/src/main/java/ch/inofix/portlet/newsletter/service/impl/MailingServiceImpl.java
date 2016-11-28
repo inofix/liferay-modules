@@ -47,8 +47,8 @@ import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2016-11-07 22:06
- * @version 1.1.2
+ * @modified 2016-11-28 12:44
+ * @version 1.1.3
  * @see ch.inofix.portlet.newsletter.service.base.MailingServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.MailingServiceUtil
  */
@@ -64,15 +64,16 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     @Override
     public Mailing addMailing(long userId, long groupId, String title,
             String template, long newsletterId, String articleId,
-            Date publishDate, Date sendDate, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            long articleGroupId, Date publishDate, Date sendDate,
+            ServiceContext serviceContext) throws PortalException,
+            SystemException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), groupId,
                 ActionKeys.ADD_NEWSLETTER);
 
         return MailingLocalServiceUtil.addMailing(userId, groupId, title,
-                template, newsletterId, articleId, publishDate, sendDate,
-                serviceContext);
+                template, newsletterId, articleId, articleGroupId, publishDate,
+                sendDate, serviceContext);
 
     }
 
@@ -127,7 +128,15 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
             contextObjects.put("mailing", mailing);
 
-            long groupId = mailing.getGroupId();
+            long articleGroupId = mailing.getArticleGroupId();
+
+            _log.info("articleGroupId = " + articleGroupId);
+
+            if (articleGroupId == 0) {
+                articleGroupId = mailing.getGroupId();
+            }
+
+            _log.info("articleGroupId = " + articleGroupId);
 
             long newsletterId = mailing.getNewsletterId();
 
@@ -152,7 +161,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
             if (Validator.isNotNull(articleId)) {
 
                 article = JournalArticleLocalServiceUtil.getLatestArticle(
-                        groupId, articleId, WorkflowConstants.STATUS_APPROVED);
+                        articleGroupId, articleId,
+                        WorkflowConstants.STATUS_APPROVED);
             }
         }
 
@@ -230,7 +240,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId,
             String title, String template, long newsletterId, String articleId,
-            Date publishDate, Date sendDate, boolean sent,
+            long articleGroupId, Date publishDate, Date sendDate, boolean sent,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
@@ -239,7 +249,7 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
         return MailingLocalServiceUtil.updateMailing(userId, groupId,
                 mailingId, title, template, newsletterId, articleId,
-                publishDate, sendDate, sent, serviceContext);
+                articleGroupId, publishDate, sendDate, sent, serviceContext);
 
     }
 
