@@ -64,7 +64,7 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
 
     @Override
     protected void doDelete(Reference reference) throws Exception {
-        
+
         deleteDocument(reference.getCompanyId(), reference.getReferenceId());
     }
 
@@ -92,15 +92,17 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
 
     @Override
     protected void doReindex(String className, long classPK) throws Exception {
+
         Reference reference = _referenceLocalService.getReference(classPK);
-        
+
         doReindex(reference);
     }
 
     @Override
     protected void doReindex(String[] ids) throws Exception {
+
         long companyId = GetterUtil.getLong(ids[0]);
-        
+
         // TODO: what about the group?
         reindexReferences(companyId);
         // reindexReferences(companyId, groupId);
@@ -109,15 +111,15 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
 
     @Override
     protected void doReindex(Reference reference) throws Exception {
-        
+
         Document document = getDocument(reference);
-                
+
         IndexWriterHelperUtil.updateDocument(getSearchEngineId(), reference.getCompanyId(), document,
                 isCommitImmediately());
     }
 
     protected void reindexReferences(long companyId) throws PortalException {
-        
+
         final IndexableActionableDynamicQuery indexableActionableDynamicQuery = _referenceLocalService
                 .getIndexableActionableDynamicQuery();
 

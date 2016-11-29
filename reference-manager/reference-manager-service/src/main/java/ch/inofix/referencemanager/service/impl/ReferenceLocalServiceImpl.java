@@ -25,27 +25,17 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
-
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceLocalServiceBaseImpl;
 import ch.inofix.referencemanager.social.ReferenceActivityKeys;
@@ -83,7 +73,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Indexable(type = IndexableType.REINDEX)
     @Override
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
-
+        
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
@@ -199,6 +189,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         // Comment
 
+        // TODO
         // deleteDiscussion(reference);
 
         // Expando
@@ -215,6 +206,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         // Workflow
 
+        // TODO: do we need workflow support?
         // workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
         // reference.getCompanyId(), reference.getGroupId(),
         // Reference.class.getName(), reference.getReferenceId());
@@ -251,7 +243,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
     public void updateAsset(long userId, Reference reference, long[] assetCategoryIds, String[] assetTagNames,
             long[] assetLinkEntryIds, Double priority) throws PortalException {
-
+        
         boolean visible = false;
 
         Date publishDate = null;
@@ -277,7 +269,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Indexable(type = IndexableType.REINDEX)
     public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
             throws PortalException {
-
+        
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
