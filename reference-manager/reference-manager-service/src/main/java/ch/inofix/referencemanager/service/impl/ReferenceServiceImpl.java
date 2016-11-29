@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2016-present Inofix GmbH, Luzern. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,24 @@
 
 package ch.inofix.referencemanager.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import aQute.bnd.annotation.ProviderType;
+import ch.inofix.referencemanager.constants.ReferenceActionKeys;
+import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceServiceBaseImpl;
+import ch.inofix.referencemanager.service.permission.ReferencePermission;
 
 /**
  * The implementation of the reference remote service.
@@ -35,8 +50,8 @@ import ch.inofix.referencemanager.service.base.ReferenceServiceBaseImpl;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-03-28 17:08
- * @version 0.1.0
+ * @modified 2016-11-29 00:46
+ * @version 1.0.0
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -50,7 +65,125 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      * reference remote service.
      */
 
-    public String referenceRemote() {
-        return "referenceRemote";
+    /**
+     * 
+     * @param userId
+     * @param bibTeX
+     * @param serviceContext
+     * @return
+     * @since 1.0.0
+     * @throws PortalException
+     */
+    public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
+
+        ReferencePermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+                ReferenceActionKeys.ADD_REFERENCE);
+
+        return referenceLocalService.addReference(userId, bibTeX, serviceContext);
     }
+
+    /**
+     * 
+     * @param referenceId
+     * @return
+     * @since 1.0.0
+     * @throws PortalException
+     */
+    public Reference deleteReference(long referenceId) throws PortalException {
+
+        ReferencePermission.check(getPermissionChecker(), referenceId, ReferenceActionKeys.ADD_REFERENCE);
+
+        return referenceLocalService.deleteReference(referenceId);
+
+    }
+
+    /**
+     * 
+     * @param referenceId
+     * @return
+     * @since 1.0.0
+     * @throws PortalException
+     */
+    public Reference getReference(long referenceId) throws PortalException {
+
+        ReferencePermission.check(getPermissionChecker(), referenceId, ActionKeys.VIEW);
+
+        return referenceLocalService.getReference(referenceId);
+    }
+    
+
+    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+            throws PortalException {
+
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
+        }
+
+        Indexer<Reference> indexer = IndexerRegistryUtil.getIndexer(Reference.class.getName());
+
+        SearchContext searchContext = new SearchContext();
+
+        searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
+
+        searchContext.setAttribute("paginationType", "more");
+
+        Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+        searchContext.setCompanyId(group.getCompanyId());
+
+        searchContext.setEnd(end);
+        searchContext.setGroupIds(new long[] { groupId });
+        searchContext.setSorts(sort);
+        searchContext.setStart(start);
+        searchContext.setEnd(end);
+        searchContext.setGroupIds(new long[] { groupId });
+        searchContext.setStart(start);
+        searchContext.setUserId(userId);
+
+        return indexer.search(searchContext);
+
+    }
+
+    /**
+     * @param groupId
+     * @since 1.0.0
+     * @throws PortalException
+     */
+    public void subscribe(long groupId) throws PortalException {
+
+        ReferencePermission.check(getPermissionChecker(), groupId, ActionKeys.SUBSCRIBE);
+
+        referenceLocalService.subscribe(getUserId(), groupId);
+    }
+
+    /**
+     * @param groupId
+     * @since 1.0.0
+     * @throws PortalException
+     */
+    public void unsubscribe(long groupId) throws PortalException {
+
+        ReferencePermission.check(getPermissionChecker(), groupId, ActionKeys.SUBSCRIBE);
+
+        referenceLocalService.unsubscribe(getUserId(), groupId);
+    }
+
+    /**
+     * 
+     * @param referenceId
+     * @param userId
+     * @param bibTeX
+     * @param serviceContext
+     * @return
+     * @since 1.0.0
+     * @throws PortalException
+     */
+    public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
+            throws PortalException {
+
+        ReferencePermission.check(getPermissionChecker(), referenceId, ActionKeys.UPDATE);
+
+        return referenceLocalService.updateReference(referenceId, userId, bibTeX, serviceContext);
+    }
+
 }

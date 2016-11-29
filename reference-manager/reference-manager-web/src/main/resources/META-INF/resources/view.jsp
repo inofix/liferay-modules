@@ -2,10 +2,11 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-28 22:56 by Christian Berndt
+    Modified:   2016-11-29 01:40 by Christian Berndt
     Version:    1.0.8
 --%>
 
+<%@page import="ch.inofix.referencemanager.service.ReferenceServiceUtil"%>
 <%@ include file="/init.jsp" %>
 
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
@@ -26,7 +27,7 @@
     
     ReferenceSearchTerms searchTerms = (ReferenceSearchTerms) referenceSearch.getSearchTerms();
 
-    Hits hits = referenceLocalService.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
+    Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
             referenceSearch.getStart(), referenceSearch.getEnd(), sort);
     
     List<Document> documents = ListUtil.toList(hits.getDocs());

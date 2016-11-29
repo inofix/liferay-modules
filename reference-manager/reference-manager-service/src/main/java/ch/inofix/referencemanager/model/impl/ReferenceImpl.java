@@ -103,18 +103,18 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
         String str = "";
 
-        Key key = new Key(field);
-
-        if (_bibTeXEntry == null) {
-            _bibTeXEntry = getBibTeXEntry();
-        }
-
-        if (_bibTeXEntry != null) {
-            Value value = _bibTeXEntry.getField(key);
-            if (value != null) {
-                str = value.toUserString();
-            }
-        }
+//        Key key = new Key(field);
+//
+//        if (_bibTeXEntry == null) {
+//            _bibTeXEntry = getBibTeXEntry();
+//        }
+//
+//        if (_bibTeXEntry != null) {
+//            Value value = _bibTeXEntry.getField(key);
+//            if (value != null) {
+//                str = value.toUserString();
+//            }
+//        }
 
         return str;
 

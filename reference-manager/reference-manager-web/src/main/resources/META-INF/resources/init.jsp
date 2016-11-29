@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-28 23:12 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2016-11-29 01:41 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -45,8 +45,4 @@
 	PortletURL portletURL = renderResponse.createRenderURL();
 
 	String currentURL = portletURL.toString();
- 
-	//get service bean
-	ReferenceLocalService referenceLocalService = (ReferenceLocalService) request
-			.getAttribute("referenceLocalService");	
 %>
