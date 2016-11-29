@@ -2,13 +2,14 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-29 13:40 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2016-11-29 18:32 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
+<%@taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
 <%@taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
@@ -25,6 +26,7 @@
 
 <%@page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
+<%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>

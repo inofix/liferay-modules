@@ -53,8 +53,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-29 14:16
- * @version 1.0.1
+ * @modified 2016-11-29 18:41
+ * @version 1.0.2
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -94,7 +94,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      */
     public Reference deleteReference(long referenceId) throws PortalException {
 
-        ReferencePermission.check(getPermissionChecker(), referenceId, ReferenceActionKeys.ADD_REFERENCE);
+        ReferencePermission.check(getPermissionChecker(), referenceId, ReferenceActionKeys.DELETE);
 
         return referenceLocalService.deleteReference(referenceId);
 

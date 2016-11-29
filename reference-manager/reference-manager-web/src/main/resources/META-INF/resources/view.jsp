@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-29 14:11 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2016-11-29 18:26 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -97,27 +97,31 @@
 				className="ch.inofix.referencemanager.model.Reference"
 				escapedModel="true" modelVar="reference">
                 
-                <liferay-ui:search-container-column-text name="id"
-                    property="referenceId"
-                    orderable="true" valign="top" />
+                <portlet:renderURL var="viewURL">
+                    <portlet:param name="mvcPath" value="/edit_reference.jsp" />
+                    <portlet:param name="redirect" value="<%=currentURL%>" />
+                    <portlet:param name="referenceId"
+                        value="<%=String.valueOf(reference.getReferenceId())%>" />
+                </portlet:renderURL>
 
-                <liferay-ui:search-container-column-text 
-                    property="author"
-                    orderable="true" orderableProperty="author_sortable" />
                 <liferay-ui:search-container-column-text
-                    property="title"
-                    orderable="true" orderableProperty="title_sortable" />
+                    href="<%=viewURL%>" name="id" orderable="true"
+                    property="referenceId" valign="top" />
+
+                <liferay-ui:search-container-column-text
+                    href="<%=viewURL%>" orderable="true"
+                    orderableProperty="author_sortable"
+                    property="author" />
                     
-                <liferay-ui:search-container-column-text 
-                    orderable="true" property="year"
-                    orderableProperty="year_sortable" />
+                <liferay-ui:search-container-column-text
+                    href="<%=viewURL%>" orderable="true"
+                    orderableProperty="title_sortable" property="title" />
+
+                <liferay-ui:search-container-column-text
+                    href="<%=viewURL%>" orderable="true"
+                    orderableProperty="year_sortable" property="year" />
 
                 <%-- 
-				<liferay-ui:search-container-column-text name="bibtex" valign="top">
-					<strong><%= reference.getBibTeX() %></strong>
-        
-					<br />
-
 					<div class="lfr-asset-categories">
 						<liferay-ui:asset-categories-summary
 							className="<%= Reference.class.getName() %>"
