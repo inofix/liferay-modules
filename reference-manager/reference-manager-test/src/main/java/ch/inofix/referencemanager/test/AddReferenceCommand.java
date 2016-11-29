@@ -29,7 +29,7 @@ public class AddReferenceCommand {
         ServiceContext serviceContext = new ServiceContext();
 
         try {
-            _referenceLocalService.addReference(userId, groupId, bibTeX, serviceContext);
+            _referenceLocalService.addReference(userId, bibTeX, serviceContext);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2016-present Inofix GmbH, Luzern. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,15 +15,19 @@
 package ch.inofix.referencemanager.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -35,6 +39,8 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -61,8 +67,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-26 11:59
- * @version 0.4.0
+ * @modified 2016-11-28 23:42
+ * @version 1.0.0
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -76,12 +82,12 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      */
     @Indexable(type = IndexableType.REINDEX)
     @Override
-    public Reference addReference(long userId, long groupId, String bibTeX, ServiceContext serviceContext)
-            throws PortalException {
+    public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
 
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
+        long groupId = serviceContext.getScopeGroupId();
 
         // TODO: validate bibTeX
         // validate(bibTeX);
@@ -103,8 +109,13 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         // Resources
 
-        // TODO: configure default permissions
-        // resourceLocalService.addModelResources(reference, serviceContext);
+        if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
+
+            addReferenceResources(reference, serviceContext.isAddGroupPermissions(),
+                    serviceContext.isAddGuestPermissions());
+        } else {
+            addReferenceResources(reference, serviceContext.getModelPermissions());
+        }
 
         // Asset
 
@@ -125,47 +136,117 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     }
 
     @Override
-    public Reference getReference(long referenceId) throws PortalException {
+    public void addReferenceResources(Reference reference, boolean addGroupPermissions, boolean addGuestPermissions)
+            throws PortalException {
 
-        return referencePersistence.findByPrimaryKey(referenceId);
-
+        resourceLocalService.addResources(reference.getCompanyId(), reference.getGroupId(), reference.getUserId(),
+                Reference.class.getName(), reference.getReferenceId(), false, addGroupPermissions, addGuestPermissions);
     }
 
     @Override
-    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+    public void addReferenceResources(Reference reference, ModelPermissions modelPermissions) throws PortalException {
+
+        resourceLocalService.addModelResources(reference.getCompanyId(), reference.getGroupId(), reference.getUserId(),
+                Reference.class.getName(), reference.getReferenceId(), modelPermissions);
+    }
+
+    @Override
+    public void addReferenceResources(long referenceId, boolean addGroupPermissions, boolean addGuestPermissions)
             throws PortalException {
 
-        if (sort == null) {
-            sort = new Sort(Field.MODIFIED_DATE, true);
+        Reference reference = referencePersistence.findByPrimaryKey(referenceId);
+
+        addReferenceResources(reference, addGroupPermissions, addGuestPermissions);
+    }
+
+    @Override
+    public void addReferenceResources(long referenceId, ModelPermissions modelPermissions) throws PortalException {
+
+        Reference reference = referencePersistence.findByPrimaryKey(referenceId);
+
+        addReferenceResources(reference, modelPermissions);
+    }
+
+    @Override
+    public void deleteReferences(long groupId) throws PortalException {
+        for (Reference reference : referencePersistence.findByGroupId(groupId)) {
+            referenceLocalService.deleteReference(reference);
         }
+    }
 
-        Indexer<Reference> indexer = IndexerRegistryUtil.getIndexer(Reference.class.getName());
+    @Indexable(type = IndexableType.DELETE)
+    @Override
+    @SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+    public Reference deleteReference(Reference reference) throws PortalException {
 
-        SearchContext searchContext = new SearchContext();
+        // Reference
 
-        searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
+        referencePersistence.remove(reference);
 
-        searchContext.setAttribute("paginationType", "more");
+        // Resources
 
-        Group group = GroupLocalServiceUtil.getGroup(groupId);
+        resourceLocalService.deleteResource(reference.getCompanyId(), Reference.class.getName(),
+                ResourceConstants.SCOPE_INDIVIDUAL, reference.getReferenceId());
 
-        searchContext.setCompanyId(group.getCompanyId());
+        // Subscriptions
 
-        searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
-        searchContext.setSorts(sort);
-        searchContext.setStart(start);
-        searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
-        searchContext.setStart(start);
-        searchContext.setUserId(userId);
+        subscriptionLocalService.deleteSubscriptions(reference.getCompanyId(), Reference.class.getName(),
+                reference.getReferenceId());
 
-        Hits hits = indexer.search(searchContext);
+        // Asset
 
-        // _log.info(hits.getQuery());
+        assetEntryLocalService.deleteEntry(Reference.class.getName(), reference.getReferenceId());
 
-        return hits;
+        // Comment
 
+        // deleteDiscussion(reference);
+
+        // Expando
+
+        expandoRowLocalService.deleteRows(reference.getReferenceId());
+
+        // Ratings
+
+        ratingsStatsLocalService.deleteStats(Reference.class.getName(), reference.getReferenceId());
+
+        // Trash
+
+        trashEntryLocalService.deleteEntry(Reference.class.getName(), reference.getReferenceId());
+
+        // Workflow
+
+        // workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
+        // reference.getCompanyId(), reference.getGroupId(),
+        // Reference.class.getName(), reference.getReferenceId());
+
+        return reference;
+    }
+
+    @Override
+    public Reference deleteReference(long referenceId) throws PortalException {
+        Reference reference = referencePersistence.findByPrimaryKey(referenceId);
+
+        return referenceLocalService.deleteReference(reference);
+    }
+
+    public List<Reference> getGroupReferences(long groupId) throws PortalException, SystemException {
+
+        return referencePersistence.findByGroupId(groupId);
+    }
+
+    @Override
+    public Reference getReference(long referenceId) throws PortalException {
+        return referencePersistence.findByPrimaryKey(referenceId);
+    }
+
+    @Override
+    public void subscribe(long userId, long groupId) throws PortalException {
+        subscriptionLocalService.addSubscription(userId, groupId, Reference.class.getName(), groupId);
+    }
+
+    @Override
+    public void unsubscribe(long userId, long groupId) throws PortalException {
+        subscriptionLocalService.deleteSubscription(userId, Reference.class.getName(), groupId);
     }
 
     public void updateAsset(long userId, Reference reference, long[] assetCategoryIds, String[] assetTagNames,
@@ -194,8 +275,8 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     }
 
     @Indexable(type = IndexableType.REINDEX)
-    public Reference updateReference(long referenceId, long userId, long groupId, String bibTeX,
-            ServiceContext serviceContext) throws PortalException {
+    public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
+            throws PortalException {
 
         // Reference
 
@@ -205,6 +286,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         // validate(bibTeX);
 
         Reference reference = referencePersistence.findByPrimaryKey(referenceId);
+        long groupId = serviceContext.getScopeGroupId();
 
         reference.setUuid(serviceContext.getUuid());
         reference.setGroupId(groupId);
@@ -237,6 +319,22 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         return reference;
 
+    }
+
+    @Override
+    public void updateReferenceResources(Reference reference, ModelPermissions modelPermissions)
+            throws PortalException {
+
+        resourceLocalService.updateResources(reference.getCompanyId(), reference.getGroupId(),
+                Reference.class.getName(), reference.getReferenceId(), modelPermissions);
+    }
+
+    @Override
+    public void updateReferenceResources(Reference reference, String[] groupPermissions, String[] guestPermissions)
+            throws PortalException {
+
+        resourceLocalService.updateResources(reference.getCompanyId(), reference.getGroupId(),
+                Reference.class.getName(), reference.getReferenceId(), groupPermissions, guestPermissions);
     }
 
     private static final Log _log = LogFactoryUtil.getLog(ReferenceLocalServiceImpl.class);

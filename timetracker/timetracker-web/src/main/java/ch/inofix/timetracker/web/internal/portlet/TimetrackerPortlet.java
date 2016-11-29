@@ -105,96 +105,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         _taskRecordService.deleteTaskRecord(taskRecordId);
     }
-
-    /**
-     * 
-     * @param actionRequest
-     * @param actionResponse
-     * @throws Exception
-     */
-    public void updateTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        _log.info("updateTaskRecord()");
-
-        long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
-
-        _log.info("taskRecordId = " + taskRecordId);
-
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
-
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-        long groupId = themeDisplay.getScopeGroupId();
-        long userId = themeDisplay.getUserId();
-
-        String workPackage = ParamUtil.getString(actionRequest, "workPackage");
-        String description = ParamUtil.getString(actionRequest, "description");
-        String ticketURL = ParamUtil.getString(actionRequest, "ticketURL");
-        int durationInMinutes = ParamUtil.getInteger(actionRequest, "duration");
-        long duration = durationInMinutes * 60 * 1000;
-        int status = ParamUtil.getInteger(actionRequest, "status");
-
-        int startDateDay = ParamUtil.getInteger(actionRequest, "startDateDay");
-        int startDateMonth = ParamUtil.getInteger(actionRequest, "startDateMonth");
-        int startDateYear = ParamUtil.getInteger(actionRequest, "startDateYear");
-        int startDateHour = ParamUtil.getInteger(actionRequest, "startDateHour");
-        int startDateMinute = ParamUtil.getInteger(actionRequest, "startDateMinute");
-
-        // TODO: clean this up!
-        // Create the endDate with the date values of
-        // the startDate, because we want the user to
-        // have to select only one date.
-        int endDateDay = ParamUtil.getInteger(actionRequest, "startDateDay");
-        int endDateMonth = ParamUtil.getInteger(actionRequest, "startDateMonth");
-        int endDateYear = ParamUtil.getInteger(actionRequest, "startDateYear");
-        int endDateHour = ParamUtil.getInteger(actionRequest, "endDateHour");
-        int endDateMinute = ParamUtil.getInteger(actionRequest, "endDateMinute");
-
-        Date endDate = null;
-
-        try {
-            PortalUtil.getDate(endDateMonth, endDateDay, endDateYear, endDateHour, endDateMinute,
-                    TaskRecordEndDateException.class);
-        } catch (Exception e) {
-            _log.error(e);
-        }
-
-        Date startDate = null;
-
-        try {
-            PortalUtil.getDate(startDateMonth, startDateDay, startDateYear, startDateHour, startDateMinute,
-                    TaskRecordStartDateException.class);
-        } catch (Exception e) {
-            _log.error(e);
-        }
-
-        TaskRecord taskRecord = null;
-
-        if (taskRecordId <= 0) {
-
-            // Add taskRecord
-
-            _log.info("add taskRecord");
-
-            // TODO: Use remote service
-            taskRecord = _taskRecordLocalService.addTaskRecord(userId, groupId, workPackage, description, ticketURL,
-                    endDate, startDate, status, duration, serviceContext);
-
-        } else {
-
-            // Update taskRecord
-
-            _log.info("update taskRecord");
-
-            // TODO: Use remote service
-            taskRecord = _taskRecordLocalService.updateTaskRecord(userId, groupId, taskRecordId, workPackage,
-                    description, ticketURL, endDate, startDate, status, duration, serviceContext);
-        }
-
-        String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
-
-        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
-    }
+    
 
     /**
      * @since 1.1.4
@@ -318,6 +229,96 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
 
         super.render(renderRequest, renderResponse);
+    }
+
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @throws Exception
+     */
+    public void updateTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        _log.info("updateTaskRecord()");
+
+        long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
+
+        _log.info("taskRecordId = " + taskRecordId);
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        long groupId = themeDisplay.getScopeGroupId();
+        long userId = themeDisplay.getUserId();
+
+        String workPackage = ParamUtil.getString(actionRequest, "workPackage");
+        String description = ParamUtil.getString(actionRequest, "description");
+        String ticketURL = ParamUtil.getString(actionRequest, "ticketURL");
+        int durationInMinutes = ParamUtil.getInteger(actionRequest, "duration");
+        long duration = durationInMinutes * 60 * 1000;
+        int status = ParamUtil.getInteger(actionRequest, "status");
+
+        int startDateDay = ParamUtil.getInteger(actionRequest, "startDateDay");
+        int startDateMonth = ParamUtil.getInteger(actionRequest, "startDateMonth");
+        int startDateYear = ParamUtil.getInteger(actionRequest, "startDateYear");
+        int startDateHour = ParamUtil.getInteger(actionRequest, "startDateHour");
+        int startDateMinute = ParamUtil.getInteger(actionRequest, "startDateMinute");
+
+        // TODO: clean this up!
+        // Create the endDate with the date values of
+        // the startDate, because we want the user to
+        // have to select only one date.
+        int endDateDay = ParamUtil.getInteger(actionRequest, "startDateDay");
+        int endDateMonth = ParamUtil.getInteger(actionRequest, "startDateMonth");
+        int endDateYear = ParamUtil.getInteger(actionRequest, "startDateYear");
+        int endDateHour = ParamUtil.getInteger(actionRequest, "endDateHour");
+        int endDateMinute = ParamUtil.getInteger(actionRequest, "endDateMinute");
+
+        Date endDate = null;
+
+        try {
+            PortalUtil.getDate(endDateMonth, endDateDay, endDateYear, endDateHour, endDateMinute,
+                    TaskRecordEndDateException.class);
+        } catch (Exception e) {
+            _log.error(e);
+        }
+
+        Date startDate = null;
+
+        try {
+            PortalUtil.getDate(startDateMonth, startDateDay, startDateYear, startDateHour, startDateMinute,
+                    TaskRecordStartDateException.class);
+        } catch (Exception e) {
+            _log.error(e);
+        }
+
+        TaskRecord taskRecord = null;
+
+        if (taskRecordId <= 0) {
+
+            // Add taskRecord
+
+            _log.info("add taskRecord");
+
+            // TODO: Use remote service
+            taskRecord = _taskRecordLocalService.addTaskRecord(userId, groupId, workPackage, description, ticketURL,
+                    endDate, startDate, status, duration, serviceContext);
+
+        } else {
+
+            // Update taskRecord
+
+            _log.info("update taskRecord");
+
+            // TODO: Use remote service
+            taskRecord = _taskRecordLocalService.updateTaskRecord(userId, groupId, taskRecordId, workPackage,
+                    description, ticketURL, endDate, startDate, status, duration, serviceContext);
+        }
+
+        String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
+
+        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
     }
 
     @Override
