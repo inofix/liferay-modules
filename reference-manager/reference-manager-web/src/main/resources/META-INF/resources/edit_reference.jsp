@@ -3,7 +3,7 @@
     
     Created:    2016-11-18 18:46 by Christian Berndt
     Modified:   2016-11-18 18:46 by Christian Berndt
-    Version:    0.1.0
+    Version:    1.0.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -13,17 +13,18 @@
 
     long referenceId = ParamUtil.getLong(request, "referenceId");
 
-    Reference reference = null;
+    Reference reference =
+            (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
 
-    if (referenceId > 0) {
-        reference = referenceLocalService.getReference(referenceId);
-    }
 %>
 
-<aui:form action="<%=renderResponse.createActionURL()%>" method="post"
+<portlet:actionURL name="updateReference" var="updateReferenceURL">
+</portlet:actionURL>
+
+<aui:form action="<%= updateReferenceURL %>" method="post"
     name="fm">
-    <aui:input name="<%=Constants.CMD%>" type="hidden"
-        value="<%=reference == null ? Constants.ADD : Constants.UPDATE%>" />
+<%--     <aui:input name="<%=Constants.CMD%>" type="hidden" --%>
+<%--         value="<%=reference == null ? Constants.ADD : Constants.UPDATE%>" /> --%>
     <aui:input name="redirect" type="hidden" value="<%=currentURL%>" />
     <aui:input name="referenceId" type="hidden" value="<%=referenceId%>" />
 
@@ -38,7 +39,7 @@
         model="<%=Reference.class%>" />
 
     <aui:fieldset>
-        <aui:input name="bibTeX" type="textarea" />
+        <aui:input label="bibtex" name="bibTeX" type="textarea" />
 
         <liferay-ui:custom-attributes-available
             className="<%=Reference.class.getName()%>">
@@ -58,4 +59,5 @@
 
         <aui:button href="<%=redirect%>" type="cancel" />
     </aui:button-row>
+    
 </aui:form>

@@ -2,11 +2,10 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-29 01:40 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2016-11-29 14:11 by Christian Berndt
+    Version:    1.0.9
 --%>
 
-<%@page import="ch.inofix.referencemanager.service.ReferenceServiceUtil"%>
 <%@ include file="/init.jsp" %>
 
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
@@ -16,7 +15,7 @@
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
-    SearchContainer referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
+    SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
     
     boolean reverse = false; 
     if (referenceSearch.getOrderByType().equals("desc")) {
@@ -31,8 +30,20 @@
             referenceSearch.getStart(), referenceSearch.getEnd(), sort);
     
     List<Document> documents = ListUtil.toList(hits.getDocs());
+    
+    List<Reference> references = new ArrayList<Reference>();
+    
+    for (Document document : documents) {
+        try {
+            long referenceId = GetterUtil.getLong(document.get("entryClassPK"));
+            Reference reference = ReferenceServiceUtil.getReference(referenceId);
+            references.add(reference); 
+        } catch (Exception e) {
+            System.out.println(e); 
+        }
+    }
 
-    referenceSearch.setResults(documents); 
+    referenceSearch.setResults(references); 
     referenceSearch.setTotal(hits.getLength());
 %>
 
@@ -81,34 +92,24 @@
             id="references"
             searchContainer="<%= referenceSearch %>"
             var="referenceSearchContainer">
-
-        <%-- -
-			<liferay-ui:search-container-results
-				results="<%= referenceLocalService.getReferences(searchContainer.getStart(), searchContainer.getEnd()) %>" />
-        --%>
-
-        <liferay-ui:search-container-row
-            className="com.liferay.portal.kernel.search.Document"
-            keyProperty="entryClassPK"
-            modelVar="document">
             
-            <%-- 
 			<liferay-ui:search-container-row
 				className="ch.inofix.referencemanager.model.Reference"
 				escapedModel="true" modelVar="reference">
---%>
+                
                 <liferay-ui:search-container-column-text name="id"
-                    value="<%=document.get("entryClassPK")%>"
+                    property="referenceId"
                     orderable="true" valign="top" />
 
-                <liferay-ui:search-container-column-text name="author"
-                    value="<%=document.get("author")%>"
+                <liferay-ui:search-container-column-text 
+                    property="author"
                     orderable="true" orderableProperty="author_sortable" />
-                <liferay-ui:search-container-column-text name="title"
-                    value="<%=document.get("title")%>"
+                <liferay-ui:search-container-column-text
+                    property="title"
                     orderable="true" orderableProperty="title_sortable" />
-                <liferay-ui:search-container-column-text name="year"
-                    value="<%=document.get("year")%>" orderable="true"
+                    
+                <liferay-ui:search-container-column-text 
+                    orderable="true" property="year"
                     orderableProperty="year_sortable" />
 
                 <%-- 
@@ -131,11 +132,8 @@
 				</liferay-ui:search-container-column-text>
                 --%>
 
-			
-                <%-- 
 				<liferay-ui:search-container-column-jsp cssClass="entry-action"
 					path="/reference_action.jsp" valign="top" />
-                --%>
 
 			</liferay-ui:search-container-row>
 

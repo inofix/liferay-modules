@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-29 01:41 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2016-11-29 13:40 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -18,6 +18,8 @@
 <%@page import="ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission"%>
 <%@page import="ch.inofix.referencemanager.service.permission.ReferencePermission"%>
 <%@page import="ch.inofix.referencemanager.service.ReferenceLocalService"%>
+<%@page import="ch.inofix.referencemanager.service.ReferenceServiceUtil"%>
+<%@page import="ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearch"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearchTerms"%>
 
@@ -28,11 +30,13 @@
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
 <%@page import="com.liferay.portal.kernel.upload.UploadException"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 
 <%@page import="javax.portlet.PortletURL"%>
