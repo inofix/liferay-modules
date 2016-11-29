@@ -1,3 +1,6 @@
 /ReferenceBaseImpl.java
 /ReferenceCacheModel.java
 /ReferenceModelImpl.java
+/BibliographyBaseImpl.java
+/BibliographyCacheModel.java
+/BibliographyModelImpl.java
