@@ -15,6 +15,8 @@
 package ch.inofix.referencemanager.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -31,6 +33,7 @@ import aQute.bnd.annotation.ProviderType;
 import ch.inofix.referencemanager.constants.ReferenceActionKeys;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceServiceBaseImpl;
+import ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission;
 import ch.inofix.referencemanager.service.permission.ReferencePermission;
 
 /**
@@ -50,8 +53,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-29 00:46
- * @version 1.0.0
+ * @modified 2016-11-29 14:16
+ * @version 1.0.1
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -76,7 +79,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      */
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
 
-        ReferencePermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+        ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
         return referenceLocalService.addReference(userId, bibTeX, serviceContext);
@@ -110,7 +113,6 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
 
         return referenceLocalService.getReference(referenceId);
     }
-    
 
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException {
@@ -185,5 +187,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
 
         return referenceLocalService.updateReference(referenceId, userId, bibTeX, serviceContext);
     }
+
+    private static final Log _log = LogFactoryUtil.getLog(ReferenceServiceImpl.class);
 
 }

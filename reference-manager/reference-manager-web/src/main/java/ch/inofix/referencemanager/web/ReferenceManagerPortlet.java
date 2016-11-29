@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -50,10 +49,8 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -61,7 +58,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import ch.inofix.referencemanager.constants.ReferencePortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchReferenceException;
 import ch.inofix.referencemanager.model.Reference;
-//import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceLocalService;
 import ch.inofix.referencemanager.service.ReferenceService;
 import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
@@ -78,8 +74,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-11-28 23:11
- * @version 1.0.4
+ * @modified 2016-11-29 14:17
+ * @version 1.0.5
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -108,7 +104,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         for (Reference reference : references) {
 
             // TODO: Add try-catch and count failed deletions
-            
+
             // TODO: use remote service
             reference = _referenceLocalService.deleteReference(reference.getReferenceId());
 
@@ -174,8 +170,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
             BibTeXDatabase database = bibTeXParser.parse(bufferedReader);
 
-            _log.info("database.getEntries().size() = " + database.getEntries().size());
-
             Collection<BibTeXEntry> bibTeXEntries = database.getEntries().values();
 
             for (BibTeXEntry bibTeXEntry : bibTeXEntries) {
@@ -208,6 +202,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
             if ((uploadException != null) && uploadException.isExceededSizeLimit()) {
 
                 throw new FileSizeException(uploadException.getCause());
+
             } else {
 
                 // TODO: What else can go wrong?
@@ -273,19 +268,17 @@ public class ReferenceManagerPortlet extends MVCPortlet {
     /**
      * 
      */
-//    @Override
-//    protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse)
-//            throws IOException, PortletException {
-//
-//        _log.info("doDispatch()");
-//
-//        if (SessionErrors.contains(renderRequest, PrincipalException.getNestedClasses())
-//                || SessionErrors.contains(renderRequest, NoSuchReferenceException.class)) {
-//            include("/error.jsp", renderRequest, renderResponse);
-//        } else {
-//            super.doDispatch(renderRequest, renderResponse);
-//        }
-//    }
+    @Override
+    protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+
+        if (SessionErrors.contains(renderRequest, PrincipalException.getNestedClasses())
+                || SessionErrors.contains(renderRequest, NoSuchReferenceException.class)) {
+            include("/error.jsp", renderRequest, renderResponse);
+        } else {
+            super.doDispatch(renderRequest, renderResponse);
+        }
+    }
 
     protected String getEditReferenceURL(ActionRequest actionRequest, ActionResponse actionResponse,
             Reference reference) throws Exception {
@@ -304,7 +297,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, "p_p_id", ReferencePortletKeys.REFERENCE_MANAGER);
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, "p_p_state", windowState);
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "mvcPath",
-                templatePath + "edit_task_record.jsp");
+                templatePath + "edit_reference.jsp");
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "redirect",
                 getRedirect(actionRequest, actionResponse));
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "backURL",
