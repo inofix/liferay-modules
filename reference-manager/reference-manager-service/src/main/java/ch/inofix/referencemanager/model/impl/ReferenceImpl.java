@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ * Copyright (c) 2016-present Inofix GmbH, Luzern. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,9 +22,6 @@ import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXEntry;
 import org.jbibtex.BibTeXParser;
 import org.jbibtex.Key;
-import org.jbibtex.ObjectResolutionException;
-import org.jbibtex.ParseException;
-import org.jbibtex.TokenMgrException;
 import org.jbibtex.Value;
 
 import com.liferay.portal.kernel.log.Log;
@@ -62,7 +59,6 @@ public class ReferenceImpl extends ReferenceBaseImpl {
      * ch.inofix.referencemanager.model.Reference} interface instead.
      */
     public ReferenceImpl() {
-
     }
 
     public String getAuthor() {
@@ -103,18 +99,18 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
         String str = "";
 
-//        Key key = new Key(field);
-//
-//        if (_bibTeXEntry == null) {
-//            _bibTeXEntry = getBibTeXEntry();
-//        }
-//
-//        if (_bibTeXEntry != null) {
-//            Value value = _bibTeXEntry.getField(key);
-//            if (value != null) {
-//                str = value.toUserString();
-//            }
-//        }
+        Key key = new Key(field);
+
+        if (_bibTeXEntry == null) {
+            _bibTeXEntry = getBibTeXEntry();
+        }
+
+        if (_bibTeXEntry != null) {
+            Value value = _bibTeXEntry.getField(key);
+            if (value != null) {
+                str = value.toUserString();
+            }
+        }
 
         return str;
 
@@ -128,13 +124,13 @@ public class ReferenceImpl extends ReferenceBaseImpl {
             BibTeXParser bibtexParser = new BibTeXParser();
             BibTeXDatabase bibTeXDatabase = bibtexParser.parse(bibTeXReader);
             Collection<BibTeXEntry> bibTeXEntries = bibTeXDatabase.getEntries().values();
+
             Iterator<BibTeXEntry> iterator = bibTeXEntries.iterator();
             while (iterator.hasNext()) {
+
                 _bibTeXEntry = iterator.next();
             }
 
-        } catch (ObjectResolutionException | TokenMgrException | ParseException e) {
-            _log.error(e.getMessage());
         } catch (Exception e) {
             _log.error(e.getMessage());
         }

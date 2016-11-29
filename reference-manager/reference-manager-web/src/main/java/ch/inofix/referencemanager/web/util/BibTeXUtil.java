@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 /**
  * 
  * @author Christian Berndt
+ * @created 2016-11-29 12:28
+ * @modified 2016-11-29 12:28
  * @version 1.0.0
  *
  */

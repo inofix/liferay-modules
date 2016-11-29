@@ -176,9 +176,9 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
             _log.info("database.getEntries().size() = " + database.getEntries().size());
 
-            Collection<BibTeXEntry> entries = database.getEntries().values();
+            Collection<BibTeXEntry> bibTeXEntries = database.getEntries().values();
 
-            for (BibTeXEntry bibTeXEntry : entries) {
+            for (BibTeXEntry bibTeXEntry : bibTeXEntries) {
 
                 String bibTeX = "";
 
