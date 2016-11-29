@@ -14,8 +14,6 @@
 
 package ch.inofix.referencemanager.service.impl;
 
-import java.util.List;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -32,19 +30,19 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
-import ch.inofix.referencemanager.constants.ReferenceActionKeys;
-import ch.inofix.referencemanager.model.Reference;
-import ch.inofix.referencemanager.service.base.ReferenceServiceBaseImpl;
+import ch.inofix.referencemanager.constants.BibliographyActionKeys;
+import ch.inofix.referencemanager.model.Bibliography;
+import ch.inofix.referencemanager.service.base.BibliographyServiceBaseImpl;
 import ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission;
-import ch.inofix.referencemanager.service.permission.ReferencePermission;
+import ch.inofix.referencemanager.service.permission.BibliographyPermission;
 
 /**
- * The implementation of the reference remote service.
+ * The implementation of the bibliography remote service.
  *
  * <p>
  * All custom service methods should be put in this class. Whenever methods are
  * added, rerun ServiceBuilder to copy their definitions into the
- * {@link ch.inofix.referencemanager.service.ReferenceService} interface.
+ * {@link ch.inofix.referencemanager.service.BibliographyService} interface.
  *
  * <p>
  * This is a remote service. Methods of this service are expected to have
@@ -53,20 +51,20 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * </p>
  *
  * @author Christian Berndt
- * @created 2016-03-28 17:08
- * @modified 2016-11-29 20:53
- * @version 1.0.3
- * @see ReferenceServiceBaseImpl
- * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
+ * @created 2016-11-29 21:27
+ * @modified 2016-11-29 21:27
+ * @version 1.0.0
+ * @see BibliographyServiceBaseImpl
+ * @see ch.inofix.referencemanager.service.BibliographyServiceUtil
  */
 @ProviderType
-public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
+public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
     /*
      * NOTE FOR DEVELOPERS:
      *
      * Never reference this class directly. Always use {@link
-     * ch.inofix.referencemanager.service.ReferenceServiceUtil} to access the
-     * reference remote service.
+     * ch.inofix.referencemanager.service.BibliographyServiceUtil} to access the
+     * bibliography remote service.
      */
 
     /**
@@ -78,65 +76,42 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      * @since 1.0.0
      * @throws PortalException
      */
-    public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
+    public Bibliography addBibliography(long userId, String title, String description, ServiceContext serviceContext)
+            throws PortalException {
 
         ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
-                ReferenceActionKeys.ADD_REFERENCE);
+                BibliographyActionKeys.ADD_BIBLIOGRAPHY);
 
-        return referenceLocalService.addReference(userId, bibTeX, serviceContext);
+        return bibliographyLocalService.addBibliography(userId, title, description, serviceContext);
     }
 
     /**
      * 
-     * @param referenceId
+     * @param bibliographyId
      * @return
      * @since 1.0.0
      * @throws PortalException
      */
-    public Reference deleteReference(long referenceId) throws PortalException {
+    public Bibliography deleteBibliography(long bibliographyId) throws PortalException {
 
-        ReferencePermission.check(getPermissionChecker(), referenceId, ReferenceActionKeys.DELETE);
+        BibliographyPermission.check(getPermissionChecker(), bibliographyId, BibliographyActionKeys.DELETE);
 
-        return referenceLocalService.deleteReference(referenceId);
-
-    }
-
-    /**
-     * 
-     * @param groupId
-     * @return
-     * @since 1.0.3
-     * @throws PortalException
-     */
-    public List<Reference> deleteGroupReferences(long groupId) throws PortalException {
-
-        ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId,
-                ReferenceActionKeys.DELETE_GROUP_REFERENCES);
-
-        List<Reference> references = referenceLocalService.getGroupReferences(groupId);
-
-        for (Reference reference : references) {
-
-            reference = referenceLocalService.deleteReference(reference.getReferenceId());
-
-        }
-
-        return references;
+        return bibliographyLocalService.deleteBibliography(bibliographyId);
 
     }
 
     /**
      * 
-     * @param referenceId
+     * @param bibliographyId
      * @return
      * @since 1.0.0
      * @throws PortalException
      */
-    public Reference getReference(long referenceId) throws PortalException {
+    public Bibliography getBibliography(long bibliographyId) throws PortalException {
 
-        ReferencePermission.check(getPermissionChecker(), referenceId, ActionKeys.VIEW);
+        BibliographyPermission.check(getPermissionChecker(), bibliographyId, ActionKeys.VIEW);
 
-        return referenceLocalService.getReference(referenceId);
+        return bibliographyLocalService.getBibliography(bibliographyId);
     }
 
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
@@ -146,7 +121,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
-        Indexer<Reference> indexer = IndexerRegistryUtil.getIndexer(Reference.class.getName());
+        Indexer<Bibliography> indexer = IndexerRegistryUtil.getIndexer(Bibliography.class.getName());
 
         SearchContext searchContext = new SearchContext();
 
@@ -178,9 +153,9 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      */
     public void subscribe(long groupId) throws PortalException {
 
-        ReferencePermission.check(getPermissionChecker(), groupId, ActionKeys.SUBSCRIBE);
+        BibliographyPermission.check(getPermissionChecker(), groupId, ActionKeys.SUBSCRIBE);
 
-        referenceLocalService.subscribe(getUserId(), groupId);
+        bibliographyLocalService.subscribe(getUserId(), groupId);
     }
 
     /**
@@ -190,29 +165,30 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      */
     public void unsubscribe(long groupId) throws PortalException {
 
-        ReferencePermission.check(getPermissionChecker(), groupId, ActionKeys.SUBSCRIBE);
+        BibliographyPermission.check(getPermissionChecker(), groupId, ActionKeys.SUBSCRIBE);
 
-        referenceLocalService.unsubscribe(getUserId(), groupId);
+        bibliographyLocalService.unsubscribe(getUserId(), groupId);
     }
 
     /**
      * 
-     * @param referenceId
+     * @param bibliographyId
      * @param userId
-     * @param bibTeX
+     * @param title
+     * @paramet description
      * @param serviceContext
      * @return
      * @since 1.0.0
      * @throws PortalException
      */
-    public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
-            throws PortalException {
+    public Bibliography updateBibliography(long bibliographyId, long userId, String title, String description,
+            ServiceContext serviceContext) throws PortalException {
 
-        ReferencePermission.check(getPermissionChecker(), referenceId, ActionKeys.UPDATE);
+        BibliographyPermission.check(getPermissionChecker(), bibliographyId, ActionKeys.UPDATE);
 
-        return referenceLocalService.updateReference(referenceId, userId, bibTeX, serviceContext);
+        return bibliographyLocalService.updateBibliography(bibliographyId, userId, title, description, serviceContext);
     }
 
-    private static final Log _log = LogFactoryUtil.getLog(ReferenceServiceImpl.class);
+    private static final Log _log = LogFactoryUtil.getLog(BibliographyServiceImpl.class);
 
 }

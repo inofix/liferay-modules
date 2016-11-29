@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2016-11-29 00:14 by Christian Berndt 
-    Version:    1.0.3
+    Modified:   2016-11-29 21:22 by Christian Berndt 
+    Version:    1.0.4
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -16,6 +16,52 @@
     <author>Christian Berndt</author>
 
     <namespace>Inofix</namespace>
+    
+    <entity local-service="true" name="Bibliography" remote-service="true"
+        uuid="true">
+
+        <!-- PK fields -->
+
+        <column name="bibliographyId" type="long" primary="true" />
+
+        <!-- Group instance -->
+
+        <column name="groupId" type="long" />
+
+        <!-- Audit fields -->
+
+        <column name="companyId" type="long" />
+        <column name="userId" type="long" />
+        <column name="userName" type="String" />
+        <column name="createDate" type="Date" />
+        <column name="modifiedDate" type="Date" />
+        <column name="status" type="int" />
+
+        <!-- Other fields -->
+
+        <column name="title" type="String" />
+        <column name="description" type="String" />
+
+        <!-- Order -->
+
+        <!-- Finder methods -->
+        
+        <finder name="GroupId" return-type="Collection">
+            <finder-column name="groupId" />
+        </finder>
+
+        <!-- References -->
+
+        <reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
+        <reference entity="AssetLink" package-path="com.liferay.portlet.asset" />
+        <reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
+        <reference entity="ExpandoRow" package-path="com.liferay.portlet.expando" />
+        <reference entity="RatingsStats" package-path="com.liferay.portlet.ratings" />
+        <reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
+        <reference entity="Subscription" package-path="com.liferay.portal" />
+        <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
+
+    </entity>    
 
     <entity local-service="true" name="Reference" remote-service="true"
         uuid="true">
