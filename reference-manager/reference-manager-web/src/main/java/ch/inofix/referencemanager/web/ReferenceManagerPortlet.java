@@ -58,7 +58,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import ch.inofix.referencemanager.constants.ReferencePortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchReferenceException;
 import ch.inofix.referencemanager.model.Reference;
-import ch.inofix.referencemanager.service.ReferenceLocalService;
 import ch.inofix.referencemanager.service.ReferenceService;
 import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
@@ -74,8 +73,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-11-29 14:17
- * @version 1.0.5
+ * @modified 2016-11-29 21:20
+ * @version 1.0.6
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -98,20 +97,10 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), actionRequest);
 
-        // TODO: use remote service
-        List<Reference> references = _referenceLocalService.getGroupReferences(serviceContext.getScopeGroupId());
-
-        for (Reference reference : references) {
-
-            // TODO: Add try-catch and count failed deletions
-
-            // TODO: use remote service
-            reference = _referenceLocalService.deleteReference(reference.getReferenceId());
-
-        }
+        List<Reference> references = _referenceService.deleteGroupReferences(serviceContext.getScopeGroupId());
 
         SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                PortletUtil.translate("successfully-deleted-x-task-records"));
+                PortletUtil.translate("successfully-deleted-x-task-records", references.size()));
 
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
@@ -183,8 +172,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
                 // TODO: perform upload in background thread
 
-                // TODO: use remote service
-                _referenceLocalService.addReference(userId, bibTeX, serviceContext);
+                _referenceService.addReference(userId, bibTeX, serviceContext);
 
             }
 
@@ -329,11 +317,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
     }
 
     @org.osgi.service.component.annotations.Reference
-    protected void setReferenceLocalService(ReferenceLocalService referenceLocalService) {
-        this._referenceLocalService = referenceLocalService;
-    }
-
-    @org.osgi.service.component.annotations.Reference
     protected void setReferenceService(ReferenceService referenceService) {
         this._referenceService = referenceService;
     }
@@ -343,7 +326,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
     private static Log _log = LogFactoryUtil.getLog(ReferenceManagerPortlet.class.getName());
 
     // TODO: remove local service
-    private ReferenceLocalService _referenceLocalService;
     private ReferenceService _referenceService;
 
 }

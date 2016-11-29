@@ -14,6 +14,8 @@
 
 package ch.inofix.referencemanager.service.impl;
 
+import java.util.List;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -53,8 +55,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-29 18:41
- * @version 1.0.2
+ * @modified 2016-11-29 20:53
+ * @version 1.0.3
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -97,6 +99,30 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
         ReferencePermission.check(getPermissionChecker(), referenceId, ReferenceActionKeys.DELETE);
 
         return referenceLocalService.deleteReference(referenceId);
+
+    }
+
+    /**
+     * 
+     * @param groupId
+     * @return
+     * @since 1.0.3
+     * @throws PortalException
+     */
+    public List<Reference> deleteGroupReferences(long groupId) throws PortalException {
+
+        ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId,
+                ReferenceActionKeys.DELETE_GROUP_REFERENCES);
+
+        List<Reference> references = referenceLocalService.getGroupReferences(groupId);
+
+        for (Reference reference : references) {
+
+            reference = referenceLocalService.deleteReference(reference.getReferenceId());
+
+        }
+
+        return references;
 
     }
 
