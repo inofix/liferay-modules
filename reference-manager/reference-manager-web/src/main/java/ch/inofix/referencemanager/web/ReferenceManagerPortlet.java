@@ -55,7 +55,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import ch.inofix.referencemanager.constants.ReferencePortletKeys;
+import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchReferenceException;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceService;
@@ -79,9 +79,10 @@ import com.liferay.portal.kernel.util.StringPool;
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
-        "com.liferay.portlet.instanceable=false", "javax.portlet.security-role-ref=power-user,user",
-        "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
-        "javax.portlet.resource-bundle=content.Language" }, service = Portlet.class)
+        "com.liferay.portlet.instanceable=false", "javax.portlet.init-param.template-path=/",
+        "javax.portlet.init-param.view-template=/view.jsp", "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER,
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class ReferenceManagerPortlet extends MVCPortlet {
 
     /**
@@ -282,7 +283,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         String namespace = actionResponse.getNamespace();
         String windowState = actionResponse.getWindowState().toString();
 
-        editReferenceURL = HttpUtil.setParameter(editReferenceURL, "p_p_id", ReferencePortletKeys.REFERENCE_MANAGER);
+        editReferenceURL = HttpUtil.setParameter(editReferenceURL, "p_p_id", PortletKeys.REFERENCE_MANAGER);
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, "p_p_state", windowState);
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "mvcPath",
                 templatePath + "edit_reference.jsp");
@@ -292,8 +293,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
                 ParamUtil.getString(actionRequest, "backURL"));
         editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "referenceId",
                 reference.getReferenceId());
-
-        _log.info(editReferenceURL);
 
         return editReferenceURL;
     }
@@ -321,11 +320,10 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         this._referenceService = referenceService;
     }
 
+    private ReferenceService _referenceService;
+
     private static final String REQUEST_PROCESSED = "request_processed";
 
     private static Log _log = LogFactoryUtil.getLog(ReferenceManagerPortlet.class.getName());
-
-    // TODO: remove local service
-    private ReferenceService _referenceService;
 
 }

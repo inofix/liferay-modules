@@ -8,7 +8,7 @@ import com.liferay.portal.kernel.security.permission.BaseResourcePermissionCheck
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourcePermissionChecker;
 
-import ch.inofix.referencemanager.constants.ReferencePortletKeys;
+import ch.inofix.referencemanager.constants.PortletKeys;
 
 /**
  * 
@@ -37,7 +37,7 @@ public class ReferenceManagerPortletPermission extends BaseResourcePermissionChe
 
     public static boolean contains(PermissionChecker permissionChecker, long groupId, String actionId) {
 
-        return contains(permissionChecker, RESOURCE_NAME, ReferencePortletKeys.REFERENCE_MANAGER, groupId, actionId);
+        return contains(permissionChecker, RESOURCE_NAME, PortletKeys.REFERENCE_MANAGER, groupId, actionId);
     }
 
     public Boolean checkResource(PermissionChecker permissionChecker, long classPK, String actionId) {
