@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
-import ch.inofix.referencemanager.constants.ReferencePortletKeys;
+import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceLocalService;
 import ch.inofix.referencemanager.service.permission.ReferencePermission;
@@ -26,7 +26,7 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  */
 @Component(immediate = true, property = {
-        "javax.portlet.name=" + ReferencePortletKeys.REFERENCE_MANAGER }, service = AssetRendererFactory.class)
+        "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER }, service = AssetRendererFactory.class)
 public class ReferenceAssetRendererFactory extends BaseAssetRendererFactory<Reference> {
 
     public static final String TYPE = "reference";
@@ -34,7 +34,7 @@ public class ReferenceAssetRendererFactory extends BaseAssetRendererFactory<Refe
     public ReferenceAssetRendererFactory() {
         setLinkable(true);
         setClassName(Reference.class.getName());
-        setPortletId(ReferencePortletKeys.REFERENCE_MANAGER);
+        setPortletId(PortletKeys.REFERENCE_MANAGER);
         setSearchable(true);
     }
 

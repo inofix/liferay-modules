@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
-import ch.inofix.referencemanager.constants.ReferencePortletKeys;
+import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.permission.ReferencePermission;
 import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
@@ -104,7 +104,7 @@ public class ReferenceAssetRenderer extends BaseJSPAssetRenderer<Reference> {
         _log.info("getURLViewInContext()");
 
         try {
-            PortletURL portletURL = liferayPortletResponse.createRenderURL(ReferencePortletKeys.REFERENCE_MANAGER);
+            PortletURL portletURL = liferayPortletResponse.createRenderURL(PortletKeys.REFERENCE_MANAGER);
 
             portletURL.setParameter("mvcPath", "/view_reference.jsp");
             portletURL.setParameter("referenceId", String.valueOf(_reference.getReferenceId()));

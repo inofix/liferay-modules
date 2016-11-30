@@ -14,12 +14,16 @@
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="ch.inofix.referencemanager.constants.BibliographyActionKeys"%>
 <%@page import="ch.inofix.referencemanager.constants.ReferenceActionKeys"%>
+<%@page import="ch.inofix.referencemanager.model.Bibliography"%>
 <%@page import="ch.inofix.referencemanager.model.Reference"%>
+<%@page import="ch.inofix.referencemanager.service.permission.BibliographyPermission"%>
 <%@page import="ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission"%>
 <%@page import="ch.inofix.referencemanager.service.permission.ReferencePermission"%>
 <%@page import="ch.inofix.referencemanager.service.ReferenceLocalService"%>
 <%@page import="ch.inofix.referencemanager.service.ReferenceServiceUtil"%>
+<%@page import="ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearch"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearchTerms"%>

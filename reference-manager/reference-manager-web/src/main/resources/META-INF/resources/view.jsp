@@ -15,6 +15,9 @@
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
+    boolean hasAddPermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
+            ReferenceActionKeys.ADD_REFERENCE);
+    
     SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
     
     boolean reverse = false; 
@@ -77,10 +80,9 @@
             </portlet:renderURL>
 
             <aui:button href="<%=editReferenceURL%>"
-                cssClass="btn-primary"
+                cssClass="btn-primary btn-sm"
                 value="add-reference"
-                disabled="<%=!ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
-                                ReferenceActionKeys.ADD_REFERENCE)%>" />
+                disabled="<%= !hasAddPermission %>" />
         </aui:button-row>
 
         <div class="search-results">
@@ -88,7 +90,7 @@
         </div>
 
         <liferay-ui:search-container
-            cssClass="references-search-container"
+            cssClass="references-search-container"            
             id="references"
             searchContainer="<%= referenceSearch %>"
             var="referenceSearchContainer">
