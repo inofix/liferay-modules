@@ -2,8 +2,8 @@
     view_bibliography.jsp: default view of the bibliography manaager portlet.
     
     Created:    2016-11-30 00:18 by Christian Berndt
-    Modified:   2016-12-01 02:41 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-12-01 18:23 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -12,8 +12,6 @@
     String redirect = ParamUtil.getString(request, "redirect");
     String tabs1 = ParamUtil.getString(request, "tabs1", "settings");
     String availableTabs = "settings"; 
-
-    long bibliographyId = ParamUtil.getLong(request, "bibliographyId");
     
     Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
 
@@ -21,7 +19,9 @@
 
     if (bibliography != null) {
         BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.UPDATE);
-        availableTabs = "browse,import-export,settings"; 
+        availableTabs = "browse,import-export,settings";
+        portletURL.setParameter("bibliographyId", String.valueOf(bibliography.getBibliographyId()));
+        tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     }
 %>
 
@@ -44,7 +44,7 @@
     </c:otherwise>
 </c:choose>
 
-<liferay-ui:tabs names="" param="tabs1"
+<liferay-ui:tabs names="<%= availableTabs %>" param="tabs1"
     url="<%=portletURL.toString()%>" />
     
 <c:choose>
