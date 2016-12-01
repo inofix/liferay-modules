@@ -13,15 +13,15 @@
 		<field name="status" type="int" />
 		<field name="title" type="String">
 			<hint name="max-length">250</hint>
-            <validator name="required" />            
+			<validator name="required" />
 		</field>
 		<field name="description" type="String">
 			<hint name="max-length">5000</hint>
 		</field>
 		<field name="urlTitle" type="String">
-            <hint name="max-length">250</hint>
-            <validator name="required" />            
-        </field>
+			<hint name="max-length">250</hint>
+			<validator name="required" />
+		</field>
 	</model>
 	<model name="ch.inofix.referencemanager.model.Reference">
 		<field name="uuid" type="String" />

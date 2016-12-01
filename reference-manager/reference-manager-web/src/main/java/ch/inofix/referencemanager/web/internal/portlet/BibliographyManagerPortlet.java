@@ -38,8 +38,8 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-01 02:42
- * @version 1.0.1
+ * @modified 2016-12-01 19:57
+ * @version 1.0.2
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -95,6 +95,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
         String title = ParamUtil.getString(actionRequest, "title");
         String description = ParamUtil.getString(actionRequest, "description");
+        String urlTitle = ParamUtil.getString(actionRequest, "urlTitle");
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(Bibliography.class.getName(), actionRequest);
 
@@ -103,9 +104,9 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         Bibliography bibliography = null;
 
         if (bibliographyId <= 0) {
-            bibliography = _bibliographyService.addBibliography(userId, title, description, serviceContext);
+            bibliography = _bibliographyService.addBibliography(userId, title, description, urlTitle, serviceContext);
         } else {
-            bibliography = _bibliographyService.updateBibliography(bibliographyId, userId, title, description,
+            bibliography = _bibliographyService.updateBibliography(bibliographyId, userId, title, description, urlTitle,
                     serviceContext);
         }
 
