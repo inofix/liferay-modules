@@ -2,8 +2,8 @@
     view_bibliography.jsp: default view of the bibliography manaager portlet.
     
     Created:    2016-11-30 00:18 by Christian Berndt
-    Modified:   2016-12-01 18:23 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-12-01 21:15 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -31,9 +31,25 @@
             <h2>
                 <liferay-ui:message key="create-a-new-bibliography" />
             </h2>
-            <p>
-                <liferay-ui:message key="you-can-import-your-references-from-a-file-or-pick-references-already-available-on-bibshare" />
-            </p>
+            
+            <c:choose>
+                <c:when test="<%= themeDisplay.isSignedIn() %>">
+                    <p>
+                        <liferay-ui:message key="you-can-import-your-references-from-a-file-or-pick-references-already-available-on-bibshare" />
+                    </p>                    
+                </c:when>
+                <c:otherwise>
+                    <div class="alert alert-info">
+                        <liferay-ui:message key="you-must-sign-in-order-to-create-a-new-bibliography"/>
+                        
+                        <strong>
+                            <aui:a href="<%= themeDisplay.getURLSignIn() %>" label="sign-in">
+                                <liferay-ui:icon iconCssClass="icon-signin"/>
+                            </aui:a>
+                        </strong> 
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </c:when>
     <c:otherwise>

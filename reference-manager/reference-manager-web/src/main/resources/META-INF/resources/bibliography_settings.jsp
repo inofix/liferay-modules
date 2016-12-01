@@ -2,8 +2,8 @@
     bibliography_settings.jsp: edit the bibliography's settings.
     
     Created:    2016-12-01 02:33 by Christian Berndt
-    Modified:   2016-12-01 02:33 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-12-01 20:44 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -23,7 +23,10 @@
     boolean hasUpdatePermission = true;
     
     if (bibliography != null) {
-        BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.UPDATE);
+        hasUpdatePermission = BibliographyPermission.contains(permissionChecker, bibliography,
+                BibliographyActionKeys.UPDATE);
+    } else if (!themeDisplay.isSignedIn()) {
+        hasUpdatePermission = false; 
     }
 %>
 
@@ -32,11 +35,15 @@
 
 <aui:form action="<%= updateBibliographyURL %>" method="post"
     name="fm">
+    
+    <aui:input name="bibliographyId" type="hidden"
+        value="<%=bibliographyId%>" />
 
     <aui:input name="redirect" type="hidden"
         value="<%=currentURL%>" />
-    <aui:input name="bibliographyId" type="hidden"
-        value="<%=bibliographyId%>" />
+
+    <aui:input name="tabs1" type="hidden"
+        value="settings" />
 
     <liferay-ui:asset-categories-error />
 
@@ -116,17 +123,41 @@
 
     <aui:fieldset cssClass="tags-and-categories">
 
-        <aui:input name="categories" type="assetCategories"
-            disabled="<%=!hasUpdatePermission%>" />
-            
+        <c:choose>
+            <c:when test="<%=hasUpdatePermission%>">
+                <aui:input name="categories" type="assetCategories" />
+            </c:when>
+            <c:otherwise>
+                <aui:field-wrapper name="categories" inlineLabel="false">
+                    <c:if test="<%= bibliography != null %>">                          
+                        <liferay-ui:asset-categories-summary
+                            classPK="<%=bibliography.getBibliographyId()%>"
+                            className="<%=Bibliography.class.getName()%>" />
+                    </c:if>
+                </aui:field-wrapper>
+            </c:otherwise>
+        </c:choose>
+
         <p class="help-message">
             <liferay-ui:message
                 key="bibliography-categories-help" />
         </p>
-
-        <aui:input name="tags" type="assetTags"
-            disabled="<%=!hasUpdatePermission%>" />
-            
+        
+        <c:choose>
+            <c:when test="<%=hasUpdatePermission%>">
+                <aui:input name="tags" type="assetTags" />
+            </c:when>
+            <c:otherwise>
+                <aui:field-wrapper name="tags">
+                    <c:if test="<%= bibliography != null %>">
+                        <liferay-ui:asset-tags-summary
+                            classPK="<%=bibliography.getBibliographyId()%>"
+                            className="<%=Bibliography.class.getName()%>" />
+                    </c:if>
+                </aui:field-wrapper>
+            </c:otherwise>
+        </c:choose>
+                    
         <p class="help-message">
             <liferay-ui:message
                 key="bibliography-tags-help" />
