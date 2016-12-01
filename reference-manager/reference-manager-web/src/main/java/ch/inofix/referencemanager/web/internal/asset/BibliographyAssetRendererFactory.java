@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.referencemanager.constants.BibliographyActionKeys;
@@ -32,8 +33,8 @@ import ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPerm
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:56
- * @modified 2016-12-01 12:56
- * @version 1.0.0
+ * @modified 2016-12-01 21:47
+ * @version 1.0.1
  *
  */
 @Component(immediate = true, property = {
@@ -84,9 +85,14 @@ public class BibliographyAssetRendererFactory extends BaseAssetRendererFactory<B
 
         PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.BIBLIOGRAPHY_MANAGER,
                 portletPlid, PortletRequest.RENDER_PHASE);
-
+        
         portletURL.setParameter("mvcPath", "/view_bibliography.jsp");
-
+        
+        String redirect = (String) liferayPortletRequest.getAttribute("redirect"); 
+        if (Validator.isNotNull(redirect)) {
+            portletURL.setParameter("redirect", redirect);            
+        }
+                
         return portletURL;
     }
 

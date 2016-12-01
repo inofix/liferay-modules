@@ -2,8 +2,8 @@
     your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-12-01 18:55 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-12-01 21:46 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -58,6 +58,7 @@
     <liferay-util:buffer var="addButton">
 
         <%
+            liferayPortletRequest.setAttribute("redirect", currentURL);
             String editBibliographyURL = assetRendererFactory
                         .getURLAdd(liferayPortletRequest, liferayPortletResponse).toString();
         %>
