@@ -1,6 +1,63 @@
 @import "bourbon";
 @import "mixins";
 
+fieldset {
+    border-bottom: 1px solid #ddd;
+}
+
+.panel {
+    .list-group-item {
+        > .btn-group {
+            position: absolute; 
+            right: 15px;
+            top: 4px;
+        }
+    }
+}
+
+
+.bibliography-manager-portlet {
+    
+    margin-bottom: 70px;
+
+    .bibliography-head {
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 30px; 
+        padding-bottom: 10px; 
+    }
+    
+    form {
+    
+        .textboxlistentry-holder {
+            min-height: 35px;
+        }
+    
+        fieldset.private-settings,
+        fieldset.tags-and-categories {
+            padding-top: 15px;
+        }
+    
+        .form-group.dash {
+            padding: 6px;
+        }   
+        
+        .help-message {
+        
+            margin-bottom: 15px;
+            
+            .icon {
+                font-size: 20px; 
+                margin-left: 5px;
+            }
+        }
+        
+        .tagselector-content .textboxlistentry-holder {
+            border-bottom: 1px solid #ddd;
+        }
+    }
+
+}
+
 .reference-manager-portlet {
     
     input[type="file"] {

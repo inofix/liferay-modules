@@ -21,10 +21,12 @@
 <%@page import="ch.inofix.referencemanager.service.permission.BibliographyPermission"%>
 <%@page import="ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission"%>
 <%@page import="ch.inofix.referencemanager.service.permission.ReferencePermission"%>
-<%@page import="ch.inofix.referencemanager.service.ReferenceLocalService"%>
+<%@page import="ch.inofix.referencemanager.service.BibliographyServiceUtil"%>
 <%@page import="ch.inofix.referencemanager.service.ReferenceServiceUtil"%>
 <%@page import="ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys"%>
+<%@page import="ch.inofix.referencemanager.web.internal.search.BibliographySearchTerms"%>
+<%@page import="ch.inofix.referencemanager.web.internal.search.BibliographySearch"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearch"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearchTerms"%>
 
@@ -33,6 +35,7 @@
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
+<%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
 <%@page import="com.liferay.portal.kernel.upload.UploadException"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>

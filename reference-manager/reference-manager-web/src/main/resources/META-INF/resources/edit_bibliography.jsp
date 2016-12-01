@@ -6,14 +6,21 @@
     Version:    1.0.0
 --%>
 
+<%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@ include file="/init.jsp"%>
 
 <%
     String redirect = ParamUtil.getString(request, "redirect");
 
     long bibliographyId = ParamUtil.getLong(request, "bibliographyId");
+    
+    String submitLabel = "create"; 
 
     Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
+    
+    if (bibliography != null) {
+        submitLabel = "save"; 
+    }
 
     boolean hasUpdatePermission = true;
 
@@ -25,56 +32,137 @@
 <portlet:actionURL name="updateBibliography" var="updateBibliographyURL">
 </portlet:actionURL>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <strong><liferay-ui:message key="your-bibliographies" /></strong>
-    </div>
-    <div class="panel-body">
-        <aui:form action="<%= updateBibliographyURL %>" method="post"
-            name="fm">
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2"">
 
-            <aui:input name="redirect" type="hidden"
-                value="<%=currentURL%>" />
-            <aui:input name="bibliographyId" type="hidden"
-                value="<%=bibliographyId%>" />
+            <c:choose>
+                <c:when test="<%=Validator.isNull(bibliography)%>">
+                    <div class="bibliography-head">
+                        <h2><liferay-ui:message key="create-a-new-bibliography"/></h2>
+                        <p><liferay-ui:message key="you-can-import-your-references-from-a-file-or-pick-references-already-available-on-bibshare"/></p>
+                    </div>
+                </c:when>
+                <c:otherwise>
+             <h2><%= bibliography.getTitle() %></h2>
+                    <p class="lead"><%= bibliography.getDescription() %></p>
+                </c:otherwise>
+            </c:choose>
 
-            <liferay-ui:asset-categories-error />
+            <aui:form action="<%= updateBibliographyURL %>" method="post"
+                name="fm">
+            
+                <aui:input name="redirect" type="hidden"
+                    value="<%=currentURL%>" />
+                <aui:input name="bibliographyId" type="hidden"
+                    value="<%=bibliographyId%>" />
+            
+                <liferay-ui:asset-categories-error />
+            
+                <liferay-ui:asset-tags-error />
+            
+                <aui:model-context bean="<%=bibliography%>"
+                    model="<%=Bibliography.class%>" />
+            
+                <aui:fieldset>
 
-            <liferay-ui:asset-tags-error />
+                    <div class="form-group form-group-inline input-text-wrapper">
+                        <label class="control-label" for="account">
+                            <liferay-ui:message key="account" />
+                        </label> <br/>
+                                
+                        <input class="field form-control" id="account" readonly="readonly"
+                            value="<%="/user/" + themeDisplay.getUser().getScreenName()%>" />
+                    </div>
+                       
+                    <div class="form-group form-group-inline input-text-wrapper dash">                    
+                        / 
+                    </div>
+                        
+                    <aui:input disabled="<%=!hasUpdatePermission%>" inlineField="true"
+                        name="urlTitle" /> 
+                        
+                    <p class="help-message">
+                        <liferay-ui:message
+                            key="bibliography-url-title-help" />
+                    </p>                 
 
-            <aui:model-context bean="<%=bibliography%>"
-                model="<%=Bibliography.class%>" />
+                    <aui:input disabled="<%=!hasUpdatePermission%>"
+                        name="title" />
 
-            <aui:fieldset>
+                    <p class="help-message">
+                        <liferay-ui:message
+                            key="bibliography-title-help" />
+                    </p>
 
-                <aui:input disabled="<%=!hasUpdatePermission%>" label=""
-                    name="title" placeholder="title" />
+                    <aui:input disabled="<%=!hasUpdatePermission%>"
+                        name="description" type="textarea" />
 
-                <aui:input disabled="<%=!hasUpdatePermission%>"
-                    name="description" placeholder="description"
-                    label="" type="textarea" />
+                    <p class="help-message">
+                        <liferay-ui:message
+                            key="bibliography-description-help" />
+                    </p>
 
-                <%-- 
-                <aui:input name="categories" type="assetCategories"
-                    disabled="<%=!hasUpdatePermission%>" />
+                </aui:fieldset>
 
-                <aui:input name="tags" type="assetTags"
-                    disabled="<%=!hasUpdatePermission%>" />
-                    
-                --%>
+                <aui:fieldset cssClass="private-settings">
+                    <%
+                        boolean isPrivate = false;
+                    %>
 
-            </aui:fieldset>
+                    <aui:field-wrapper>
+                        <aui:input checked="<%=!isPrivate%>" name="private" label=""
+                            type="radio" value="false" />
+                            
+                        <span class="help-message">
+                            <liferay-ui:icon cssClass="icon icon-eye-open"/>
+                            <liferay-ui:message key="bibliography-private-false"/>
+                        </span>
+                    </aui:field-wrapper>
+                        
+                    <aui:field-wrapper>
+                        <aui:input checked="<%=isPrivate%>" name="private" label=""
+                            type="radio" value="true" disabled="true" />
+                            
+                        <span class="help-message text-muted">
+                            <liferay-ui:icon cssClass="icon icon-lock"/>
+                            <liferay-ui:message key="bibliography-private-true"/>
+                        </span>
+                    </aui:field-wrapper>
 
-            <aui:button-row>
-                <aui:button cssClass="btn-sm"
-                    disabled="<%=!hasUpdatePermission%>" type="submit" />
 
-                <aui:button cssClass="btn-sm"
-                    disabled="<%=!hasUpdatePermission%>"
-                    href="<%=redirect%>" type="cancel" />
-            </aui:button-row>
+                </aui:fieldset>
 
-        </aui:form>
+                <aui:fieldset cssClass="tags-and-categories">
 
+                    <aui:input name="categories" type="assetCategories"
+                        disabled="<%=!hasUpdatePermission%>" />
+                        
+                    <p class="help-message">
+                        <liferay-ui:message
+                            key="bibliography-categories-help" />
+                    </p>
+            
+                    <aui:input name="tags" type="assetTags"
+                        disabled="<%=!hasUpdatePermission%>" />
+                        
+                    <p class="help-message">
+                        <liferay-ui:message
+                            key="bibliography-tags-help" />
+                    </p>
+                        
+                </aui:fieldset>
+                
+                <aui:button-row>
+                    <aui:button
+                        disabled="<%=!hasUpdatePermission%>" type="submit" value="<%= submitLabel %>" />
+            
+                    <aui:button 
+                        disabled="<%=!hasUpdatePermission%>"
+                        href="<%=redirect%>" type="cancel" />
+                </aui:button-row>
+            
+            </aui:form>
+        </div>
     </div>
 </div>

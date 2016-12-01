@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-11-29 21:27
- * @version 1.0.0
+ * @modified 2016-11-30 18:01
+ * @version 1.0.1
  * @see BibliographyServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyServiceUtil
  */
@@ -70,7 +70,8 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
     /**
      * 
      * @param userId
-     * @param bibTeX
+     * @param title
+     * @param description
      * @param serviceContext
      * @return
      * @since 1.0.0
@@ -114,6 +115,17 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
         return bibliographyLocalService.getBibliography(bibliographyId);
     }
 
+    /**
+     * @param userId
+     * @param groupId
+     * @param keywords
+     * @param start
+     * @param end
+     * @param sort
+     * @return
+     * @since 1.0.0
+     * @throws PortalException
+     */
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException {
 

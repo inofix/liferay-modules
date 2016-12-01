@@ -45,7 +45,7 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
         "com.liferay.portlet.instanceable=false", "javax.portlet.init-param.template-path=/",
-        "javax.portlet.init-param.view-template=/view_bibliographies.jsp",
+        "javax.portlet.init-param.view-template=/your_bibliographies.jsp",
         "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER, "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class BibliographyManagerPortlet extends MVCPortlet {
