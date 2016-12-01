@@ -2,7 +2,7 @@
     your_bibliographies.jsp: Default view of the bibliography manager portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-11-30 18:25 by Christian Berndt
+    Modified:   2016-12-01 13:24 by Christian Berndt
     Version:    1.0.1
 --%>
 
@@ -12,7 +12,6 @@
     boolean hasAddPermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
             BibliographyActionKeys.ADD_BIBLIOGRAPHY);
     String keywords = ParamUtil.getString(request, "keywords");
-//     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
 
     SearchContainer<Bibliography> bibliographySearch = new BibliographySearch(renderRequest, "cur", portletURL);
 
@@ -38,12 +37,16 @@
             Bibliography bibliography = BibliographyServiceUtil.getBibliography(bibliographyId);
             bibliographies.add(bibliography);
         } catch (Exception e) {
+            // TODO: use logging
             System.out.println(e);
         }
     }
 
     bibliographySearch.setResults(bibliographies);
     bibliographySearch.setTotal(hits.getLength());
+    
+    AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
+            .getAssetRendererFactoryByClass(Bibliography.class);
 %>
 
 <div class="panel panel-default">
@@ -85,44 +88,46 @@
     --%>
 
     <ul class="list-group">
-        <c:forEach items="<%=bibliographySearch.getResults()%>" var="bibliography">
+    
+        <%
+            for (Bibliography bibliography : bibliographySearch.getResults()) {
+        %>
+    
             <li class="list-group-item">
-            
                 <%
-                    // TODO: Retrieve edit- and viewURL from BibliographyAssetRenderer
-                %>
-            
-                <portlet:renderURL var="viewURL">
-                    <portlet:param name="mvcPath"
-                        value="/edit_bibliography.jsp" />
-                    <portlet:param name="redirect"
-                        value="<%=currentURL%>" />
-                    <portlet:param name="bibliographyId"
-                        value="${bibliography.bibliographyId}" />
-                </portlet:renderURL>            
+                    AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliography.getBibliographyId());
+                    String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse, currentURL); 
+                %> 
                         
-                <a href="<%= viewURL %>">${bibliography.title}</a> 
+                <a href="<%= viewURL %>"><%= bibliography.getTitle() %></a> 
                  
                 <liferay-ui:icon-menu icon="" message="">
                 
                     <liferay-ui:icon iconCssClass="icon-eye-open"
-                        message="view" url="<%=viewURL%>" />
+                        message="view" url="<%=viewURL%>" />                       
+                        
                     <liferay-ui:icon iconCssClass="icon-edit"
                         message="edit" url="<%=viewURL%>" />
                 
-                    <portlet:actionURL var="deleteURL" name="deleteBibliography">
-                        <portlet:param name="redirect"
-                            value="<%= currentURL%>" />
-                        <portlet:param name="bibliographyId"
-                            value="${bibliography.bibliographyId}" />
-                    </portlet:actionURL>
-            
-                    <liferay-ui:icon-delete message="delete" url="<%=deleteURL%>" />
+                    <c:if test="<%= BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.DELETE) %>">
+                
+                        <portlet:actionURL var="deleteURL" name="deleteBibliography">
+                            <portlet:param name="redirect"
+                                value="<%= currentURL%>" />
+                            <portlet:param name="bibliographyId"
+                                value="<%= String.valueOf(bibliography.getBibliographyId()) %>" />
+                        </portlet:actionURL>
+                
+                        <liferay-ui:icon-delete message="delete" url="<%=deleteURL%>" />
+                    
+                    </c:if>
                     
                 </liferay-ui:icon-menu>
 
             </li>
-        </c:forEach>
+        <%
+            }
+        %>
     </ul>
 
     <c:if test="<%= hits.getLength() > 0 %>">
