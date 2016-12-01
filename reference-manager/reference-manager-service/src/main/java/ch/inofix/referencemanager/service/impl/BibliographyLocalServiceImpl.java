@@ -59,8 +59,8 @@ import ch.inofix.referencemanager.social.BibliographyActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-11-29 21:27
- * @version 1.0.0
+ * @modified 2016-12-01 19:57
+ * @version 1.0.1
  * @see BibliographyLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyLocalServiceUtil
  */
@@ -75,8 +75,8 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
      */
     @Indexable(type = IndexableType.REINDEX)
     @Override
-    public Bibliography addBibliography(long userId, String title, String description, ServiceContext serviceContext)
-            throws PortalException {
+    public Bibliography addBibliography(long userId, String title, String description, String urlTitle,
+            ServiceContext serviceContext) throws PortalException {
 
         // Bibliography
 
@@ -96,6 +96,7 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
         bibliography.setTitle(title);
         bibliography.setDescription(description);
+        bibliography.setUrlTitle(urlTitle);
 
         bibliographyPersistence.update(bibliography);
 
@@ -267,14 +268,14 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
     @Indexable(type = IndexableType.REINDEX)
     public Bibliography updateBibliography(long bibliographyId, long userId, String title, String description,
-            ServiceContext serviceContext) throws PortalException {
+            String urlTitle, ServiceContext serviceContext) throws PortalException {
 
         // Bibliography
 
         User user = userPersistence.findByPrimaryKey(userId);
 
-        // TODO: validate bibTeX
-        // validate(bibTeX);
+        // TODO: validate urlTitle
+        // validate(urlTitle);
 
         Bibliography bibliography = bibliographyPersistence.findByPrimaryKey(bibliographyId);
         long groupId = serviceContext.getScopeGroupId();
@@ -288,6 +289,7 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
         bibliography.setTitle(title);
         bibliography.setDescription(description);
+        bibliography.setUrlTitle(urlTitle);
 
         bibliographyPersistence.update(bibliography);
 
