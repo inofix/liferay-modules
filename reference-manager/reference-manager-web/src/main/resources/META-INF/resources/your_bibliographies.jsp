@@ -1,9 +1,9 @@
 <%--
-    your_bibliographies.jsp: Default view of the bibliography manager portlet.
+    your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-12-01 13:24 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-12-01 18:55 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -56,10 +56,11 @@
     </div>
     
     <liferay-util:buffer var="addButton">
-        <portlet:renderURL var="editBibliographyURL">
-            <portlet:param name="mvcPath" value="/edit_bibliography.jsp" />
-            <portlet:param name="redirect" value="<%=currentURL%>" />
-        </portlet:renderURL>
+
+        <%
+            String editBibliographyURL = assetRendererFactory
+                        .getURLAdd(liferayPortletRequest, liferayPortletResponse).toString();
+        %>
 
         <aui:button href="<%=editBibliographyURL%>"
             cssClass="btn-primary btn-sm" value="new-bibliography"
@@ -97,17 +98,26 @@
                 <%
                     AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliography.getBibliographyId());
                     String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse, currentURL); 
+                    String editURL = assetRenderer.getURLEdit(liferayPortletRequest, liferayPortletResponse).toString(); 
                 %> 
                         
                 <a href="<%= viewURL %>"><%= bibliography.getTitle() %></a> 
                  
-                <liferay-ui:icon-menu icon="" message="">
+                <liferay-ui:icon-menu icon="" message="" showWhenSingleIcon="true">
                 
-                    <liferay-ui:icon iconCssClass="icon-eye-open"
-                        message="view" url="<%=viewURL%>" />                       
+                    <c:if test="<%= BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.VIEW) %>">                        
+                
+                        <liferay-ui:icon iconCssClass="icon-eye-open"
+                            message="view" url="<%=viewURL%>" />   
                         
-                    <liferay-ui:icon iconCssClass="icon-edit"
-                        message="edit" url="<%=viewURL%>" />
+                    </c:if>                    
+
+                    <c:if test="<%= BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.UPDATE) %>">                        
+                        
+                        <liferay-ui:icon iconCssClass="icon-edit"
+                            message="edit" url="<%=editURL%>" />
+                        
+                    </c:if>
                 
                     <c:if test="<%= BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.DELETE) %>">
                 
