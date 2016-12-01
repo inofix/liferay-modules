@@ -1,35 +1,40 @@
 <?xml version="1.0"?>
 
 <model-hints>
-    <model name="ch.inofix.referencemanager.model.Bibliography">
-        <field name="uuid" type="String" />
-        <field name="bibliographyId" type="long" />
-        <field name="groupId" type="long" />
-        <field name="companyId" type="long" />
-        <field name="userId" type="long" />
-        <field name="userName" type="String" />
-        <field name="createDate" type="Date" />
-        <field name="modifiedDate" type="Date" />
-        <field name="status" type="int" />
-        <field name="title" type="String">
+	<model name="ch.inofix.referencemanager.model.Bibliography">
+		<field name="uuid" type="String" />
+		<field name="bibliographyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="title" type="String">
+			<hint name="max-length">250</hint>
+            <validator name="required" />            
+		</field>
+		<field name="description" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+		<field name="urlTitle" type="String">
             <hint name="max-length">250</hint>
+            <validator name="required" />            
         </field>
-        <field name="description" type="String">
-            <hint name="max-length">5000</hint>
-        </field>
-    </model>
-    <model name="ch.inofix.referencemanager.model.Reference">
-        <field name="uuid" type="String" />
-        <field name="referenceId" type="long" />
-        <field name="groupId" type="long" />
-        <field name="companyId" type="long" />
-        <field name="userId" type="long" />
-        <field name="userName" type="String" />
-        <field name="createDate" type="Date" />
-        <field name="modifiedDate" type="Date" />
-        <field name="status" type="int" />
-        <field name="bibTeX" type="String">
-            <hint name="max-length">5000</hint>
-        </field>
-    </model>
+	</model>
+	<model name="ch.inofix.referencemanager.model.Reference">
+		<field name="uuid" type="String" />
+		<field name="referenceId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="bibTeX" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+	</model>
 </model-hints>
