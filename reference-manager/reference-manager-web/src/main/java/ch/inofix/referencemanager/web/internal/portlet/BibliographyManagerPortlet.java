@@ -38,8 +38,8 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-01 19:57
- * @version 1.0.2
+ * @modified 2016-12-01 21:14
+ * @version 1.0.3
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -82,6 +82,14 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         super.render(renderRequest, renderResponse);
     }
 
+    @Override
+    public void sendRedirect(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException {
+
+        // Disable the default sendRedirect-behaviour of LiferayPortlet in order
+        // to pass renderParameters via actionResponse's setRenderParameter()
+        // methods.
+    }
+
     /**
      * 
      * @param actionRequest
@@ -111,8 +119,11 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         }
 
         String redirect = getEditBibliographyURL(actionRequest, actionResponse, bibliography);
+        String tabs1 = ParamUtil.get(actionRequest, "tabs1", "settings");
 
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+        actionResponse.setRenderParameter("tabs1", tabs1);
+
     }
 
     /**
