@@ -38,14 +38,14 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-11-29 22:33
- * @version 1.0.0
+ * @modified 2016-12-01 02:42
+ * @version 1.0.1
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
         "com.liferay.portlet.instanceable=false", "javax.portlet.init-param.template-path=/",
-        "javax.portlet.init-param.view-template=/your_bibliographies.jsp",
+        "javax.portlet.init-param.view-template=/view_bibliography.jsp",
         "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER, "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class BibliographyManagerPortlet extends MVCPortlet {
@@ -129,6 +129,14 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         }
     }
 
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @param bibliography
+     * @return
+     * @throws Exception
+     */
     protected String getEditBibliographyURL(ActionRequest actionRequest, ActionResponse actionResponse,
             Bibliography bibliography) throws Exception {
 
@@ -146,7 +154,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, "p_p_id", PortletKeys.BIBLIOGRAPHY_MANAGER);
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, "p_p_state", windowState);
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, namespace + "mvcPath",
-                templatePath + "edit_bibliography.jsp");
+                templatePath + "view_bibliography.jsp");
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, namespace + "redirect",
                 getRedirect(actionRequest, actionResponse));
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, namespace + "backURL",
