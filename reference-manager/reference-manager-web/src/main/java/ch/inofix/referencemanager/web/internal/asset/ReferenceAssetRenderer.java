@@ -15,12 +15,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.model.Reference;
-import ch.inofix.referencemanager.service.permission.ReferencePermission;
 import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 
 /**

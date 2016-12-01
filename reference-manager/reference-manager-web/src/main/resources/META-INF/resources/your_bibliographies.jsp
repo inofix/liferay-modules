@@ -12,7 +12,7 @@
     boolean hasAddPermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
             BibliographyActionKeys.ADD_BIBLIOGRAPHY);
     String keywords = ParamUtil.getString(request, "keywords");
-    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+//     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
 
     SearchContainer<Bibliography> bibliographySearch = new BibliographySearch(renderRequest, "cur", portletURL);
 
@@ -108,7 +108,7 @@
                     <liferay-ui:icon iconCssClass="icon-eye-open"
                         message="view" url="<%=viewURL%>" />
                     <liferay-ui:icon iconCssClass="icon-edit"
-                        message="view" url="<%=viewURL%>" />
+                        message="edit" url="<%=viewURL%>" />
                 
                     <portlet:actionURL var="deleteURL" name="deleteBibliography">
                         <portlet:param name="redirect"
