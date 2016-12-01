@@ -1,12 +1,18 @@
 package ch.inofix.referencemanager.web.internal.portlet;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.ParamUtil;
 
 import ch.inofix.referencemanager.constants.PortletKeys;
+import ch.inofix.referencemanager.service.BibliographyService;
 
 /**
  * View Controller of Inofix' your-bibliographies-portlet
@@ -30,5 +36,32 @@ import ch.inofix.referencemanager.constants.PortletKeys;
 service = Portlet.class)
 
 public class YourBibliographiesPortlet extends MVCPortlet {
+    
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.0
+     * @throws Exception
+     */
+    public void deleteBibliography(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+        
+        _log.info("deleteBibliography()");
+
+        long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
+
+        _bibliographyService.deleteBibliography(bibliographyId);
+    }
+    
+    @org.osgi.service.component.annotations.Reference
+    protected void setBibliographyService(BibliographyService bibliographyService) {
+        this._bibliographyService = bibliographyService;
+    }
+
+    private BibliographyService _bibliographyService;
+
+    private static final String REQUEST_PROCESSED = "request_processed";
+
+    private static Log _log = LogFactoryUtil.getLog(YourBibliographiesPortlet.class.getName());
 
 }
