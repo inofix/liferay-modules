@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.inofix.referencemanager.web;
+package ch.inofix.referencemanager.web.internal.portlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
