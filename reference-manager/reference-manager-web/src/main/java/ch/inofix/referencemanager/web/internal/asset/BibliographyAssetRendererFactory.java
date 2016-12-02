@@ -26,15 +26,15 @@ import ch.inofix.referencemanager.constants.BibliographyActionKeys;
 import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.service.BibliographyLocalService;
+import ch.inofix.referencemanager.service.permission.BibliographyManagerPortletPermission;
 import ch.inofix.referencemanager.service.permission.BibliographyPermission;
-import ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:56
- * @modified 2016-12-01 21:47
- * @version 1.0.1
+ * @modified 2016-12-02 18:03
+ * @version 1.0.2
  *
  */
 @Component(immediate = true, property = {
@@ -100,7 +100,7 @@ public class BibliographyAssetRendererFactory extends BaseAssetRendererFactory<B
     public boolean hasAddPermission(PermissionChecker permissionChecker, long groupId, long classTypeId)
             throws Exception {
 
-        return ReferenceManagerPortletPermission.contains(permissionChecker, groupId,
+        return BibliographyManagerPortletPermission.contains(permissionChecker, groupId,
                 BibliographyActionKeys.ADD_BIBLIOGRAPHY);
     }
 

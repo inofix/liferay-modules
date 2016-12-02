@@ -13,19 +13,19 @@ import ch.inofix.referencemanager.constants.PortletKeys;
 /**
  * 
  * @author Christian Berndt
- * @created 2016-11-20 12:42
- * @modified 2016-11-20 12:42
+ * @created 2016-12-02 17:57
+ * @modified 2016-12-02 17:57
  * @version 1.0.0
  *
  */
 @Component(
     immediate = true, 
-    property = {"resource.name=" + ReferenceManagerPortletPermission.RESOURCE_NAME }, 
+    property = {"resource.name=" + BibliographyManagerPortletPermission.RESOURCE_NAME }, 
     service = ResourcePermissionChecker.class
 )
-public class ReferenceManagerPortletPermission extends BaseResourcePermissionChecker {
+public class BibliographyManagerPortletPermission extends BaseResourcePermissionChecker {
 
-    public static final String RESOURCE_NAME = "ch.inofix.referencemanager.reference";
+    public static final String RESOURCE_NAME = "ch.inofix.referencemanager.bibliography";
 
     public static void check(PermissionChecker permissionChecker, long groupId, String actionId)
             throws PortalException {
@@ -37,7 +37,7 @@ public class ReferenceManagerPortletPermission extends BaseResourcePermissionChe
 
     public static boolean contains(PermissionChecker permissionChecker, long groupId, String actionId) {
 
-        return contains(permissionChecker, RESOURCE_NAME, PortletKeys.REFERENCE_MANAGER, groupId, actionId);
+        return contains(permissionChecker, RESOURCE_NAME, PortletKeys.BIBLIOGRAPHY_MANAGER, groupId, actionId);
     }
 
     public Boolean checkResource(PermissionChecker permissionChecker, long classPK, String actionId) {

@@ -33,7 +33,7 @@ import aQute.bnd.annotation.ProviderType;
 import ch.inofix.referencemanager.constants.BibliographyActionKeys;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.service.base.BibliographyServiceBaseImpl;
-import ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission;
+import ch.inofix.referencemanager.service.permission.BibliographyManagerPortletPermission;
 import ch.inofix.referencemanager.service.permission.BibliographyPermission;
 
 /**
@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-12-01 19:56
- * @version 1.0.2
+ * @modified 2016-12-02 18:03
+ * @version 1.0.3
  * @see BibliographyServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyServiceUtil
  */
@@ -80,7 +80,7 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
     public Bibliography addBibliography(long userId, String title, String description, String urlTitle,
             ServiceContext serviceContext) throws PortalException {
 
-        ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+        BibliographyManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 BibliographyActionKeys.ADD_BIBLIOGRAPHY);
 
         return bibliographyLocalService.addBibliography(userId, title, description, urlTitle, serviceContext);
