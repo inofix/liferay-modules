@@ -34,6 +34,7 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="status" type="int" />
 		<field name="bibTeX" type="String">
+			<hint-collection name="TEXTAREA" />
 			<hint name="max-length">5000</hint>
 		</field>
 	</model>

@@ -16,7 +16,10 @@ package ch.inofix.referencemanager.model.impl;
 
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXEntry;
@@ -45,8 +48,8 @@ import aQute.bnd.annotation.ProviderType;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-11-20 16:34
- * @version 0.3.1
+ * @modified 2016-12-02 00:07
+ * @version 1.0.0
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -62,7 +65,7 @@ public class ReferenceImpl extends ReferenceBaseImpl {
     }
 
     public String getAuthor() {
-        return getValue("author");
+        return getField("author");
     }
 
     public String getCitation() {
@@ -79,12 +82,32 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     }
 
+    public Map<String, String> getFields() {
+
+        Map<String, String> fields = new HashMap<String, String>();
+
+        if (_bibTeXEntry == null) {
+            _bibTeXEntry = getBibTeXEntry();
+        }
+
+        Map<Key, Value> entryFields = _bibTeXEntry.getFields();
+
+        Set<Key> keys = entryFields.keySet();
+
+        for (Key key : keys) {
+            fields.put(key.getValue(), _bibTeXEntry.getField(key).toUserString());
+        }
+
+        return fields;
+
+    }
+
     public String getTitle() {
-        return getValue("title");
+        return getField("title");
     }
 
     public String getYear() {
-        return getValue("year");
+        return getField("year");
     }
 
     public boolean isApproved() {
@@ -95,7 +118,7 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         }
     }
 
-    private String getValue(String field) {
+    public String getField(String field) {
 
         String str = "";
 

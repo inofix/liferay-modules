@@ -35,11 +35,6 @@ fieldset {
             &.form-control {
                 padding: 4px;
             }
-        }    
-
-        fieldset.private-settings,
-        fieldset.tags-and-categories {
-            padding-top: 15px;
         }
     
         .form-group.dash {
@@ -54,22 +49,14 @@ fieldset {
                 font-size: 20px; 
                 margin-left: 5px;
             }
-        }
-        
-        .tagselector-content .textboxlistentry-holder {
-            border-bottom: 1px solid #ddd;
-        }
-             
-        .textboxlistentry-holder {
-            min-height: 35px;
-        }
-    
-        
+        }      
     }
 
 }
 
 .reference-manager-portlet {
+
+    margin-bottom: 70px;
     
     input[type="file"] {
         height: auto;
@@ -78,6 +65,13 @@ fieldset {
             padding: 4px;
         }
     }
+    
+    .reference-head {
+        border-bottom: 1px solid #ddd;
+        margin-top: -15px;
+        margin-bottom: 30px; 
+        padding-bottom: 10px; 
+    }    
                
     .search-results {
         margin-bottom: 20px; 
@@ -92,11 +86,39 @@ fieldset {
             }        
         }  
     }
+    
+    textarea {
+        &.form-control {
+            height: 300px;
+        }
+    }
+}
+
+fieldset.private-settings,
+fieldset.tags-and-categories {
+    
+    padding-top: 15px;
+    
+    .tagselector-content .textboxlistentry-holder {
+        border-bottom: 1px solid #ddd;
+    }
+         
+    .textboxlistentry-holder {
+        min-height: 35px;
+    }
 }
 
 .upload {
     .btn {
         margin-bottom: 16px;
         margin-left: 15px;
+    }
+}
+
+.your-bibliographies-portlet {
+    .list-group-item {
+        > a {
+            font-weight: 600; 
+        }
     }
 }
