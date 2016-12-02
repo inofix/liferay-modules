@@ -10,8 +10,8 @@
 
 <%
     String redirect = ParamUtil.getString(request, "redirect");
+    String tabNames = "settings"; 
     String tabs1 = ParamUtil.getString(request, "tabs1", "settings");
-    String availableTabs = "settings"; 
     
     Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
 
@@ -19,7 +19,7 @@
 
     if (bibliography != null) {
         BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.UPDATE);
-        availableTabs = "browse,import-export,settings";
+        tabNames = "browse,import-export,settings";
         portletURL.setParameter("bibliographyId", String.valueOf(bibliography.getBibliographyId()));
         tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     }
@@ -60,7 +60,7 @@
     </c:otherwise>
 </c:choose>
 
-<liferay-ui:tabs names="<%= availableTabs %>" param="tabs1"
+<liferay-ui:tabs names="<%= tabNames %>" param="tabs1"
     url="<%=portletURL.toString()%>" />
     
 <c:choose>
