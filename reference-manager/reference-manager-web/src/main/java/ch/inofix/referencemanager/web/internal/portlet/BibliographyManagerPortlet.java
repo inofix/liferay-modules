@@ -58,14 +58,14 @@ import ch.inofix.referencemanager.web.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-02 18:16
- * @version 1.0.4
+ * @modified 2016-12-02 16:09
+ * @version 1.0.5
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
         "com.liferay.portlet.instanceable=false", "javax.portlet.init-param.template-path=/",
-        "javax.portlet.init-param.view-template=/view_bibliography.jsp",
+        "javax.portlet.init-param.view-template=/edit_bibliography.jsp",
         "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER, "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class BibliographyManagerPortlet extends MVCPortlet {
@@ -324,7 +324,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, "p_p_id", PortletKeys.BIBLIOGRAPHY_MANAGER);
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, "p_p_state", windowState);
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, namespace + "mvcPath",
-                templatePath + "view_bibliography.jsp");
+                templatePath + "edit_bibliography.jsp");
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, namespace + "redirect",
                 getRedirect(actionRequest, actionResponse));
         editBibliographyURL = HttpUtil.setParameter(editBibliographyURL, namespace + "backURL",

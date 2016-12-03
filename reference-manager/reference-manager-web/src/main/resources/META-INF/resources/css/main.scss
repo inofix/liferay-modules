@@ -54,6 +54,20 @@ fieldset {
 
 }
 
+fieldset.private-settings,
+fieldset.tags-and-categories {
+    
+    padding-top: 15px;
+    
+    .tagselector-content .textboxlistentry-holder {
+        border-bottom: 1px solid #ddd;
+    }
+         
+    .textboxlistentry-holder {
+        min-height: 35px;
+    }
+}
+
 .reference-manager-portlet {
 
     margin-bottom: 70px;
@@ -71,40 +85,26 @@ fieldset {
         margin-top: -15px;
         margin-bottom: 30px; 
         padding-bottom: 10px; 
-    }    
-               
-    .search-results {
-        margin-bottom: 20px; 
-    }
-    
-    .table-bordered {
-        > thead {
-            > tr {
-                th, td {
-                    border-bottom-width: 1px;
-                }
-            }        
-        }  
-    }
-    
-    textarea {
-        &.form-control {
-            height: 300px;
-        }
     }
 }
 
-fieldset.private-settings,
-fieldset.tags-and-categories {
-    
-    padding-top: 15px;
-    
-    .tagselector-content .textboxlistentry-holder {
-        border-bottom: 1px solid #ddd;
-    }
-         
-    .textboxlistentry-holder {
-        min-height: 35px;
+.search-results {
+    margin-bottom: 20px; 
+}
+
+.table-bordered {
+    > thead {
+        > tr {
+            th, td {
+                border-bottom-width: 1px;
+            }
+        }        
+    }  
+}
+
+textarea {
+    &.form-control {
+        height: 300px;
     }
 }
 

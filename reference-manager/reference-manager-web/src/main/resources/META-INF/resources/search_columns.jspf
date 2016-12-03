@@ -1,0 +1,45 @@
+<%--
+    search_columns.jspf: search_columns of reference manager portlet.
+    
+    Created:    2016-12-03 16:20 by Christian Berndt
+    Modified:   2016-12-03 16:20 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<portlet:renderURL var="viewURL">
+    <portlet:param name="mvcPath" value="/edit_reference.jsp" />
+    <portlet:param name="redirect" value="<%=currentURL%>" />
+    <portlet:param name="referenceId"
+        value="<%=String.valueOf(reference.getReferenceId())%>" />
+</portlet:renderURL>
+
+<liferay-ui:search-container-column-text href="<%=viewURL%>" name="id"
+    orderable="true" property="referenceId" valign="top" />
+
+<liferay-ui:search-container-column-text href="<%=viewURL%>"
+    orderable="true" orderableProperty="author_sortable"
+    property="author" />
+
+<liferay-ui:search-container-column-text href="<%=viewURL%>"
+    orderable="true" orderableProperty="title_sortable" property="title" />
+
+<liferay-ui:search-container-column-text href="<%=viewURL%>"
+    orderable="true" orderableProperty="year_sortable" property="year" />
+
+<%-- 
+    <div class="lfr-asset-categories">
+        <liferay-ui:asset-categories-summary
+            className="<%= Reference.class.getName() %>"
+            classPK="<%= reference.getReferenceId() %>" />
+    </div>
+
+    <div class="lfr-asset-tags">
+        <liferay-ui:asset-tags-summary
+            className="<%=Reference.class.getName()%>"
+            classPK="<%=reference.getReferenceId()%>" message="tags" />
+    </div>
+</liferay-ui:search-container-column-text>
+--%>
+
+<liferay-ui:search-container-column-jsp cssClass="entry-action"
+    path="/reference_action.jsp" valign="top" />
