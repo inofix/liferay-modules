@@ -33,8 +33,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:56
- * @modified 2016-12-02 18:03
- * @version 1.0.2
+ * @modified 2016-12-03 16:43
+ * @version 1.0.3
  *
  */
 @Component(immediate = true, property = {
@@ -86,7 +86,7 @@ public class BibliographyAssetRendererFactory extends BaseAssetRendererFactory<B
         PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.BIBLIOGRAPHY_MANAGER,
                 portletPlid, PortletRequest.RENDER_PHASE);
         
-        portletURL.setParameter("mvcPath", "/view_bibliography.jsp");
+        portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
         
         String redirect = (String) liferayPortletRequest.getAttribute("redirect"); 
         if (Validator.isNotNull(redirect)) {

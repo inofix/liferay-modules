@@ -31,8 +31,8 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:50
- * @modified 2016-12-01 18:38
- * @version 1.0.1
+ * @modified 2016-12-03 16:43
+ * @version 1.0.2
  *
  */
 public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography> {
@@ -135,7 +135,7 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
         PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.BIBLIOGRAPHY_MANAGER,
                 portletPlid, PortletRequest.RENDER_PHASE);
 
-        portletURL.setParameter("mvcPath", "/view_bibliography.jsp");
+        portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
 
         portletURL.setParameter("bibliographyId", String.valueOf(_bibliography.getBibliographyId()));
 

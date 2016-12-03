@@ -1,9 +1,9 @@
 <%--
-    view_bibliography.jsp: default view of the bibliography manaager portlet.
+    edit_bibliography.jsp: default view of the bibliography manaager portlet.
     
     Created:    2016-11-30 00:18 by Christian Berndt
-    Modified:   2016-12-01 21:15 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-12-03 16:07 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -73,9 +73,7 @@
        <liferay-util:include page="/bibliography_settings.jsp" servletContext="<%= application %>" />
    </c:when>        
 
-    <c:otherwise>
-       
-       browse entries 
-        
+    <c:otherwise> 
+       <liferay-util:include page="/bibliography_entries.jsp" servletContext="<%= application %>" />     
     </c:otherwise>
 </c:choose>
