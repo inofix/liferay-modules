@@ -59,8 +59,8 @@ import ch.inofix.referencemanager.social.BibliographyActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-12-01 19:57
- * @version 1.0.1
+ * @modified 2016-12-02 22:24
+ * @version 1.0.2
  * @see BibliographyLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyLocalServiceUtil
  */
@@ -221,14 +221,18 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
         return bibliographyLocalService.deleteBibliography(bibliography);
     }
 
-    public List<Bibliography> getGroupBibliographys(long groupId) throws PortalException, SystemException {
-
+    public List<Bibliography> getGroupBibliographies(long groupId) throws PortalException, SystemException {
         return bibliographyPersistence.findByGroupId(groupId);
     }
 
     @Override
     public Bibliography getBibliography(long bibliographyId) throws PortalException {
         return bibliographyPersistence.findByPrimaryKey(bibliographyId);
+    }
+
+    @Override
+    public Bibliography getBibliography(long groupId, String urlTitle) throws PortalException {
+        return bibliographyPersistence.fetchByG_UT(groupId, urlTitle);
     }
 
     @Override

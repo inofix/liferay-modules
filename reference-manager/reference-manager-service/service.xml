@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2016-11-30 23:25 by Christian Berndt 
-    Version:    1.0.5
+    Modified:   2016-12-02 22:13 by Christian Berndt 
+    Version:    1.0.6
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -50,6 +50,11 @@
         <finder name="GroupId" return-type="Collection">
             <finder-column name="groupId" />
         </finder>
+        
+        <finder name="G_UT" return-type="Bibliography" unique="true">
+            <finder-column name="groupId" />
+            <finder-column name="urlTitle" />
+        </finder>
 
         <!-- References -->
 
@@ -62,7 +67,50 @@
         <reference entity="Subscription" package-path="com.liferay.portal" />
         <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
 
-    </entity>    
+    </entity>
+    
+    <entity local-service="true" name="BibRefRelation" remote-service="false"
+        uuid="true">
+
+        <!-- PK fields -->
+
+        <column name="bibRefRelationId" type="long" primary="true" />
+
+        <!-- Group instance -->
+
+        <column name="groupId" type="long" />
+
+        <!-- Audit fields -->
+
+        <column name="companyId" type="long" />
+        <column name="userId" type="long" />
+        <column name="userName" type="String" />
+        <column name="createDate" type="Date" />
+        <column name="modifiedDate" type="Date" />
+        <column name="status" type="int" />
+
+        <!-- Other fields -->
+
+        <column name="bibliographyGroupId"  type="long"/>
+        <column name="bibliographyUuid" type="String" />
+        <column name="referenceGroupId"  type="long"/>
+        <column name="referenceUuid" type="String" />
+
+        <!-- Order -->
+
+        <!-- Finder methods -->
+     
+        <finder name="BG_BU" return-type="Collection">
+            <finder-column name="bibliographyUuid" />
+        </finder>
+        
+        <finder name="RG_RU" return-type="Collection">
+            <finder-column name="referenceUuid" />
+        </finder>
+
+        <!-- References -->
+
+    </entity>  
 
     <entity local-service="true" name="Reference" remote-service="true"
         uuid="true">
@@ -108,4 +156,8 @@
         <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
 
     </entity>
+    
+    <exceptions>
+        <exception>BibliographyUrlTitle</exception>
+    </exceptions>
 </service-builder>

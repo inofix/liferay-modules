@@ -4,3 +4,6 @@
 /BibliographyBaseImpl.java
 /BibliographyCacheModel.java
 /BibliographyModelImpl.java
+/BibRefRelationBaseImpl.java
+/BibRefRelationCacheModel.java
+/BibRefRelationModelImpl.java

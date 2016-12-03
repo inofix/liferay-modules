@@ -54,8 +54,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-29 20:53
- * @version 1.0.3
+ * @modified 2016-12-03 00:16
+ * @version 1.0.4
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -84,6 +84,27 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
                 ReferenceActionKeys.ADD_REFERENCE);
 
         return referenceLocalService.addReference(userId, bibTeX, serviceContext);
+    }
+
+    /**
+     * 
+     * @param userId
+     * @param bibTeX
+     * @param bibliographyUuids
+     * @param serviceContext
+     * @return
+     * @since 1.0.4
+     * @throws PortalException
+     */
+    public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
+            throws PortalException {
+        
+        _log.info("addReference(bibliographyUuids)");
+
+        ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+                ReferenceActionKeys.ADD_REFERENCE);
+
+        return referenceLocalService.addReference(userId, bibTeX, bibliographyUuids, serviceContext);
     }
 
     /**

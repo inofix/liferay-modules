@@ -18,6 +18,7 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,12 +28,15 @@ import org.jbibtex.BibTeXParser;
 import org.jbibtex.Key;
 import org.jbibtex.Value;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.referencemanager.model.BibRefRelation;
+import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
 
 /**
  * The extended model implementation for the Reference service. Represents a row
@@ -48,8 +52,8 @@ import aQute.bnd.annotation.ProviderType;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-02 00:07
- * @version 1.0.0
+ * @modified 2016-12-03 15:05
+ * @version 1.0.1
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -66,6 +70,25 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     public String getAuthor() {
         return getField("author");
+    }
+
+    public String[] getBibliographyUuids() throws PortalException {
+
+        List<BibRefRelation> bibRefRelations = BibRefRelationLocalServiceUtil
+                .getBibRefRelationsByReferenceUuid(getUuid());
+
+        String[] bibliographyUuids = new String[bibRefRelations.size()];
+
+        for (int i = 0; i < bibRefRelations.size(); i++) {
+
+            BibRefRelation bibRefRelation = bibRefRelations.get(i);
+
+            bibliographyUuids[i] = bibRefRelation.getBibliographyUuid();
+
+        }
+
+        return bibliographyUuids;
+
     }
 
     public String getCitation() {
