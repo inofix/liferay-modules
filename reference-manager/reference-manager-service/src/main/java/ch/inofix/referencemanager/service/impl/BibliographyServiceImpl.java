@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-12-02 18:03
- * @version 1.0.3
+ * @modified 2016-12-02 19:19
+ * @version 1.0.4
  * @see BibliographyServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyServiceUtil
  */
@@ -113,6 +113,42 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
         BibliographyPermission.check(getPermissionChecker(), bibliographyId, ActionKeys.VIEW);
 
         return bibliographyLocalService.getBibliography(bibliographyId);
+    }
+
+    /**
+     * 
+     * @param uuid
+     * @param groupId
+     * @return
+     * @since 1.0.4
+     * @throws PortalException
+     */
+    public Bibliography getBibliography(String uuid, long groupId) throws PortalException {
+
+        Bibliography bibliography = bibliographyLocalService.getBibliographyByUuidAndGroupId(uuid, groupId);
+
+        BibliographyPermission.check(getPermissionChecker(), bibliography, ActionKeys.VIEW);
+
+        return bibliography;
+
+    }
+
+    /**
+     * 
+     * @param groupId
+     * @param urlTitle
+     * @return
+     * @since 1.0.4
+     * @throws PortalException
+     */
+    public Bibliography getBibliography(long groupId, String urlTitle) throws PortalException {
+
+        Bibliography bibliography = bibliographyLocalService.getBibliography(groupId, urlTitle);
+
+        BibliographyPermission.check(getPermissionChecker(), bibliography, ActionKeys.VIEW);
+
+        return bibliography;
+
     }
 
     /**

@@ -36,6 +36,9 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+
+import ch.inofix.referencemanager.model.BibRefRelation;
+import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceLocalServiceBaseImpl;
 import ch.inofix.referencemanager.social.ReferenceActivityKeys;
@@ -57,8 +60,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-11-28 23:42
- * @version 1.0.0
+ * @modified 2016-12-03 00:07
+ * @version 1.0.1
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -70,10 +73,18 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      * ch.inofix.referencemanager.service.ReferenceLocalServiceUtil} to access
      * the reference local service.
      */
-    @Indexable(type = IndexableType.REINDEX)
     @Override
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
-        
+
+        return addReference(userId, bibTeX, serviceContext);
+
+    }
+
+    @Indexable(type = IndexableType.REINDEX)
+    @Override
+    public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
+            throws PortalException {
+
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
@@ -96,6 +107,30 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setBibTeX(bibTeX);
 
         referencePersistence.update(reference);
+
+        // BibRefRelation
+
+        for (String bibliographyUuid : bibliographyUuids) {
+
+            Bibliography bibliography = bibliographyLocalService.getBibliographyByUuidAndGroupId(bibliographyUuid,
+                    groupId);
+
+            long bibRefRelationId = counterLocalService.increment();
+            BibRefRelation bibRefRelation = bibRefRelationPersistence.create(bibRefRelationId);
+            
+            bibRefRelation.setGroupId(bibliography.getGroupId());
+            bibRefRelation.setCompanyId(bibliography.getCompanyId());
+            bibRefRelation.setUserId(bibliography.getUserId());
+            bibRefRelation.setUserName(bibliography.getUserName());
+            
+            bibRefRelation.setBibliographyGroupId(bibliography.getGroupId());
+            bibRefRelation.setBibliographyUuid(bibliographyUuid);
+            bibRefRelation.setReferenceGroupId(reference.getGroupId());
+            bibRefRelation.setReferenceUuid(reference.getUuid());
+            
+            bibRefRelationPersistence.update(bibRefRelation); 
+
+        }
 
         // Resources
 
@@ -243,7 +278,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
     public void updateAsset(long userId, Reference reference, long[] assetCategoryIds, String[] assetTagNames,
             long[] assetLinkEntryIds, Double priority) throws PortalException {
-        
+
         boolean visible = false;
 
         Date publishDate = null;
@@ -269,7 +304,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Indexable(type = IndexableType.REINDEX)
     public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
             throws PortalException {
-        
+
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);

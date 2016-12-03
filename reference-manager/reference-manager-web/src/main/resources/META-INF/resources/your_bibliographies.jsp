@@ -2,14 +2,14 @@
     your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-12-01 21:46 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-12-02 23:01 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
-    boolean hasAddPermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
+    boolean hasAddPermission = BibliographyManagerPortletPermission.contains(permissionChecker, scopeGroupId,
             BibliographyActionKeys.ADD_BIBLIOGRAPHY);
     String keywords = ParamUtil.getString(request, "keywords");
 
@@ -64,7 +64,7 @@
         %>
 
         <aui:button href="<%=editBibliographyURL%>"
-            cssClass="btn-primary btn-sm" value="new-bibliography"
+            cssClass="btn-primary btn-success" value="new-bibliography"
             disabled="<%=!hasAddPermission%>" />   
         
     </liferay-util:buffer> 

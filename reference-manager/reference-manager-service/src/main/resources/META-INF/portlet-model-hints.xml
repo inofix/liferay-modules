@@ -23,6 +23,21 @@
 			<validator name="required" />
 		</field>
 	</model>
+	<model name="ch.inofix.referencemanager.model.BibRefRelation">
+		<field name="uuid" type="String" />
+		<field name="bibRefRelationId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="bibliographyGroupId" type="long" />
+		<field name="bibliographyUuid" type="String" />
+		<field name="referenceGroupId" type="long" />
+		<field name="referenceUuid" type="String" />
+	</model>
 	<model name="ch.inofix.referencemanager.model.Reference">
 		<field name="uuid" type="String" />
 		<field name="referenceId" type="long" />

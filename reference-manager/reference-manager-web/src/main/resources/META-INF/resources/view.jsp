@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-11-30 18:26 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2016-12-02 18:30 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -57,7 +57,7 @@
 <c:choose>
 
 	<c:when test='<%= tabs1.equals("import") %>'>
-        <liferay-util:include page="/import.jsp" servletContext="<%= application %>" />
+        <liferay-util:include page="/import_references.jsp" servletContext="<%= application %>" />
 	</c:when>
 
 	<c:when test='<%= tabs1.equals("export") %>'>

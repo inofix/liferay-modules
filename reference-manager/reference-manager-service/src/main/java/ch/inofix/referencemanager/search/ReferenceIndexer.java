@@ -34,8 +34,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-18 01:15
- * @modified 2016-11-26 11:58
- * @version 1.0.1
+ * @modified 2016-12-03 15:03
+ * @version 1.0.2
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -70,11 +70,14 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
 
     @Override
     protected Document doGetDocument(Reference reference) throws Exception {
+        
+        _log.info("doGetDocument()");
 
         Document document = getBaseModelDocument(CLASS_NAME, reference);
         document.addText(Field.CONTENT, reference.getBibTeX());
         document.addTextSortable("author", reference.getAuthor());
         document.addTextSortable(Field.TITLE, reference.getCitation());
+        document.addKeyword("bibliographyUuid", reference.getBibliographyUuids());
         document.addTextSortable("year", reference.getYear());
 
         return document;
