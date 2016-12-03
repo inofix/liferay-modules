@@ -2,18 +2,22 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2016-12-03 15:50 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-12-03 16:54 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
+    String bibliographyId = ParamUtil.getString(request, "bibliographyId");
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
     SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
+    
+    PortletURL iteratorURL = referenceSearch.getIteratorURL(); 
+    iteratorURL.setParameter("bibliographyId", bibliographyId); 
     
     boolean reverse = false; 
     if (referenceSearch.getOrderByType().equals("desc")) {
