@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-01 23:19 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-12-04 19:07 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -22,6 +22,8 @@
     
     portletURL.setParameter("referenceId", String.valueOf(referenceId));
     portletURL.setParameter("mvcPath", "/edit_reference.jsp");
+    
+    AssetEntryServiceUtil.incrementViewCounter(Reference.class.getName(), reference.getReferenceId());
 
 %>
 

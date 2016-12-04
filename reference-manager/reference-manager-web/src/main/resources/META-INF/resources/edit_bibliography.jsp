@@ -22,6 +22,7 @@
         tabNames = "browse,import-export,settings";
         portletURL.setParameter("bibliographyId", String.valueOf(bibliography.getBibliographyId()));
         tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+        AssetEntryServiceUtil.incrementViewCounter(Bibliography.class.getName(), bibliography.getBibliographyId());
     }
 %>
 
