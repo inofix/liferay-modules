@@ -71,8 +71,6 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
     @Override
     protected Document doGetDocument(Reference reference) throws Exception {
         
-        _log.info("doGetDocument()");
-
         Document document = getBaseModelDocument(CLASS_NAME, reference);
         document.addText(Field.CONTENT, reference.getBibTeX());
         document.addTextSortable("author", reference.getAuthor());

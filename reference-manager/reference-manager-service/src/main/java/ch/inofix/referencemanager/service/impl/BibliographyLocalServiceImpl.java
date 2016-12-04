@@ -254,7 +254,6 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
         if (bibliography.isApproved()) {
             visible = true;
-
             publishDate = bibliography.getCreateDate();
         }
 
@@ -265,7 +264,7 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
                 bibliography.getBibliographyId(), bibliography.getUuid(), 0, assetCategoryIds, assetTagNames, true,
                 visible, null, null, publishDate, null, ContentTypes.TEXT_HTML, bibliography.getTitle(),
                 bibliography.getTitle(), summary, null, null, 0, 0, priority);
-
+        
         assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(), assetLinkEntryIds,
                 AssetLinkConstants.TYPE_RELATED);
     }
