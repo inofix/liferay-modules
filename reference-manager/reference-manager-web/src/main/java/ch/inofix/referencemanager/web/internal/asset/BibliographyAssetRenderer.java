@@ -31,8 +31,8 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:50
- * @modified 2016-12-03 16:43
- * @version 1.0.2
+ * @modified 2016-12-04 23:08
+ * @version 1.0.3
  *
  */
 public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography> {
@@ -85,7 +85,7 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
     @Override
     public String getSummary(PortletRequest portletRequest, PortletResponse portletResponse) {
 
-         return _bibliography.getDescription();
+        return _bibliography.getDescription();
     }
 
     @Override
@@ -102,8 +102,8 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
     public PortletURL getURLEdit(LiferayPortletRequest liferayPortletRequest,
             LiferayPortletResponse liferayPortletResponse) throws Exception {
 
-        PortletURL portletURL = locateBibliographyManager(liferayPortletRequest); 
-        
+        PortletURL portletURL = locateBibliographyManager(liferayPortletRequest);
+
         portletURL.setParameter("tabs1", "settings");
 
         return portletURL;
@@ -118,28 +118,12 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
             PortletURL portletURL = locateBibliographyManager(liferayPortletRequest);
 
             return portletURL.toString();
+            
         } catch (Exception e) {
             _log.error(e.getMessage());
         }
 
         return null;
-    }
-
-    private PortletURL locateBibliographyManager(LiferayPortletRequest liferayPortletRequest) throws PortalException {
-
-        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-        long portletPlid = PortalUtil.getPlidFromPortletId(themeDisplay.getScopeGroupId(), false,
-                PortletKeys.BIBLIOGRAPHY_MANAGER);
-
-        PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.BIBLIOGRAPHY_MANAGER,
-                portletPlid, PortletRequest.RENDER_PHASE);
-
-        portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
-
-        portletURL.setParameter("bibliographyId", String.valueOf(_bibliography.getBibliographyId()));
-
-        return portletURL;
     }
 
     @Override
@@ -170,6 +154,23 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
         request.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, _bibliography);
 
         return super.include(request, response, template);
+    }
+
+    private PortletURL locateBibliographyManager(LiferayPortletRequest liferayPortletRequest) throws PortalException {
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        long portletPlid = PortalUtil.getPlidFromPortletId(themeDisplay.getScopeGroupId(), false,
+                PortletKeys.BIBLIOGRAPHY_MANAGER);
+
+        PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.BIBLIOGRAPHY_MANAGER,
+                portletPlid, PortletRequest.RENDER_PHASE);
+
+        portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
+
+        portletURL.setParameter("bibliographyId", String.valueOf(_bibliography.getBibliographyId()));
+
+        return portletURL;
     }
 
     private static final Log _log = LogFactoryUtil.getLog(BibliographyAssetRenderer.class);
