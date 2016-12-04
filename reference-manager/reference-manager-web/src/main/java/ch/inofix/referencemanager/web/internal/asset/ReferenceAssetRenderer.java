@@ -147,9 +147,6 @@ public class ReferenceAssetRenderer extends BaseJSPAssetRenderer<Reference> {
 
     @Override
     public boolean include(HttpServletRequest request, HttpServletResponse response, String template) throws Exception {
-
-        _log.info("include()");
-
         request.setAttribute(ReferenceWebKeys.REFERENCE, _reference);
 
         return super.include(request, response, template);

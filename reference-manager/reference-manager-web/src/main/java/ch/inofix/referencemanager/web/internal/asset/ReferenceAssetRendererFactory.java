@@ -40,9 +40,6 @@ public class ReferenceAssetRendererFactory extends BaseAssetRendererFactory<Refe
 
     @Override
     public AssetRenderer<Reference> getAssetRenderer(long classPK, int type) throws PortalException {
-        
-//        _log.info("getAssetRenderer");
-//        _log.info(this.getPortletId());
 
         Reference reference = _referenceLocalService.getReference(classPK);
 
@@ -68,8 +65,6 @@ public class ReferenceAssetRendererFactory extends BaseAssetRendererFactory<Refe
     @Override
     public boolean hasPermission(PermissionChecker permissionChecker, long classPK, String actionId) throws Exception {
 
-        _log.info("hasPermission()");
-        
         Reference reference = _referenceLocalService.getReference(classPK);
 
         return ReferencePermission.contains(permissionChecker, reference.getReferenceId(), actionId);
