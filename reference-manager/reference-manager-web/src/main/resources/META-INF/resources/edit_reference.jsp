@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-04 19:07 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-12-04 23:11 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -33,7 +33,6 @@
             <h2>
                 <liferay-ui:message key="create-a-new-reference" />
             </h2>
-            
             <c:choose>
                 <c:when test="<%= themeDisplay.isSignedIn() %>">
                     <p>
@@ -57,6 +56,11 @@
     <c:otherwise>
         <div class="reference-head">
             <h3><%=reference.getCitation()%></h3>
+            <div>
+                <liferay-ui:message key="used-by-you-in"/>
+                <a href="#" class="btn btn-default btn-sm">Ancient Astronomy</a>
+                <a href="#" class="btn btn-default btn-sm">Collaborative Action</a>            
+            </div>          
         </div>
     </c:otherwise>
 </c:choose>
@@ -186,6 +190,19 @@
                     label="review" name="value" type="textarea" />
 
             </aui:fieldset>
+        </c:when>
+        
+        <c:when test='<%= tabs1.equals("usage") %>'>
+            <p class="help-message"><strong><liferay-ui:message key="your-bibliographies"/></strong></p>
+            <p>
+                <a href="#" class="btn btn-default">Ancient Astronomy</a>
+                <a href="#" class="btn btn-default">Collaborative Action</a>            
+            </p>
+            <p><strong><liferay-ui:message key="other-bibliographies"/></strong><p>
+            <div>
+                <a href="#" class="btn btn-default">Collaborative Action</a>            
+                <a href="#" class="btn btn-default">Ancient Astronomy</a>
+            </div>
         </c:when>
             
     </c:choose>
