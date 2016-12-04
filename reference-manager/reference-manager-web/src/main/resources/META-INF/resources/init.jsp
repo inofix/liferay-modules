@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-12-03 15:00 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2016-12-04 18:42 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -31,9 +31,10 @@
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearch"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.ReferenceSearchTerms"%>
 
-<%@page import="com.liferay.asset.kernel.model.AssetRenderer"%>
 <%@page import="com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil"%>
+<%@page import="com.liferay.asset.kernel.model.AssetRenderer"%>
 <%@page import="com.liferay.asset.kernel.model.AssetRendererFactory"%>
+<%@page import="com.liferay.asset.kernel.service.AssetEntryServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
@@ -49,6 +50,7 @@
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
+
 
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
