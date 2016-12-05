@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+
+<hook>
+    <custom-jsp-dir>/META-INF/custom_jsps</custom-jsp-dir>
+    <service>
+        <service-type>com.liferay.portlet.journal.service.JournalArticleLocalService</service-type>
+        <service-impl>com.liferay.portlet.journal.service.CustomJournalArticleLocalServiceImpl</service-impl>
+    </service>
+    <struts-action>
+        <struts-action-path>/journal/edit_article</struts-action-path>
+        <struts-action-impl>com.liferay.portlet.journal.action.CustomEditArticleAction</struts-action-impl>
+    </struts-action>
+</hook>
