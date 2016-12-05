@@ -3,8 +3,8 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-11-11 16:17 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2016-12-05 15:55 by Christian Berndt
+    Version:    1.1.5
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -134,6 +134,7 @@
         <module>search-portlet</module>
         <module>social-media-portlet</module>
         <module>taglib-util</module>
+        <module>url-title-hook</module>
     </modules>
     
     <issueManagement>
