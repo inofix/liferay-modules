@@ -93,3 +93,6 @@ taglib-util is a collection of utility tags, which are used by various liferay-p
 
 * build-info: Extract build-info parameters from META-INF/MANIFEST.MF and display them in a definition list. The properties are configured via common settings of a project's or parent project's pom.xml file.
 
+### URL Title Hook
+* edit a JournalArticle's urlTitle attribute.
+
