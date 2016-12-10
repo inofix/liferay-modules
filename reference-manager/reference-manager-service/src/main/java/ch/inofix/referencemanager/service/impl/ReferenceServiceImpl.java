@@ -79,7 +79,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      * @throws PortalException
      */
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
-
+        
         ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
@@ -99,8 +99,6 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
     public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
             throws PortalException {
         
-        _log.info("addReference(bibliographyUuids)");
-
         ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
