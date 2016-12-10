@@ -75,8 +75,8 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      */
     @Override
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
-
-        return addReference(userId, bibTeX, serviceContext);
+        
+        return addReference(userId, bibTeX, new String[0], serviceContext);
 
     }
 
@@ -84,7 +84,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Override
     public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
             throws PortalException {
-
+        
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);

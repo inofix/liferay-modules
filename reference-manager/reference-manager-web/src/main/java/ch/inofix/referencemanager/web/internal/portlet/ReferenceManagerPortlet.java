@@ -59,6 +59,7 @@ import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchReferenceException;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceService;
+import ch.inofix.referencemanager.setup.SampleDataUtil;
 import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 import ch.inofix.referencemanager.web.util.BibTeXUtil;
@@ -73,8 +74,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-11-29 21:20
- * @version 1.0.6
+ * @modified 2016-12-12 23:55
+ * @version 1.0.7
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -203,6 +204,19 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         } finally {
             StreamUtil.cleanUp(inputStream);
         }
+
+    }
+
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.7
+     * @throws Exception
+     */
+    public void importSampleData(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+        
+        SampleDataUtil.importSampleData();
 
     }
 

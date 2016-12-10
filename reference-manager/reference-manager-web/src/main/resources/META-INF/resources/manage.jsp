@@ -2,8 +2,8 @@
     manage.jsp: The manage-gui of the reference manager portlet.
     
     Created:    2016-01-20 22:59 by Christian Berndt
-    Modified:   2016-11-29 21:13 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-12-10 23:58 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -13,6 +13,9 @@
 
     boolean hasDeletePermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
             ReferenceActionKeys.DELETE_GROUP_REFERENCES);
+
+    boolean hasImportPermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
+            ReferenceActionKeys.IMPORT_REFERENCES);
 %>
 
 <portlet:actionURL name="deleteAllReferences"
@@ -22,7 +25,25 @@
 
     <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
 
-    <aui:button disabled="<%=!hasDeletePermission%>" type="submit"
-        value="delete-all-references" />
+    <aui:button-row>
+        <aui:button disabled="<%=!hasDeletePermission%>" type="submit"
+            value="delete-all-references" />
+    </aui:button-row>
+
+
+</aui:form>
+
+
+<portlet:actionURL name="importSampleData" var="importSampleDataURL" />
+
+<aui:form action="<%=importSampleDataURL%>" name="fm2">
+
+    <aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
+
+    <aui:button-row>
+        <aui:button disabled="<%=!hasImportPermission%>" type="submit"
+            value="import-sample-data" />
+    </aui:button-row>
+
 
 </aui:form>

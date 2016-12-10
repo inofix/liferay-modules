@@ -78,7 +78,7 @@
             </portlet:renderURL>
 
             <aui:button href="<%=addReferenceURL%>"
-                cssClass="btn-primary btn-sm"
+                cssClass="btn-primary"
                 value="add-reference"
                 disabled="<%= !hasAddPermission %>" />
         </aui:button-row>
