@@ -1,20 +1,13 @@
+/** 
+    main.scss: reference-manager specific css
+
+    Created:    2016-12-13 23:49 by Christian Berndt
+    Modified:   2016-12-14 00:06 by Christian Berndt
+    Version:    1.0.0
+*/
+
 @import "bourbon";
 @import "mixins";
-
-fieldset {
-    border-bottom: 1px solid #ddd;
-}
-
-.panel {
-    .list-group-item {
-        > .btn-group {
-            position: absolute; 
-            right: 15px;
-            top: 4px;
-        }
-    }
-}
-
 
 .bibliography-manager-portlet {
     
@@ -25,6 +18,10 @@ fieldset {
         margin-top: -15px;
         margin-bottom: 30px; 
         padding-bottom: 10px; 
+    }
+    
+    fieldset {
+        border-bottom: 1px solid #ddd;
     }
     
     form {
@@ -51,7 +48,6 @@ fieldset {
             }
         }      
     }
-
 }
 
 fieldset.private-settings,
@@ -68,10 +64,24 @@ fieldset.tags-and-categories {
     }
 }
 
+.panel {
+    .list-group-item {
+        > .btn-group {
+            position: absolute; 
+            right: 15px;
+            top: 4px;
+        }
+    }
+}
+
 .reference-manager-portlet {
 
     margin-bottom: 70px;
     
+    fieldset {
+        border-bottom: 1px solid #ddd;
+    }
+        
     input[type="file"] {
         height: auto;
         
