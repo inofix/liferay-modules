@@ -56,7 +56,7 @@
     <liferay-ui:search-container-row
         className="ch.inofix.referencemanager.model.Reference"
         escapedModel="true" modelVar="reference">
-        
+
         <%@ include file="/search_columns.jspf" %>
 
     </liferay-ui:search-container-row>
