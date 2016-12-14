@@ -74,8 +74,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-12-12 23:55
- * @version 1.0.7
+ * @modified 2016-12-14 16:48
+ * @version 1.0.8
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -97,12 +97,31 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
+        List<Reference> references = _referenceService.deleteReferences();
+
+        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                PortletUtil.translate("successfully-deleted-x-references", references.size()));
+
+        actionResponse.setRenderParameter("tabs1", tabs1);
+    }
+
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.8
+     * @throws Exception
+     */
+    public void deleteGroupReferences(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
         ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), actionRequest);
 
         List<Reference> references = _referenceService.deleteGroupReferences(serviceContext.getScopeGroupId());
 
         SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                PortletUtil.translate("successfully-deleted-x-task-records", references.size()));
+                PortletUtil.translate("successfully-deleted-x-references", references.size()));
 
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
@@ -181,6 +200,8 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         } catch (Exception e) {
             UploadException uploadException = (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
 
+            _log.error(e.getMessage());
+
             // if ((uploadException != null) &&
             // (uploadException.getCause() instanceof
             // FileUploadBase.IOFileUploadException)) {
@@ -215,7 +236,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     public void importSampleData(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-        
+
         SampleDataUtil.importSampleData();
 
     }
