@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-12-14 22:16 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2016-12-15 00:13 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -27,7 +27,7 @@
     
     ReferenceSearchTerms searchTerms = (ReferenceSearchTerms) referenceSearch.getSearchTerms();
 
-    Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
+    Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), 0, keywords,
             referenceSearch.getStart(), referenceSearch.getEnd(), sort);
     
     List<Document> documents = ListUtil.toList(hits.getDocs());
