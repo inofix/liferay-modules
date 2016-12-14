@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
@@ -54,8 +56,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-12-14 23:12
- * @version 1.0.5
+ * @modified 2016-12-15 00:18
+ * @version 1.0.6
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -197,16 +199,15 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
 
         searchContext.setAttribute("paginationType", "more");
 
-        Group group = GroupLocalServiceUtil.getGroup(groupId);
+        User user = UserLocalServiceUtil.getUser(userId); 
 
-        searchContext.setCompanyId(group.getCompanyId());
+        searchContext.setCompanyId(user.getCompanyId());
 
         searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
+        if (groupId > 0) {
+            searchContext.setGroupIds(new long[] { groupId });
+        }
         searchContext.setSorts(sort);
-        searchContext.setStart(start);
-        searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
         searchContext.setStart(start);
         searchContext.setUserId(userId);
 

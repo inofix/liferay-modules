@@ -2,8 +2,8 @@
     search_columns.jspf: search_columns of reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2016-12-14 16:04 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-12-14 23:46 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <portlet:renderURL var="viewURL">
@@ -13,33 +13,77 @@
         value="<%=String.valueOf(reference.getReferenceId())%>" />
 </portlet:renderURL>
 
-<liferay-ui:search-container-column-text href="<%=viewURL%>" name="id"
-    orderable="true" orderableProperty="referenceId_Number_sortable" property="referenceId" valign="top" />
+<%
+    // TODO: Read columns from configuration.
+    String[] columns = new String[] { "referenceId", "author", "title", "year", "modified", "tags" };
 
-<liferay-ui:search-container-column-text href="<%=viewURL%>"
-    orderable="true" orderableProperty="author_sortable"
-    property="author" />
+    for (String column : columns) {
+%>
 
-<liferay-ui:search-container-column-text href="<%=viewURL%>"
-    orderable="true" orderableProperty="title_sortable" property="title" />
+<c:if test='<%="referenceId".equals(column)%>'>
+    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+        name="id" orderable="true"
+        orderableProperty="referenceId_Number_sortable"
+        property="referenceId" valign="top" />
+</c:if>
 
-<liferay-ui:search-container-column-text href="<%=viewURL%>"
-    orderable="true" orderableProperty="year_sortable" property="year" />
+<c:if test='<%="author".equals(column)%>'>
+    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+        orderable="true" orderableProperty="author_sortable"
+        property="author" />
+</c:if>
 
-<%-- 
-    <div class="lfr-asset-categories">
-        <liferay-ui:asset-categories-summary
-            className="<%= Reference.class.getName() %>"
-            classPK="<%= reference.getReferenceId() %>" />
-    </div>
+<c:if test='<%="title".equals(column)%>'>
+    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+        orderable="true" orderableProperty="title_sortable"
+        property="title" />
+</c:if>
 
-    <div class="lfr-asset-tags">
-        <liferay-ui:asset-tags-summary
-            className="<%=Reference.class.getName()%>"
-            classPK="<%=reference.getReferenceId()%>" message="tags" />
-    </div>
-</liferay-ui:search-container-column-text>
---%>
+<c:if test='<%="year".equals(column)%>'>
+    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+        orderable="true" orderableProperty="year_sortable"
+        property="year" />
+</c:if>
+
+<c:if test='<%="created".equals(column)%>'>
+    <liferay-ui:search-container-column-date href="<%=viewURL%>"
+        name="created" orderable="true"
+        orderableProperty="createDate_sortable" property="createDate" />
+</c:if>
+
+<c:if test='<%="modified".equals(column)%>'>
+    <liferay-ui:search-container-column-date href="<%=viewURL%>"
+        name="modified" orderable="true"
+        orderableProperty="modified_sortable" property="modifiedDate" />
+</c:if>
+
+<c:if test='<%="status".equals(column)%>'>
+    <liferay-ui:search-container-column-status orderable="true"
+        property="status" />
+</c:if>
+
+<c:if test='<%="categories".equals(column)%>'>
+    <liferay-ui:search-container-column-text name="categories">
+        <div class="lfr-asset-categories">
+            <liferay-ui:asset-categories-summary
+                className="<%=Reference.class.getName()%>"
+                classPK="<%=reference.getReferenceId()%>" />
+        </div>
+    </liferay-ui:search-container-column-text>
+</c:if>
+
+<c:if test='<%="tags".equals(column)%>'>
+    <liferay-ui:search-container-column-text name="tags">
+        <div class="lfr-asset-tags">
+            <liferay-ui:asset-tags-summary
+                className="<%=Reference.class.getName()%>"
+                classPK="<%=reference.getReferenceId()%>" message="" />
+        </div>
+    </liferay-ui:search-container-column-text>
+</c:if>
+<%
+    }
+%>
 
 <liferay-ui:search-container-column-jsp cssClass="entry-action"
     path="/reference_action.jsp" valign="top" />

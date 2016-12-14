@@ -2,8 +2,8 @@
     reference_action.jsp: The action menu of the reference manager's default view.
     
     Created:    2016-11-29 18:51 by Christian Berndt
-    Modified:   2016-11-29 18:51 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-12-14 23:52 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -22,7 +22,7 @@
 
 <liferay-ui:icon-menu icon="<%=StringPool.BLANK%>"
     message="<%=StringPool.BLANK%>" showExpanded="<%=row == null%>"
-    showWhenSingleIcon="<%=row == null%>">
+    showWhenSingleIcon="true">
 
     <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)%>">
 
