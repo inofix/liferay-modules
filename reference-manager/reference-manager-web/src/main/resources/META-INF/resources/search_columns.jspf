@@ -2,8 +2,8 @@
     search_columns.jspf: search_columns of reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2016-12-03 16:20 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-12-14 16:04 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <portlet:renderURL var="viewURL">
@@ -14,7 +14,7 @@
 </portlet:renderURL>
 
 <liferay-ui:search-container-column-text href="<%=viewURL%>" name="id"
-    orderable="true" property="referenceId" valign="top" />
+    orderable="true" orderableProperty="referenceId_Number_sortable" property="referenceId" valign="top" />
 
 <liferay-ui:search-container-column-text href="<%=viewURL%>"
     orderable="true" orderableProperty="author_sortable"
