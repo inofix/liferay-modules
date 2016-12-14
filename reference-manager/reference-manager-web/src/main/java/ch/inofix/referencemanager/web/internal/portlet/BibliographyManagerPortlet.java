@@ -311,7 +311,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
             Bibliography bibliography) throws Exception {
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
+        
         String editBibliographyURL = getRedirect(actionRequest, actionResponse);
 
         if (Validator.isNull(editBibliographyURL)) {
