@@ -54,8 +54,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-12-03 00:16
- * @version 1.0.4
+ * @modified 2016-12-14 23:12
+ * @version 1.0.5
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -79,7 +79,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      * @throws PortalException
      */
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
-        
+
         ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
@@ -98,11 +98,35 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      */
     public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
             throws PortalException {
-        
+
         ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
         return referenceLocalService.addReference(userId, bibTeX, bibliographyUuids, serviceContext);
+    }
+
+    /**
+     * 
+     * @param groupId
+     * @return
+     * @since 1.0.3
+     * @throws PortalException
+     */
+    public List<Reference> deleteGroupReferences(long groupId) throws PortalException {
+
+        ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId,
+                ReferenceActionKeys.DELETE_GROUP_REFERENCES);
+
+        List<Reference> references = referenceLocalService.getGroupReferences(groupId);
+
+        for (Reference reference : references) {
+
+            reference = referenceLocalService.deleteReference(reference.getReferenceId());
+
+        }
+
+        return references;
+
     }
 
     /**
@@ -122,17 +146,17 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
 
     /**
      * 
-     * @param groupId
      * @return
-     * @since 1.0.3
+     * @since 1.0.5
      * @throws PortalException
      */
-    public List<Reference> deleteGroupReferences(long groupId) throws PortalException {
+    public List<Reference> deleteReferences() throws PortalException {
 
-        ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId,
-                ReferenceActionKeys.DELETE_GROUP_REFERENCES);
+        // TODO: Check DELETE_ALL_REFERENCES permission!
+//        ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId,
+//                ReferenceActionKeys.DELETE_GROUP_REFERENCES);
 
-        List<Reference> references = referenceLocalService.getGroupReferences(groupId);
+        List<Reference> references = referenceLocalService.getReferences(0, Integer.MAX_VALUE);
 
         for (Reference reference : references) {
 
