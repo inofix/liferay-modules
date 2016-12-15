@@ -80,7 +80,7 @@
             <a href="<%=viewURL%>"><strong><%=bibliography.getTitle()%></strong></a>
             <span class="pull-right">
                 <%=assetEntry.getViewCount()%>
-                <span class="icon-eye-open text-muted"></span>
+                <span class="icon-eye-open text-muted" title='<liferay-ui:message key="views"/>'></span>
             </span>
         </li>
         <%
