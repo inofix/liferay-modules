@@ -13,6 +13,8 @@ import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -33,8 +35,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:56
- * @modified 2016-12-03 16:43
- * @version 1.0.3
+ * @modified 2016-12-15 17:28
+ * @version 1.0.4
  *
  */
 @Component(immediate = true, property = {
@@ -80,20 +82,32 @@ public class BibliographyAssetRendererFactory extends BaseAssetRendererFactory<B
 
         ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-        long portletPlid = PortalUtil.getPlidFromPortletId(themeDisplay.getScopeGroupId(), false,
-                PortletKeys.BIBLIOGRAPHY_MANAGER);
+        User user = themeDisplay.getUser();
 
-        PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.BIBLIOGRAPHY_MANAGER,
-                portletPlid, PortletRequest.RENDER_PHASE);
-        
-        portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
-        
-        String redirect = (String) liferayPortletRequest.getAttribute("redirect"); 
-        if (Validator.isNotNull(redirect)) {
-            portletURL.setParameter("redirect", redirect);            
+        Group group = user.getGroup();
+
+        if (group != null) {
+
+            long portletPlid = PortalUtil.getPlidFromPortletId(group.getGroupId(), false,
+                    PortletKeys.BIBLIOGRAPHY_MANAGER);
+
+            PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest,
+                    PortletKeys.BIBLIOGRAPHY_MANAGER, portletPlid, PortletRequest.RENDER_PHASE);
+
+            portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
+
+            String redirect = (String) liferayPortletRequest.getAttribute("redirect");
+            if (Validator.isNotNull(redirect)) {
+                portletURL.setParameter("redirect", redirect);
+            }
+
+            return portletURL;
+            
+        } else {
+            
+            return null;
+            
         }
-                
-        return portletURL;
     }
 
     @Override

@@ -2,15 +2,22 @@
     your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-12-15 14:48 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2016-12-15 16:33 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
-    boolean hasAddPermission = BibliographyManagerPortletPermission.contains(permissionChecker, scopeGroupId,
-            BibliographyActionKeys.ADD_BIBLIOGRAPHY);
+    Group group = user.getGroup(); 
+
+    boolean hasAddPermission = false;
+    
+    if (group != null) {
+        hasAddPermission = BibliographyManagerPortletPermission.contains(permissionChecker, group.getGroupId(),
+                BibliographyActionKeys.ADD_BIBLIOGRAPHY); 
+    }
+    
     String keywords = ParamUtil.getString(request, "keywords");
 
     SearchContainer<Bibliography> bibliographySearch = new BibliographySearch(renderRequest, "cur", portletURL);
@@ -60,9 +67,9 @@
 
         <%
             liferayPortletRequest.setAttribute("redirect", currentURL);
-                String editBibliographyURL = assetRendererFactory
-                        .getURLAdd(liferayPortletRequest, liferayPortletResponse).toString();
-        %>
+            String editBibliographyURL = assetRendererFactory
+                    .getURLAdd(liferayPortletRequest, liferayPortletResponse).toString();
+    %>
 
         <aui:button href="<%=editBibliographyURL%>"
             cssClass="btn-primary btn-success" value="new-bibliography"

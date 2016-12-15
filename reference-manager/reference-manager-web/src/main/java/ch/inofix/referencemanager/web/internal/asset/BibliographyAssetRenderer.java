@@ -18,9 +18,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.model.Bibliography;
@@ -31,8 +29,8 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:50
- * @modified 2016-12-04 23:08
- * @version 1.0.3
+ * @modified 2016-12-15 17:09
+ * @version 1.0.4
  *
  */
 public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography> {
@@ -158,9 +156,7 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
 
     private PortletURL locateBibliographyManager(LiferayPortletRequest liferayPortletRequest) throws PortalException {
 
-        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-        long portletPlid = PortalUtil.getPlidFromPortletId(themeDisplay.getScopeGroupId(), false,
+        long portletPlid = PortalUtil.getPlidFromPortletId(_bibliography.getGroupId(), false,
                 PortletKeys.BIBLIOGRAPHY_MANAGER);
 
         PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.BIBLIOGRAPHY_MANAGER,
