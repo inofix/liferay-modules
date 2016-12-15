@@ -58,8 +58,8 @@ import ch.inofix.referencemanager.web.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-02 16:09
- * @version 1.0.5
+ * @modified 2016-12-15 21:50
+ * @version 1.0.6
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -166,9 +166,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
             }
 
             bibliographyId = bibliography.getBibliographyId();
-            uuid = bibliography.getUuid(); 
-            _log.info("uuid = " + uuid);
-
+            uuid = bibliography.getUuid();
 
             Collection<BibTeXEntry> bibTeXEntries = database.getEntries().values();
 
@@ -280,6 +278,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         String tabs1 = ParamUtil.get(actionRequest, "tabs1", "settings");
 
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+        actionRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
         actionResponse.setRenderParameter("tabs1", tabs1);
 
     }
@@ -311,7 +310,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
             Bibliography bibliography) throws Exception {
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-        
+
         String editBibliographyURL = getRedirect(actionRequest, actionResponse);
 
         if (Validator.isNull(editBibliographyURL)) {
