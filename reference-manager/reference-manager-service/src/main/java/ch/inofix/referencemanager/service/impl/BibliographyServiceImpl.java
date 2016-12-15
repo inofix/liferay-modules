@@ -17,7 +17,7 @@ package ch.inofix.referencemanager.service.impl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -25,8 +25,8 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-12-02 19:19
- * @version 1.0.4
+ * @modified 2016-12-15 00:33
+ * @version 1.0.5
  * @see BibliographyServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyServiceUtil
  */
@@ -153,16 +153,21 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
 
     /**
      * @param userId
+     *            the userId of the current user
      * @param groupId
+     *            the scopeGroupId of the bibliography. 0 means: any scope.
+     * @param ownerUserId
+     *            the userId of the bibliography owner. -1 means: ignore
+     *            ownerUserId parameter.
      * @param keywords
      * @param start
      * @param end
      * @param sort
-     * @return
+     * @return the hits for the given parameters
      * @since 1.0.0
      * @throws PortalException
      */
-    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+    public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
             throws PortalException {
 
         if (sort == null) {
@@ -177,18 +182,19 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
 
         searchContext.setAttribute("paginationType", "more");
 
-        Group group = GroupLocalServiceUtil.getGroup(groupId);
+        User user = UserLocalServiceUtil.getUser(userId);
 
-        searchContext.setCompanyId(group.getCompanyId());
+        searchContext.setCompanyId(user.getCompanyId());
 
         searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
+
+        if (groupId > 0) {
+            searchContext.setGroupIds(new long[] { groupId });
+        }
         searchContext.setSorts(sort);
         searchContext.setStart(start);
-        searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
-        searchContext.setStart(start);
         searchContext.setUserId(userId);
+        searchContext.setOwnerUserId(ownerUserId);
 
         return indexer.search(searchContext);
 

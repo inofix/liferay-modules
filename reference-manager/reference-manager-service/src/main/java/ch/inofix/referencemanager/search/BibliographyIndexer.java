@@ -17,11 +17,15 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -35,8 +39,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-30 18:09
- * @modified 2016-11-30 18:09
- * @version 1.0.0
+ * @modified 2016-12-15 11:49
+ * @version 1.0.1
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -61,6 +65,17 @@ public class BibliographyIndexer extends BaseIndexer<Bibliography> {
     public boolean hasPermission(PermissionChecker permissionChecker, String entryClassName, long entryClassPK,
             String actionId) throws Exception {
         return BibliographyPermission.contains(permissionChecker, entryClassPK, ActionKeys.VIEW);
+    }
+
+    @Override
+    public void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) throws Exception {
+
+        if (searchContext.getOwnerUserId() > 0) {
+            BooleanQuery booleanQuery = new BooleanQueryImpl();
+            booleanQuery.addExactTerm(Field.USER_ID, searchContext.getOwnerUserId());
+            fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
+
+        }
     }
 
     @Override
