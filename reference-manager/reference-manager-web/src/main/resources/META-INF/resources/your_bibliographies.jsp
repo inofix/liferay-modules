@@ -2,8 +2,8 @@
     your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-12-15 16:33 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2016-12-15 20:53 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -54,7 +54,7 @@
     bibliographySearch.setTotal(hits.getLength());
 
     AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
-            .getAssetRendererFactoryByClass(Bibliography.class);
+            .getAssetRendererFactoryByClass(Bibliography.class);    
 %>
 
 <div class="panel panel-default">
@@ -65,10 +65,19 @@
 
     <liferay-util:buffer var="addButton">
 
-        <%
-            liferayPortletRequest.setAttribute("redirect", currentURL);
-            String editBibliographyURL = assetRendererFactory
-                    .getURLAdd(liferayPortletRequest, liferayPortletResponse).toString();
+    <%
+        liferayPortletRequest.setAttribute("redirect", currentURL);
+        String editBibliographyURL = ""; 
+        
+        PortletURL addURL = assetRendererFactory
+                .getURLAdd(liferayPortletRequest, liferayPortletResponse);
+        
+        if (addURL != null) {
+            editBibliographyURL = addURL.toString(); 
+        } else {
+            // GUEST user
+            hasAddPermission = false; 
+        }
     %>
 
         <aui:button href="<%=editBibliographyURL%>"
@@ -76,7 +85,7 @@
             disabled="<%=!hasAddPermission%>" />
 
     </liferay-util:buffer>
-
+    
     <c:if test="<%=hits.getLength() == 0%>">
         <div class="panel-body">
             <div class="alert alert-info">
@@ -112,13 +121,14 @@
                     String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse,
                             currentURL);
                     String editURL = assetRenderer.getURLEdit(liferayPortletRequest, liferayPortletResponse).toString();
-            %> <a href="<%=viewURL%>"><%=bibliography.getTitle()%></a>
+            %> 
+            
+            <a href="<%=viewURL%>"><%=bibliography.getTitle()%></a>
 
             <liferay-ui:icon-menu icon="" message=""
                 showWhenSingleIcon="true">
 
-                <c:if
-                    test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
+                <c:if test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
                                 BibliographyActionKeys.VIEW)%>">
 
                     <liferay-ui:icon iconCssClass="icon-eye-open"
@@ -126,8 +136,7 @@
 
                 </c:if>
 
-                <c:if
-                    test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
+                <c:if test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
                                 BibliographyActionKeys.UPDATE)%>">
 
                     <liferay-ui:icon iconCssClass="icon-edit"
@@ -135,8 +144,7 @@
 
                 </c:if>
 
-                <c:if
-                    test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
+                <c:if test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
                                 BibliographyActionKeys.DELETE)%>">
 
                     <portlet:actionURL var="deleteURL"
@@ -165,4 +173,5 @@
             <%=addButton%>
         </div>
     </c:if>
+    
 </div>
