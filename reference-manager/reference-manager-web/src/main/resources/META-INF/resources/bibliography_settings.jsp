@@ -2,8 +2,8 @@
     bibliography_settings.jsp: edit the bibliography's settings.
     
     Created:    2016-12-01 02:33 by Christian Berndt
-    Modified:   2016-12-01 20:44 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-12-16 01:37 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -39,9 +39,12 @@
     <aui:input name="bibliographyId" type="hidden"
         value="<%=bibliographyId%>" />
 
+    <aui:input name="mvcPath" type="hidden"
+        value="/edit_bibliography.jsp" />
+        
     <aui:input name="redirect" type="hidden"
         value="<%=currentURL%>" />
-
+        
     <aui:input name="tabs1" type="hidden"
         value="settings" />
 

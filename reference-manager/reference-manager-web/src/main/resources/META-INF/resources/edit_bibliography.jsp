@@ -2,8 +2,8 @@
     edit_bibliography.jsp: default view of the bibliography manaager portlet.
     
     Created:    2016-11-30 00:18 by Christian Berndt
-    Modified:   2016-12-03 16:07 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-12-16 01:47 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -14,6 +14,8 @@
     String tabs1 = ParamUtil.getString(request, "tabs1", "settings");
     
     Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
+
+    portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
 
     boolean hasUpdatePermission = true;
 
@@ -56,7 +58,7 @@
     <c:otherwise>
         <div class="bibliography-head">
             <h2><%=bibliography.getTitle()%></h2>
-            <p><%= bibliography.getDescription() %></p>
+            <p><liferay-ui:message key="compiled-by-x" arguments="<%= new String[] {bibliography.getUserName()} %>"/></p>
         </div>
     </c:otherwise>
 </c:choose>
