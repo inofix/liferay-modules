@@ -2,8 +2,8 @@
     import_bibliography.jsp: The import panel of bibliography manager.
     
     Created:    2016-12-01 02:50 by Christian Berndt
-    Modified:   2016-12-02 18:25 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-12-16 01:37 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -15,8 +15,8 @@
     
     String tabs1 = ParamUtil.getString(request, "tabs1", "import");
    
-    boolean hasImportPermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
-            ReferenceActionKeys.IMPORT_REFERENCES);
+    boolean hasImportPermission = BibliographyManagerPortletPermission.contains(permissionChecker, scopeGroupId,
+            BibliographyActionKeys.IMPORT_BIBLIOGRAPHY);
 %>
 
 <portlet:actionURL name="importBibliography" var="importBibliographyURL"/>
@@ -25,6 +25,7 @@
     enctype="multipart/form-data" method="post" name="fm1">
     
     <aui:input name="bibliographyId" type="hidden" value="<%= bibliographyId %>"/>
+    <aui:input name="mvcPath" type="hidden" value="/edit_bibliography.jsp"/>
     <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/>
 
     <div class="upload">
