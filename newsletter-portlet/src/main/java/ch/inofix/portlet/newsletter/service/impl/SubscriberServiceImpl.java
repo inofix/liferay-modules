@@ -48,8 +48,8 @@ import ezvcard.property.Uid;
  *
  * @author Christian Berndt
  * @created 2016-10-09 21:10
- * @modified 2016-11-28 17:40
- * @version 1.1.0
+ * @modified 2016-12-16 16:10
+ * @version 1.1.1
  * @see ch.inofix.portlet.newsletter.service.base.SubscriberServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.SubscriberServiceUtil
  */
@@ -86,52 +86,56 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
 
         VCard vCard = Ezvcard.parse(document.get(Field.CONTENT)).first();
 
-        String firstname = null;
-        String genderStr = null;
-        String lastname = null;
-        String name = null;
-        String salutation = null;
-        String vCardUID = null;
+        if (vCard != null) {
+            
+            String firstname = null;
+            String genderStr = null;
+            String lastname = null;
+            String name = null;
+            String salutation = null;
+            String vCardUID = null;
 
-        FormattedName formattedName = vCard.getFormattedName();
-        if (formattedName != null) {
-            name = formattedName.getValue();
-        }
+            FormattedName formattedName = vCard.getFormattedName();
+            if (formattedName != null) {
+                name = formattedName.getValue();
+            }
 
-        Gender gender = vCard.getGender();
-        if (gender != null) {
-            genderStr = gender.getGender();
-        }
+            Gender gender = vCard.getGender();
+            if (gender != null) {
+                genderStr = gender.getGender();
+            }
 
-        RawProperty rawProperty = vCard.getExtendedProperty("x-salutation");
+            RawProperty rawProperty = vCard.getExtendedProperty("x-salutation");
 
-        if (rawProperty != null) {
-            salutation = rawProperty.getValue();
-        }
+            if (rawProperty != null) {
+                salutation = rawProperty.getValue();
+            }
 
-        StructuredName structuredName = vCard.getStructuredName();
-        if (structuredName != null) {
-            firstname = structuredName.getGiven();
-            lastname = structuredName.getFamily();
-        }
+            StructuredName structuredName = vCard.getStructuredName();
+            if (structuredName != null) {
+                firstname = structuredName.getGiven();
+                lastname = structuredName.getFamily();
+            }
 
-        Uid uid = vCard.getUid();
-        if (uid != null) {
-            vCardUID = uid.getValue();
-        }
+            Uid uid = vCard.getUid();
+            if (uid != null) {
+                vCardUID = uid.getValue();
+            }
 
-        subscriber.setCreateDate(new Date(GetterUtil.getLong(document
-                .get("createDate_sortable"))));
-        subscriber.setEmail(document.get("email"));
-        subscriber.setFirstname(firstname);
-        subscriber.setGender(genderStr);
-        subscriber.setLastname(lastname);
-        subscriber.setModifiedDate(new Date(GetterUtil.getLong(document
-                .get("modified_sortable"))));
-        subscriber.setName(name);
-        subscriber.setSalutation(salutation);
-        subscriber.setVCardUID(vCardUID);
+            subscriber.setCreateDate(new Date(GetterUtil.getLong(document
+                    .get("createDate_sortable"))));
+            subscriber.setEmail(document.get("email"));
+            subscriber.setFirstname(firstname);
+            subscriber.setGender(genderStr);
+            subscriber.setLastname(lastname);
+            subscriber.setModifiedDate(new Date(GetterUtil.getLong(document
+                    .get("modified_sortable"))));
+            subscriber.setName(name);
+            subscriber.setSalutation(salutation);
+            subscriber.setVCardUID(vCardUID);
 
+        } 
+        
         return subscriber;
 
     }
@@ -146,7 +150,7 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
         searchContext.addFacet(simpleFacet);
 
         Hits hits = search(groupId, searchContext, 0, 1);
-        
+
         if (hits.getLength() > 0) {
             return hits.doc(0);
         } else {
@@ -171,7 +175,11 @@ public class SubscriberServiceImpl extends SubscriberServiceBaseImpl {
 
         Document document = getDocument(groupId, searchContext, vCardUID);
 
-        Subscriber subscriber = documentToSubscriber(document);
+        Subscriber subscriber = null;
+
+        if (document != null) {
+            subscriber = documentToSubscriber(document);
+        }
 
         return subscriber;
 
