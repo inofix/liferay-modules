@@ -20,6 +20,7 @@ import org.jbibtex.BibTeXParser;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -33,22 +34,21 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2016-12-17 17:07
- * @version 1.0.0
+ * @modified 2016-12-17 17:48
+ * @version 1.0.1
  */
 public class ReferenceImporter {
 
     public void importReferences(long userId, long groupId, boolean privateLayout, Map<String, String[]> parameterMap,
             File file) throws PortalException {
 
-        _log.info("importReferences()");
-
-        ServiceContext serviceContext = new ServiceContext();
-        serviceContext.setScopeGroupId(groupId);
-        serviceContext.setUserId(userId);
-
         User user = UserLocalServiceUtil.getUser(userId);
-        serviceContext.setCompanyId(user.getCompanyId());
+        
+        // Import into the user's group
+        Group group = user.getGroup();
+        if (group != null) {
+            groupId = group.getGroupId();
+        }
 
         long bibliographyId = GetterUtil.getLong(ArrayUtil.getValue(parameterMap.get("bibliographyId"), 0));
         // TODO: read default value from resource bundle
@@ -62,6 +62,11 @@ public class ReferenceImporter {
         _log.info("title = " + title);
         _log.info("updateExisting = " + updateExisting);
         _log.info("urlTitle = " + urlTitle);
+
+        ServiceContext serviceContext = new ServiceContext();
+        serviceContext.setCompanyId(user.getCompanyId());
+        serviceContext.setScopeGroupId(groupId);
+        serviceContext.setUserId(userId);
 
         try {
 
