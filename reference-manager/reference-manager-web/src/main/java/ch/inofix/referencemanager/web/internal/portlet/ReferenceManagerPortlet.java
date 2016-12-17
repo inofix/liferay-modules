@@ -16,12 +16,11 @@
 
 package ch.inofix.referencemanager.web.internal.portlet;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -30,13 +29,10 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
 
-import org.jbibtex.BibTeXDatabase;
-import org.jbibtex.BibTeXEntry;
-import org.jbibtex.BibTeXParser;
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -47,11 +43,10 @@ import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -62,20 +57,14 @@ import ch.inofix.referencemanager.service.ReferenceService;
 import ch.inofix.referencemanager.setup.SampleDataUtil;
 import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
-import ch.inofix.referencemanager.web.util.BibTeXUtil;
-
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StreamUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 
 /**
  * View Controller of Inofix' reference-manager.
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-12-14 16:48
- * @version 1.0.8
+ * @modified 2016-12-16 23:35
+ * @version 1.0.9
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -148,84 +137,43 @@ public class ReferenceManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     public void importBibTeXFile(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+        
+        _log.info("importBibTeXFile()");
+
+        HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
         UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
 
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), actionRequest);
-
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+        File file = uploadPortletRequest.getFile("file");
+        String fileName = file.getName();
 
         long userId = themeDisplay.getUserId();
+        long groupId = themeDisplay.getScopeGroupId();
+        boolean privateLayout = themeDisplay.getLayout().isPrivateLayout();
 
-        String sourceFileName = uploadPortletRequest.getFileName("file");
+        String servletContextName = request.getSession().getServletContext().getServletContextName();
 
-        StringBundler sb = new StringBundler(5);
+        String[] servletContextNames = new String[] { servletContextName };
 
-        String extension = FileUtil.getExtension(sourceFileName);
+        Map<String, String[]> parameterMap = new HashMap<String, String[]>(actionRequest.getParameterMap());
+        parameterMap.put("servletContextNames", servletContextNames); 
 
-        if (Validator.isNotNull(extension)) {
-            sb.append(StringPool.PERIOD);
-            sb.append(extension);
+        if (Validator.isNotNull(file)) {
+
+            String message = PortletUtil.translate("upload-successfull-import-will-finish-in-a-separate-thread");
+
+            _referenceService.importReferencesInBackground(userId, fileName, groupId, privateLayout, parameterMap,
+                    file);
+
+            SessionMessages.add(actionRequest, "request_processed", message);
+
+        } else {
+
+            SessionErrors.add(actionRequest, "file-not-found");
+
         }
-
-        InputStream inputStream = null;
-
-        try {
-
-            inputStream = uploadPortletRequest.getFileAsStream("file");
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-
-            BibTeXParser bibTeXParser = new BibTeXParser();
-
-            BibTeXDatabase database = bibTeXParser.parse(bufferedReader);
-
-            Collection<BibTeXEntry> bibTeXEntries = database.getEntries().values();
-
-            for (BibTeXEntry bibTeXEntry : bibTeXEntries) {
-
-                String bibTeX = "";
-
-                bibTeX = BibTeXUtil.format(bibTeXEntry);
-
-                // TODO: check whether a reference with the same uid has
-                // already been uploaded
-
-                // TODO: perform upload in background thread
-
-                _referenceService.addReference(userId, bibTeX, serviceContext);
-
-            }
-
-        } catch (Exception e) {
-            UploadException uploadException = (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
-
-            _log.error(e.getMessage());
-
-            // if ((uploadException != null) &&
-            // (uploadException.getCause() instanceof
-            // FileUploadBase.IOFileUploadException)) {
-            //
-            // // Cancelled a temporary upload
-            //
-            // }
-            // else if ((uploadException != null) &&
-            if ((uploadException != null) && uploadException.isExceededSizeLimit()) {
-
-                throw new FileSizeException(uploadException.getCause());
-
-            } else {
-
-                // TODO: What else can go wrong?
-                // - the uploaded file is not BibTeX-Database
-                // - the uploaded file contains syntax errors
-
-                throw e;
-            }
-        } finally {
-            StreamUtil.cleanUp(inputStream);
-        }
-
     }
 
     /**

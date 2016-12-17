@@ -14,12 +14,13 @@
 
 package ch.inofix.referencemanager.service.impl;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -28,7 +29,6 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -56,8 +56,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-12-15 00:18
- * @version 1.0.6
+ * @modified 2016-12-17 00:12
+ * @version 1.0.7
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -155,8 +155,9 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
     public List<Reference> deleteReferences() throws PortalException {
 
         // TODO: Check DELETE_ALL_REFERENCES permission!
-//        ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId,
-//                ReferenceActionKeys.DELETE_GROUP_REFERENCES);
+        // ReferenceManagerPortletPermission.check(getPermissionChecker(),
+        // groupId,
+        // ReferenceActionKeys.DELETE_GROUP_REFERENCES);
 
         List<Reference> references = referenceLocalService.getReferences(0, Integer.MAX_VALUE);
 
@@ -184,6 +185,9 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
         return referenceLocalService.getReference(referenceId);
     }
 
+    /**
+     * 
+     */
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException {
 
@@ -199,7 +203,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
 
         searchContext.setAttribute("paginationType", "more");
 
-        User user = UserLocalServiceUtil.getUser(userId); 
+        User user = UserLocalServiceUtil.getUser(userId);
 
         searchContext.setCompanyId(user.getCompanyId());
 
@@ -212,6 +216,28 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
         searchContext.setUserId(userId);
 
         return indexer.search(searchContext);
+
+    }
+
+    /**
+     * 
+     * @param userId
+     * @param taskName
+     * @param groupId
+     * @param privateLayout
+     * @param parameterMap
+     * @param file
+     * @since 1.0.8
+     * @return
+     * @throws PortalException
+     */
+    public long importReferencesInBackground(long userId, String taskName, long groupId, boolean privateLayout,
+            Map<String, String[]> parameterMap, File file) throws PortalException {
+
+        ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId, ReferenceActionKeys.IMPORT_REFERENCES);
+
+        return referenceLocalService.importReferencesInBackground(userId, taskName, groupId, privateLayout,
+                parameterMap, file);
 
     }
 

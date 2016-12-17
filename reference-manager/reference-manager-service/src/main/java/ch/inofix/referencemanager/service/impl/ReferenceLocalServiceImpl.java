@@ -14,11 +14,20 @@
 
 package ch.inofix.referencemanager.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
+import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -34,13 +43,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
+import ch.inofix.referencemanager.backgroundtask.ReferenceImportBackgroundTaskExecutor;
 import ch.inofix.referencemanager.model.BibRefRelation;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceLocalServiceBaseImpl;
+import ch.inofix.referencemanager.service.util.ReferenceImporter;
 import ch.inofix.referencemanager.social.ReferenceActivityKeys;
 
 /**
@@ -60,8 +73,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-12-03 00:07
- * @version 1.0.1
+ * @modified 2016-12-17 00:19
+ * @version 1.0.2
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -75,7 +88,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      */
     @Override
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
-        
+
         return addReference(userId, bibTeX, new String[0], serviceContext);
 
     }
@@ -84,7 +97,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Override
     public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
             throws PortalException {
-        
+
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
@@ -117,18 +130,18 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
             long bibRefRelationId = counterLocalService.increment();
             BibRefRelation bibRefRelation = bibRefRelationPersistence.create(bibRefRelationId);
-            
+
             bibRefRelation.setGroupId(bibliography.getGroupId());
             bibRefRelation.setCompanyId(bibliography.getCompanyId());
             bibRefRelation.setUserId(bibliography.getUserId());
             bibRefRelation.setUserName(bibliography.getUserName());
-            
+
             bibRefRelation.setBibliographyGroupId(bibliography.getGroupId());
             bibRefRelation.setBibliographyUuid(bibliographyUuid);
             bibRefRelation.setReferenceGroupId(reference.getGroupId());
             bibRefRelation.setReferenceUuid(reference.getUuid());
-            
-            bibRefRelationPersistence.update(bibRefRelation); 
+
+            bibRefRelationPersistence.update(bibRefRelation);
 
         }
 
@@ -266,6 +279,137 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         return referencePersistence.findByPrimaryKey(referenceId);
     }
 
+    /**
+     * Imports the references from the file.
+     *
+     * @param userId
+     *            the primary key of the user
+     * @param groupId
+     *            the primary key of the group
+     * @param privateLayout
+     *            whether the layout is private to the group
+     * @param parameterMap
+     *            the mapping of parameters indicating which information will be
+     *            imported.
+     * @param file
+     *            the file with the data
+     * @since 1.0.2
+     * @throws PortalException
+     *             if a group or user with the primary key could not be found,
+     *             or if some other portal exception occurred
+     * @throws SystemException
+     *             if a system exception occurred
+     * @see com.liferay.portal.lar.LayoutImporter
+     */
+    public void importReferences(long userId, long groupId, boolean privateLayout, Map<String, String[]> parameterMap,
+            File file) throws PortalException, SystemException {
+
+        _log.info("importReferences(file)");
+
+        try {
+            ReferenceImporter referenceImporter = new ReferenceImporter();
+
+            referenceImporter.importReferences(userId, groupId, privateLayout, parameterMap, file);
+            
+        } catch (PortalException pe) {
+            Throwable cause = pe.getCause();
+
+            if (cause instanceof LocaleException) {
+                throw (PortalException) cause;
+            }
+
+            _log.error(pe);
+
+            throw pe;
+        } catch (SystemException se) {
+
+            _log.error(se);
+
+            throw se;
+        } catch (Exception e) {
+
+            _log.error(e);
+
+            throw new SystemException(e);
+        }
+    }
+
+    /**
+     * Imports the references from the input stream.
+     *
+     * @param userId
+     *            the primary key of the user
+     * @param groupId
+     *            the primary key of the group
+     * @param privateLayout
+     *            whether the layout is private to the group
+     * @param parameterMap
+     *            the mapping of parameters indicating which information will be
+     *            imported.
+     * @param inputStream
+     *            the input stream
+     * @since 1.0.2
+     * @throws PortalException
+     *             if a group or user with the primary key could not be found,
+     *             or if some other portal exception occurred
+     * @throws SystemException
+     *             if a system exception occurred
+     */
+    public void importReferences(long userId, long groupId, boolean privateLayout, Map<String, String[]> parameterMap,
+            InputStream inputStream) throws PortalException, SystemException {
+
+        _log.info("importReferences(inputStream)");
+
+        File file = null;
+
+        try {
+            file = FileUtil.createTempFile("bib");
+
+            FileUtil.write(file, inputStream);
+
+            importReferences(userId, groupId, privateLayout, parameterMap, file);
+
+        } catch (IOException ioe) {
+
+            _log.error(ioe);
+
+            throw new SystemException(ioe);
+        } finally {
+            FileUtil.delete(file);
+        }
+    }
+
+    /**
+     * 
+     * @param userId
+     * @param taskName
+     * @param groupId
+     * @param privateLayout
+     * @param parameterMap
+     * @param file
+     * @since 1.0.8
+     * @return
+     * @throws PortalException
+     */
+    public long importReferencesInBackground(long userId, String taskName, long groupId, boolean privateLayout,
+            Map<String, String[]> parameterMap, File file) throws PortalException {
+
+        Map<String, Serializable> taskContextMap = new HashMap<String, Serializable>();
+        taskContextMap.put("userId", userId);
+        taskContextMap.put("groupId", groupId);
+        taskContextMap.put("parameterMap", (Serializable) parameterMap);
+        taskContextMap.put("privateLayout", privateLayout);
+        
+        BackgroundTask backgroundTask = backgroundTaskmanager.addBackgroundTask(                userId, groupId, taskName,
+                ReferenceImportBackgroundTaskExecutor.class.getName(),
+                taskContextMap, new ServiceContext());
+        
+        backgroundTask.addAttachment(userId, file.getName(), file);
+        
+        return backgroundTask.getBackgroundTaskId();
+                
+    }
+
     @Override
     public void subscribe(long userId, long groupId) throws PortalException {
         subscriptionLocalService.addSubscription(userId, groupId, Reference.class.getName(), groupId);
@@ -363,6 +507,9 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         resourceLocalService.updateResources(reference.getCompanyId(), reference.getGroupId(),
                 Reference.class.getName(), reference.getReferenceId(), groupPermissions, guestPermissions);
     }
+    
+    @ServiceReference(type = BackgroundTaskManager.class)
+    protected BackgroundTaskManager backgroundTaskmanager;
 
     private static final Log _log = LogFactoryUtil.getLog(ReferenceLocalServiceImpl.class);
 

@@ -4,6 +4,7 @@ Export-Package:\
     ch.inofix.referencemanager.model.impl,\
     ch.inofix.referencemanager.search,\
     ch.inofix.referencemanager.service.permission,\
+    ch.inofix.referencemanager.service.util,\
     ch.inofix.referencemanager.setup
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true

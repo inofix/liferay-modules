@@ -1,4 +1,4 @@
-package ch.inofix.referencemanager.web.util;
+package ch.inofix.referencemanager.service.util;
 
 import java.util.Map;
 import java.util.Set;
@@ -6,7 +6,6 @@ import java.util.Set;
 import org.jbibtex.BibTeXEntry;
 import org.jbibtex.Key;
 import org.jbibtex.Value;
-
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
