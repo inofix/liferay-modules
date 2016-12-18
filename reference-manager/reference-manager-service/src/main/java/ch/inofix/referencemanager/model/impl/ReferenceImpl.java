@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-03 15:05
- * @version 1.0.1
+ * @modified 2016-12-17 20:49
+ * @version 1.0.2
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -127,6 +127,15 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     public String getTitle() {
         return getField("title");
+    }
+    
+    public String getType() {
+        
+        if (_bibTeXEntry == null) {
+            _bibTeXEntry = getBibTeXEntry();
+        }
+        
+        return _bibTeXEntry.getType().getValue();
     }
 
     public String getYear() {
