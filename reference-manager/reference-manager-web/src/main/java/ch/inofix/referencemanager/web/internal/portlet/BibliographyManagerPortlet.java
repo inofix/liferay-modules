@@ -13,11 +13,6 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
-//import org.jbibtex.BibTeXComment;
-//import org.jbibtex.BibTeXDatabase;
-//import org.jbibtex.BibTeXEntry;
-//import org.jbibtex.BibTeXObject;
-//import org.jbibtex.BibTeXParser;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -99,7 +94,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         long userId = themeDisplay.getUserId();
         long groupId = themeDisplay.getScopeGroupId();
         boolean privateLayout = themeDisplay.getLayout().isPrivateLayout();
-        
+
         Map<String, String[]> parameterMap = request.getParameterMap();
 
         if (Validator.isNotNull(file)) {

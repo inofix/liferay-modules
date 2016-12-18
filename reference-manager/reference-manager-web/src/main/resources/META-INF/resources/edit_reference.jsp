@@ -2,20 +2,52 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-04 23:11 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-12-17 21:06 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
     String redirect = ParamUtil.getString(request, "redirect");
-    String tabNames = "required-fields,optional-fields,general,abstract,review,bibtex";
+    String tabNames = "required-fields,optional-fields,general,abstract,review,bibtex,type";
     String tabs1 = ParamUtil.getString(request, "tabs1", "required-fields");
 
     long referenceId = ParamUtil.getLong(request, "referenceId");
 
     Reference reference = (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
+    String type = reference.getType().toLowerCase(); 
+    
+    JSONObject entryType = null; 
+    
+    if ("article".equals(type)) {
+            
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_ARTICLE);
+            
+    } else if ("book".equals(type)) {
+        
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_BOOK);        
+        
+    } else if ("booklet".equals(type)) {
+        
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_BOOKLET);        
+        
+    } else if ("conference".equals(type)) {
+        
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_CONFERENCE);        
+        
+    } else if ("inbook".equals(type)) {
+        
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_INBOOK);        
+        
+    } else if ("incollection".equals(type)) {
+        
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_INCOLLECTION);        
+        
+    } else {
+        
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_MISC);
+    }
 
     boolean hasUpdatePermission = ReferencePermission.contains(permissionChecker, reference,
             ReferenceActionKeys.UPDATE);  
@@ -24,7 +56,6 @@
     portletURL.setParameter("mvcPath", "/edit_reference.jsp");
     
     AssetEntryServiceUtil.incrementViewCounter(Reference.class.getName(), reference.getReferenceId());
-
 %>
 
 <c:choose>
@@ -59,8 +90,8 @@
             <div>
                 <liferay-ui:message key="used-by-you-in"/>
                 <a href="#" class="btn btn-default btn-sm">Ancient Astronomy</a>
-                <a href="#" class="btn btn-default btn-sm">Collaborative Action</a>            
-            </div>          
+                <a href="#" class="btn btn-default btn-sm">Collaborative Action</a>                           
+            </div>        
         </div>
     </c:otherwise>
 </c:choose>
@@ -160,22 +191,49 @@
         
         <c:when test='<%= tabs1.equals("optional-fields") %>'>
         
-            optional-fields
-                
+            <aui:fieldset cssClass="optional-fields">
+            <%
+                JSONArray optionalFields = entryType.getJSONArray("optional");  
+            
+                for (int i=0; i<optionalFields.length(); i++) {
+                    JSONObject field = optionalFields.getJSONObject(i);
+                    String name = field.getString("name"); 
+
+                    String value = reference.getFields().get(name); 
+            %>
+                <aui:input name="name" type="hidden" value="<%= name %>"/>           
+                <aui:input label="<%= name %>" name="value" value="<%= value %>"/>
+            <%
+                }
+            %>
+            </aui:fieldset>
+                            
         </c:when>
         
         <c:when test='<%= tabs1.equals("required-fields") %>'>
     
             <aui:fieldset cssClass="required-fields">
+            
             <%
-                for (String key : reference.getFields().keySet()) {
-                    String value = reference.getFields().get(key); 
-                    if (Validator.isNotNull(value)) {
+                JSONArray requiredFields = entryType.getJSONArray("required");  
+            
+                if (requiredFields != null) {
+            
+                    for (int i=0; i<requiredFields.length(); i++) {
+                        JSONObject field = requiredFields.getJSONObject(i);
+                        String name = field.getString("name"); 
+    
+                        String value = reference.getFields().get(name); 
             %>
-                <aui:input name="name" type="hidden" value="<%= key %>"/>           
-                <aui:input label="<%= key %>" name="value" value="<%= value %>"/>
+                <aui:input name="name" type="hidden" value="<%= name %>"/>           
+                <aui:input label="<%= name %>" name="value" value="<%= value %>"/>
             <%
                     }
+                } else {
+                    
+            %>
+                <div class="alert alert-info"><liferay-ui:message key="this-entry-type-has-no-required-fields"/></div>
+            <%
                 }
             %>
             </aui:fieldset>
@@ -190,6 +248,13 @@
                     label="review" name="value" type="textarea" />
 
             </aui:fieldset>
+        </c:when>
+        
+        <c:when test='<%= tabs1.equals("type") %>'>
+            <div>
+                <liferay-ui:message key="<%= "entry-type-" + type %>" />
+                <liferay-ui:message key="<%= "entry-type-" + type + "-help" %>" />           
+            </div>   
         </c:when>
         
         <c:when test='<%= tabs1.equals("usage") %>'>

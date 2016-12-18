@@ -5,7 +5,8 @@ Export-Package:\
     ch.inofix.referencemanager.search,\
     ch.inofix.referencemanager.service.permission,\
     ch.inofix.referencemanager.service.util,\
-    ch.inofix.referencemanager.setup
+    ch.inofix.referencemanager.setup,\
+    org.jbibtex
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
-Include-Resource: @jbibtex-1.0.15.jar
+Include-Resource: @jbibtex-1.0.15.jar  

@@ -17,4 +17,3 @@ dependencies {
     compile group: 'org.jbibtex', name: 'jbibtex', version: '1.0.15'
     compileOnly project(":modules:reference-manager:reference-manager-api")
 }
-
