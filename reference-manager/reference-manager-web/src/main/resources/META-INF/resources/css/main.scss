@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2016-12-14 00:06 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2016-12-20 00:12 by Christian Berndt
+    Version:    1.0.1
 */
 
 @import "bourbon";
@@ -18,6 +18,17 @@
         margin-top: -15px;
         margin-bottom: 30px; 
         padding-bottom: 10px; 
+        position: relative;
+        
+        .add-reference {
+            position: absolute; 
+            right: 0;
+            bottom: 5px;
+        }
+        
+        .compiled-by {
+            display: inline-block;
+        }
     }
     
     fieldset {
