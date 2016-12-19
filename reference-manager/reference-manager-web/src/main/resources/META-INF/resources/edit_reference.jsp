@@ -91,7 +91,7 @@
                 <liferay-ui:message key="used-by-you-in"/>
                 <a href="#" class="btn btn-default btn-sm">Ancient Astronomy</a>
                 <a href="#" class="btn btn-default btn-sm">Collaborative Action</a>                           
-            </div>        
+            </div>      
         </div>
     </c:otherwise>
 </c:choose>

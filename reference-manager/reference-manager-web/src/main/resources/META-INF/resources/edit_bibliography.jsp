@@ -2,8 +2,8 @@
     edit_bibliography.jsp: default view of the bibliography manaager portlet.
     
     Created:    2016-11-30 00:18 by Christian Berndt
-    Modified:   2016-12-16 01:47 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-12-20 00:17 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -58,7 +58,10 @@
     <c:otherwise>
         <div class="bibliography-head">
             <h2><%=bibliography.getTitle()%></h2>
-            <p><liferay-ui:message key="compiled-by-x" arguments="<%= new String[] {bibliography.getUserName()} %>"/></p>
+            <div class="compiled-by">
+                <liferay-ui:message key="compiled-by-x" arguments="<%= new String[] {bibliography.getUserName()} %>"/>
+            </div>
+            <a class="add-reference btn btn-success" href="#"><liferay-ui:message key="add-reference"/></a>
         </div>
     </c:otherwise>
 </c:choose>
