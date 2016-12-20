@@ -17,8 +17,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2016-12-179 23:53
- * @version 1.0.2
+ * @modified 2016-12-20 18:58
+ * @version 1.0.3
  *
  */
 public class BibTeXUtil {
@@ -67,6 +67,9 @@ public class BibTeXUtil {
     public static final String TYPE_MASTERTHESIS = get("entry.type.masterthesis"); 
     public static final String TYPE_MISC = get("entry.type.misc"); 
     public static final String TYPE_PHDTHESIS = get("entry.type.phdthesis"); 
+    public static final String TYPE_PROCEEDINGS = get("entry.type.proceedings"); 
+    public static final String TYPE_TECHREPORT = get("entry.type.techreport"); 
+    public static final String TYPE_UNPUBLISHED = get("entry.type.unpublished"); 
     
     private static String get(String key) {
         
