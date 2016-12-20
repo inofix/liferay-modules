@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-17 21:06 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2016-12-20 18:49 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -16,45 +16,69 @@
     long referenceId = ParamUtil.getLong(request, "referenceId");
 
     Reference reference = (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
-    String type = reference.getType().toLowerCase(); 
-    
-    JSONObject entryType = null; 
-    
+    String type = reference.getType().toLowerCase();
+
+    JSONObject entryType = null;
+
     if ("article".equals(type)) {
-            
+
         entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_ARTICLE);
-            
+
     } else if ("book".equals(type)) {
-        
-        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_BOOK);        
-        
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_BOOK);
+
     } else if ("booklet".equals(type)) {
-        
-        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_BOOKLET);        
-        
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_BOOKLET);
+
     } else if ("conference".equals(type)) {
-        
-        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_CONFERENCE);        
-        
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_CONFERENCE);
+
     } else if ("inbook".equals(type)) {
-        
-        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_INBOOK);        
-        
-    } else if ("incollection".equals(type)) {
-        
-        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_INCOLLECTION);        
-        
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_INBOOK);
+
+    } else if ("inproceedings".equals(type)) {
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_INPROCEEDINGS);
+
+    } else if ("manual".equals(type)) {
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_MANUAL);
+
+    } else if ("masterthesis".equals(type)) {
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_MASTERTHESIS);
+
+    } else if ("phdthesis".equals(type)) {
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_PHDTHESIS);
+
+    } else if ("proceedings".equals(type)) {
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_PROCEEDINGS);
+
+    } else if ("techreport".equals(type)) {
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_TECHREPORT);
+
+    } else if ("unpublished".equals(type)) {
+
+        entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_UNPUBLISHED);
+
     } else {
-        
+
         entryType = JSONFactoryUtil.createJSONObject(BibTeXUtil.TYPE_MISC);
     }
 
     boolean hasUpdatePermission = ReferencePermission.contains(permissionChecker, reference,
-            ReferenceActionKeys.UPDATE);  
-    
+            ReferenceActionKeys.UPDATE);
+
     portletURL.setParameter("referenceId", String.valueOf(referenceId));
     portletURL.setParameter("mvcPath", "/edit_reference.jsp");
-    
+
     AssetEntryServiceUtil.incrementViewCounter(Reference.class.getName(), reference.getReferenceId());
 %>
 
