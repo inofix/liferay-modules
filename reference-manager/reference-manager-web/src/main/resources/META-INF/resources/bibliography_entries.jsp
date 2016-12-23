@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2016-12-16 01:25 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-12-23 19:48 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -14,6 +14,9 @@
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
+    Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
+    boolean hasUpdatePermission = BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.UPDATE);
+
     SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
     
     PortletURL iteratorURL = referenceSearch.getIteratorURL(); 
@@ -48,6 +51,31 @@
     referenceSearch.setTotal(hits.getLength());
 %>
 
+<div class="clearfix">
+
+    <div class="pull-left">
+        <aui:form name="fm1" cssClass="search-form">
+            <aui:input inlineField="true" label="" name="keywords" placeholder="search"/>
+            <aui:button type="submit" value="search"/>
+        </aui:form>
+    </div>
+
+    <div class="pull-right">
+        <portlet:actionURL name="updateReference"
+            var="updateReferenceURL">
+            <portlet:param name="bibliographyId" value="<%=bibliographyId%>" />
+            <portlet:param name="mvcPath" value="/edit_reference.jsp" />
+            <portlet:param name="redirect" value="<%=currentURL%>" />
+        </portlet:actionURL>
+
+        <aui:button cssClass="btn-success"
+            disabled="<%=!hasUpdatePermission%>"
+            href="<%=updateReferenceURL.toString()%>"
+            value="add-reference"
+            />
+    </div>
+</div>
+
 <liferay-ui:search-container
     cssClass="references-search-container"            
     id="references"
@@ -57,8 +85,79 @@
     <liferay-ui:search-container-row
         className="ch.inofix.referencemanager.model.Reference"
         escapedModel="true" modelVar="reference">
+        
+        <%
+            String detailURL = null; 
+        %>
+        
+        
+        <portlet:renderURL var="viewURL">
+            <portlet:param name="bibliographyId"
+                value="<%=String.valueOf(bibliography.getBibliographyId())%>" />
+            <portlet:param name="mvcPath"
+                value="/edit_reference.jsp" />
+            <portlet:param name="redirect"
+                value="<%=currentURL%>" />
+            <portlet:param name="referenceId"
+                value="<%=String.valueOf(reference.getReferenceId())%>" />
+        </portlet:renderURL>
+        
+        <%
+            if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)) {
+                detailURL = viewURL; 
+            }
+        %>
+    
+    
+    
+        <portlet:renderURL var="editURL">
+            <portlet:param name="bibliographyId"
+                value="<%=String.valueOf(bibliography.getBibliographyId())%>" />
+            <portlet:param name="mvcPath"
+                value="/edit_reference.jsp" />
+            <portlet:param name="redirect"
+                value="<%=currentURL%>" />
+            <portlet:param name="referenceId"
+                value="<%=String.valueOf(reference.getReferenceId())%>" />
+        </portlet:renderURL>
+        
+        <%
+            if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)) {
+                detailURL = editURL; 
+            }
+        %>            
+        
+        
+        <%
+            row.setParameter("detailURL", detailURL);            
+        %>
 
         <%@ include file="/search_columns.jspf" %>
+        
+        
+        <liferay-ui:search-container-column-text>
+
+            <liferay-ui:icon-menu icon="<%=StringPool.BLANK%>"
+                message="<%=StringPool.BLANK%>"
+                showExpanded="<%=row == null%>" showWhenSingleIcon="true">
+    
+                <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)%>">
+    
+                    <liferay-ui:icon iconCssClass="icon-eye-open"
+                        message="view" url="<%=viewURL%>" />
+    
+                </c:if>
+    
+                <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)%>">
+    
+                    <liferay-ui:icon iconCssClass="icon-edit" message="edit"
+                        url="<%=editURL%>" />
+    
+                </c:if>
+    
+            </liferay-ui:icon-menu>
+        
+        </liferay-ui:search-container-column-text>
 
     </liferay-ui:search-container-row>
 

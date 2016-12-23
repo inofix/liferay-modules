@@ -94,6 +94,9 @@
 				escapedModel="true" modelVar="reference">
                 
                 <%@ include file="/search_columns.jspf" %>
+ 
+                <liferay-ui:search-container-column-jsp cssClass="entry-action"
+                    path="/reference_action.jsp" valign="top" />               
 
 			</liferay-ui:search-container-row>
 

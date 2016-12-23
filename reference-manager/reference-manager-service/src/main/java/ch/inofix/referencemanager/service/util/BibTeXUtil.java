@@ -59,21 +59,20 @@ public class BibTeXUtil {
             "incollection", "inproceedings", "manual", "masterthesis", "misc", "phdthesis", "proceedings", "techreport",
             "unpublished" };
     
-    public static final String TYPE_ARTICLE = getProperty("entry.type.article");
-    public static final String TYPE_BOOK = getProperty("entry.type.book");
-    public static final String TYPE_BOOKLET =getProperty("entry.type.booklet");
-    public static final String TYPE_CONFERENCE = getProperty("entry.type.conference");
-    public static final String TYPE_INBOOK = getProperty("entry.type.inbook");
-    public static final String TYPE_INCOLLECTION = getProperty("entry.type.incollection");
-    public static final String TYPE_INPROCEEDINGS = TYPE_CONFERENCE;
-    public static final String TYPE_MANUAL = getProperty("entry.type.manual");
-    public static final String TYPE_MASTERTHESIS = getProperty("entry.type.masterthesis");
-    public static final String TYPE_MISC = getProperty("entry.type.misc");
-    public static final String TYPE_PHDTHESIS = getProperty("entry.type.phdthesis");
-    public static final String TYPE_PROCEEDINGS = getProperty("entry.type.proceedings");
-    public static final String TYPE_TECHREPORT = getProperty("entry.type.techreport");
-    public static final String TYPE_UNPUBLISHED = getProperty("entry.type.unpublished");
-
+//    public static final String TYPE_ARTICLE = getProperty("entry.type.article");
+//    public static final String TYPE_BOOK = getProperty("entry.type.book");
+//    public static final String TYPE_BOOKLET =getProperty("entry.type.booklet");
+//    public static final String TYPE_CONFERENCE = getProperty("entry.type.conference");
+//    public static final String TYPE_INBOOK = getProperty("entry.type.inbook");
+//    public static final String TYPE_INCOLLECTION = getProperty("entry.type.incollection");
+//    public static final String TYPE_INPROCEEDINGS = TYPE_CONFERENCE;
+//    public static final String TYPE_MANUAL = getProperty("entry.type.manual");
+//    public static final String TYPE_MASTERTHESIS = getProperty("entry.type.masterthesis");
+//    public static final String TYPE_MISC = getProperty("entry.type.misc");
+//    public static final String TYPE_PHDTHESIS = getProperty("entry.type.phdthesis");
+//    public static final String TYPE_PROCEEDINGS = getProperty("entry.type.proceedings");
+//    public static final String TYPE_TECHREPORT = getProperty("entry.type.techreport");
+//    public static final String TYPE_UNPUBLISHED = getProperty("entry.type.unpublished");
     
     public static String getProperty(String key) {
         
