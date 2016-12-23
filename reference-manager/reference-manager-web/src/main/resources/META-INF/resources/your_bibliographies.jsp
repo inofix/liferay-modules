@@ -2,8 +2,8 @@
     your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-12-15 20:53 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-12-23 20:00 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -22,12 +22,7 @@
 
     SearchContainer<Bibliography> bibliographySearch = new BibliographySearch(renderRequest, "cur", portletURL);
 
-    boolean reverse = false;
-    if (bibliographySearch.getOrderByType().equals("desc")) {
-        reverse = true;
-    }
-
-    Sort sort = new Sort(bibliographySearch.getOrderByCol(), reverse);
+    Sort sort = new Sort("title_sortable", false);
 
     BibliographySearchTerms searchTerms = (BibliographySearchTerms) bibliographySearch.getSearchTerms();
 
