@@ -2,13 +2,14 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-23 18:41 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2016-12-23 22:32 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
+    long bibliographyId = ParamUtil.getLong(request, "bibliographyId");
     String redirect = ParamUtil.getString(request, "redirect");
     String tabNames = "required-fields,optional-fields,general,bibtex,usage";
     String tabs1 = ParamUtil.getString(request, "tabs1", "required-fields");
@@ -33,15 +34,23 @@
     boolean hasUpdatePermission = ReferencePermission.contains(permissionChecker, reference,
             ReferenceActionKeys.UPDATE);
 
+    portletURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
     portletURL.setParameter("mvcPath", "/edit_reference.jsp");
     portletURL.setParameter("referenceId", String.valueOf(referenceId));
     portletURL.setParameter("type", type);
 
     AssetEntryServiceUtil.incrementViewCounter(Reference.class.getName(), reference.getReferenceId());
 %>
-    
+
 <portlet:actionURL name="updateReference" var="updateReferenceURL">
+    <portlet:param name="bibliographyId"
+        value="<%=String.valueOf(bibliographyId)%>" />
+    <portlet:param name="mvcPath" value="/edit_reference.jsp" />
+    <portlet:param name="tabs1" value="<%= tabs1 %>" />
 </portlet:actionURL>
+
+bibliographyId = <%= bibliographyId %><br/>
+referenceId = <%= referenceId %>
    
 <aui:form action="<%= updateReferenceURL %>" method="post" name="fm">
 
@@ -84,6 +93,7 @@
                     <%
                         PortletURL selectURL = liferayPortletResponse.createRenderURL();
 
+                        selectURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
                         selectURL.setParameter("mvcPath", "/edit_reference.jsp");
                         selectURL.setParameter("referenceId", String.valueOf(referenceId));
                         selectURL.setParameter("tabs1", tabs1);
@@ -212,7 +222,7 @@
             <%
                 JSONArray requiredFields = entryFields.getJSONArray("required");  
             
-                if (requiredFields != null) {
+                if (requiredFields != null && requiredFields.length() > 0) {
             
                     for (int i=0; i<requiredFields.length(); i++) {
                         JSONObject field = requiredFields.getJSONObject(i);

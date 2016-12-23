@@ -1,9 +1,9 @@
 <%--
-    search_columns.jspf: search_columns of reference manager portlet.
+    search_columns.jspf: search_columns of the reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2016-12-14 23:46 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2016-12-23 22:00 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <portlet:renderURL var="viewURL">
@@ -14,6 +14,10 @@
 </portlet:renderURL>
 
 <%
+    if (Validator.isNotNull(row.getParameter("detailURL"))) {
+        viewURL = (String) row.getParameter("detailURL"); 
+    }
+    
     // TODO: Read columns from configuration.
     String[] columns = new String[] { "referenceId", "author", "title", "year", "modified", "tags" };
 
@@ -84,6 +88,3 @@
 <%
     }
 %>
-
-<liferay-ui:search-container-column-jsp cssClass="entry-action"
-    path="/reference_action.jsp" valign="top" />

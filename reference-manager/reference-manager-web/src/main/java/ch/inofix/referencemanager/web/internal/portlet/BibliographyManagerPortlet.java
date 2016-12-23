@@ -35,9 +35,11 @@ import com.liferay.portal.kernel.util.WebKeys;
 import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchBibliographyException;
 import ch.inofix.referencemanager.model.Bibliography;
+import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibliographyService;
 import ch.inofix.referencemanager.service.ReferenceService;
 import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
+import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
 /**
@@ -45,8 +47,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-16 23:35
- * @version 1.0.8
+ * @modified 2016-12-23 18:59
+ * @version 1.0.9
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -117,9 +119,14 @@ public class BibliographyManagerPortlet extends MVCPortlet {
     @Override
     public void render(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
+        
+        _log.info("render");
 
         try {
+            
             getBibliography(renderRequest);
+            getReference(renderRequest);
+            
         } catch (Exception e) {
             if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
                 SessionErrors.add(renderRequest, e.getClass());
@@ -172,6 +179,50 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
         actionRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
+        actionResponse.setRenderParameter("tabs1", tabs1);
+
+    }
+    
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.9
+     * @throws Exception
+     */
+    public void updateReference(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+        
+        _log.info("updateReference");
+
+        long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
+        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(Bibliography.class.getName(), actionRequest);
+
+        long userId = serviceContext.getUserId();
+        
+        String bibTeX = ParamUtil.getString(actionRequest, "bibTeX"); 
+
+        Reference reference = null;
+
+        if (referenceId <= 0) {
+            reference = _referenceService.addReference(userId, bibTeX, serviceContext); 
+        } else {
+            reference = _referenceService.updateReference(referenceId, userId, bibTeX, serviceContext);
+        }
+        
+        Bibliography bibliography = _bibliographyService.getBibliography(bibliographyId); 
+
+        String redirect = getEditBibliographyURL(actionRequest, actionResponse, bibliography);
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+        
+        _log.info("tabs1 = " + tabs1);
+
+        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+        actionRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
+        actionRequest.setAttribute(ReferenceWebKeys.REFERENCE, reference);
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
         actionResponse.setRenderParameter("tabs1", tabs1);
 
     }
@@ -233,8 +284,12 @@ public class BibliographyManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     protected void getBibliography(PortletRequest portletRequest) throws Exception {
+        
+        _log.info("getBibliography");
 
         long bibliographyId = ParamUtil.getLong(portletRequest, "bibliographyId");
+        
+        _log.info("bibliographyId = " + bibliographyId);
 
         if (bibliographyId <= 0) {
             return;
@@ -243,6 +298,28 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         Bibliography bibliography = _bibliographyService.getBibliography(bibliographyId);
 
         portletRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
+    }
+    
+    /**
+     * 
+     * @param portletRequest
+     * @throws Exception
+     */
+    protected void getReference(PortletRequest portletRequest) throws Exception {
+        
+        _log.info("getReference");
+
+        long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
+        
+        _log.info("referenceId = " + referenceId);
+
+        if (referenceId <= 0) {
+            return;
+        }
+
+        Reference reference = _referenceService.getReference(referenceId);
+
+        portletRequest.setAttribute(ReferenceWebKeys.REFERENCE, reference);
     }
 
     @org.osgi.service.component.annotations.Reference
