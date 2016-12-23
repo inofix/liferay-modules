@@ -17,8 +17,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2016-12-20 18:58
- * @version 1.0.3
+ * @modified 2016-12-23 14:54
+ * @version 1.0.4
  *
  */
 public class BibTeXUtil {
@@ -55,23 +55,27 @@ public class BibTeXUtil {
     
     // BibTeX entry types as defined in
     // http://bibtexml.sourceforge.net/btxdoc.pdf
+    public static final String[] ENTRY_TYPES = new String[] { "article", "book", "booklet", "conference", "inbook",
+            "incollection", "inproceedings", "manual", "masterthesis", "misc", "phdthesis", "proceedings", "techreport",
+            "unpublished" };
     
-    public static final String TYPE_ARTICLE = get("entry.type.article"); 
-    public static final String TYPE_BOOK = get("entry.type.book"); 
-    public static final String TYPE_BOOKLET = get("entry.type.booklet"); 
-    public static final String TYPE_CONFERENCE = get("entry.type.conference");
-    public static final String TYPE_INBOOK = get("entry.type.inbook");
-    public static final String TYPE_INCOLLECTION = get("entry.type.incollection");
+    public static final String TYPE_ARTICLE = getProperty("entry.type.article");
+    public static final String TYPE_BOOK = getProperty("entry.type.book");
+    public static final String TYPE_BOOKLET =getProperty("entry.type.booklet");
+    public static final String TYPE_CONFERENCE = getProperty("entry.type.conference");
+    public static final String TYPE_INBOOK = getProperty("entry.type.inbook");
+    public static final String TYPE_INCOLLECTION = getProperty("entry.type.incollection");
     public static final String TYPE_INPROCEEDINGS = TYPE_CONFERENCE;
-    public static final String TYPE_MANUAL = get("entry.type.manual"); 
-    public static final String TYPE_MASTERTHESIS = get("entry.type.masterthesis"); 
-    public static final String TYPE_MISC = get("entry.type.misc"); 
-    public static final String TYPE_PHDTHESIS = get("entry.type.phdthesis"); 
-    public static final String TYPE_PROCEEDINGS = get("entry.type.proceedings"); 
-    public static final String TYPE_TECHREPORT = get("entry.type.techreport"); 
-    public static final String TYPE_UNPUBLISHED = get("entry.type.unpublished"); 
+    public static final String TYPE_MANUAL = getProperty("entry.type.manual");
+    public static final String TYPE_MASTERTHESIS = getProperty("entry.type.masterthesis");
+    public static final String TYPE_MISC = getProperty("entry.type.misc");
+    public static final String TYPE_PHDTHESIS = getProperty("entry.type.phdthesis");
+    public static final String TYPE_PROCEEDINGS = getProperty("entry.type.proceedings");
+    public static final String TYPE_TECHREPORT = getProperty("entry.type.techreport");
+    public static final String TYPE_UNPUBLISHED = getProperty("entry.type.unpublished");
+
     
-    private static String get(String key) {
+    public static String getProperty(String key) {
         
         ClassLoader classLoader = BibTeXUtil.class.getClassLoader();
         

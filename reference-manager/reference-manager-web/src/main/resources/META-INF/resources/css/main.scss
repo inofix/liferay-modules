@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2016-12-20 00:12 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2016-12-23 14:57 by Christian Berndt
+    Version:    1.0.2
 */
 
 @import "bourbon";
@@ -82,6 +82,12 @@ fieldset.tags-and-categories {
             right: 15px;
             top: 4px;
         }
+    }
+}
+
+.reference-head {
+    h3 {
+        margin-bottom: 20px; 
     }
 }
 
