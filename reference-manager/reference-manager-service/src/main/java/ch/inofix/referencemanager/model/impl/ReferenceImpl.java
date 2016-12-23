@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-17 20:49
- * @version 1.0.2
+ * @modified 2016-12-23 21:05
+ * @version 1.0.4
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -113,7 +113,11 @@ public class ReferenceImpl extends ReferenceBaseImpl {
             _bibTeXEntry = getBibTeXEntry();
         }
 
-        Map<Key, Value> entryFields = _bibTeXEntry.getFields();
+        Map<Key, Value> entryFields = new HashMap<Key, Value>(); 
+                
+        if (_bibTeXEntry != null) {
+            entryFields = _bibTeXEntry.getFields();
+        }
 
         Set<Key> keys = entryFields.keySet();
 
@@ -128,14 +132,23 @@ public class ReferenceImpl extends ReferenceBaseImpl {
     public String getTitle() {
         return getField("title");
     }
-    
+
     public String getType() {
-        
+
+        String type = "misc";
+
         if (_bibTeXEntry == null) {
             _bibTeXEntry = getBibTeXEntry();
         }
         
-        return _bibTeXEntry.getType().getValue();
+        if (_bibTeXEntry != null) {
+            if (_bibTeXEntry.getType() != null) {
+                type = _bibTeXEntry.getType().getValue();
+            }
+        }
+
+        return type;
+
     }
 
     public String getYear() {
