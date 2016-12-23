@@ -2,15 +2,15 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-23 14:16 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2016-12-23 18:41 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
     String redirect = ParamUtil.getString(request, "redirect");
-    String tabNames = "required-fields,optional-fields,general,abstract,review,bibtex,usage";
+    String tabNames = "required-fields,optional-fields,general,bibtex,usage";
     String tabs1 = ParamUtil.getString(request, "tabs1", "required-fields");
 
     long referenceId = ParamUtil.getLong(request, "referenceId");
@@ -116,18 +116,6 @@
     
     <c:choose>
 
-        <c:when test='<%=tabs1.equals("abstract")%>'>
-
-            <aui:fieldset>
-                <aui:input name="name" type="hidden" value="abstract"/>
-                <aui:input disabled="<%=!hasUpdatePermission%>"
-                    label="abstract" name="value" type="textarea"
-                    value="<%=reference.getField("abstract")%>" />
-
-            </aui:fieldset>
-
-        </c:when>
-
         <c:when test='<%= tabs1.equals("bibtex") %>'>
 
             <aui:fieldset>
@@ -201,11 +189,15 @@
                 for (int i=0; i<optionalFields.length(); i++) {
                     JSONObject field = optionalFields.getJSONObject(i);
                     String name = field.getString("name");
+                    String helpKey = field.getString("help");
+                    if (Validator.isNull(helpKey)) {
+                        helpKey = name + "-help"; 
+                    }                    
 
                     String value = reference.getFields().get(name); 
             %>
                 <aui:input name="name" type="hidden" value="<%= name %>"/>           
-                <aui:input label="<%= name %>" name="value" value="<%= value %>"/>
+                <aui:input helpMessage="<%= helpKey %>" label="<%= name %>" name="value" value="<%= value %>"/>
             <%
                 }
             %>
@@ -225,11 +217,16 @@
                     for (int i=0; i<requiredFields.length(); i++) {
                         JSONObject field = requiredFields.getJSONObject(i);
                         String name = field.getString("name"); 
+                        String helpKey = field.getString("help");
+                        if (Validator.isNull(helpKey)) {
+                            helpKey = name + "-help"; 
+                        }
     
                         String value = reference.getFields().get(name); 
+                        
             %>
                 <aui:input name="name" type="hidden" value="<%= name %>"/>           
-                <aui:input label="<%= name %>" name="value" value="<%= value %>"/>
+                <aui:input helpMessage="<%= helpKey %>" label="<%= name %>" name="value" value="<%= value %>"/>
             <%
                     }
                 } else {
@@ -241,23 +238,6 @@
             %>
             </aui:fieldset>
                 
-        </c:when>
-        
-        <c:when test='<%= tabs1.equals("review") %>'>
-
-            <aui:fieldset>
-                <aui:input name="name" type="hidden" value="review"/>          
-                <aui:input disabled="<%=!hasUpdatePermission%>"
-                    label="review" name="value" type="textarea" />
-
-            </aui:fieldset>
-        </c:when>
-        
-        <c:when test='<%= tabs1.equals("type") %>'>
-            <div>
-                <liferay-ui:message key="<%= "entry-type-" + type %>" />
-                <liferay-ui:message key="<%= "entry-type-" + type + "-help" %>" />           
-            </div>   
         </c:when>
         
         <c:when test='<%= tabs1.equals("usage") %>'>
