@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-23 20:51
- * @version 1.0.3
+ * @modified 2016-12-23 21:05
+ * @version 1.0.4
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -113,7 +113,11 @@ public class ReferenceImpl extends ReferenceBaseImpl {
             _bibTeXEntry = getBibTeXEntry();
         }
 
-        Map<Key, Value> entryFields = _bibTeXEntry.getFields();
+        Map<Key, Value> entryFields = new HashMap<Key, Value>(); 
+                
+        if (_bibTeXEntry != null) {
+            entryFields = _bibTeXEntry.getFields();
+        }
 
         Set<Key> keys = entryFields.keySet();
 
