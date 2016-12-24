@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-23 22:32 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2016-12-24 15:12 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -17,7 +17,7 @@
     long referenceId = ParamUtil.getLong(request, "referenceId");
 
     Reference reference = (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
-    String type = ParamUtil.getString(request, "type");
+    String type = ParamUtil.getString(request, "type", "misc");
     
     if (Validator.isNull(type)) {
         type = reference.getType().toLowerCase();
@@ -47,10 +47,8 @@
         value="<%=String.valueOf(bibliographyId)%>" />
     <portlet:param name="mvcPath" value="/edit_reference.jsp" />
     <portlet:param name="tabs1" value="<%= tabs1 %>" />
+    <portlet:param name="type" value="<%= type %>" />
 </portlet:actionURL>
-
-bibliographyId = <%= bibliographyId %><br/>
-referenceId = <%= referenceId %>
    
 <aui:form action="<%= updateReferenceURL %>" method="post" name="fm">
 
@@ -88,7 +86,7 @@ referenceId = <%= referenceId %>
             <div class="reference-head">
                 <h3><%=reference.getCitation()%></h3>
                 
-                <aui:select name="type" label=""
+                <aui:select name="type_select" label=""
                     onChange="javascript: window.location.href = this.value; ">
                     <%
                         PortletURL selectURL = liferayPortletResponse.createRenderURL();
@@ -125,7 +123,7 @@ referenceId = <%= referenceId %>
     <liferay-ui:asset-tags-error />
     
     <c:choose>
-
+    
         <c:when test='<%= tabs1.equals("bibtex") %>'>
 
             <aui:fieldset>
@@ -215,7 +213,20 @@ referenceId = <%= referenceId %>
                             
         </c:when>
         
-        <c:when test='<%= tabs1.equals("required-fields") %>'>
+        <c:when test='<%= tabs1.equals("usage") %>'>
+            <p class="help-message"><strong><liferay-ui:message key="your-bibliographies"/></strong></p>
+            <p>
+                <a href="#" class="btn btn-default">Ancient Astronomy</a>
+                <a href="#" class="btn btn-default">Collaborative Action</a>            
+            </p>
+            <p><strong><liferay-ui:message key="other-bibliographies"/></strong><p>
+            <div>
+                <a href="#" class="btn btn-default">Collaborative Action</a>            
+                <a href="#" class="btn btn-default">Ancient Astronomy</a>
+            </div>
+        </c:when>  
+        
+        <c:otherwise>
     
             <aui:fieldset cssClass="required-fields">
             
@@ -248,20 +259,7 @@ referenceId = <%= referenceId %>
             %>
             </aui:fieldset>
                 
-        </c:when>
-        
-        <c:when test='<%= tabs1.equals("usage") %>'>
-            <p class="help-message"><strong><liferay-ui:message key="your-bibliographies"/></strong></p>
-            <p>
-                <a href="#" class="btn btn-default">Ancient Astronomy</a>
-                <a href="#" class="btn btn-default">Collaborative Action</a>            
-            </p>
-            <p><strong><liferay-ui:message key="other-bibliographies"/></strong><p>
-            <div>
-                <a href="#" class="btn btn-default">Collaborative Action</a>            
-                <a href="#" class="btn btn-default">Ancient Astronomy</a>
-            </div>
-        </c:when>
+        </c:otherwise>
             
     </c:choose>
 
@@ -269,5 +267,5 @@ referenceId = <%= referenceId %>
         <aui:button type="submit" disabled="<%= !hasUpdatePermission %>" />    
         <aui:button href="<%=redirect%>" type="cancel" />
     </aui:button-row>
-    
+
 </aui:form>

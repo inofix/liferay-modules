@@ -82,8 +82,6 @@ public class BibliographyManagerPortlet extends MVCPortlet {
      */
     public void importBibliography(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("importBibliography()");
-
         HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
@@ -119,14 +117,12 @@ public class BibliographyManagerPortlet extends MVCPortlet {
     @Override
     public void render(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
-        
-        _log.info("render");
 
         try {
-            
+
             getBibliography(renderRequest);
             getReference(renderRequest);
-            
+
         } catch (Exception e) {
             if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
                 SessionErrors.add(renderRequest, e.getClass());
@@ -182,7 +178,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         actionResponse.setRenderParameter("tabs1", tabs1);
 
     }
-    
+
     /**
      * 
      * @param actionRequest
@@ -192,7 +188,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
      */
     public void updateReference(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
         
-        _log.info("updateReference");
+        _log.info("updateReference()"); 
 
         long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
         long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
@@ -200,30 +196,30 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         ServiceContext serviceContext = ServiceContextFactory.getInstance(Bibliography.class.getName(), actionRequest);
 
         long userId = serviceContext.getUserId();
-        
-        String bibTeX = ParamUtil.getString(actionRequest, "bibTeX"); 
+
+        String bibTeX = ParamUtil.getString(actionRequest, "bibTeX");
 
         Reference reference = null;
 
         if (referenceId <= 0) {
-            reference = _referenceService.addReference(userId, bibTeX, serviceContext); 
+            reference = _referenceService.addReference(userId, bibTeX, serviceContext);
         } else {
             reference = _referenceService.updateReference(referenceId, userId, bibTeX, serviceContext);
         }
-        
-        Bibliography bibliography = _bibliographyService.getBibliography(bibliographyId); 
+
+        Bibliography bibliography = _bibliographyService.getBibliography(bibliographyId);
 
         String redirect = getEditBibliographyURL(actionRequest, actionResponse, bibliography);
         String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-        
-        _log.info("tabs1 = " + tabs1);
+        String type = ParamUtil.getString(actionRequest, "type");
 
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
         actionRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
         actionRequest.setAttribute(ReferenceWebKeys.REFERENCE, reference);
         actionResponse.setRenderParameter("mvcPath", mvcPath);
         actionResponse.setRenderParameter("tabs1", tabs1);
+        actionResponse.setRenderParameter("type", type);
 
     }
 
@@ -284,12 +280,8 @@ public class BibliographyManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     protected void getBibliography(PortletRequest portletRequest) throws Exception {
-        
-        _log.info("getBibliography");
 
         long bibliographyId = ParamUtil.getLong(portletRequest, "bibliographyId");
-        
-        _log.info("bibliographyId = " + bibliographyId);
 
         if (bibliographyId <= 0) {
             return;
@@ -299,19 +291,15 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
         portletRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
     }
-    
+
     /**
      * 
      * @param portletRequest
      * @throws Exception
      */
     protected void getReference(PortletRequest portletRequest) throws Exception {
-        
-        _log.info("getReference");
 
         long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
-        
-        _log.info("referenceId = " + referenceId);
 
         if (referenceId <= 0) {
             return;
