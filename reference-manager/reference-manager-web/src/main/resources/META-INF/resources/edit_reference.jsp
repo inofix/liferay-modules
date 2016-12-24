@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-24 15:12 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2016-12-24 16:17 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -11,13 +11,15 @@
 <%
     long bibliographyId = ParamUtil.getLong(request, "bibliographyId");
     String redirect = ParamUtil.getString(request, "redirect");
-    String tabNames = "required-fields,optional-fields,general,bibtex,usage";
-    String tabs1 = ParamUtil.getString(request, "tabs1", "required-fields");
+    String tabNames = "bibtex,general,usage";
+//     String tabNames = "required-fields,optional-fields,general,bibtex,usage";
+    String tabs1 = ParamUtil.getString(request, "tabs1", "bibtex");
+//     String tabs1 = ParamUtil.getString(request, "tabs1", "required-fields");
 
     long referenceId = ParamUtil.getLong(request, "referenceId");
 
     Reference reference = (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
-    String type = ParamUtil.getString(request, "type", "misc");
+    String type = ParamUtil.getString(request, "type");
     
     if (Validator.isNull(type)) {
         type = reference.getType().toLowerCase();
@@ -47,7 +49,6 @@
         value="<%=String.valueOf(bibliographyId)%>" />
     <portlet:param name="mvcPath" value="/edit_reference.jsp" />
     <portlet:param name="tabs1" value="<%= tabs1 %>" />
-    <portlet:param name="type" value="<%= type %>" />
 </portlet:actionURL>
    
 <aui:form action="<%= updateReferenceURL %>" method="post" name="fm">
@@ -84,7 +85,10 @@
         </c:when>
         <c:otherwise>
             <div class="reference-head">
-                <h3><%=reference.getCitation()%></h3>
+            
+                <c:if test="<%= Validator.isNotNull(reference.getCitation()) %>">
+                    <h3><%=reference.getCitation()%></h3>
+                </c:if>
                 
                 <aui:select name="type_select" label=""
                     onChange="javascript: window.location.href = this.value; ">
@@ -111,7 +115,7 @@
             </div>
         </c:otherwise>
     </c:choose>
-    
+        
     <liferay-ui:tabs names="<%= tabNames %>" param="tabs1"
         url="<%=portletURL.toString()%>" />
 
@@ -124,14 +128,37 @@
     
     <c:choose>
     
-        <c:when test='<%= tabs1.equals("bibtex") %>'>
-
-            <aui:fieldset>
-                <aui:input bean="<%=reference%>"
-                    disabled="<%=!hasUpdatePermission%>" label="bibtex"
-                    model="<%=Reference.class%>" name="bibTeX"
-                    type="textarea" />
-
+        <c:when test='<%= tabs1.equals("required-fields") %>'>
+             
+            <aui:fieldset cssClass="required-fields">
+            
+            <%
+                JSONArray requiredFields = entryFields.getJSONArray("required");  
+            
+                if (requiredFields != null && requiredFields.length() > 0) {
+            
+                    for (int i=0; i<requiredFields.length(); i++) {
+                        JSONObject field = requiredFields.getJSONObject(i);
+                        String name = field.getString("name"); 
+                        String helpKey = field.getString("help");
+                        if (Validator.isNull(helpKey)) {
+                            helpKey = name + "-help"; 
+                        }
+    
+                        String value = reference.getFields().get(name); 
+                        
+            %>
+                <aui:input name="name" type="hidden" value="<%= name %>"/>           
+                <aui:input helpMessage="<%= helpKey %>" label="<%= name %>" name="value" value="<%= value %>"/>
+            <%
+                    }
+                } else {
+                    
+            %>
+                <div class="alert alert-info"><liferay-ui:message key="this-entry-type-has-no-required-fields"/></div>
+            <%
+                }
+            %>
             </aui:fieldset>
 
         </c:when>
@@ -227,38 +254,15 @@
         </c:when>  
         
         <c:otherwise>
-    
-            <aui:fieldset cssClass="required-fields">
-            
-            <%
-                JSONArray requiredFields = entryFields.getJSONArray("required");  
-            
-                if (requiredFields != null && requiredFields.length() > 0) {
-            
-                    for (int i=0; i<requiredFields.length(); i++) {
-                        JSONObject field = requiredFields.getJSONObject(i);
-                        String name = field.getString("name"); 
-                        String helpKey = field.getString("help");
-                        if (Validator.isNull(helpKey)) {
-                            helpKey = name + "-help"; 
-                        }
-    
-                        String value = reference.getFields().get(name); 
-                        
-            %>
-                <aui:input name="name" type="hidden" value="<%= name %>"/>           
-                <aui:input helpMessage="<%= helpKey %>" label="<%= name %>" name="value" value="<%= value %>"/>
-            <%
-                    }
-                } else {
-                    
-            %>
-                <div class="alert alert-info"><liferay-ui:message key="this-entry-type-has-no-required-fields"/></div>
-            <%
-                }
-            %>
-            </aui:fieldset>
-                
+        
+            <aui:fieldset>
+                <aui:input bean="<%=reference%>"
+                    disabled="<%=!hasUpdatePermission%>" label="bibtex"
+                    model="<%=Reference.class%>" name="bibTeX"
+                    type="textarea" />
+
+            </aui:fieldset>  
+                         
         </c:otherwise>
             
     </c:choose>

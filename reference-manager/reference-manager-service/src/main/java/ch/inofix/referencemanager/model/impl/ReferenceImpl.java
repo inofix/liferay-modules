@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
@@ -52,8 +53,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-23 21:05
- * @version 1.0.4
+ * @modified 2016-12-24 16:16
+ * @version 1.0.6
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -69,7 +70,23 @@ public class ReferenceImpl extends ReferenceBaseImpl {
     }
 
     public String getAuthor() {
-        return getField("author");
+        
+        String[] authors = getField("author").split("and"); 
+        
+        String author = ""; 
+        
+        if (authors.length == 1) {
+            author = authors[0];
+        } 
+        if (authors.length == 2) {
+            author = getField("author"); 
+        }        
+        if (authors.length > 2) {
+            author = authors[0] + " et al.";
+        }
+        
+        return author; 
+
     }
 
     public String[] getBibliographyUuids() throws PortalException {
@@ -96,12 +113,36 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         StringBuilder sb = new StringBuilder();
 
         sb.append(getAuthor());
-        sb.append(StringPool.COMMA_AND_SPACE);
+        if (Validator.isNotNull(sb.toString())) {
+            sb.append(StringPool.COMMA_AND_SPACE);
+        }
         sb.append(getTitle());
-        sb.append(StringPool.COMMA_AND_SPACE);
+        if (Validator.isNotNull(sb.toString())) {
+            sb.append(StringPool.COMMA_AND_SPACE);
+        }
         sb.append(getYear());
 
         return sb.toString();
+
+    }
+    
+    public String getEditor() {
+        
+        String[] editors = getField("editor").split("and"); 
+        
+        String editor = ""; 
+        
+        if (editors.length == 1) {
+            editor = editors[0];
+        }
+        if (editors.length == 2) {
+            editor = getField("editor"); 
+        }       
+        if (editors.length > 2) {
+            editor = editors[0] + " et al.";
+        }
+        
+        return editor; 
 
     }
 
@@ -113,8 +154,8 @@ public class ReferenceImpl extends ReferenceBaseImpl {
             _bibTeXEntry = getBibTeXEntry();
         }
 
-        Map<Key, Value> entryFields = new HashMap<Key, Value>(); 
-                
+        Map<Key, Value> entryFields = new HashMap<Key, Value>();
+
         if (_bibTeXEntry != null) {
             entryFields = _bibTeXEntry.getFields();
         }
@@ -140,7 +181,7 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         if (_bibTeXEntry == null) {
             _bibTeXEntry = getBibTeXEntry();
         }
-        
+
         if (_bibTeXEntry != null) {
             if (_bibTeXEntry.getType() != null) {
                 type = _bibTeXEntry.getType().getValue();
