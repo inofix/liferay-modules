@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2016-12-23 19:48 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-12-24 16:25 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -55,24 +55,24 @@
 
     <div class="pull-left">
         <aui:form name="fm1" cssClass="search-form">
-            <aui:input inlineField="true" label="" name="keywords" placeholder="search"/>
-            <aui:button type="submit" value="search"/>
+            <aui:input inlineField="true" label="" name="keywords"
+                placeholder="search" />
+            <aui:button type="submit" value="search" />
         </aui:form>
     </div>
 
     <div class="pull-right">
-        <portlet:actionURL name="updateReference"
-            var="updateReferenceURL">
-            <portlet:param name="bibliographyId" value="<%=bibliographyId%>" />
+        <portlet:renderURL var="editReferenceURL">
+            <portlet:param name="bibliographyId"
+                value="<%=bibliographyId%>" />
             <portlet:param name="mvcPath" value="/edit_reference.jsp" />
             <portlet:param name="redirect" value="<%=currentURL%>" />
-        </portlet:actionURL>
+        </portlet:renderURL>
 
         <aui:button cssClass="btn-success"
             disabled="<%=!hasUpdatePermission%>"
-            href="<%=updateReferenceURL.toString()%>"
-            value="add-reference"
-            />
+            href="<%=editReferenceURL.toString()%>"
+            value="add-reference" />
     </div>
 </div>
 
