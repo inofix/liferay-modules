@@ -53,8 +53,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-24 15:16
- * @version 1.0.5
+ * @modified 2016-12-24 16:16
+ * @version 1.0.6
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -70,7 +70,23 @@ public class ReferenceImpl extends ReferenceBaseImpl {
     }
 
     public String getAuthor() {
-        return getField("author");
+        
+        String[] authors = getField("author").split("and"); 
+        
+        String author = ""; 
+        
+        if (authors.length == 1) {
+            author = authors[0];
+        } 
+        if (authors.length == 2) {
+            author = getField("author"); 
+        }        
+        if (authors.length > 2) {
+            author = authors[0] + " et al.";
+        }
+        
+        return author; 
+
     }
 
     public String[] getBibliographyUuids() throws PortalException {
@@ -107,6 +123,26 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         sb.append(getYear());
 
         return sb.toString();
+
+    }
+    
+    public String getEditor() {
+        
+        String[] editors = getField("editor").split("and"); 
+        
+        String editor = ""; 
+        
+        if (editors.length == 1) {
+            editor = editors[0];
+        }
+        if (editors.length == 2) {
+            editor = getField("editor"); 
+        }       
+        if (editors.length > 2) {
+            editor = editors[0] + " et al.";
+        }
+        
+        return editor; 
 
     }
 
