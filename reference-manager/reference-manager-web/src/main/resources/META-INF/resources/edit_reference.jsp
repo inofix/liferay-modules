@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-24 16:17 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2016-12-24 17:26 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -20,28 +20,41 @@
 
     Reference reference = (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
     String type = ParamUtil.getString(request, "type");
-    
-    if (Validator.isNull(type)) {
-        type = reference.getType().toLowerCase();
-    } 
+
+    boolean hasUpdatePermission = false;
+
+    if (reference != null) {
+
+        hasUpdatePermission = ReferencePermission.contains(permissionChecker, reference,
+                ReferenceActionKeys.UPDATE);
+
+        AssetEntryServiceUtil.incrementViewCounter(Reference.class.getName(), reference.getReferenceId());
+
+        if (Validator.isNull(type)) {
+            type = reference.getType().toLowerCase();
+        }
+        
+    } else {
+
+        // new reference
+        
+        hasUpdatePermission = true;
+        type = "article";
+        
+    }
 
     JSONObject entryFields = null;
-    
+
     for (String entryType : BibTeXUtil.ENTRY_TYPES) {
         if (entryType.equals(type)) {
             entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + entryType));
-        }        
+        }
     }
-
-    boolean hasUpdatePermission = ReferencePermission.contains(permissionChecker, reference,
-            ReferenceActionKeys.UPDATE);
 
     portletURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
     portletURL.setParameter("mvcPath", "/edit_reference.jsp");
     portletURL.setParameter("referenceId", String.valueOf(referenceId));
     portletURL.setParameter("type", type);
-
-    AssetEntryServiceUtil.incrementViewCounter(Reference.class.getName(), reference.getReferenceId());
 %>
 
 <portlet:actionURL name="updateReference" var="updateReferenceURL">
@@ -57,7 +70,7 @@
         <c:when test="<%=Validator.isNull(reference)%>">
             <div class="reference-head">
                 <h2>
-                    <liferay-ui:message key="create-a-new-reference" />
+                    <liferay-ui:message key="add-reference" />
                 </h2>
                 <c:choose>
                     <c:when test="<%=themeDisplay.isSignedIn()%>">
