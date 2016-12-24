@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-24 15:12 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2016-12-24 15:22 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -84,7 +84,10 @@
         </c:when>
         <c:otherwise>
             <div class="reference-head">
-                <h3><%=reference.getCitation()%></h3>
+            
+                <c:if test="<%= Validator.isNotNull(reference.getCitation()) %>">
+                    <h3><%=reference.getCitation()%></h3>
+                </c:if>
                 
                 <aui:select name="type_select" label=""
                     onChange="javascript: window.location.href = this.value; ">
