@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-25 14:57 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2016-12-25 19:09 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -11,11 +11,7 @@
 <%
     long bibliographyId = ParamUtil.getLong(request, "bibliographyId");
     String redirect = ParamUtil.getString(request, "redirect");
-    String tabNames = "bibtex,general,usage";
-//     String tabNames = "required-fields,optional-fields,general,bibtex,usage";
-    String tabs1 = ParamUtil.getString(request, "tabs1", "bibtex");
-//     String tabs1 = ParamUtil.getString(request, "tabs1", "required-fields");
-
+    
     long referenceId = ParamUtil.getLong(request, "referenceId");
 
     Reference reference = (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
@@ -50,6 +46,9 @@
             entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + entryType));
         }
     }
+    
+    request.setAttribute("reference", reference); 
+    request.setAttribute("reference.entryFields", entryFields); 
 
     portletURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
     portletURL.setParameter("mvcPath", "/edit_reference.jsp");
@@ -61,7 +60,6 @@
     <portlet:param name="bibliographyId"
         value="<%=String.valueOf(bibliographyId)%>" />
     <portlet:param name="mvcPath" value="/edit_reference.jsp" />
-    <portlet:param name="tabs1" value="<%= tabs1 %>" />
 </portlet:actionURL>
 
 
@@ -76,7 +74,6 @@
                     selectURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
                     selectURL.setParameter("mvcPath", "/edit_reference.jsp");
                     selectURL.setParameter("referenceId", String.valueOf(referenceId));
-                    selectURL.setParameter("tabs1", tabs1);
                 
                     for (String entryType : BibTeXUtil.ENTRY_TYPES) {
                         selectURL.setParameter("type", entryType);
@@ -144,161 +141,14 @@
             </c:otherwise>
         </c:choose>
     </div>
-        
-    <liferay-ui:tabs names="<%= tabNames %>" param="tabs1"
-        url="<%=portletURL.toString()%>" />
 
-    <aui:input name="redirect" type="hidden" value="<%=redirect%>" />
-    <aui:input name="referenceId" type="hidden" value="<%=referenceId%>" />
-
-    <liferay-ui:asset-categories-error />
-
-    <liferay-ui:asset-tags-error />
-    
-    <c:choose>
-    
-        <c:when test='<%= tabs1.equals("required-fields") %>'>
-             
-            <aui:fieldset cssClass="required-fields">
-            
-            <%
-                JSONArray requiredFields = entryFields.getJSONArray("required");  
-            
-                if (requiredFields != null && requiredFields.length() > 0) {
-            
-                    for (int i=0; i<requiredFields.length(); i++) {
-                        JSONObject field = requiredFields.getJSONObject(i);
-                        String name = field.getString("name"); 
-                        String helpKey = field.getString("help");
-                        if (Validator.isNull(helpKey)) {
-                            helpKey = name + "-help"; 
-                        }
-    
-                        String value = reference.getFields().get(name); 
-                        
-            %>
-                <aui:input name="name" type="hidden" value="<%= name %>"/>           
-                <aui:input helpMessage="<%= helpKey %>" label="<%= name %>" name="value" value="<%= value %>"/>
-            <%
-                    }
-                } else {
-                    
-            %>
-                <div class="alert alert-info"><liferay-ui:message key="this-entry-type-has-no-required-fields"/></div>
-            <%
-                }
-            %>
-            </aui:fieldset>
-
-        </c:when>
-        
-        <c:when test='<%= tabs1.equals("general") %>'>
-                
-            <aui:fieldset cssClass="tags-and-categories">
-        
-                <c:choose>
-                    <c:when test="<%=hasUpdatePermission%>">
-                        <aui:input bean="<%=reference%>"
-                            model="<%=Reference.class%>"
-                            name="categories" type="assetCategories" />
-                    </c:when>
-                    <c:otherwise>
-                        <aui:field-wrapper name="categories" inlineLabel="false">
-                            <c:if test="<%= reference != null %>">                          
-                                <liferay-ui:asset-categories-summary
-                                    classPK="<%=reference.getReferenceId()%>"
-                                    className="<%=Reference.class.getName()%>" />
-                            </c:if>
-                        </aui:field-wrapper>
-                    </c:otherwise>
-                </c:choose>
-        
-                <p class="help-message">
-                    <liferay-ui:message
-                        key="reference-categories-help" />
-                </p>
-                
-                <c:choose>
-                    <c:when test="<%=hasUpdatePermission%>">
-                        <aui:input bean="<%=reference%>"
-                            model="<%=Reference.class%>" name="tags"
-                            type="assetTags" />
-                    </c:when>
-                    <c:otherwise>
-                        <aui:field-wrapper name="tags">
-                            <c:if test="<%= reference != null %>">
-                                <liferay-ui:asset-tags-summary
-                                    classPK="<%=reference.getReferenceId()%>"
-                                    className="<%=Reference.class.getName()%>" />
-                            </c:if>
-                        </aui:field-wrapper>
-                    </c:otherwise>
-                </c:choose>
-                            
-                <p class="help-message">
-                    <liferay-ui:message
-                        key="reference-tags-help" />
-                </p>
-                    
-            </aui:fieldset>
-                
-        </c:when>
-        
-        <c:when test='<%= tabs1.equals("optional-fields") %>'>
-        
-            <aui:fieldset cssClass="optional-fields">
-            <%
-                JSONArray optionalFields = entryFields.getJSONArray("optional");  
-            
-                for (int i=0; i<optionalFields.length(); i++) {
-                    JSONObject field = optionalFields.getJSONObject(i);
-                    String name = field.getString("name");
-                    String helpKey = field.getString("help");
-                    if (Validator.isNull(helpKey)) {
-                        helpKey = name + "-help"; 
-                    }                    
-
-                    String value = reference.getFields().get(name); 
-            %>
-                <aui:input name="name" type="hidden" value="<%= name %>"/>           
-                <aui:input helpMessage="<%= helpKey %>" label="<%= name %>" name="value" value="<%= value %>"/>
-            <%
-                }
-            %>
-            </aui:fieldset>
-                            
-        </c:when>
-        
-        <c:when test='<%= tabs1.equals("usage") %>'>
-            <p class="help-message"><strong><liferay-ui:message key="your-bibliographies"/></strong></p>
-            <p>
-                <a href="#" class="btn btn-default">Ancient Astronomy</a>
-                <a href="#" class="btn btn-default">Collaborative Action</a>            
-            </p>
-            <p><strong><liferay-ui:message key="other-bibliographies"/></strong><p>
-            <div>
-                <a href="#" class="btn btn-default">Collaborative Action</a>            
-                <a href="#" class="btn btn-default">Ancient Astronomy</a>
-            </div>
-        </c:when>  
-        
-        <c:otherwise>
-        
-            <aui:fieldset>
-                <aui:input bean="<%=reference%>" helpMessage="bibtex-help"
-                    disabled="<%=!hasUpdatePermission%>" label="bibtex"
-                    model="<%=Reference.class%>" name="bibTeX"
-                    type="textarea" />
-
-            </aui:fieldset>  
-                         
-        </c:otherwise>
-            
-    </c:choose>
-
-    <aui:button-row>
-        <aui:button type="submit" disabled="<%= !hasUpdatePermission %>" />    
-        <aui:button href="<%=redirect%>" type="cancel" />
-    </aui:button-row>
+    <%-- custom displayStyle tabs is only available --%>
+    <%-- if the custom-form-navigator is deployed.  --%>
+    <liferay-ui:form-navigator
+        backURL="<%= redirect %>"
+        formModelBean="<%= reference %>"
+        id="reference.form"
+        displayStyle="tabs"        
+    />
 
 </aui:form>
