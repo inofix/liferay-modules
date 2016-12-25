@@ -1,0 +1,4 @@
+Bundle-SymbolicName: custom.form.navigator
+Bundle-Description: Overrides core/kernel JSPs by providing new JSPs in the META-INF/resources folder.
+Bundle-Version: 1.0.0
+-sources: true
