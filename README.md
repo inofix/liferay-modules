@@ -13,10 +13,7 @@ please use the upcoming releases of the modules from the liferay marketplace.
 ## Compile from source
 
 1. clone the git repo
-1. adjust the the parent-pom configuration in liferay-modules/pom.xml to your needs
-1. cd to the module directory
-1. (if necessary) run the service-builder goal (mvn liferay:build-service install)
-1. install or auto-deploy the module to your liferay-installation (mvn package liferay:deploy)
+1. TODO: add gradle build instructions
 
 ## Module Description
 
@@ -56,6 +53,10 @@ The CDav Manager allows you to connect your Liferay Calendar to and synchronize 
 #### Third Party Libraries
 
 * <a href="https://github.com/Kerio/cdav-connector" target="_blank">cdav-connector</a>
+
+### Custom Form Navigator
+
+Additional displayStyle "tabs" for Liferay's form-navigator tag.
 
 ### Display Page Hook
 
