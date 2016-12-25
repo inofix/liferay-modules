@@ -17,6 +17,8 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 
+<%@page import="ch.inofix.activities.web.internal.util.ActivityCreateDateComparator"%>
+
 <%@page import="com.liferay.social.kernel.model.SocialActivity"%>
 <%@page import="com.liferay.social.kernel.service.SocialActivityLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
