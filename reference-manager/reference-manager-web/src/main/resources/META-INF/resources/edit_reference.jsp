@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-24 17:26 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2016-12-25 14:57 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -63,12 +63,46 @@
     <portlet:param name="mvcPath" value="/edit_reference.jsp" />
     <portlet:param name="tabs1" value="<%= tabs1 %>" />
 </portlet:actionURL>
-   
+
+
+<liferay-util:buffer var="typeSelect">
+    <div class="clearfix">
+        <div class="pull-left">
+            <aui:select name="type_select" label=""
+                onChange="javascript: window.location.href = this.value; ">
+                <%
+                    PortletURL selectURL = liferayPortletResponse.createRenderURL();
+            
+                    selectURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
+                    selectURL.setParameter("mvcPath", "/edit_reference.jsp");
+                    selectURL.setParameter("referenceId", String.valueOf(referenceId));
+                    selectURL.setParameter("tabs1", tabs1);
+                
+                    for (String entryType : BibTeXUtil.ENTRY_TYPES) {
+                        selectURL.setParameter("type", entryType);
+                        boolean selected = entryType.equals(type);
+                %>
+                <option value="<%=selectURL.toString()%>"
+                    <%=(selected) ? "selected" : ""%>>
+                    <liferay-ui:message key="<%= "entry-type-" + entryType %>"/>
+                </option>
+                <%
+                    }
+                %>
+            </aui:select>
+        </div>
+        <div class="pull-right">
+            <a class="btn btn-default" href="<%= redirect %>"><liferay-ui:message key="back"/></a>
+        </div>
+    </div>
+
+</liferay-util:buffer>
+
 <aui:form action="<%= updateReferenceURL %>" method="post" name="fm">
 
-    <c:choose>
-        <c:when test="<%=Validator.isNull(reference)%>">
-            <div class="reference-head">
+    <div class="reference-head">
+        <c:choose>
+            <c:when test="<%=Validator.isNull(reference)%>">
                 <h2>
                     <liferay-ui:message key="add-reference" />
                 </h2>
@@ -78,6 +112,9 @@
                             <liferay-ui:message
                                 key="you-can-import-your-references-from-a-file-or-pick-references-already-available-on-bibshare" />
                         </p>
+                        
+                        <%= typeSelect %>
+                        
                     </c:when>
                     <c:otherwise>
                         <div class="alert alert-info">
@@ -94,45 +131,24 @@
                         </div>
                     </c:otherwise>
                 </c:choose>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="reference-head">
+            </c:when>
+            
+            <c:otherwise>
             
                 <c:if test="<%= Validator.isNotNull(reference.getCitation()) %>">
                     <h3><%=reference.getCitation()%></h3>
                 </c:if>
                 
-                <aui:select name="type_select" label=""
-                    onChange="javascript: window.location.href = this.value; ">
-                    <%
-                        PortletURL selectURL = liferayPortletResponse.createRenderURL();
-
-                        selectURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
-                        selectURL.setParameter("mvcPath", "/edit_reference.jsp");
-                        selectURL.setParameter("referenceId", String.valueOf(referenceId));
-                        selectURL.setParameter("tabs1", tabs1);
-                    
-                        for (String entryType : BibTeXUtil.ENTRY_TYPES) {
-                            selectURL.setParameter("type", entryType);
-                            boolean selected = entryType.equals(type);
-                    %>
-                    <option value="<%=selectURL.toString()%>"
-                        <%=(selected) ? "selected" : ""%>>
-                        <liferay-ui:message key="<%= "entry-type-" + entryType %>"/>
-                    </option>
-                    <%
-                        }
-                    %>
-                </aui:select>
-            </div>
-        </c:otherwise>
-    </c:choose>
+                <%= typeSelect %>
+                
+            </c:otherwise>
+        </c:choose>
+    </div>
         
     <liferay-ui:tabs names="<%= tabNames %>" param="tabs1"
         url="<%=portletURL.toString()%>" />
 
-    <aui:input name="redirect" type="hidden" value="<%=currentURL%>" />
+    <aui:input name="redirect" type="hidden" value="<%=redirect%>" />
     <aui:input name="referenceId" type="hidden" value="<%=referenceId%>" />
 
     <liferay-ui:asset-categories-error />
@@ -269,7 +285,7 @@
         <c:otherwise>
         
             <aui:fieldset>
-                <aui:input bean="<%=reference%>"
+                <aui:input bean="<%=reference%>" helpMessage="bibtex-help"
                     disabled="<%=!hasUpdatePermission%>" label="bibtex"
                     model="<%=Reference.class%>" name="bibTeX"
                     type="textarea" />
