@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-25 19:09 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2016-12-25 20:29 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -49,6 +49,7 @@
     
     request.setAttribute("reference", reference); 
     request.setAttribute("reference.entryFields", entryFields); 
+    request.setAttribute("reference.hasUpdatePermission", hasUpdatePermission); 
 
     portletURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
     portletURL.setParameter("mvcPath", "/edit_reference.jsp");
@@ -66,7 +67,7 @@
 <liferay-util:buffer var="typeSelect">
     <div class="clearfix">
         <div class="pull-left">
-            <aui:select name="type_select" label=""
+            <aui:select disabled="<%= !hasUpdatePermission %>" name="type_select" label=""
                 onChange="javascript: window.location.href = this.value; ">
                 <%
                     PortletURL selectURL = liferayPortletResponse.createRenderURL();
@@ -146,6 +147,7 @@
     <%-- if the custom-form-navigator is deployed.  --%>
     <liferay-ui:form-navigator
         backURL="<%= redirect %>"
+        showButtons="<%= hasUpdatePermission %>"
         formModelBean="<%= reference %>"
         id="reference.form"
         displayStyle="tabs"        
