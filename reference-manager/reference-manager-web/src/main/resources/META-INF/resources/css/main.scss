@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2016-12-24 22:33 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-12-25 19:42 by Christian Berndt
+    Version:    1.0.4
 */
 
 @import "bourbon";
@@ -81,6 +81,10 @@ fieldset.tags-and-categories {
     .textboxlistentry-holder {
         min-height: 35px;
     }
+}
+
+.form-section {
+    margin-top: 15px;
 }
 
 .panel {
