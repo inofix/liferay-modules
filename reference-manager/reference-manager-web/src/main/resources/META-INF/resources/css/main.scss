@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2016-12-25 19:42 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-12-25 23:34 by Christian Berndt
+    Version:    1.0.5
 */
 
 @import "bourbon";
@@ -11,8 +11,10 @@
 
 .bibliography-manager-portlet {
     
-    margin-bottom: 70px;
-
+    .alert {
+        margin-top: 20px;
+    }
+    
     .bibliography-head {
         border-bottom: 1px solid #ddd;
         margin-top: -15px;
@@ -104,8 +106,6 @@ fieldset.tags-and-categories {
 }
 
 .reference-manager-portlet {
-
-    margin-bottom: 70px;
     
     fieldset {
         border-bottom: 1px solid #ddd;
