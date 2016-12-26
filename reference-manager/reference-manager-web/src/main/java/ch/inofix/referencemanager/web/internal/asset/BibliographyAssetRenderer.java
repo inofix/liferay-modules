@@ -5,6 +5,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
+import javax.portlet.WindowState;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,8 +30,8 @@ import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-12-01 12:50
- * @modified 2016-12-15 17:09
- * @version 1.0.4
+ * @modified 2016-12-26 01:06
+ * @version 1.0.5
  *
  */
 public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography> {
@@ -108,6 +109,30 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
     }
 
     @Override
+    public String getURLView(LiferayPortletResponse liferayPortletResponse, WindowState windowState) {
+
+        try {
+
+            long portletPlid = PortalUtil.getPlidFromPortletId(_bibliography.getGroupId(), false,
+                    PortletKeys.BIBLIOGRAPHY_MANAGER);
+
+            PortletURL portletURL = liferayPortletResponse.createLiferayPortletURL(portletPlid,
+                    PortletKeys.BIBLIOGRAPHY_MANAGER, PortletRequest.RENDER_PHASE);
+
+            portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
+
+            portletURL.setParameter("bibliographyId", String.valueOf(_bibliography.getBibliographyId()));
+
+            return portletURL.toString();
+
+        } catch (Exception e) {
+            _log.error(e.getMessage());
+        }
+
+        return null;
+    }
+
+    @Override
     public String getURLViewInContext(LiferayPortletRequest liferayPortletRequest,
             LiferayPortletResponse liferayPortletResponse, String noSuchEntryRedirect) {
 
@@ -116,7 +141,7 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
             PortletURL portletURL = locateBibliographyManager(liferayPortletRequest);
 
             return portletURL.toString();
-            
+
         } catch (Exception e) {
             _log.error(e.getMessage());
         }
@@ -137,7 +162,6 @@ public class BibliographyAssetRenderer extends BaseJSPAssetRenderer<Bibliography
     @Override
     public String getUuid() {
         return _bibliography.getUuid();
-
     }
 
     @Override
