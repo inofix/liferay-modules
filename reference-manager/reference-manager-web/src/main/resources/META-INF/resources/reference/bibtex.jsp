@@ -11,12 +11,16 @@
 <%
     Reference reference = (Reference) request.getAttribute(ReferenceWebKeys.REFERENCE);
     boolean hasUpdatePermission = (Boolean) request.getAttribute("reference.hasUpdatePermission");
+    String bibTeX = ""; 
+    if (reference != null) {
+        bibTeX = reference.getBibTeX(); 
+    }
 %>
 
 <aui:fieldset>
     <aui:input bean="<%=reference%>" helpMessage="bibtex-help"
         disabled="<%=!hasUpdatePermission%>" label="bibtex"
         model="<%=Reference.class%>" name="bibTeX"
-        type="textarea" />
+        type="textarea" value="<%= bibTeX %>"/>
 
 </aui:fieldset>  

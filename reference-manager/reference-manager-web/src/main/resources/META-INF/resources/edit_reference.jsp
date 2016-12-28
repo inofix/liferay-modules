@@ -63,7 +63,6 @@
     <portlet:param name="mvcPath" value="/edit_reference.jsp" />
 </portlet:actionURL>
 
-
 <liferay-util:buffer var="typeSelect">
     <div class="clearfix">
         <div class="pull-left">
@@ -97,7 +96,7 @@
 
 </liferay-util:buffer>
 
-<aui:form action="<%= updateReferenceURL %>" method="post" name="fm">
+<aui:form action="<%= updateReferenceURL %>" method="post" name="fm" >
 
     <aui:input name="referenceId" type="hidden" value="<%= String.valueOf(referenceId) %>"/>
     <aui:input name="type" type="hidden" value="<%= type %>"/>
