@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-28 18:33 by Christian Berndt
-    Version:    1.1.7
+    Modified:   2016-12-28 22:42 by Christian Berndt
+    Version:    1.1.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -98,6 +98,9 @@
 </liferay-util:buffer>
 
 <aui:form action="<%= updateReferenceURL %>" method="post" name="fm">
+
+    <aui:input name="referenceId" type="hidden" value="<%= String.valueOf(referenceId) %>"/>
+    <aui:input name="type" type="hidden" value="<%= type %>"/>
 
     <div class="reference-head">
         <c:choose>
