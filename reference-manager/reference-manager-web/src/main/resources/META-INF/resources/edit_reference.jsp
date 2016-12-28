@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-25 20:29 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2016-12-28 18:33 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -35,8 +35,8 @@
         // new reference
         
         hasUpdatePermission = true;
-        type = "article";
-        
+        type = ParamUtil.getString(request, "type", "article");
+   
     }
 
     JSONObject entryFields = null;
@@ -75,6 +75,7 @@
                     selectURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
                     selectURL.setParameter("mvcPath", "/edit_reference.jsp");
                     selectURL.setParameter("referenceId", String.valueOf(referenceId));
+                    selectURL.setParameter("redirect", redirect);
                 
                     for (String entryType : BibTeXUtil.ENTRY_TYPES) {
                         selectURL.setParameter("type", entryType);
@@ -143,8 +144,8 @@
         </c:choose>
     </div>
 
-    <%-- custom displayStyle tabs is only available --%>
-    <%-- if the custom-form-navigator is deployed.  --%>
+    <%-- custom displayStyle "tabs2 is only available   --%>
+    <%-- if the custom-form-navigator hook is deployed. --%>
     <liferay-ui:form-navigator
         backURL="<%= redirect %>"
         showButtons="<%= hasUpdatePermission %>"
