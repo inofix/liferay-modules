@@ -53,8 +53,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-24 16:16
- * @version 1.0.6
+ * @modified 2016-12-28 18:45
+ * @version 1.0.7
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -70,22 +70,22 @@ public class ReferenceImpl extends ReferenceBaseImpl {
     }
 
     public String getAuthor() {
-        
-        String[] authors = getField("author").split("and"); 
-        
-        String author = ""; 
-        
+
+        String[] authors = getField("author").split("and");
+
+        String author = "";
+
         if (authors.length == 1) {
             author = authors[0];
-        } 
+        }
         if (authors.length == 2) {
-            author = getField("author"); 
-        }        
+            author = getField("author");
+        }
         if (authors.length > 2) {
             author = authors[0] + " et al.";
         }
-        
-        return author; 
+
+        return author;
 
     }
 
@@ -125,24 +125,24 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         return sb.toString();
 
     }
-    
+
     public String getEditor() {
-        
-        String[] editors = getField("editor").split("and"); 
-        
-        String editor = ""; 
-        
+
+        String[] editors = getField("editor").split("and");
+
+        String editor = "";
+
         if (editors.length == 1) {
             editor = editors[0];
         }
         if (editors.length == 2) {
-            editor = getField("editor"); 
-        }       
+            editor = getField("editor");
+        }
         if (editors.length > 2) {
             editor = editors[0] + " et al.";
         }
-        
-        return editor; 
+
+        return editor;
 
     }
 
@@ -167,6 +167,24 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         }
 
         return fields;
+
+    }
+
+    public String getLabel() {
+
+        String label = "";
+
+        if (_bibTeXEntry == null) {
+            _bibTeXEntry = getBibTeXEntry();
+        }
+
+        if (_bibTeXEntry != null) {
+            if (_bibTeXEntry.getKey() != null) {
+                label = _bibTeXEntry.getKey().getValue();
+            }
+        }
+
+        return label;
 
     }
 
