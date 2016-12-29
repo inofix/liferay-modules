@@ -2,8 +2,8 @@
     reference/optional_fields.jsp: the optional-fields tab of the reference editor.
     
     Created:    2016-12-25 19:24 by Christian Berndt
-    Modified:   2016-12-28 23:56 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-12-29 14:59 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -31,15 +31,18 @@
         }
 %>
     <aui:input name="name" type="hidden" value="<%= name %>"/>
-    <aui:field-wrapper name="<%= name %>" helpMessage="<%= helpKey %>"> 
-        <input class="field form-control" name="<%= namespace + "value" %>" type="text" value="<%= value %>" />
+    <aui:field-wrapper name="<%=name%>" helpMessage="<%=helpKey%>">
+        <input class="field form-control"
+            <%=hasUpdatePermission ? "" : "disabled=\"disabled\""%>
+            name="<%=namespace + "value"%>" type="text"
+            value="<%=value%>" />
     </aui:field-wrapper>
-    
-<%-- Disabled because of an unresolved issue with render after update  
+
+    <%-- Disabled because of an unresolved issue with render after update  
     <aui:input disabled="<%=!hasUpdatePermission%>"
         helpMessage="<%=helpKey%>" label="<%=name%>" name="value"
         value="<%= value %>" />
---%>
+    --%>
     <%
     }
 %>
