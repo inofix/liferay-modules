@@ -15,8 +15,8 @@ import org.jbibtex.BibTeXEntry;
 import org.jbibtex.BibTeXParser;
 import org.jbibtex.Key;
 import org.jbibtex.StringValue;
-import org.jbibtex.Value;
 import org.jbibtex.StringValue.Style;
+import org.jbibtex.Value;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -30,8 +30,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-28 23:26
- * @modified 2016-12-29 14:19
- * @version 1.0.1
+ * @modified 2016-12-29 16:52
+ * @version 1.0.2
  */
 public class PortletUtil {
 
@@ -46,13 +46,11 @@ public class PortletUtil {
 
         String bibTeX = ParamUtil.getString(actionRequest, "bibTeX");
         String label = ParamUtil.getString(actionRequest, "label");
-        String type = ParamUtil.getString(actionRequest, "type", "misc");
-
-        // selected entry type overrides bibTeX source
-
-        BibTeXEntry srcEntry = null;
+        String type = ParamUtil.getString(actionRequest, "type");
 
         // Read bibTeXEntry from source
+
+        BibTeXEntry srcEntry = null;
 
         StringReader stringReader = new StringReader(bibTeX);
 
@@ -78,9 +76,36 @@ public class PortletUtil {
             }
         }
 
-        // selected entry type overrides bibTeX source
+        _log.info("srcEntry = " + srcEntry);
+
+        // selected entry type overrides entry from src
+
+        if (Validator.isNull(type)) {
+            if (srcEntry != null) {
+                if (srcEntry.getType() != null) {
+                    type = srcEntry.getType().getValue();
+                }
+            } else {
+                type = "misc";
+            }
+        }
+
+        _log.info("type = " + type);
 
         Key typeKey = new Key(type);
+
+        // entered label overrides label of entry from src
+
+        if (Validator.isNull(label)) {
+            if (srcEntry != null) {
+                if (srcEntry.getKey() != null) {
+                    label = srcEntry.getKey().getValue();
+                }
+            }
+        }
+
+        _log.info("label = " + label);
+
         Key labelKey = new Key(label);
 
         BibTeXEntry bibTeXEntry = new BibTeXEntry(typeKey, labelKey);
@@ -90,21 +115,32 @@ public class PortletUtil {
         String[] fields = actionRequest.getParameterValues("name");
         String[] values = actionRequest.getParameterValues("value");
 
+        _log.info(fields.length);
+        _log.info(values.length);
+
         for (int i = 0; i < fields.length; i++) {
+
+            Key key = new Key(fields[i]);
 
             if (Validator.isNotNull(values[i])) {
 
-                Key key = new Key(fields[i]);
-
                 // TODO: test string for style
-                Style style = Style.QUOTED;
+                Style style = Style.BRACED;
 
                 Value value = new StringValue(values[i], style);
 
                 bibTeXEntry.addField(key, value);
 
-            }
+            } else {
 
+                // get value from src
+                
+                Value value = srcEntry.getField(key);
+                
+                if (value != null) {
+                    bibTeXEntry.addField(key, value);
+                }
+            }
         }
 
         bibTeX = BibTeXUtil.format(bibTeXEntry);
