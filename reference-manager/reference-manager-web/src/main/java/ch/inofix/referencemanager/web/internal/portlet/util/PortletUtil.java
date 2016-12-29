@@ -1,21 +1,118 @@
 package ch.inofix.referencemanager.web.internal.portlet.util;
 
+import java.io.StringReader;
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javax.portlet.ActionRequest;
+
+import org.jbibtex.BibTeXDatabase;
+import org.jbibtex.BibTeXEntry;
+import org.jbibtex.BibTeXParser;
+import org.jbibtex.Key;
+import org.jbibtex.StringValue;
+import org.jbibtex.Value;
+import org.jbibtex.StringValue.Style;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import ch.inofix.referencemanager.service.util.BibTeXUtil;
 
 /**
  * Utility methods for the ReferenceManagerPortlet.
  * 
  * @author Christian Berndt
  * @created 2016-11-28 23:26
- * @modified 2016-11-28 23:26
- * @version 1.0.0
+ * @modified 2016-12-29 14:19
+ * @version 1.0.1
  */
 public class PortletUtil {
+
+    /**
+     * 
+     * @param actionRequest
+     * @return
+     * @since 1.0.1
+     * @throws Exception
+     */
+    public static String getBibTeX(ActionRequest actionRequest) throws Exception {
+
+        String bibTeX = ParamUtil.getString(actionRequest, "bibTeX");
+        String label = ParamUtil.getString(actionRequest, "label");
+        String type = ParamUtil.getString(actionRequest, "type", "misc");
+
+        // selected entry type overrides bibTeX source
+
+        BibTeXEntry srcEntry = null;
+
+        // Read bibTeXEntry from source
+
+        StringReader stringReader = new StringReader(bibTeX);
+
+        BibTeXParser bibTeXParser = new BibTeXParser();
+
+        BibTeXDatabase database = bibTeXParser.parseFully(stringReader);
+
+        if (database != null) {
+
+            Map<Key, BibTeXEntry> entriesMap = database.getEntries();
+
+            if (entriesMap != null) {
+
+                Collection<BibTeXEntry> bibTexEntries = entriesMap.values();
+
+                if (bibTexEntries.size() > 0) {
+
+                    Iterator<BibTeXEntry> iterator = bibTexEntries.iterator();
+
+                    srcEntry = iterator.next();
+
+                }
+            }
+        }
+
+        // selected entry type overrides bibTeX source
+
+        Key typeKey = new Key(type);
+        Key labelKey = new Key(label);
+
+        BibTeXEntry bibTeXEntry = new BibTeXEntry(typeKey, labelKey);
+
+        // structured field values override bibTeX source
+
+        String[] fields = actionRequest.getParameterValues("name");
+        String[] values = actionRequest.getParameterValues("value");
+
+        for (int i = 0; i < fields.length; i++) {
+
+            if (Validator.isNotNull(values[i])) {
+
+                Key key = new Key(fields[i]);
+
+                // TODO: test string for style
+                Style style = Style.QUOTED;
+
+                Value value = new StringValue(values[i], style);
+
+                bibTeXEntry.addField(key, value);
+
+            }
+
+        }
+
+        bibTeX = BibTeXUtil.format(bibTeXEntry);
+
+        _log.info(bibTeX);
+
+        return bibTeX;
+    }
 
     /**
      * @param key

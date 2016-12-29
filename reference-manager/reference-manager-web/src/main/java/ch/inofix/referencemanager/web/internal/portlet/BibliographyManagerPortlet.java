@@ -2,9 +2,6 @@ package ch.inofix.referencemanager.web.internal.portlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
@@ -16,13 +13,6 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jbibtex.BibTeXDatabase;
-import org.jbibtex.BibTeXEntry;
-import org.jbibtex.BibTeXParser;
-import org.jbibtex.Key;
-import org.jbibtex.StringValue;
-import org.jbibtex.StringValue.Style;
-import org.jbibtex.Value;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -48,7 +38,6 @@ import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibliographyService;
 import ch.inofix.referencemanager.service.ReferenceService;
-import ch.inofix.referencemanager.service.util.BibTeXUtil;
 import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
 import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
@@ -58,8 +47,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-29 13:13
- * @version 1.1.2
+ * @modified 2016-12-29 14:31
+ * @version 1.1.3
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -206,74 +195,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
         long userId = serviceContext.getUserId();
 
-        String bibTeX = ParamUtil.getString(actionRequest, "bibTeX");
-        String label = ParamUtil.getString(actionRequest, "label");
-        String type = ParamUtil.getString(actionRequest, "type", "misc");
-
-        // _log.info("type = " + type);
-
-        BibTeXEntry bibTeXEntry = null;
-
-        // Read bibTeXEntry from source
-
-        StringReader stringReader = new StringReader(bibTeX);
-
-        BibTeXParser bibTeXParser = new BibTeXParser();
-
-        BibTeXDatabase database = bibTeXParser.parseFully(stringReader);
-
-        if (database != null) {
-
-            Map<Key, BibTeXEntry> entriesMap = database.getEntries();
-
-            if (entriesMap != null) {
-
-                Collection<BibTeXEntry> bibTexEntries = entriesMap.values();
-
-                if (bibTexEntries.size() > 0) {
-
-                    Iterator<BibTeXEntry> iterator = bibTexEntries.iterator();
-
-                    bibTeXEntry = iterator.next();
-
-                }
-            }
-        }
-
-        if (bibTeXEntry == null) {
-
-            // bibtex source unparseable
-
-            Key typeKey = new Key(type);
-            Key labelKey = new Key(label);
-
-            bibTeXEntry = new BibTeXEntry(typeKey, labelKey);
-        }
-
-        String[] fields = actionRequest.getParameterValues("name");
-        String[] values = actionRequest.getParameterValues("value");
-
-        // _log.info("fields.length = " + fields.length);
-        // _log.info("values.length = " + values.length);
-
-        for (int i = 0; i < fields.length; i++) {
-
-            if (Validator.isNotNull(values[i])) {
-
-                Key key = new Key(fields[i]);
-
-                // TODO: test string for style
-                Style style = Style.QUOTED;
-
-                Value value = new StringValue(values[i], style);
-
-                bibTeXEntry.addField(key, value);
-
-            }
-
-        }
-
-        bibTeX = BibTeXUtil.format(bibTeXEntry);
+        String bibTeX = PortletUtil.getBibTeX(actionRequest);
 
         Reference reference = null;
 
