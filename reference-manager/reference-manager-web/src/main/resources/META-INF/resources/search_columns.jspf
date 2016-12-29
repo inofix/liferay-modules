@@ -2,8 +2,8 @@
     search_columns.jspf: search_columns of the reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2016-12-29 13:24 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-12-29 15:49 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <portlet:renderURL var="viewURL">
@@ -19,10 +19,44 @@
     }
     
     // TODO: Read columns from configuration.
-    String[] columns = new String[] { "referenceId", "type", "author", "title", "year", "modified", "tags" };
+    String[] columns = new String[] { "referenceId", "type", "label", "author", "title", "year", "modified" };
 
     for (String column : columns) {
 %>
+
+<c:if test='<%="author".equals(column)%>'>
+    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+        orderable="true" orderableProperty="author_sortable"
+        property="author" />
+</c:if>
+
+<c:if test='<%="categories".equals(column)%>'>
+    <liferay-ui:search-container-column-text name="categories">
+        <div class="lfr-asset-categories">
+            <liferay-ui:asset-categories-summary
+                className="<%=Reference.class.getName()%>"
+                classPK="<%=reference.getReferenceId()%>" />
+        </div>
+    </liferay-ui:search-container-column-text>
+</c:if>
+
+<c:if test='<%="created".equals(column)%>'>
+    <liferay-ui:search-container-column-date href="<%=viewURL%>"
+        name="created" orderable="true"
+        orderableProperty="createDate_sortable" property="createDate" />
+</c:if>
+
+<c:if test='<%="label".equals(column)%>'>
+    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+        orderable="true" orderableProperty="label_sortable"
+        property="label" />
+</c:if>
+
+<c:if test='<%="modified".equals(column)%>'>
+    <liferay-ui:search-container-column-date href="<%=viewURL%>"
+        name="modified" orderable="true"
+        orderableProperty="modified_sortable" property="modifiedDate" />
+</c:if>
 
 <c:if test='<%="referenceId".equals(column)%>'>
     <liferay-ui:search-container-column-text href="<%=viewURL%>"
@@ -31,10 +65,19 @@
         property="referenceId" valign="top" />
 </c:if>
 
-<c:if test='<%="author".equals(column)%>'>
-    <liferay-ui:search-container-column-text href="<%=viewURL%>"
-        orderable="true" orderableProperty="author_sortable"
-        property="author" />
+<c:if test='<%="status".equals(column)%>'>
+    <liferay-ui:search-container-column-status orderable="true"
+        property="status" />
+</c:if>
+
+<c:if test='<%="tags".equals(column)%>'>
+    <liferay-ui:search-container-column-text name="tags">
+        <div class="lfr-asset-tags">
+            <liferay-ui:asset-tags-summary
+                className="<%=Reference.class.getName()%>"
+                classPK="<%=reference.getReferenceId()%>" message="" />
+        </div>
+    </liferay-ui:search-container-column-text>
 </c:if>
 
 <c:if test='<%="title".equals(column)%>'>
@@ -55,42 +98,6 @@
         property="year" />
 </c:if>
 
-<c:if test='<%="created".equals(column)%>'>
-    <liferay-ui:search-container-column-date href="<%=viewURL%>"
-        name="created" orderable="true"
-        orderableProperty="createDate_sortable" property="createDate" />
-</c:if>
-
-<c:if test='<%="modified".equals(column)%>'>
-    <liferay-ui:search-container-column-date href="<%=viewURL%>"
-        name="modified" orderable="true"
-        orderableProperty="modified_sortable" property="modifiedDate" />
-</c:if>
-
-<c:if test='<%="status".equals(column)%>'>
-    <liferay-ui:search-container-column-status orderable="true"
-        property="status" />
-</c:if>
-
-<c:if test='<%="categories".equals(column)%>'>
-    <liferay-ui:search-container-column-text name="categories">
-        <div class="lfr-asset-categories">
-            <liferay-ui:asset-categories-summary
-                className="<%=Reference.class.getName()%>"
-                classPK="<%=reference.getReferenceId()%>" />
-        </div>
-    </liferay-ui:search-container-column-text>
-</c:if>
-
-<c:if test='<%="tags".equals(column)%>'>
-    <liferay-ui:search-container-column-text name="tags">
-        <div class="lfr-asset-tags">
-            <liferay-ui:asset-tags-summary
-                className="<%=Reference.class.getName()%>"
-                classPK="<%=reference.getReferenceId()%>" message="" />
-        </div>
-    </liferay-ui:search-container-column-text>
-</c:if>
 <%
     }
 %>
