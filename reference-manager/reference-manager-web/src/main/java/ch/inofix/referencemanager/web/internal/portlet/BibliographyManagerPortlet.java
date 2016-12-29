@@ -58,8 +58,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-29 00:02
- * @version 1.1.1
+ * @modified 2016-12-29 13:13
+ * @version 1.1.2
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -293,6 +293,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         actionRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
         actionRequest.setAttribute(ReferenceWebKeys.REFERENCE, reference);
         actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("redirect", redirect);
         actionResponse.setRenderParameter("tabs1", tabs1);
 
     }

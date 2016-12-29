@@ -2,8 +2,8 @@
     edit_reference.jsp: edit a single reference.
     
     Created:    2016-11-18 18:46 by Christian Berndt
-    Modified:   2016-12-28 22:42 by Christian Berndt
-    Version:    1.1.8
+    Modified:   2016-12-29 13:13 by Christian Berndt
+    Version:    1.1.9
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -99,6 +99,7 @@
 <aui:form action="<%= updateReferenceURL %>" method="post" name="fm" >
 
     <aui:input name="referenceId" type="hidden" value="<%= String.valueOf(referenceId) %>"/>
+    <aui:input name="redirect" type="hidden" value="<%= redirect %>"/>
     <aui:input name="type" type="hidden" value="<%= type %>"/>
 
     <div class="reference-head">
