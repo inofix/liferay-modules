@@ -34,8 +34,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-18 01:15
- * @modified 2016-12-14 16:05
- * @version 1.0.3
+ * @modified 2016-12-29 13:27
+ * @version 1.0.4
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -45,8 +45,8 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
 
     public ReferenceIndexer() {
         setDefaultSelectedFieldNames(Field.ASSET_TAG_NAMES, "author", Field.COMPANY_ID, Field.ENTRY_CLASS_NAME,
-                Field.ENTRY_CLASS_PK, Field.GROUP_ID, Field.MODIFIED_DATE, Field.SCOPE_GROUP_ID, Field.TITLE, Field.UID,
-                Field.URL, "year");
+                Field.ENTRY_CLASS_PK, Field.GROUP_ID, Field.MODIFIED_DATE, Field.SCOPE_GROUP_ID, Field.TITLE,
+                Field.TYPE, Field.UID, Field.URL, "year");
         setFilterSearch(true);
         setPermissionAware(true);
     }
@@ -77,6 +77,7 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
         document.addKeyword("bibliographyUuid", reference.getBibliographyUuids());
         document.addNumberSortable("referenceId", reference.getReferenceId());
         document.addTextSortable(Field.TITLE, reference.getCitation());
+        document.addTextSortable(Field.TYPE, reference.getType());
         document.addTextSortable("year", reference.getYear());
 
         return document;
