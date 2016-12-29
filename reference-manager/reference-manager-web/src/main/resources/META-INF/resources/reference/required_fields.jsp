@@ -2,8 +2,8 @@
     reference/required_fields.jsp: the required-fields tab of the reference editor.
     
     Created:    2016-12-25 19:24 by Christian Berndt
-    Modified:   2016-12-29 14:59 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2016-12-29 16:38 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -40,6 +40,7 @@
                 value = reference.getField(name);
             }
 %>
+    <aui:input name="name" type="hidden" value="<%= name %>"/>
     <aui:field-wrapper name="<%=name%>" helpMessage="<%=helpKey%>">
         <input class="field form-control"
             <%=hasUpdatePermission ? "" : "disabled=\"disabled\""%>
