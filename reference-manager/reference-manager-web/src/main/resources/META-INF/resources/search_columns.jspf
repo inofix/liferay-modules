@@ -2,8 +2,8 @@
     search_columns.jspf: search_columns of the reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2016-12-23 22:00 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2016-12-29 13:24 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <portlet:renderURL var="viewURL">
@@ -19,7 +19,7 @@
     }
     
     // TODO: Read columns from configuration.
-    String[] columns = new String[] { "referenceId", "author", "title", "year", "modified", "tags" };
+    String[] columns = new String[] { "referenceId", "type", "author", "title", "year", "modified", "tags" };
 
     for (String column : columns) {
 %>
@@ -41,6 +41,12 @@
     <liferay-ui:search-container-column-text href="<%=viewURL%>"
         orderable="true" orderableProperty="title_sortable"
         property="title" />
+</c:if>
+
+<c:if test='<%="type".equals(column)%>'>
+    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+        orderable="true" orderableProperty="type_sortable"
+        property="type" />
 </c:if>
 
 <c:if test='<%="year".equals(column)%>'>
