@@ -15,8 +15,10 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version:'2.4'
     compile group: 'com.liferay.faces', name: 'com.liferay.faces.bridge.ext', version:'5.0.0'
     compile group: 'com.liferay.faces', name: 'com.liferay.faces.bridge.impl', version:'4.0.0'
+    compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"    
     compile group: 'log4j', name: 'log4j', version:'1.2.14'
     runtime group: 'org.glassfish', name: 'javax.faces', version:'2.2.13'
     providedCompile group: 'javax.faces', name: 'javax.faces-api', version:'2.2'
+    compileOnly project(":modules:reference-manager:reference-manager-api") 
+    compileOnly project(":modules:reference-manager:reference-manager-service")
 }
-
