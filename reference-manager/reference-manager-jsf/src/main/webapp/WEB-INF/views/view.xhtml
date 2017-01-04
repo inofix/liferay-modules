@@ -10,14 +10,37 @@
 		<h:outputStylesheet library="css" name="main.css" />
 	</h:head>
 	<h:body>
-		<p:panel id="panelId">
-			<h:outputText styleClass="bold-hello-world" value="#{i18n['reference-manager-jsf-hello-world']}" />
-		</p:panel>
+<!-- 		<p:panel id="panelId"> -->
+<!-- 			<h:outputText styleClass="bold-hello-world" value="#{i18n['reference-manager-jsf-hello-world']}" /> -->
+<!-- 		</p:panel> -->
+        <p:tabView>
+            <p:tab title="Godfather Part I">
+                <h:panelGrid columns="2" cellpadding="10">
+<!--                     <p:graphicImage name="demo/images/godfather/godfather1.jpg" /> -->
+                    <h:outputText
+                        value="The story begins as Don Vito Corleone..." />
+                </h:panelGrid>
+            </p:tab>
+            <p:tab title="Godfather Part II">
+                <h:panelGrid columns="2" cellpadding="10">
+<!--                     <p:graphicImage name="demo/images/godfather/godfather2.jpg" /> -->
+                    <h:outputText value="Francis Ford Coppola's legendary..." />
+                </h:panelGrid>
+            </p:tab>
+            <p:tab title="Godfather Part III">
+                <h:panelGrid columns="2" cellpadding="10">
+<!--                     <p:graphicImage name="demo/images/godfather/godfather3.jpg" /> -->
+                    <h:outputText value="After a break of more than 15 years..." />
+                </h:panelGrid>
+            </p:tab>
+        </p:tabView>
+        <!--  
 		<ul>
 			<li><em><h:outputText value="#{product.JSF}" /></em></li>
 			<li><em><h:outputText value="#{product.LIFERAY_FACES_BRIDGE}" /></em></li>
 			<li><em><h:outputText value="#{product.LIFERAY_FACES_UTIL}" /></em></li>
 			<li><em><h:outputText value="#{product.PRIMEFACES}" /></em></li>
 		</ul>
+        -->
 	</h:body>
 </f:view>
