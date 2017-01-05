@@ -13,6 +13,7 @@ dependencies {
     compile group: 'org.primefaces.themes', name: 'bootstrap', version: '1.0.10'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version:'1.3.1'
     compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'com.liferay.faces', name: 'com.liferay.faces.alloy', version:'3.0.0'
     compile group: 'com.liferay.faces', name: 'com.liferay.faces.bridge.ext', version:'5.0.0'
     compile group: 'com.liferay.faces', name: 'com.liferay.faces.bridge.impl', version:'4.0.0'
     compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"    
