@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-05 19:29 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-01-05 23:27 by Christian Berndt
+    Version:    1.0.1
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -21,6 +21,9 @@
         <h:form id="form">
 
             <blockquote>#{tabbedView.citation}</blockquote>
+
+            <p:messages id="messages" showDetail="false"
+                autoUpdate="true" closable="true" />
 
             <p:outputPanel styleClass="form-group clearfix">
 
@@ -44,23 +47,33 @@
                     listener="#{tabbedView.onTabChange}" />
 
                 <p:tab title="Required Fields">
+
+                    <p:outputPanel styleClass="form-group">
+                        <p:outputLabel value="#{i18n['label']}" />
+                        <p:inputText styleClass="form-control"
+                            value="#{tabbedView.label}" />
+                    </p:outputPanel>
+
                     <p:repeat id="required-fields"
-                        value="#{tabbedView.requiredFields}" var="field">
+                        value="#{tabbedView.requiredFields}" var="field"
+                        varStatus="loop">
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
-                            <p:inputText styleClass="form-control" />
+                            <p:inputText styleClass="form-control"
+                                value="#{tabbedView.requiredValues[loop.index]}" />
                         </p:outputPanel>
                     </p:repeat>
                 </p:tab>
 
                 <p:tab id="optional-fields" title="Optional Fields">
                     <p:repeat value="#{tabbedView.optionalFields}"
-                        var="field">
+                        var="field" varStatus="loop">
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
-                            <p:inputText styleClass="form-control" />
+                            <p:inputText styleClass="form-control"
+                                value="#{tabbedView.optionalValues[loop.index]}" />
                         </p:outputPanel>
                     </p:repeat>
                 </p:tab>
@@ -68,18 +81,19 @@
                 <p:tab title="BibTeX">
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['bibtex']}" />
-                        <p:inputTextarea id="bibtex"
-                            styleClass="form-control" rows="20" />
+                        <p:inputTextarea styleClass="form-control"
+                            rows="20" value="#{tabbedView.bibTeX}" />
                     </p:outputPanel>
                 </p:tab>
 
             </p:tabView>
 
-
             <p:outputPanel styleClass="btn-group">
-                <p:commandButton styleClass="btn btn-default"
-                    value="Save" />
-                <p:commandButton value="Cancel" styleClass="btn" />
+                <p:commandButton action="#{tabbedView.saveReference}"
+                    styleClass="btn btn-default" update="@(form)"
+                    value="#{i18n['save']}" />
+                <p:commandButton value="#{i18n['cancel']}"
+                    styleClass="btn" />
             </p:outputPanel>
         </h:form>
     </h:body>
