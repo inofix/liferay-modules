@@ -1,3 +1,74 @@
-.bold-hello-world {
-    font-weight: bold;
+/** 
+    main.css: reference-manager specific css
+
+    Created:    2017-01-04 16:03 by Christian Berndt
+    Modified:   2017-01-05 16:40 by Christian Berndt
+    Version:    1.0.1
+*/
+
+/** 
+ * Align with bootstrap 3
+ */
+a {
+    color: #337ab7;
+} 
+
+form .ui-inputfield {
+    padding: 6px 12px; 
+}
+ 
+form .ui-selectonemenu {
+    padding-right: 0; 
+}
+
+/* form .ui-selectonemenu.select-entry-type { */
+/*     min-width: 200px; */
+/* } */
+
+form .ui-selectonemenu .ui-selectonemenu-trigger {
+    width: 24px;
+}
+
+form .ui-selectonemenu .ui-selectonemenu-trigger .ui-icon { 
+    margin-top: 8px;
+}
+ 
+form .ui-tabs {
+    padding: 0;
+}
+
+form .ui-tabs.ui-tabs-top > .ui-tabs-nav {
+    padding: 0; 
+}
+
+form .ui-tabs .ui-tabs-nav.ui-widget-header li a {
+    color: #337ab7;
+    padding: 10px 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+
+form .ui-tabs .ui-tabs-nav.ui-widget-header li {
+    border: 1px solid transparent;
+}
+
+form .ui-tabs .ui-tabs-nav li.ui-state-active > a {
+    color: #555;
+    margin-bottom: 1px;
+}
+
+form .ui-tabs-top {
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+    
+form .ui-tabs .ui-tabs-panel {
+    padding: 0; 
+    padding-top: 15px;
+}
+
+form .ui-widget {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
 }

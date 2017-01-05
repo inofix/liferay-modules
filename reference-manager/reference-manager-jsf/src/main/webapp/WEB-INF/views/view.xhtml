@@ -1,33 +1,86 @@
 <?xml version="1.0"?>
 
+<!-- 
+    view.xhtml: view of the reference editor portlet
+    
+    Created:    2017-01-05 19:29 by Christian Berndt
+    Modified:   2017-01-05 19:29 by Christian Berndt
+    Version:    1.0.0
+-->
+
 <f:view xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:alloy="http://liferay.com/faces/alloy"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:p="http://primefaces.org/ui">
+
     <h:head>
         <h:outputStylesheet library="css" name="main.css" />
     </h:head>
     <h:body>
         <h:form id="form">
-            <p:tabView dynamic="true" cache="false">
+
+            <blockquote>#{tabbedView.citation}</blockquote>
+
+            <p:outputPanel styleClass="form-group clearfix">
+
+                <p:selectOneMenu id="entryType"
+                    style="min-width: 200px;" styleClass="pull-left"
+                    value="#{tabbedView.entryType}">
+                    <p:ajax listener="#{tabbedView.onEntryTypeChange}"
+                        update="@(form)" />
+                    <f:selectItems value="#{tabbedView.entryTypes}" />
+                </p:selectOneMenu>
+
+                <h:link styleClass="btn btn-default pull-right"
+                    value="Back">
+                </h:link>
+
+            </p:outputPanel>
+
+            <p:tabView id="tabs" dynamic="true" cache="true">
+
                 <p:ajax event="tabChange"
                     listener="#{tabbedView.onTabChange}" />
+
                 <p:tab title="Required Fields">
-                    <h:outputText value="#{tabbedView.message}" />
+                    <p:repeat id="required-fields"
+                        value="#{tabbedView.requiredFields}" var="field">
+                        <p:outputPanel styleClass="form-group">
+                            <p:outputLabel
+                                value="#{i18n[field.getString('name')]}" />
+                            <p:inputText styleClass="form-control" />
+                        </p:outputPanel>
+                    </p:repeat>
                 </p:tab>
-                <p:tab title="Optional Fields">
-                    <h:outputText value="#{tabbedView.message}" />
+
+                <p:tab id="optional-fields" title="Optional Fields">
+                    <p:repeat value="#{tabbedView.optionalFields}"
+                        var="field">
+                        <p:outputPanel styleClass="form-group">
+                            <p:outputLabel
+                                value="#{i18n[field.getString('name')]}" />
+                            <p:inputText styleClass="form-control" />
+                        </p:outputPanel>
+                    </p:repeat>
                 </p:tab>
-                <p:tab title="Categorization">
-                    <h:outputText value="#{tabbedView.message}" />
-                </p:tab>
+
                 <p:tab title="BibTeX">
-                    <h:outputText value="#{tabbedView.message}" />
+                    <p:outputPanel styleClass="form-group">
+                        <p:outputLabel value="#{i18n['bibtex']}" />
+                        <p:inputTextarea id="bibtex"
+                            styleClass="form-control" rows="20" />
+                    </p:outputPanel>
                 </p:tab>
-                <p:tab title="Usage">
-                    <h:outputText value="#{tabbedView.message}" />
-                </p:tab>
+
             </p:tabView>
+
+
+            <p:outputPanel styleClass="btn-group">
+                <p:commandButton styleClass="btn btn-default"
+                    value="Save" />
+                <p:commandButton value="Cancel" styleClass="btn" />
+            </p:outputPanel>
         </h:form>
     </h:body>
 </f:view>
