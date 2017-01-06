@@ -1,9 +1,12 @@
 package ch.inofix.referencemanager.web.social;
 
-import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import org.osgi.service.component.annotations.Component;
+
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -18,21 +21,14 @@ import ch.inofix.referencemanager.service.ReferenceLocalService;
 import ch.inofix.referencemanager.service.permission.ReferencePermission;
 import ch.inofix.referencemanager.social.ReferenceActivityKeys;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author Christian Berndt
  * @created 2016-12-04 13:20
- * @modified 2016-12-04 13:20
- * @version 1.0.0
+ * @modified 2017-01-07 00:12
+ * @version 1.0.1
  */
-@Component(
-    property = {"javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER }, 
-    service = SocialActivityInterpreter.class
-)
+@Component(property = {
+        "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER }, service = SocialActivityInterpreter.class)
 public class ReferenceActivityInterpreter extends BaseSocialActivityInterpreter {
 
     @Override
@@ -43,16 +39,13 @@ public class ReferenceActivityInterpreter extends BaseSocialActivityInterpreter 
     @Override
     protected String getPath(SocialActivity activity, ServiceContext serviceContext) throws Exception {
 
-        long plid = PortalUtil.getPlidFromPortletId(serviceContext.getScopeGroupId(), PortletKeys.REFERENCE_MANAGER);
+        AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil
+                .getAssetRendererFactoryByClassName(Reference.class.getName());
 
-        PortletURL portletURL = PortletURLFactoryUtil.create(serviceContext.getRequest(), PortletKeys.REFERENCE_MANAGER,
-                plid, PortletRequest.RENDER_PHASE);
+        AssetRenderer<?> assetRenderer = assetRendererFactory.getAssetRenderer(activity.getClassPK());
 
-        portletURL.setParameter("mvcPath", "/edit_reference.jsp");
-        portletURL.setParameter("backURL", serviceContext.getCurrentURL());
-        portletURL.setParameter("referenceId", String.valueOf(activity.getClassPK()));
-
-        return portletURL.toString();
+        return assetRenderer.getURLViewInContext(serviceContext.getLiferayPortletRequest(),
+                serviceContext.getLiferayPortletResponse(), null);
     }
 
     @Override
