@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-06 14:59 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-01-06 17:56 by Christian Berndt
+    Version:    1.0.3
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -51,8 +51,13 @@
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['label']}" />
                         <p:inputText disabled="#{tabbedView.disabled}"
-                            styleClass="form-control"
-                            value="#{tabbedView.label}" />
+                            id="label" styleClass="form-control"
+                            value="#{tabbedView.label}">
+                            <f:ajax execute="@form" />
+                            <p:ajax event="blur"
+                                listener="#{tabbedView.onFieldChange}"
+                                update=":form:tabs:bibtex" />
+                        </p:inputText>
                     </p:outputPanel>
 
                     <p:repeat id="required-fields"
@@ -65,8 +70,10 @@
                                 disabled="#{tabbedView.disabled}"
                                 styleClass="form-control"
                                 value="#{tabbedView.requiredValues[loop.index]}">
+                                <f:ajax execute="@form" />
                                 <p:ajax event="blur"
-                                    listener="#{tabbedView.onFieldChange}" />
+                                    listener="#{tabbedView.onFieldChange}"
+                                    update=":form:tabs:bibtex" />
                             </p:inputText>
                         </p:outputPanel>
                     </p:repeat>
@@ -82,8 +89,10 @@
                                 disabled="#{tabbedView.disabled}"
                                 styleClass="form-control"
                                 value="#{tabbedView.optionalValues[loop.index]}">
+                                <f:ajax execute="@form" />
                                 <p:ajax event="blur"
-                                    listener="#{tabbedView.onFieldChange}" />
+                                    listener="#{tabbedView.onFieldChange}"
+                                    update=":form:tabs:bibtex" />
                             </p:inputText>
                         </p:outputPanel>
                     </p:repeat>
@@ -95,7 +104,12 @@
                         <p:inputTextarea
                             disabled="#{tabbedView.disabled}"
                             id="bibtex" styleClass="form-control"
-                            rows="20" value="#{tabbedView.bibTeX}" />
+                            rows="20" value="#{tabbedView.bibTeX}">
+                            <f:ajax execute="@form" />
+                            <p:ajax event="blur"
+                                listener="#{tabbedView.onBibTeXChange}"
+                                update="@(form)" />
+                        </p:inputTextarea>
                     </p:outputPanel>
                 </p:tab>
 
