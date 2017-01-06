@@ -30,8 +30,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-06 17:55
- * @version 1.0.4
+ * @modified 2017-01-06 18:15
+ * @version 1.0.5
  *
  */
 @ManagedBean
@@ -179,17 +179,17 @@ public class TabbedView {
 
         _log.info("updateBibTeX()");
 
-        _log.info("bibTeX = " + _bibTeX);
-        _log.info("entryType = " + _entryType);
-        _log.info("label = " + _label);
-
         Key type = new Key(_entryType);
         Key key = new Key(_label);
 
-        BibTeXEntry bibTeXEntry = new BibTeXEntry(type, key);
-
-        _log.info(_optionalValues.length);
-        _log.info(getOptionalFields().size());
+        BibTeXEntry bibTeXEntry = null;
+        
+        // parse src
+        if (Validator.isNotNull(_bibTeX)) {
+            bibTeXEntry = BibTeXUtil.parse(_bibTeX);
+        } else {
+            bibTeXEntry = new BibTeXEntry(type, key);
+        }
 
         for (int i = 0; i < _optionalValues.length; i++) {
 
@@ -201,6 +201,7 @@ public class TabbedView {
             _log.info(name + " = " + str);
 
             if (Validator.isNotNull(str)) {
+                bibTeXEntry.removeField(key);
                 bibTeXEntry.addField(field, value);
             }
         }
@@ -215,6 +216,7 @@ public class TabbedView {
             _log.info(name + " = " + str);
 
             if (Validator.isNotNull(str)) {
+                bibTeXEntry.removeField(key);                
                 bibTeXEntry.addField(field, value);
             }
         }
@@ -224,8 +226,6 @@ public class TabbedView {
     }
 
     private void updateFields() {
-
-        _log.info("updateFields()");
 
         BibTeXEntry bibTeXEntry = BibTeXUtil.parse(_bibTeX);
 
