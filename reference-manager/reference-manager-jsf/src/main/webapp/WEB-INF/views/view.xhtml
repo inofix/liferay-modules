@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-06 17:56 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-01-06 18:26 by Christian Berndt
+    Version:    1.0.4
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -46,7 +46,7 @@
                 <p:ajax event="tabChange"
                     listener="#{tabbedView.onTabChange}" />
 
-                <p:tab title="Required Fields">
+                <p:tab title="#{i18n['required-fields']}">
 
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['label']}" />
@@ -79,7 +79,8 @@
                     </p:repeat>
                 </p:tab>
 
-                <p:tab id="optional-fields" title="Optional Fields">
+                <p:tab id="optional-fields"
+                    title="#{i18n['optional-fields']}">
                     <p:repeat value="#{tabbedView.optionalFields}"
                         var="field" varStatus="loop">
                         <p:outputPanel styleClass="form-group">
@@ -98,7 +99,7 @@
                     </p:repeat>
                 </p:tab>
 
-                <p:tab title="BibTeX">
+                <p:tab title="#{i18n['bibtex']}">
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['bibtex']}" />
                         <p:inputTextarea
