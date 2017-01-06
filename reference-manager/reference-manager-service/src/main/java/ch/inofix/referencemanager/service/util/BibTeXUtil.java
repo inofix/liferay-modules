@@ -2,13 +2,19 @@ package ch.inofix.referencemanager.service.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXEntry;
+import org.jbibtex.BibTeXParser;
 import org.jbibtex.Key;
+import org.jbibtex.ParseException;
+import org.jbibtex.TokenMgrException;
 import org.jbibtex.Value;
 
 import com.liferay.portal.kernel.log.Log;
@@ -19,8 +25,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2016-12-29 14:37
- * @version 1.0.4
+ * @modified 2017-01-06 17:18
+ * @version 1.0.5
  *
  */
 public class BibTeXUtil {
@@ -87,6 +93,48 @@ public class BibTeXUtil {
         }
 
         return _properties.getProperty(key);
+    }
+
+    public static BibTeXEntry parse(String str) {
+
+        // Read bibTeXEntry from str
+
+        BibTeXEntry bibTexEntry = null;
+
+        StringReader stringReader = new StringReader(str);
+
+        BibTeXParser bibTeXParser;
+
+        try {
+            bibTeXParser = new BibTeXParser();
+
+            BibTeXDatabase database = bibTeXParser.parseFully(stringReader);
+
+            if (database != null) {
+
+                Map<Key, BibTeXEntry> entriesMap = database.getEntries();
+
+                if (entriesMap != null) {
+
+                    Collection<BibTeXEntry> bibTexEntries = entriesMap.values();
+
+                    if (bibTexEntries.size() > 0) {
+
+                        Iterator<BibTeXEntry> iterator = bibTexEntries.iterator();
+
+                        bibTexEntry = iterator.next();
+
+                    }
+                }
+            }
+        } catch (TokenMgrException e) {
+            _log.error(e);
+        } catch (ParseException e) {
+            _log.error(e);
+        }
+
+        return bibTexEntry;
+
     }
 
     private static Log _log = LogFactoryUtil.getLog(BibTeXUtil.class.getName());

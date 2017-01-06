@@ -30,8 +30,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-06 14:37
- * @version 1.0.3
+ * @modified 2017-01-06 17:55
+ * @version 1.0.4
  *
  */
 @ManagedBean
@@ -63,7 +63,11 @@ public class TabbedView {
         _log.info("_entryType = " + _entryType);
 
         try {
+
             _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
+            _optionalValues = new String[getOptionalFields().size()];
+            _requiredValues = new String[getRequiredFields().size()];
+
         } catch (JSONException e) {
             _log.error(e);
         }
@@ -71,26 +75,21 @@ public class TabbedView {
 
     public void onFieldChange() {
         _log.info("onFieldChange()");
+        updateBibTeX();
     }
 
     public void onBibTeXChange() {
-
+        _log.info("onBibTeXChange()");
+        updateFields();
     }
 
     public void onTabChange(TabChangeEvent event) {
-
         _log.info("onTabChange()");
-
-        // updateBibTeX();
-
     }
 
     public void saveReference() {
 
         _log.info("saveReference()");
-        // _log.info("_entryType = " + _entryType);
-
-        updateBibTeX();
 
         FacesMessage msg = new FacesMessage("Saved Reference");
         FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -132,6 +131,7 @@ public class TabbedView {
     public List<JSONObject> getFields(String name) {
 
         List<JSONObject> fields = new ArrayList<JSONObject>();
+
         JSONArray jSONArray = _entryFields.getJSONArray(name);
 
         if (jSONArray != null) {
@@ -188,6 +188,9 @@ public class TabbedView {
 
         BibTeXEntry bibTeXEntry = new BibTeXEntry(type, key);
 
+        _log.info(_optionalValues.length);
+        _log.info(getOptionalFields().size());
+
         for (int i = 0; i < _optionalValues.length; i++) {
 
             String str = _optionalValues[i];
@@ -217,6 +220,50 @@ public class TabbedView {
         }
 
         _bibTeX = BibTeXUtil.format(bibTeXEntry);
+
+    }
+
+    private void updateFields() {
+
+        _log.info("updateFields()");
+
+        BibTeXEntry bibTeXEntry = BibTeXUtil.parse(_bibTeX);
+
+        if (bibTeXEntry != null) {
+            if (bibTeXEntry.getType() != null) {
+                _entryType = bibTeXEntry.getType().getValue().toLowerCase();
+                try {
+                    _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
+                } catch (JSONException e) {
+                    _log.error(e);
+                }
+                _optionalValues = new String[getOptionalFields().size()];
+                _requiredValues = new String[getRequiredFields().size()];
+            }
+            if (bibTeXEntry.getKey() != null) {
+                _label = bibTeXEntry.getKey().getValue();
+            }
+        }
+
+        for (int i = 0; i < _optionalValues.length; i++) {
+
+            String field = getOptionalFields().get(i).getString("name");
+            Key key = new Key(field);
+            Value value = bibTeXEntry.getField(key);
+            if (value != null) {
+                _optionalValues[i] = value.toUserString();
+            }
+        }
+
+        for (int i = 0; i < _requiredValues.length; i++) {
+
+            String field = getRequiredFields().get(i).getString("name");
+            Key key = new Key(field);
+            Value value = bibTeXEntry.getField(key);
+            if (value != null) {
+                _requiredValues[i] = value.toUserString();
+            }
+        }
 
     }
 
