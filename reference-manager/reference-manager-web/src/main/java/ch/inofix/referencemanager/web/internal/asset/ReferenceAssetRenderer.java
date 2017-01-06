@@ -31,8 +31,8 @@ import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
  * 
  * @author Christian Berndt
  * @created 2016-11-19 19:56
- * @modified 2017-01-06 21:30
- * @version 1.0.2
+ * @modified 2017-01-07 00:04
+ * @version 1.0.3
  *
  */
 public class ReferenceAssetRenderer extends BaseJSPAssetRenderer<Reference> {
@@ -154,12 +154,8 @@ public class ReferenceAssetRenderer extends BaseJSPAssetRenderer<Reference> {
 
     private PortletURL locateReferenceEditor(LiferayPortletRequest liferayPortletRequest) throws PortalException {
 
-        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
-        
-
-        // TODO: Dynamically locate the group of the ReferenceEditor or read it
-        // from the properties.
-        long portletPlid = PortalUtil.getPlidFromPortletId(20147, false, PortletKeys.REFERENCE_EDITOR);
+        long portletPlid = PortalUtil.getPlidFromPortletId(_reference.getGroupId(), false,
+                PortletKeys.REFERENCE_EDITOR);
 
         PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.REFERENCE_EDITOR,
                 portletPlid, PortletRequest.RENDER_PHASE);
