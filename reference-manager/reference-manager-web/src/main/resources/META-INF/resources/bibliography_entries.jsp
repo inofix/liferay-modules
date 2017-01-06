@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2016-12-24 17:38 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-01-06 21:49 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -51,6 +51,9 @@
 
     referenceSearch.setResults(references); 
     referenceSearch.setTotal(hits.getLength());
+    
+    AssetRendererFactory<Reference> referenceAssetRendererFactory = AssetRendererFactoryRegistryUtil
+            .getAssetRendererFactoryByClass(Reference.class);    
 %>
 
 <div class="clearfix">
@@ -87,53 +90,30 @@
     <liferay-ui:search-container-row
         className="ch.inofix.referencemanager.model.Reference"
         escapedModel="true" modelVar="reference">
-        
+
         <%
-            String detailURL = null; 
-        %>
-        
-        
-        <portlet:renderURL var="viewURL">
-            <portlet:param name="bibliographyId"
-                value="<%=String.valueOf(bibliography.getBibliographyId())%>" />
-            <portlet:param name="mvcPath"
-                value="/edit_reference.jsp" />
-            <portlet:param name="redirect"
-                value="<%=currentURL%>" />
-            <portlet:param name="referenceId"
-                value="<%=String.valueOf(reference.getReferenceId())%>" />
-        </portlet:renderURL>
-        
-        <%
+            String detailURL = null;
+
+            AssetRenderer<Reference> referenceAssetRenderer = referenceAssetRendererFactory
+                    .getAssetRenderer(reference.getReferenceId());
+
+            String viewURL = referenceAssetRenderer.getURLViewInContext(liferayPortletRequest,
+                    liferayPortletResponse, null);
+            PortletURL editURL = referenceAssetRenderer.getURLEdit(liferayPortletRequest,
+                    liferayPortletResponse);
+
             if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)) {
-                detailURL = viewURL; 
+                detailURL = viewURL;
             }
-        %>
-    
-        <portlet:renderURL var="editURL">
-            <portlet:param name="bibliographyId"
-                value="<%=String.valueOf(bibliography.getBibliographyId())%>" />
-            <portlet:param name="mvcPath"
-                value="/edit_reference.jsp" />
-            <portlet:param name="redirect"
-                value="<%=currentURL%>" />
-            <portlet:param name="referenceId"
-                value="<%=String.valueOf(reference.getReferenceId())%>" />
-        </portlet:renderURL>
-        
-        <%
+
             if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)) {
-                detailURL = editURL; 
+                detailURL = editURL.toString();
             }
-        %>            
-        
-        
-        <%
-            row.setParameter("detailURL", detailURL);            
+
+            row.setParameter("detailURL", detailURL);
         %>
 
-        <%@ include file="/search_columns.jspf" %>
-        
+        <%@ include file="/search_columns.jspf" %>       
         
         <liferay-ui:search-container-column-text>
 
@@ -144,14 +124,14 @@
                 <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)%>">
     
                     <liferay-ui:icon iconCssClass="icon-eye-open"
-                        message="view" url="<%=viewURL%>" />
+                        message="view" url="<%=viewURL %>" />
     
                 </c:if>
     
                 <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)%>">
     
                     <liferay-ui:icon iconCssClass="icon-edit" message="edit"
-                        url="<%=editURL%>" />
+                        url="<%=editURL.toString() %>" />
     
                 </c:if>
     
