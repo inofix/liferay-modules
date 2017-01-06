@@ -7,7 +7,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.portlet.PortletRequest;
 
 import org.jbibtex.BibTeXEntry;
 import org.jbibtex.Key;
@@ -16,14 +18,18 @@ import org.jbibtex.StringValue.Style;
 import org.jbibtex.Value;
 import org.primefaces.event.TabChangeEvent;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.ReferenceServiceUtil;
 import ch.inofix.referencemanager.service.util.BibTeXUtil;
 
 /**
@@ -41,6 +47,27 @@ public class TabbedView {
     @PostConstruct
     public void init() {
 
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+        long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
+
+        try {
+            if (referenceId > 0) {
+                _reference = ReferenceServiceUtil.getReference(referenceId);
+            }
+        } catch (PortalException e) {
+            FacesMessage msg = new FacesMessage("An error occured while loading the requested reference.");
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+        if (_reference != null) {
+            _bibTeX = _reference.getBibTeX();
+            _citation = _reference.getCitation();
+            _entryType = _reference.getType();
+            _label = _reference.getLabel();
+        }
+
         try {
             _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
             _entryTypes = new ArrayList<String>();
@@ -54,6 +81,10 @@ public class TabbedView {
 
         } catch (JSONException e) {
             _log.error(e);
+        }
+        
+        if (_reference != null) {
+            updateFields();
         }
     }
 
@@ -167,6 +198,14 @@ public class TabbedView {
         this._optionalValues = optionalValues;
     }
 
+    public String getRedirect() {
+        return _redirect;
+    }
+
+    public Reference getReference() {
+        return _reference;
+    }
+
     public String[] getRequiredValues() {
         return _requiredValues;
     }
@@ -183,7 +222,7 @@ public class TabbedView {
         Key key = new Key(_label);
 
         BibTeXEntry bibTeXEntry = null;
-        
+
         // parse src
         if (Validator.isNotNull(_bibTeX)) {
             bibTeXEntry = BibTeXUtil.parse(_bibTeX);
@@ -216,7 +255,7 @@ public class TabbedView {
             _log.info(name + " = " + str);
 
             if (Validator.isNotNull(str)) {
-                bibTeXEntry.removeField(key);                
+                bibTeXEntry.removeField(key);
                 bibTeXEntry.addField(field, value);
             }
         }
@@ -276,6 +315,8 @@ public class TabbedView {
     private List<String> _entryTypes;
     private String _label;
     private String[] _optionalValues;
+    private String _redirect;
+    private Reference _reference;
     private String[] _requiredValues;
 
     private static final Log _log = LogFactoryUtil.getLog(TabbedView.class);

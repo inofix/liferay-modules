@@ -2,20 +2,13 @@
     search_columns.jspf: search_columns of the reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2016-12-29 15:49 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-01-06 21:57 by Christian Berndt
+    Version:    1.0.6
 --%>
-
-<portlet:renderURL var="viewURL">
-    <portlet:param name="mvcPath" value="/edit_reference.jsp" />
-    <portlet:param name="redirect" value="<%=currentURL%>" />
-    <portlet:param name="referenceId"
-        value="<%=String.valueOf(reference.getReferenceId())%>" />
-</portlet:renderURL>
 
 <%
     if (Validator.isNotNull(row.getParameter("detailURL"))) {
-        viewURL = (String) row.getParameter("detailURL"); 
+        detailURL = (String) row.getParameter("detailURL"); 
     }
     
     // TODO: Read columns from configuration.
@@ -25,7 +18,7 @@
 %>
 
 <c:if test='<%="author".equals(column)%>'>
-    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+    <liferay-ui:search-container-column-text href="<%=detailURL%>"
         orderable="true" orderableProperty="author_sortable"
         property="author" />
 </c:if>
@@ -41,25 +34,25 @@
 </c:if>
 
 <c:if test='<%="created".equals(column)%>'>
-    <liferay-ui:search-container-column-date href="<%=viewURL%>"
+    <liferay-ui:search-container-column-date href="<%=detailURL%>"
         name="created" orderable="true"
         orderableProperty="createDate_sortable" property="createDate" />
 </c:if>
 
 <c:if test='<%="label".equals(column)%>'>
-    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+    <liferay-ui:search-container-column-text href="<%=detailURL%>"
         orderable="true" orderableProperty="label_sortable"
         property="label" />
 </c:if>
 
 <c:if test='<%="modified".equals(column)%>'>
-    <liferay-ui:search-container-column-date href="<%=viewURL%>"
+    <liferay-ui:search-container-column-date href="<%=detailURL%>"
         name="modified" orderable="true"
         orderableProperty="modified_sortable" property="modifiedDate" />
 </c:if>
 
 <c:if test='<%="referenceId".equals(column)%>'>
-    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+    <liferay-ui:search-container-column-text href="<%=detailURL%>"
         name="id" orderable="true"
         orderableProperty="referenceId_Number_sortable"
         property="referenceId" valign="top" />
@@ -81,19 +74,19 @@
 </c:if>
 
 <c:if test='<%="title".equals(column)%>'>
-    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+    <liferay-ui:search-container-column-text href="<%=detailURL%>"
         orderable="true" orderableProperty="title_sortable"
         property="title" />
 </c:if>
 
 <c:if test='<%="type".equals(column)%>'>
-    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+    <liferay-ui:search-container-column-text href="<%=detailURL%>"
         orderable="true" orderableProperty="type_sortable"
         property="type" />
 </c:if>
 
 <c:if test='<%="year".equals(column)%>'>
-    <liferay-ui:search-container-column-text href="<%=viewURL%>"
+    <liferay-ui:search-container-column-text href="<%=detailURL%>"
         orderable="true" orderableProperty="year_sortable"
         property="year" />
 </c:if>

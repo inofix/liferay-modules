@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-12-25 14:58 by Christian Berndt
-    Version:    1.1.9
+    Modified:   2017-01-06 22:07 by Christian Berndt
+    Version:    1.2.0
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
