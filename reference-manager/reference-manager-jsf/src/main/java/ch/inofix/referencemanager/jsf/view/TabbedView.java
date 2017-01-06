@@ -30,45 +30,13 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-05 00:34
- * @version 1.0.2
+ * @modified 2017-01-06 14:37
+ * @version 1.0.3
  *
  */
 @ManagedBean
 @ViewScoped
 public class TabbedView {
-
-    public void onEntryTypeChange() {
-
-        _log.info("onEntryTypeChange()");
-        _log.info("_entryType = " + _entryType);
-
-        try {
-            _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
-        } catch (JSONException e) {
-            _log.error(e);
-        }
-    }
-
-    public void saveReference() {
-
-        _log.info("saveReference()");
-        // _log.info("_entryType = " + _entryType);
-
-        updateBibTeX();
-
-        FacesMessage msg = new FacesMessage("Saved Reference");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-
-    }
-
-    public void onTabChange(TabChangeEvent event) {
-
-        _log.info("onTabChange()");
-
-        // updateBibTeX();
-
-    }
 
     @PostConstruct
     public void init() {
@@ -89,6 +57,50 @@ public class TabbedView {
         }
     }
 
+    public void onEntryTypeChange() {
+
+        _log.info("onEntryTypeChange()");
+        _log.info("_entryType = " + _entryType);
+
+        try {
+            _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
+        } catch (JSONException e) {
+            _log.error(e);
+        }
+    }
+
+    public void onFieldChange() {
+        _log.info("onFieldChange()");
+    }
+
+    public void onBibTeXChange() {
+
+    }
+
+    public void onTabChange(TabChangeEvent event) {
+
+        _log.info("onTabChange()");
+
+        // updateBibTeX();
+
+    }
+
+    public void saveReference() {
+
+        _log.info("saveReference()");
+        // _log.info("_entryType = " + _entryType);
+
+        updateBibTeX();
+
+        FacesMessage msg = new FacesMessage("Saved Reference");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+
+    }
+
+    /*
+     * Getters and Setters
+     */
+
     public String getBibTeX() {
         return _bibTeX;
     }
@@ -99,6 +111,10 @@ public class TabbedView {
 
     public String getCitation() {
         return _citation;
+    }
+
+    public boolean isDisabled() {
+        return _disabled;
     }
 
     public String getEntryType() {
@@ -206,6 +222,8 @@ public class TabbedView {
 
     private String _bibTeX;
     private String _citation = "Add a new reference";
+    // TODO: check the user's updatePermission
+    private boolean _disabled = false;
     private JSONObject _entryFields;
     private String _entryType = "article";
     private List<String> _entryTypes;

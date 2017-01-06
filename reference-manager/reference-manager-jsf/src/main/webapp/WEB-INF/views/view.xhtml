@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-05 23:27 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-01-06 14:59 by Christian Berndt
+    Version:    1.0.2
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -27,8 +27,8 @@
 
             <p:outputPanel styleClass="form-group clearfix">
 
-                <p:selectOneMenu id="entryType"
-                    style="min-width: 200px;" styleClass="pull-left"
+                <p:selectOneMenu disabled="#{tabbedView.disabled}"
+                    id="entryType" styleClass="pull-left"
                     value="#{tabbedView.entryType}">
                     <p:ajax listener="#{tabbedView.onEntryTypeChange}"
                         update="@(form)" />
@@ -50,7 +50,8 @@
 
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['label']}" />
-                        <p:inputText styleClass="form-control"
+                        <p:inputText disabled="#{tabbedView.disabled}"
+                            styleClass="form-control"
                             value="#{tabbedView.label}" />
                     </p:outputPanel>
 
@@ -60,8 +61,13 @@
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
-                            <p:inputText styleClass="form-control"
-                                value="#{tabbedView.requiredValues[loop.index]}" />
+                            <p:inputText
+                                disabled="#{tabbedView.disabled}"
+                                styleClass="form-control"
+                                value="#{tabbedView.requiredValues[loop.index]}">
+                                <p:ajax event="blur"
+                                    listener="#{tabbedView.onFieldChange}" />
+                            </p:inputText>
                         </p:outputPanel>
                     </p:repeat>
                 </p:tab>
@@ -72,8 +78,13 @@
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
-                            <p:inputText styleClass="form-control"
-                                value="#{tabbedView.optionalValues[loop.index]}" />
+                            <p:inputText
+                                disabled="#{tabbedView.disabled}"
+                                styleClass="form-control"
+                                value="#{tabbedView.optionalValues[loop.index]}">
+                                <p:ajax event="blur"
+                                    listener="#{tabbedView.onFieldChange}" />
+                            </p:inputText>
                         </p:outputPanel>
                     </p:repeat>
                 </p:tab>
@@ -81,7 +92,9 @@
                 <p:tab title="BibTeX">
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['bibtex']}" />
-                        <p:inputTextarea styleClass="form-control"
+                        <p:inputTextarea
+                            disabled="#{tabbedView.disabled}"
+                            id="bibtex" styleClass="form-control"
                             rows="20" value="#{tabbedView.bibTeX}" />
                     </p:outputPanel>
                 </p:tab>
