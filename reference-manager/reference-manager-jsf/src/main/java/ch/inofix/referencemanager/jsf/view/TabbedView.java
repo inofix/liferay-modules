@@ -10,6 +10,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.jbibtex.BibTeXEntry;
 import org.jbibtex.Key;
@@ -25,10 +26,15 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceServiceUtil;
 import ch.inofix.referencemanager.service.util.BibTeXUtil;
 
@@ -82,7 +88,7 @@ public class TabbedView {
         } catch (JSONException e) {
             _log.error(e);
         }
-        
+
         if (_reference != null) {
             updateFields();
         }
@@ -105,12 +111,10 @@ public class TabbedView {
     }
 
     public void onFieldChange() {
-        _log.info("onFieldChange()");
         updateBibTeX();
     }
 
     public void onBibTeXChange() {
-        _log.info("onBibTeXChange()");
         updateFields();
     }
 
@@ -120,10 +124,28 @@ public class TabbedView {
 
     public void saveReference() {
 
-        _log.info("saveReference()");
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+        HttpServletRequest request = PortalUtil.getHttpServletRequest(portletRequest);
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+        long userId = themeDisplay.getUserId();
+        ServiceContext serviceContext = new ServiceContext();
+        serviceContext.setScopeGroupId(themeDisplay.getScopeGroupId());
 
-        FacesMessage msg = new FacesMessage("Saved Reference");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        try {
+            if (_reference != null) {
+                _reference = ReferenceLocalServiceUtil.updateReference(_reference.getReferenceId(), userId, _bibTeX,
+                        serviceContext);
+            } else {
+                _reference = ReferenceServiceUtil.addReference(userId, _bibTeX, serviceContext);
+            }
+            FacesMessage msg = new FacesMessage("Saved Reference");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } catch (Exception e) {
+            FacesMessage msg = new FacesMessage("An error occurred.");
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
 
     }
 

@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-06 18:26 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-01-07 00:03 by Christian Berndt
+    Version:    1.0.5
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -105,7 +105,7 @@
                         <p:inputTextarea
                             disabled="#{tabbedView.disabled}"
                             id="bibtex" styleClass="form-control"
-                            rows="20" value="#{tabbedView.bibTeX}">
+                            rows="10" value="#{tabbedView.bibTeX}">
                             <f:ajax execute="@form" />
                             <p:ajax event="blur"
                                 listener="#{tabbedView.onBibTeXChange}"
