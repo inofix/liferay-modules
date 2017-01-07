@@ -42,21 +42,24 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-07 13:59
- * @version 1.0.6
+ * @modified 2017-01-07 21:51
+ * @version 1.0.7
  *
  */
 @ManagedBean
 @ViewScoped
-public class TabbedView {
+public class ReferenceEditorView {
 
     @PostConstruct
     public void init() {
 
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+        _bibliographyId = ParamUtil.getLong(portletRequest, "bibliographyId");
         long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
-        _redirect = ParamUtil.getString(portletRequest, "redirect"); 
+        _redirect = ParamUtil.getString(portletRequest, "redirect");
+        
+        _log.info("bibliographyId = " + _bibliographyId);
 
         try {
             if (referenceId > 0) {
@@ -329,6 +332,7 @@ public class TabbedView {
 
     }
 
+    private long _bibliographyId;
     private String _bibTeX;
     private String _citation = "Add a new reference";
     // TODO: check the user's updatePermission
@@ -342,6 +346,6 @@ public class TabbedView {
     private Reference _reference;
     private String[] _requiredValues;
 
-    private static final Log _log = LogFactoryUtil.getLog(TabbedView.class);
+    private static final Log _log = LogFactoryUtil.getLog(ReferenceEditorView.class);
 
 }
