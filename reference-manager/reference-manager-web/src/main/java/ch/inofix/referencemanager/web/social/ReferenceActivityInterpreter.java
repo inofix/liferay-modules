@@ -7,6 +7,7 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -24,11 +25,13 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
 /**
  * @author Christian Berndt
  * @created 2016-12-04 13:20
- * @modified 2017-01-07 00:12
- * @version 1.0.1
+ * @modified 2017-01-07 14:28
+ * @version 1.0.2
  */
-@Component(property = {
-        "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER }, service = SocialActivityInterpreter.class)
+@Component(
+    property = {"javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER }, 
+    service = SocialActivityInterpreter.class
+)
 public class ReferenceActivityInterpreter extends BaseSocialActivityInterpreter {
 
     @Override
@@ -44,8 +47,12 @@ public class ReferenceActivityInterpreter extends BaseSocialActivityInterpreter 
 
         AssetRenderer<?> assetRenderer = assetRendererFactory.getAssetRenderer(activity.getClassPK());
 
-        return assetRenderer.getURLViewInContext(serviceContext.getLiferayPortletRequest(),
+        String path = assetRenderer.getURLViewInContext(serviceContext.getLiferayPortletRequest(),
                 serviceContext.getLiferayPortletResponse(), null);
+
+        path = HttpUtil.addParameter(path, "redirect", serviceContext.getCurrentURL());
+
+        return path;
     }
 
     @Override
