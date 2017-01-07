@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-07 14:08 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-01-07 21:51 by Christian Berndt
+    Version:    1.0.7
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -20,60 +20,60 @@
     <h:body>
         <h:form id="form">
 
-            <blockquote>#{tabbedView.citation}</blockquote>
+            <blockquote>#{referenceEditorView.citation}</blockquote>
 
             <p:messages id="messages" showDetail="false"
                 autoUpdate="true" closable="true" />
 
             <p:outputPanel styleClass="form-group clearfix">
 
-                <p:selectOneMenu disabled="#{tabbedView.disabled}"
+                <p:selectOneMenu disabled="#{referenceEditorView.disabled}"
                     id="entryType" styleClass="pull-left"
-                    value="#{tabbedView.entryType}">
-                    <p:ajax listener="#{tabbedView.onEntryTypeChange}"
+                    value="#{referenceEditorView.entryType}">
+                    <p:ajax listener="#{referenceEditorView.onEntryTypeChange}"
                         update="@(form)" />
-                    <f:selectItems value="#{tabbedView.entryTypes}" />
+                    <f:selectItems value="#{referenceEditorView.entryTypes}" />
                 </p:selectOneMenu>
 
                 <h:outputLink
-                    rendered="${not empty tabbedView.redirect}"
+                    rendered="${not empty referenceEditorView.redirect}"
                     styleClass="btn btn-default pull-right"
-                    value="#{tabbedView.redirect}">#{i18n['back']}</h:outputLink>
+                    value="#{referenceEditorView.redirect}">#{i18n['back']}</h:outputLink>
 
             </p:outputPanel>
 
             <p:tabView id="tabs" dynamic="true" cache="true">
 
                 <p:ajax event="tabChange"
-                    listener="#{tabbedView.onTabChange}" />
+                    listener="#{referenceEditorView.onTabChange}" />
 
                 <p:tab title="#{i18n['required-fields']}">
 
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['label']}" />
-                        <p:inputText disabled="#{tabbedView.disabled}"
+                        <p:inputText disabled="#{referenceEditorView.disabled}"
                             id="label" styleClass="form-control"
-                            value="#{tabbedView.label}">
+                            value="#{referenceEditorView.label}">
                             <f:ajax execute="@form" />
                             <p:ajax event="blur"
-                                listener="#{tabbedView.onFieldChange}"
+                                listener="#{referenceEditorView.onFieldChange}"
                                 update=":form:tabs:bibtex" />
                         </p:inputText>
                     </p:outputPanel>
 
                     <p:repeat id="required-fields"
-                        value="#{tabbedView.requiredFields}" var="field"
+                        value="#{referenceEditorView.requiredFields}" var="field"
                         varStatus="loop">
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
                             <p:inputText
-                                disabled="#{tabbedView.disabled}"
+                                disabled="#{referenceEditorView.disabled}"
                                 styleClass="form-control"
-                                value="#{tabbedView.requiredValues[loop.index]}">
+                                value="#{referenceEditorView.requiredValues[loop.index]}">
                                 <f:ajax execute="@form" />
                                 <p:ajax event="blur"
-                                    listener="#{tabbedView.onFieldChange}"
+                                    listener="#{referenceEditorView.onFieldChange}"
                                     update=":form:tabs:bibtex" />
                             </p:inputText>
                         </p:outputPanel>
@@ -82,18 +82,18 @@
 
                 <p:tab id="optional-fields"
                     title="#{i18n['optional-fields']}">
-                    <p:repeat value="#{tabbedView.optionalFields}"
+                    <p:repeat value="#{referenceEditorView.optionalFields}"
                         var="field" varStatus="loop">
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
                             <p:inputText
-                                disabled="#{tabbedView.disabled}"
+                                disabled="#{referenceEditorView.disabled}"
                                 styleClass="form-control"
-                                value="#{tabbedView.optionalValues[loop.index]}">
+                                value="#{referenceEditorView.optionalValues[loop.index]}">
                                 <f:ajax execute="@form" />
                                 <p:ajax event="blur"
-                                    listener="#{tabbedView.onFieldChange}"
+                                    listener="#{referenceEditorView.onFieldChange}"
                                     update=":form:tabs:bibtex" />
                             </p:inputText>
                         </p:outputPanel>
@@ -104,12 +104,12 @@
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['bibtex']}" />
                         <p:inputTextarea
-                            disabled="#{tabbedView.disabled}"
+                            disabled="#{referenceEditorView.disabled}"
                             id="bibtex" styleClass="form-control"
-                            rows="10" value="#{tabbedView.bibTeX}">
+                            rows="10" value="#{referenceEditorView.bibTeX}">
                             <f:ajax execute="@form" />
                             <p:ajax event="blur"
-                                listener="#{tabbedView.onBibTeXChange}"
+                                listener="#{referenceEditorView.onBibTeXChange}"
                                 update="@(form)" />
                         </p:inputTextarea>
                     </p:outputPanel>
@@ -118,12 +118,12 @@
             </p:tabView>
 
             <p:outputPanel>
-                <p:commandButton action="#{tabbedView.saveReference}"
+                <p:commandButton action="#{referenceEditorView.saveReference}"
                     styleClass="btn" update="@(form)"
                     value="#{i18n['save']}" />
                 <h:outputLink
-                    rendered="${not empty tabbedView.redirect}"
-                    styleClass="btn" value="#{tabbedView.redirect}">#{i18n['cancel']}</h:outputLink>
+                    rendered="${not empty referenceEditorView.redirect}"
+                    styleClass="btn" value="#{referenceEditorView.redirect}">#{i18n['cancel']}</h:outputLink>
             </p:outputPanel>
         </h:form>
     </h:body>
