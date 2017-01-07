@@ -42,8 +42,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-06 18:15
- * @version 1.0.5
+ * @modified 2017-01-07 13:59
+ * @version 1.0.6
  *
  */
 @ManagedBean
@@ -56,6 +56,7 @@ public class TabbedView {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
         long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
+        _redirect = ParamUtil.getString(portletRequest, "redirect"); 
 
         try {
             if (referenceId > 0) {
