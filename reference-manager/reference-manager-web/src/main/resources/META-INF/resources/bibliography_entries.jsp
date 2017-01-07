@@ -2,58 +2,62 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-06 21:49 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-01-07 13:47 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
-    String backURL = ParamUtil.getString(request, "backURL");
     String bibliographyId = ParamUtil.getString(request, "bibliographyId");
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
-    
+
     currentURL = PortalUtil.getCurrentURL(request);
-    
+
     Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
-    boolean hasUpdatePermission = BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.UPDATE);
+    boolean hasUpdatePermission = BibliographyPermission.contains(permissionChecker, bibliography,
+            BibliographyActionKeys.UPDATE);
 
     SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
-    
-    PortletURL iteratorURL = referenceSearch.getIteratorURL(); 
-    iteratorURL.setParameter("bibliographyId", bibliographyId); 
-    iteratorURL.setParameter("mvcPath", "/edit_bibliography.jsp"); 
-    
-    boolean reverse = false; 
+
+    PortletURL iteratorURL = referenceSearch.getIteratorURL();
+    iteratorURL.setParameter("bibliographyId", bibliographyId);
+    iteratorURL.setParameter("mvcPath", "/edit_bibliography.jsp");
+
+    boolean reverse = false;
     if (referenceSearch.getOrderByType().equals("desc")) {
         reverse = true;
     }
-    
+
     Sort sort = new Sort(referenceSearch.getOrderByCol(), reverse);
-    
+
     Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
             referenceSearch.getStart(), referenceSearch.getEnd(), sort);
-    
+
     List<Document> documents = ListUtil.toList(hits.getDocs());
-    
+
     List<Reference> references = new ArrayList<Reference>();
-    
+
     for (Document document : documents) {
         try {
             long referenceId = GetterUtil.getLong(document.get("entryClassPK"));
             Reference reference = ReferenceServiceUtil.getReference(referenceId);
-            references.add(reference); 
+            references.add(reference);
         } catch (Exception e) {
-            System.out.println(e); 
+            System.out.println(e);
         }
     }
 
-    referenceSearch.setResults(references); 
+    referenceSearch.setResults(references);
     referenceSearch.setTotal(hits.getLength());
-    
+
     AssetRendererFactory<Reference> referenceAssetRendererFactory = AssetRendererFactoryRegistryUtil
-            .getAssetRendererFactoryByClass(Reference.class);    
+            .getAssetRendererFactoryByClass(Reference.class);
+
+    PortletURL addReferenceURL = referenceAssetRendererFactory.getURLAdd(liferayPortletRequest,
+            liferayPortletResponse);
+    addReferenceURL.setParameter("redirect", currentURL);
 %>
 
 <div class="clearfix">
@@ -67,18 +71,12 @@
     </div>
 
     <div class="pull-right">
-        <portlet:renderURL var="editReferenceURL">
-            <portlet:param name="bibliographyId"
-                value="<%=bibliographyId%>" />
-            <portlet:param name="mvcPath" value="/edit_reference.jsp" />
-            <portlet:param name="redirect" value="<%=currentURL%>" />
-        </portlet:renderURL>
-
         <aui:button cssClass="btn-success"
             disabled="<%=!hasUpdatePermission%>"
-            href="<%=editReferenceURL.toString()%>"
+            href="<%=addReferenceURL.toString()%>"
             value="add-reference" />
     </div>
+    
 </div>
 
 <liferay-ui:search-container
