@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-07 00:03 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-01-07 14:08 by Christian Berndt
+    Version:    1.0.6
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -35,9 +35,10 @@
                     <f:selectItems value="#{tabbedView.entryTypes}" />
                 </p:selectOneMenu>
 
-                <h:link styleClass="btn btn-default pull-right"
-                    value="Back">
-                </h:link>
+                <h:outputLink
+                    rendered="${not empty tabbedView.redirect}"
+                    styleClass="btn btn-default pull-right"
+                    value="#{tabbedView.redirect}">#{i18n['back']}</h:outputLink>
 
             </p:outputPanel>
 
@@ -116,12 +117,13 @@
 
             </p:tabView>
 
-            <p:outputPanel styleClass="btn-group">
+            <p:outputPanel>
                 <p:commandButton action="#{tabbedView.saveReference}"
-                    styleClass="btn btn-default" update="@(form)"
+                    styleClass="btn btn-success" update="@(form)"
                     value="#{i18n['save']}" />
-                <p:commandButton value="#{i18n['cancel']}"
-                    styleClass="btn" />
+                <h:outputLink
+                    rendered="${not empty tabbedView.redirect}"
+                    styleClass="btn" value="#{tabbedView.redirect}">#{i18n['cancel']}</h:outputLink>
             </p:outputPanel>
         </h:form>
     </h:body>
