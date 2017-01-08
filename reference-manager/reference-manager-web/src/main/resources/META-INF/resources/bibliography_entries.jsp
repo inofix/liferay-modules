@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-08 15:39 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2017-01-08 15:46 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -121,3 +121,7 @@
     <liferay-ui:search-iterator/>
                 
 </liferay-ui:search-container>
+
+<liferay-ui:asset-tags-summary
+    classPK="<%=bibliography.getBibliographyId()%>"
+    className="<%=Bibliography.class.getName()%>" />
