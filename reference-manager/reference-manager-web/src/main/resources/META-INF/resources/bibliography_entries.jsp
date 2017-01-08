@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-07 13:47 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-01-07 21:45 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -32,8 +32,8 @@
 
     Sort sort = new Sort(referenceSearch.getOrderByCol(), reverse);
 
-    Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
-            referenceSearch.getStart(), referenceSearch.getEnd(), sort);
+    Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), 0, keywords,
+            bibliography.getBibliographyId(), referenceSearch.getStart(), referenceSearch.getEnd(), sort);
 
     List<Document> documents = ListUtil.toList(hits.getDocs());
 
@@ -57,6 +57,7 @@
 
     PortletURL addReferenceURL = referenceAssetRendererFactory.getURLAdd(liferayPortletRequest,
             liferayPortletResponse);
+    addReferenceURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
     addReferenceURL.setParameter("redirect", currentURL);
 %>
 

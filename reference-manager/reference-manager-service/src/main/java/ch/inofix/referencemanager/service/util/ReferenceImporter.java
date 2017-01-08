@@ -34,8 +34,8 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2016-12-17 17:48
- * @version 1.0.1
+ * @modified 2017-01-07 22:37
+ * @version 1.0.2
  */
 public class ReferenceImporter {
 
@@ -130,7 +130,7 @@ public class ReferenceImporter {
                 // TODO: check whether a reference with the same uid has
                 // already been uploaded
 
-                ReferenceServiceUtil.addReference(userId, bibTeX, new String[] { uuid }, serviceContext);
+                ReferenceServiceUtil.addReference(userId, bibTeX, new long[] { bibliographyId }, serviceContext);
 
                 if (numProcessed % 100 == 0 && numProcessed > 0) {
 

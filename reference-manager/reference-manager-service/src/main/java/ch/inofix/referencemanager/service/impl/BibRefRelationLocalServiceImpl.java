@@ -39,8 +39,8 @@ import ch.inofix.referencemanager.service.base.BibRefRelationLocalServiceBaseImp
  *
  * @author Christian Berndt
  * @created 2016-12-03 15:33
- * @modified 2016-12-03 15:33
- * @version 1.0.0
+ * @modified 2017-01-07 22:18
+ * @version 1.0.1
  * @see BibRefRelationLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil
  */
@@ -54,16 +54,12 @@ public class BibRefRelationLocalServiceImpl extends BibRefRelationLocalServiceBa
      * access the bib ref relation local service.
      */
 
-    public List<BibRefRelation> getBibRefRelationsByBibliographyUuid(String bibliographyUuid) throws PortalException {
-
-        return bibRefRelationPersistence.findByBG_BU(bibliographyUuid);
-
+    public List<BibRefRelation> getBibRefRelationsByBibliographyId(long bibliographyId) {
+        return bibRefRelationPersistence.findByBibliographyId(bibliographyId); 
     }
-
-    public List<BibRefRelation> getBibRefRelationsByReferenceUuid(String referenceUuid) throws PortalException {
-
-        return bibRefRelationPersistence.findByRG_RU(referenceUuid);
-
+    
+    public List<BibRefRelation> getBibRefRelationsByReferenceId(long referenceId) {
+        return bibRefRelationPersistence.findByReferenceId(referenceId); 
     }
 
 }

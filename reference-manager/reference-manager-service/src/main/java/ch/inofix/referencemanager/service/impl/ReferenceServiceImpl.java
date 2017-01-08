@@ -56,8 +56,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-12-17 00:12
- * @version 1.0.7
+ * @modified 2017-01-07 22:43
+ * @version 1.0.8
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -98,13 +98,13 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      * @since 1.0.4
      * @throws PortalException
      */
-    public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
+    public Reference addReference(long userId, String bibTeX, long[] bibliographyIds, ServiceContext serviceContext)
             throws PortalException {
 
         ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
-        return referenceLocalService.addReference(userId, bibTeX, bibliographyUuids, serviceContext);
+        return referenceLocalService.addReference(userId, bibTeX, bibliographyIds, serviceContext);
     }
 
     /**
@@ -186,9 +186,15 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
     }
 
     /**
-     * 
+     * @param userId
+     * @param groupId
+     * @param keywords
+     * @param bibliographyId
+     * @param start
+     * @param end
+     * @param sort
      */
-    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+    public Hits search(long userId, long groupId, String keywords, long bibliographyId, int start, int end, Sort sort)
             throws PortalException {
 
         if (sort == null) {
@@ -214,6 +220,8 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
         searchContext.setSorts(sort);
         searchContext.setStart(start);
         searchContext.setUserId(userId);
+
+        searchContext.setAttribute("bibliographyId", bibliographyId);
 
         return indexer.search(searchContext);
 
@@ -281,6 +289,25 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
         ReferencePermission.check(getPermissionChecker(), referenceId, ActionKeys.UPDATE);
 
         return referenceLocalService.updateReference(referenceId, userId, bibTeX, serviceContext);
+    }
+
+    /**
+     * 
+     * @param referenceId
+     * @param userId
+     * @param bibTeX
+     * @param bibliographyIds
+     * @param serviceContext
+     * @return
+     * @since 1.0.8
+     * @throws PortalException
+     */
+    public Reference updateReference(long referenceId, long userId, String bibTeX, long[] bibliographyIds,
+            ServiceContext serviceContext) throws PortalException {
+
+        ReferencePermission.check(getPermissionChecker(), referenceId, ActionKeys.UPDATE);
+
+        return referenceLocalService.updateReference(referenceId, userId, bibTeX, bibliographyIds, serviceContext);
     }
 
     private static final Log _log = LogFactoryUtil.getLog(ReferenceServiceImpl.class);
