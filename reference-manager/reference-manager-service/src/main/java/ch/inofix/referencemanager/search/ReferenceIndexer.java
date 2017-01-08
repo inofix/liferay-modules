@@ -38,8 +38,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-18 01:15
- * @modified 2017-01-07 22:29
- * @version 1.0.6
+ * @modified 2017-01-08 15:17
+ * @version 1.0.7
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -129,9 +129,13 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
     @Override
     public void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) throws Exception {
 
-        BooleanQuery booleanQuery = new BooleanQueryImpl();
-        booleanQuery.addExactTerm("bibliographyId", (Long) searchContext.getAttribute("bibliographyId"));
-        fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
+        long bibliographyId = (Long) searchContext.getAttribute("bibliographyId");
+
+        if (bibliographyId > 0) {
+            BooleanQuery booleanQuery = new BooleanQueryImpl();
+            booleanQuery.addExactTerm("bibliographyId", bibliographyId);
+            fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
+        }
     }
 
     protected void reindexReferences(long companyId) throws PortalException {
