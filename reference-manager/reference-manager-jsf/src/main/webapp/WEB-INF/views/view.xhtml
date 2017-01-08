@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-07 21:51 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-01-08 19:13 by Christian Berndt
+    Version:    1.0.8
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -119,6 +119,7 @@
 
             <p:outputPanel>
                 <p:commandButton action="#{referenceEditorView.saveReference}"
+                    disabled="#{referenceEditorView.disabled}"
                     styleClass="btn" update="@(form)"
                     value="#{i18n['save']}" />
                 <h:outputLink
