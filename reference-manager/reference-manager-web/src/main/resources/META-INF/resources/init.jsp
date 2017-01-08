@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2017-01-06 22:07 by Christian Berndt
-    Version:    1.2.0
+    Modified:   2017-01-08 15:09 by Christian Berndt
+    Version:    1.2.1
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -52,6 +52,7 @@
 <%@page import="com.liferay.portal.kernel.upload.UploadException"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.PortalUtil"%>

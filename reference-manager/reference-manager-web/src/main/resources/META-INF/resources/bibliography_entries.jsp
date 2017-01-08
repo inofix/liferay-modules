@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-07 21:45 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-01-08 15:08 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -98,8 +98,11 @@
 
             String viewURL = referenceAssetRenderer.getURLViewInContext(liferayPortletRequest,
                     liferayPortletResponse, null);
+            viewURL = HttpUtil.addParameter(viewURL, "redirect", currentURL);
+            
             PortletURL editURL = referenceAssetRenderer.getURLEdit(liferayPortletRequest,
                     liferayPortletResponse);
+            editURL.setParameter("redirect", currentURL); 
 
             if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)) {
                 detailURL = viewURL;
@@ -108,7 +111,7 @@
             if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)) {
                 detailURL = editURL.toString();
             }
-
+            
             row.setParameter("detailURL", detailURL);
         %>
 
