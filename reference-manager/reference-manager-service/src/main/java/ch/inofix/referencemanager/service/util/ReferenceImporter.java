@@ -26,16 +26,14 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import ch.inofix.referencemanager.model.Bibliography;
-import ch.inofix.referencemanager.service.BibliographyServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceServiceUtil;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-07 22:37
- * @version 1.0.2
+ * @modified 2017-01-08 16:17
+ * @version 1.0.3
  */
 public class ReferenceImporter {
 
@@ -43,7 +41,7 @@ public class ReferenceImporter {
             File file) throws PortalException {
 
         User user = UserLocalServiceUtil.getUser(userId);
-        
+
         // Import into the user's group
         Group group = user.getGroup();
         if (group != null) {
@@ -68,6 +66,12 @@ public class ReferenceImporter {
         serviceContext.setScopeGroupId(groupId);
         serviceContext.setUserId(userId);
 
+        long[] bibliographyIds = new long[0];
+
+        if (bibliographyId > 0) {
+            bibliographyIds = new long[] { bibliographyId };
+        }
+
         try {
 
             int numProcessed = 0;
@@ -89,31 +93,13 @@ public class ReferenceImporter {
 
             List<BibTeXObject> objects = database.getObjects();
 
-            String uuid = null;
-
             for (BibTeXObject object : objects) {
 
                 if (object.getClass() == BibTeXComment.class) {
                     BibTeXComment comment = (BibTeXComment) object;
                     _log.info(comment.getValue().toUserString());
-
-                    // TODO: read uuid from comment
                 }
             }
-
-            Bibliography bibliography = null;
-
-            // TODO
-            if (uuid != null) {
-                bibliography = BibliographyServiceUtil.getBibliography(uuid, groupId);
-            } else if (bibliographyId > 0) {
-                bibliography = BibliographyServiceUtil.getBibliography(bibliographyId);
-            } else {
-                bibliography = BibliographyServiceUtil.addBibliography(userId, title, null, urlTitle, serviceContext);
-            }
-
-            bibliographyId = bibliography.getBibliographyId();
-            uuid = bibliography.getUuid();
 
             _log.info("Start import");
 
@@ -130,7 +116,7 @@ public class ReferenceImporter {
                 // TODO: check whether a reference with the same uid has
                 // already been uploaded
 
-                ReferenceServiceUtil.addReference(userId, bibTeX, new long[] { bibliographyId }, serviceContext);
+                ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds, serviceContext);
 
                 if (numProcessed % 100 == 0 && numProcessed > 0) {
 

@@ -44,7 +44,9 @@ import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
@@ -73,8 +75,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-01-07 22:32
- * @version 1.0.3
+ * @modified 2017-01-08 16:35
+ * @version 1.0.4
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -101,7 +103,18 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
-        long groupId = serviceContext.getScopeGroupId();
+        
+        long groupId = GetterUtil.getLong(PropsUtil.get("reference.common.group"));
+        
+        if (groupId <= 0) {
+            
+            // No reference.common.group configured      
+            groupId = serviceContext.getScopeGroupId();
+        
+        } else {
+            
+            serviceContext.setScopeGroupId(groupId);
+        }
 
         // TODO: validate bibTeX
         // validate(bibTeX);
@@ -124,7 +137,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         // BibRefRelation
 
         for (long bibliographyId : bibliographyIds) {
-
+            
             Bibliography bibliography = bibliographyLocalService.getBibliography(bibliographyId); 
 
             long bibRefRelationId = counterLocalService.increment();
