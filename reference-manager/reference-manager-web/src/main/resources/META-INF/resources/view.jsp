@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2016-12-15 00:13 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2017-01-08 15:40 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -27,7 +27,7 @@
     
     ReferenceSearchTerms searchTerms = (ReferenceSearchTerms) referenceSearch.getSearchTerms();
 
-    Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), 0, keywords,
+    Hits hits = ReferenceServiceUtil.search(themeDisplay.getUserId(), 0, keywords, 0,
             referenceSearch.getStart(), referenceSearch.getEnd(), sort);
     
     List<Document> documents = ListUtil.toList(hits.getDocs());
@@ -46,6 +46,13 @@
 
     referenceSearch.setResults(references); 
     referenceSearch.setTotal(hits.getLength());
+    
+    AssetRendererFactory<Reference> referenceAssetRendererFactory = AssetRendererFactoryRegistryUtil
+            .getAssetRendererFactoryByClass(Reference.class);
+
+    PortletURL addReferenceURL = referenceAssetRendererFactory.getURLAdd(liferayPortletRequest,
+            liferayPortletResponse);
+    addReferenceURL.setParameter("redirect", currentURL);    
 %>
 
 <liferay-ui:error exception="<%= PrincipalException.class %>"
@@ -67,13 +74,7 @@
 	<c:otherwise>
 
         <aui:button-row>
-            <portlet:renderURL var="addReferenceURL">
-                <portlet:param name="mvcPath"
-                    value="/edit_reference.jsp" />
-                <portlet:param name="redirect" value="<%=currentURL%>" />
-            </portlet:renderURL>
-
-            <aui:button href="<%=addReferenceURL%>"
+            <aui:button href="<%=addReferenceURL.toString() %>"
                 cssClass="btn-primary"
                 value="add-reference"
                 disabled="<%= !hasAddPermission %>" />
@@ -96,7 +97,7 @@
                 <%@ include file="/search_columns.jspf" %>
  
                 <liferay-ui:search-container-column-jsp cssClass="entry-action"
-                    path="/reference_action.jsp" valign="top" />               
+                     path="/reference_action.jsp" valign="top" />
 
 			</liferay-ui:search-container-row>
 

@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-08 15:08 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-01-08 15:39 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -89,31 +89,6 @@
     <liferay-ui:search-container-row
         className="ch.inofix.referencemanager.model.Reference"
         escapedModel="true" modelVar="reference">
-
-        <%
-            String detailURL = null;
-
-            AssetRenderer<Reference> referenceAssetRenderer = referenceAssetRendererFactory
-                    .getAssetRenderer(reference.getReferenceId());
-
-            String viewURL = referenceAssetRenderer.getURLViewInContext(liferayPortletRequest,
-                    liferayPortletResponse, null);
-            viewURL = HttpUtil.addParameter(viewURL, "redirect", currentURL);
-            
-            PortletURL editURL = referenceAssetRenderer.getURLEdit(liferayPortletRequest,
-                    liferayPortletResponse);
-            editURL.setParameter("redirect", currentURL); 
-
-            if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)) {
-                detailURL = viewURL;
-            }
-
-            if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)) {
-                detailURL = editURL.toString();
-            }
-            
-            row.setParameter("detailURL", detailURL);
-        %>
 
         <%@ include file="/search_columns.jspf" %>       
         
