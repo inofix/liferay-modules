@@ -42,8 +42,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-08 18:00
- * @version 1.0.9
+ * @modified 2017-01-08 19:05
+ * @version 1.1.0
  *
  */
 @ManagedBean
@@ -58,6 +58,11 @@ public class ReferenceEditorView {
         _bibliographyId = ParamUtil.getLong(portletRequest, "bibliographyId");
         long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
         _redirect = ParamUtil.getString(portletRequest, "redirect");
+        ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+        
+        if (!themeDisplay.isSignedIn()) {
+           _disabled = true;  
+        }
         
         try {
             if (referenceId > 0) {
