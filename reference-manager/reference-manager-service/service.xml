@@ -91,21 +91,19 @@
 
         <!-- Other fields -->
 
-        <column name="bibliographyGroupId"  type="long"/>
-        <column name="bibliographyUuid" type="String" />
-        <column name="referenceGroupId"  type="long"/>
-        <column name="referenceUuid" type="String" />
+        <column name="bibliographyId" type="long" />
+        <column name="referenceId" type="long" />
 
         <!-- Order -->
 
         <!-- Finder methods -->
      
-        <finder name="BG_BU" return-type="Collection">
-            <finder-column name="bibliographyUuid" />
+        <finder name="BibliographyId" return-type="Collection">
+            <finder-column name="bibliographyId" />
         </finder>
         
-        <finder name="RG_RU" return-type="Collection">
-            <finder-column name="referenceUuid" />
+        <finder name="ReferenceId" return-type="Collection">
+            <finder-column name="referenceId" />
         </finder>
 
         <!-- References -->

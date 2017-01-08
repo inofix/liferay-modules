@@ -42,8 +42,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-07 21:51
- * @version 1.0.7
+ * @modified 2017-01-08 14:39
+ * @version 1.0.8
  *
  */
 @ManagedBean
@@ -59,8 +59,6 @@ public class ReferenceEditorView {
         long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
         _redirect = ParamUtil.getString(portletRequest, "redirect");
         
-        _log.info("bibliographyId = " + _bibliographyId);
-
         try {
             if (referenceId > 0) {
                 _reference = ReferenceServiceUtil.getReference(referenceId);
@@ -138,10 +136,10 @@ public class ReferenceEditorView {
 
         try {
             if (_reference != null) {
-                _reference = ReferenceLocalServiceUtil.updateReference(_reference.getReferenceId(), userId, _bibTeX,
+                _reference = ReferenceLocalServiceUtil.updateReference(_reference.getReferenceId(), userId, _bibTeX, new long[] {_bibliographyId},
                         serviceContext);
             } else {
-                _reference = ReferenceServiceUtil.addReference(userId, _bibTeX, serviceContext);
+                _reference = ReferenceServiceUtil.addReference(userId, _bibTeX, new long[] {_bibliographyId}, serviceContext);
             }
             FacesMessage msg = new FacesMessage("Saved Reference");
             FacesContext.getCurrentInstance().addMessage(null, msg);

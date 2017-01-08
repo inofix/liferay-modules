@@ -16,11 +16,15 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -34,8 +38,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-18 01:15
- * @modified 2016-12-29 15:49
- * @version 1.0.5
+ * @modified 2017-01-07 22:29
+ * @version 1.0.6
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -74,7 +78,7 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
         Document document = getBaseModelDocument(CLASS_NAME, reference);
         document.addText(Field.CONTENT, reference.getBibTeX());
         document.addTextSortable("author", reference.getAuthor());
-        document.addKeyword("bibliographyUuid", reference.getBibliographyUuids());
+        document.addKeyword("bibliographyId", reference.getBibliographyIds());
         document.addTextSortable("label", reference.getLabel());
         document.addNumberSortable("referenceId", reference.getReferenceId());
         document.addTextSortable(Field.TITLE, reference.getCitation());
@@ -120,6 +124,14 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
 
         IndexWriterHelperUtil.updateDocument(getSearchEngineId(), reference.getCompanyId(), document,
                 isCommitImmediately());
+    }
+    
+    @Override
+    public void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) throws Exception {
+
+        BooleanQuery booleanQuery = new BooleanQueryImpl();
+        booleanQuery.addExactTerm("bibliographyId", (Long) searchContext.getAttribute("bibliographyId"));
+        fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
     }
 
     protected void reindexReferences(long companyId) throws PortalException {

@@ -73,8 +73,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2016-12-17 00:19
- * @version 1.0.2
+ * @modified 2017-01-07 22:32
+ * @version 1.0.3
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -89,15 +89,15 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Override
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
 
-        return addReference(userId, bibTeX, new String[0], serviceContext);
+        return addReference(userId, bibTeX, new long[0], serviceContext);
 
     }
 
     @Indexable(type = IndexableType.REINDEX)
     @Override
-    public Reference addReference(long userId, String bibTeX, String[] bibliographyUuids, ServiceContext serviceContext)
+    public Reference addReference(long userId, String bibTeX, long[] bibliographyIds, ServiceContext serviceContext)
             throws PortalException {
-
+        
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
@@ -123,10 +123,9 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         // BibRefRelation
 
-        for (String bibliographyUuid : bibliographyUuids) {
+        for (long bibliographyId : bibliographyIds) {
 
-            Bibliography bibliography = bibliographyLocalService.getBibliographyByUuidAndGroupId(bibliographyUuid,
-                    groupId);
+            Bibliography bibliography = bibliographyLocalService.getBibliography(bibliographyId); 
 
             long bibRefRelationId = counterLocalService.increment();
             BibRefRelation bibRefRelation = bibRefRelationPersistence.create(bibRefRelationId);
@@ -136,10 +135,8 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
             bibRefRelation.setUserId(bibliography.getUserId());
             bibRefRelation.setUserName(bibliography.getUserName());
 
-            bibRefRelation.setBibliographyGroupId(bibliography.getGroupId());
-            bibRefRelation.setBibliographyUuid(bibliographyUuid);
-            bibRefRelation.setReferenceGroupId(reference.getGroupId());
-            bibRefRelation.setReferenceUuid(reference.getUuid());
+            bibRefRelation.setBibliographyId(bibliography.getBibliographyId());
+            bibRefRelation.setReferenceId(referenceId);
 
             bibRefRelationPersistence.update(bibRefRelation);
 
@@ -310,7 +307,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
             ReferenceImporter referenceImporter = new ReferenceImporter();
 
             referenceImporter.importReferences(userId, groupId, privateLayout, parameterMap, file);
-            
+
         } catch (PortalException pe) {
             Throwable cause = pe.getCause();
 
@@ -399,15 +396,14 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         taskContextMap.put("groupId", groupId);
         taskContextMap.put("parameterMap", (Serializable) parameterMap);
         taskContextMap.put("privateLayout", privateLayout);
-        
-        BackgroundTask backgroundTask = backgroundTaskmanager.addBackgroundTask(                userId, groupId, taskName,
-                ReferenceImportBackgroundTaskExecutor.class.getName(),
-                taskContextMap, new ServiceContext());
-        
+
+        BackgroundTask backgroundTask = backgroundTaskmanager.addBackgroundTask(userId, groupId, taskName,
+                ReferenceImportBackgroundTaskExecutor.class.getName(), taskContextMap, new ServiceContext());
+
         backgroundTask.addAttachment(userId, file.getName(), file);
-        
+
         return backgroundTask.getBackgroundTaskId();
-                
+
     }
 
     @Override
@@ -444,9 +440,14 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(), assetLinkEntryIds,
                 AssetLinkConstants.TYPE_RELATED);
     }
+    
+    public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
+            throws PortalException {
+        return updateReference(referenceId, userId, bibTeX, new long[0], serviceContext);
+    }
 
     @Indexable(type = IndexableType.REINDEX)
-    public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
+    public Reference updateReference(long referenceId, long userId, String bibTeX, long[] bibliographyIds, ServiceContext serviceContext)
             throws PortalException {
 
         // Reference
@@ -469,6 +470,27 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setBibTeX(bibTeX);
 
         referencePersistence.update(reference);
+        
+        // BibRefRelation
+
+        for (long bibliographyId : bibliographyIds) {
+
+            Bibliography bibliography = bibliographyLocalService.getBibliography(bibliographyId); 
+
+            long bibRefRelationId = counterLocalService.increment();
+            BibRefRelation bibRefRelation = bibRefRelationPersistence.create(bibRefRelationId);
+
+            bibRefRelation.setGroupId(bibliography.getGroupId());
+            bibRefRelation.setCompanyId(bibliography.getCompanyId());
+            bibRefRelation.setUserId(bibliography.getUserId());
+            bibRefRelation.setUserName(bibliography.getUserName());
+
+            bibRefRelation.setBibliographyId(bibliography.getBibliographyId());
+            bibRefRelation.setReferenceId(referenceId);
+
+            bibRefRelationPersistence.update(bibRefRelation);
+
+        }
 
         // Resources
 
@@ -507,7 +529,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         resourceLocalService.updateResources(reference.getCompanyId(), reference.getGroupId(),
                 Reference.class.getName(), reference.getReferenceId(), groupPermissions, guestPermissions);
     }
-    
+
     @ServiceReference(type = BackgroundTaskManager.class)
     protected BackgroundTaskManager backgroundTaskmanager;
 

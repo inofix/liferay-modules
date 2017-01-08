@@ -53,8 +53,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2016-12-28 18:45
- * @version 1.0.7
+ * @modified 2017-01-07 22:26
+ * @version 1.0.8
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -89,22 +89,19 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     }
 
-    public String[] getBibliographyUuids() throws PortalException {
+    public long[] getBibliographyIds() throws PortalException {
 
         List<BibRefRelation> bibRefRelations = BibRefRelationLocalServiceUtil
-                .getBibRefRelationsByReferenceUuid(getUuid());
+                .getBibRefRelationsByReferenceId(getReferenceId());
 
-        String[] bibliographyUuids = new String[bibRefRelations.size()];
+        long[] bibliographyIds = new long[bibRefRelations.size()];
 
         for (int i = 0; i < bibRefRelations.size(); i++) {
-
             BibRefRelation bibRefRelation = bibRefRelations.get(i);
-
-            bibliographyUuids[i] = bibRefRelation.getBibliographyUuid();
-
+            bibliographyIds[i] = bibRefRelation.getBibliographyId();
         }
 
-        return bibliographyUuids;
+        return bibliographyIds;
 
     }
 
