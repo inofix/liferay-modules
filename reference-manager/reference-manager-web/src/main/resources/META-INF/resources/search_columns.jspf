@@ -2,15 +2,31 @@
     search_columns.jspf: search_columns of the reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2017-01-06 21:57 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-01-08 15:38 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%
-    if (Validator.isNotNull(row.getParameter("detailURL"))) {
-        detailURL = (String) row.getParameter("detailURL"); 
+    String detailURL = null;
+
+    AssetRenderer<Reference> referenceAssetRenderer = referenceAssetRendererFactory
+            .getAssetRenderer(reference.getReferenceId());
+
+    String viewURL = referenceAssetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse,
+            null);
+    viewURL = HttpUtil.addParameter(viewURL, "redirect", currentURL);
+
+    PortletURL editURL = referenceAssetRenderer.getURLEdit(liferayPortletRequest, liferayPortletResponse);
+    editURL.setParameter("redirect", currentURL);
+
+    if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)) {
+        detailURL = viewURL;
     }
-    
+
+    if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)) {
+        detailURL = editURL.toString();
+    }
+
     // TODO: Read columns from configuration.
     String[] columns = new String[] { "referenceId", "type", "label", "author", "title", "year", "modified" };
 
