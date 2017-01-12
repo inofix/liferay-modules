@@ -2,8 +2,8 @@
     main.css: reference-manager specific css
 
     Created:    2017-01-04 16:03 by Christian Berndt
-    Modified:   2017-01-05 16:40 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-01-12 01:21 by Christian Berndt
+    Version:    1.0.2
 */
 
 /** 
@@ -66,6 +66,11 @@ form .ui-tabs-top {
 form .ui-tabs .ui-tabs-panel {
     padding: 0; 
     padding-top: 15px;
+}
+
+.ui-tooltip {
+    max-width: 400px;
+    white-space:pre-wrap;
 }
 
 form .ui-widget {
