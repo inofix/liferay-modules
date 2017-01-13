@@ -4,12 +4,13 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-09 23:59 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-01-12 01:31 by Christian Berndt
+    Version:    1.1.0
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
     xmlns:alloy="http://liferay.com/faces/alloy"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:p="http://primefaces.org/ui">
@@ -51,11 +52,16 @@
 
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['label']}" />
-                        <h:outputLink id="label-help" styleClass="field-help" value="#">
+                        <h:outputLink disabled="true" id="label-help"
+                            styleClass="field-help" value="#">
                             <span class="fa fa-question-circle muted"></span>
                         </h:outputLink>
-                        <p:tooltip id="tool-tip-label-help" for="label-help" value="#{i18n['label-help']}" position="right"/>
-                        <p:inputText disabled="#{referenceEditorView.disabled}"
+                        <p:tooltip id="tool-tip-label-help"
+                            for="label-help"                            
+                            value="#{i18n['label-help']}"
+                            position="right" />
+                        <p:inputText
+                            disabled="#{referenceEditorView.disabled}"
                             id="label" styleClass="form-control"
                             value="#{referenceEditorView.label}">
                             <f:ajax execute="@form" />
@@ -64,22 +70,23 @@
                                 update=":form:tabs:bibtex" />
                         </p:inputText>
                     </p:outputPanel>
-
-                    <p:repeat id="required-fields"
-                        value="#{referenceEditorView.requiredFields}" var="field"
-                        varStatus="loop">
+                    <c:forEach
+                        items="#{referenceEditorView.requiredFields}"
+                        var="field" varStatus="loop">
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
-                            <h:outputLink
+                            <h:outputLink disabled="true"
+                                id="#{field.getString('name')}-help"
                                 styleClass="field-help" value="#">
-                                <span class="fa fa-question-circle muted"></span>
+                                <span
+                                    class="fa fa-question-circle muted"></span>
                             </h:outputLink>
-<!--                             <p:tooltip -->
-<!--                                 id="tool-tip-#{field.getString('name')}-help" -->
-<!--                                 for="#{field.getString('name')}-help" -->
-<!--                                 value="#{i18n[field.getString('name').concat('-help')]}" -->
-<!--                                 position="right" /> -->
+                            <p:tooltip
+                                id="tool-tip-#{field.getString('name')}-help"
+                                for="#{field.getString('name')}-help"
+                                value="#{i18n[field.getString('name').concat('-help')]}"
+                                position="right" />
                             <p:inputText
                                 disabled="#{referenceEditorView.disabled}"
                                 styleClass="form-control"
@@ -90,25 +97,28 @@
                                     update=":form:tabs:bibtex" />
                             </p:inputText>
                         </p:outputPanel>
-                    </p:repeat>
+                    </c:forEach>
                 </p:tab>
 
                 <p:tab id="optional-fields"
                     title="#{i18n['optional-fields']}">
-                    <p:repeat value="#{referenceEditorView.optionalFields}"
+                    <c:forEach
+                        items="#{referenceEditorView.optionalFields}"
                         var="field" varStatus="loop">
                         <p:outputPanel styleClass="form-group">
                             <p:outputLabel
                                 value="#{i18n[field.getString('name')]}" />
-                            <h:outputLink
+                            <h:outputLink disabled="true"
+                                id="#{field.getString('name')}-help"
                                 styleClass="field-help" value="#">
-                                <span class="fa fa-question-circle muted"></span>
+                                <span
+                                    class="fa fa-question-circle muted"></span>
                             </h:outputLink>
-<!--                             <p:tooltip -->
-<!--                                 id="tool-tip-#{field.getString('name')}-help" -->
-<!--                                 for="#{field.getString('name')}-help" -->
-<!--                                 value="#{i18n[field.getString('name').concat('-help')]}" -->
-<!--                                 position="right" /> -->                                
+                            <p:tooltip
+                                id="tool-tip-#{field.getString('name')}-help"
+                                for="#{field.getString('name')}-help"
+                                value="#{i18n[field.getString('name').concat('-help')]}"
+                                position="right" />
                             <p:inputText
                                 disabled="#{referenceEditorView.disabled}"
                                 styleClass="form-control"
@@ -119,20 +129,25 @@
                                     update=":form:tabs:bibtex" />
                             </p:inputText>
                         </p:outputPanel>
-                    </p:repeat>
+                    </c:forEach>
                 </p:tab>
 
                 <p:tab title="#{i18n['bibtex']}">
                     <p:outputPanel styleClass="form-group">
                         <p:outputLabel value="#{i18n['bibtex']}" />
-                        <h:outputLink id="bibtex-help" styleClass="field-help" value="#">
+                        <h:outputLink disabled="true" id="bibtex-help"
+                            styleClass="field-help" value="#">
                             <span class="fa fa-question-circle muted"></span>
                         </h:outputLink>
-                        <p:tooltip id="tool-tip-bibtex-help" for="bibtex-help" value="#{i18n['bibtex-help']}" position="right"/>                        
+                        <p:tooltip id="tool-tip-bibtex-help"
+                            for="bibtex-help"
+                            value="#{i18n['bibtex-help']}"
+                            position="right" />
                         <p:inputTextarea
                             disabled="#{referenceEditorView.disabled}"
                             id="bibtex" styleClass="form-control"
-                            rows="10" value="#{referenceEditorView.bibTeX}">
+                            rows="10"
+                            value="#{referenceEditorView.bibTeX}">
                             <f:ajax execute="@form" />
                             <p:ajax event="blur"
                                 listener="#{referenceEditorView.onBibTeXChange}"

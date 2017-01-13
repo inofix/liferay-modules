@@ -42,8 +42,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-08 19:05
- * @version 1.1.0
+ * @modified 2017-01-13 16:44
+ * @version 1.1.1
  *
  */
 @ManagedBean
@@ -59,11 +59,11 @@ public class ReferenceEditorView {
         long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
         _redirect = ParamUtil.getString(portletRequest, "redirect");
         ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
-        
+
         if (!themeDisplay.isSignedIn()) {
-           _disabled = true;  
+            _disabled = true;
         }
-        
+
         try {
             if (referenceId > 0) {
                 _reference = ReferenceServiceUtil.getReference(referenceId);
@@ -138,23 +138,26 @@ public class ReferenceEditorView {
         long userId = themeDisplay.getUserId();
         ServiceContext serviceContext = new ServiceContext();
         serviceContext.setScopeGroupId(themeDisplay.getScopeGroupId());
-        
+
         long[] bibliographyIds = new long[0];
-        
+
         if (_bibliographyId > 0) {
-            bibliographyIds = new long[] {_bibliographyId}; 
+            bibliographyIds = new long[] { _bibliographyId };
         }
 
         try {
             if (_reference != null) {
-                _reference = ReferenceLocalServiceUtil.updateReference(_reference.getReferenceId(), userId, _bibTeX, new long[] {_bibliographyId},
-                        serviceContext);
+                _reference = ReferenceLocalServiceUtil.updateReference(_reference.getReferenceId(), userId, _bibTeX,
+                        bibliographyIds, serviceContext);
             } else {
                 _reference = ReferenceServiceUtil.addReference(userId, _bibTeX, bibliographyIds, serviceContext);
             }
             FacesMessage msg = new FacesMessage("Saved Reference");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (Exception e) {
+
+            _log.error(e);
+
             FacesMessage msg = new FacesMessage("An error occurred.");
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
             FacesContext.getCurrentInstance().addMessage(null, msg);
