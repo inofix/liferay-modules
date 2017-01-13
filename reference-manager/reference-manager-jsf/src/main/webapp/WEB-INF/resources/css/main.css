@@ -2,8 +2,8 @@
     main.css: reference-manager specific css
 
     Created:    2017-01-04 16:03 by Christian Berndt
-    Modified:   2017-01-12 01:21 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-01-13 17:31 by Christian Berndt
+    Version:    1.0.3
 */
 
 /** 
@@ -13,6 +13,10 @@ a {
     color: #337ab7;
 } 
 
+body > .ui-tooltip {
+    display: none;
+}
+
 form .ui-inputfield {
     padding: 6px 12px; 
 }
@@ -20,10 +24,6 @@ form .ui-inputfield {
 form .ui-selectonemenu {
     padding-right: 0; 
 }
-
-/* form .ui-selectonemenu.select-entry-type { */
-/*     min-width: 200px; */
-/* } */
 
 form .ui-selectonemenu .ui-selectonemenu-trigger {
     width: 24px;
