@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-12 01:31 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2017-01-13 19:26 by Christian Berndt
+    Version:    1.1.1
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -153,6 +153,21 @@
                                 listener="#{referenceEditorView.onBibTeXChange}"
                                 update="@(form)" />
                         </p:inputTextarea>
+                    </p:outputPanel>
+                </p:tab>
+
+                <p:tab title="#{i18n['usage']}">
+                    <p:outputPanel styleClass="form-group">
+                        <h:outputText styleClass="help-block" 
+                            value="#{i18n['this-reference-is-used-in-following-bibliographies']}"/>                       
+                        <c:forEach
+                            items="#{referenceEditorView.bibliographies}"
+                            var="bibliography">
+                            <h:outputLink 
+                                styleClass="btn btn-default" value="#{bibliography['url']}" >
+                                <h:outputText value="#{bibliography['title']}"/>
+                            </h:outputLink>
+                        </c:forEach>
                     </p:outputPanel>
                 </p:tab>
 
