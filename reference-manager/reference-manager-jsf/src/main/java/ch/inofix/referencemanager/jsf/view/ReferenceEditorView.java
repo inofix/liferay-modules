@@ -1,7 +1,10 @@
 package ch.inofix.referencemanager.jsf.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -10,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jbibtex.BibTeXEntry;
@@ -19,6 +23,9 @@ import org.jbibtex.StringValue.Style;
 import org.jbibtex.Value;
 import org.primefaces.event.TabChangeEvent;
 
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -26,6 +33,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -33,6 +42,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceServiceUtil;
@@ -42,8 +52,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-13 16:44
- * @version 1.1.1
+ * @modified 2017-01-13 19:26
+ * @version 1.1.2
  *
  */
 @ManagedBean
@@ -55,6 +65,7 @@ public class ReferenceEditorView {
 
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+        PortletResponse portletResponse = (PortletResponse) externalContext.getResponse();
         _bibliographyId = ParamUtil.getLong(portletRequest, "bibliographyId");
         long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
         _redirect = ParamUtil.getString(portletRequest, "redirect");
@@ -75,6 +86,33 @@ public class ReferenceEditorView {
         }
 
         if (_reference != null) {
+
+            AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
+                    .getAssetRendererFactoryByClass(Bibliography.class);
+            
+            _bibliographies = new ArrayList<>();
+            
+            try {
+                for (long bibliographyId : _reference.getBibliographyIds()) {
+                    AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliographyId);
+                    Map<String, String> map = new HashMap<String, String>();
+                    Locale locale = portletRequest.getLocale();
+                    String title = assetRenderer.getTitle(locale);
+                    LiferayPortletRequest liferayPortletRequest = PortalUtil.getLiferayPortletRequest(portletRequest);
+                    LiferayPortletResponse liferayPortletResponse = PortalUtil
+                            .getLiferayPortletResponse(portletResponse);
+                    String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse,
+                            null);
+
+                    map.put("title", title);
+                    map.put("url", viewURL);
+                    _bibliographies.add(map);
+
+                }
+            } catch (Exception e) {
+                _log.error(e);
+            }
+
             _bibTeX = _reference.getBibTeX();
             _citation = _reference.getCitation();
             _entryType = _reference.getType();
@@ -168,6 +206,10 @@ public class ReferenceEditorView {
     /*
      * Getters and Setters
      */
+
+    public List<Map<String, String>> getBibliographies() {
+        return _bibliographies;
+    }
 
     public String getBibTeX() {
         return _bibTeX;
@@ -344,6 +386,7 @@ public class ReferenceEditorView {
 
     }
 
+    private List<Map<String, String>> _bibliographies; 
     private long _bibliographyId;
     private String _bibTeX;
     private String _citation = "Add a new reference";
