@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -52,8 +53,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-13 19:26
- * @version 1.1.2
+ * @modified 2017-01-14 14:21
+ * @version 1.1.3
  *
  */
 @ManagedBean
@@ -89,9 +90,9 @@ public class ReferenceEditorView {
 
             AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
                     .getAssetRendererFactoryByClass(Bibliography.class);
-            
+
             _bibliographies = new ArrayList<>();
-            
+
             try {
                 for (long bibliographyId : _reference.getBibliographyIds()) {
                     AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliographyId);
@@ -141,14 +142,14 @@ public class ReferenceEditorView {
 
     public void onEntryTypeChange() {
 
-        _log.info("onEntryTypeChange()");
-        _log.info("_entryType = " + _entryType);
-
         try {
 
             _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
             _optionalValues = new String[getOptionalFields().size()];
             _requiredValues = new String[getRequiredFields().size()];
+
+            updateBibTeX();
+            updateFields();
 
         } catch (JSONException e) {
             _log.error(e);
@@ -296,8 +297,6 @@ public class ReferenceEditorView {
 
     private void updateBibTeX() {
 
-        _log.info("updateBibTeX()");
-
         Key type = new Key(_entryType);
         Key key = new Key(_label);
 
@@ -306,7 +305,9 @@ public class ReferenceEditorView {
         // parse src
         if (Validator.isNotNull(_bibTeX)) {
             bibTeXEntry = BibTeXUtil.parse(_bibTeX);
-        } else {
+        }
+        
+        if (bibTeXEntry == null) {
             bibTeXEntry = new BibTeXEntry(type, key);
         }
 
@@ -316,8 +317,6 @@ public class ReferenceEditorView {
             Value value = new StringValue(str, Style.BRACED);
             String name = getOptionalFields().get(i).getString("name");
             Key field = new Key(name);
-
-            _log.info(name + " = " + str);
 
             if (Validator.isNotNull(str)) {
                 bibTeXEntry.removeField(key);
@@ -332,8 +331,6 @@ public class ReferenceEditorView {
             String name = getRequiredFields().get(i).getString("name");
             Key field = new Key(name);
 
-            _log.info(name + " = " + str);
-
             if (Validator.isNotNull(str)) {
                 bibTeXEntry.removeField(key);
                 bibTeXEntry.addField(field, value);
@@ -341,6 +338,11 @@ public class ReferenceEditorView {
         }
 
         _bibTeX = BibTeXUtil.format(bibTeXEntry);
+
+        // update src with selected entryType
+        String what = _bibTeX.substring(0, _bibTeX.indexOf(StringPool.OPEN_CURLY_BRACE) + 1);
+        String with = StringPool.AT + _entryType + StringPool.OPEN_CURLY_BRACE;
+        _bibTeX = _bibTeX.replace(what, with);
 
     }
 
@@ -386,7 +388,7 @@ public class ReferenceEditorView {
 
     }
 
-    private List<Map<String, String>> _bibliographies; 
+    private List<Map<String, String>> _bibliographies;
     private long _bibliographyId;
     private String _bibTeX;
     private String _citation = "Add a new reference";

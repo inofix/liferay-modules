@@ -25,8 +25,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2017-01-06 17:18
- * @version 1.0.5
+ * @modified 2017-01-14 14:27
+ * @version 1.0.6
  *
  */
 public class BibTeXUtil {
@@ -130,6 +130,8 @@ public class BibTeXUtil {
         } catch (TokenMgrException e) {
             _log.error(e);
         } catch (ParseException e) {
+            _log.error(e);
+        } catch (Exception e) {
             _log.error(e);
         }
 
