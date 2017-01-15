@@ -14,8 +14,8 @@ import ch.inofix.referencemanager.constants.PortletKeys;
  * 
  * @author Christian Berndt
  * @created 2016-12-02 17:57
- * @modified 2016-12-02 17:57
- * @version 1.0.0
+ * @modified 2017-01-14 20:39
+ * @version 1.0.1
  *
  */
 @Component(
@@ -25,7 +25,7 @@ import ch.inofix.referencemanager.constants.PortletKeys;
 )
 public class BibliographyManagerPortletPermission extends BaseResourcePermissionChecker {
 
-    public static final String RESOURCE_NAME = "ch.inofix.referencemanager.bibliography";
+    public static final String RESOURCE_NAME = "ch.inofix.referencemanager.bibliographymanager";
 
     public static void check(PermissionChecker permissionChecker, long groupId, String actionId)
             throws PortalException {

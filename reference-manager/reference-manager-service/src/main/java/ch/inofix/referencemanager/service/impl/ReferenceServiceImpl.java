@@ -37,6 +37,7 @@ import aQute.bnd.annotation.ProviderType;
 import ch.inofix.referencemanager.constants.ReferenceActionKeys;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceServiceBaseImpl;
+import ch.inofix.referencemanager.service.permission.ReferenceEditorPortletPermission;
 import ch.inofix.referencemanager.service.permission.ReferenceManagerPortletPermission;
 import ch.inofix.referencemanager.service.permission.ReferencePermission;
 
@@ -56,8 +57,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-01-07 22:43
- * @version 1.0.8
+ * @modified 2017-01-14 20:53
+ * @version 1.0.9
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -82,7 +83,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      */
     public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
 
-        ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+        ReferenceEditorPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
         return referenceLocalService.addReference(userId, bibTeX, serviceContext);
@@ -101,7 +102,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
     public Reference addReference(long userId, String bibTeX, long[] bibliographyIds, ServiceContext serviceContext)
             throws PortalException {
 
-        ReferenceManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+        ReferenceEditorPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ReferenceActionKeys.ADD_REFERENCE);
 
         return referenceLocalService.addReference(userId, bibTeX, bibliographyIds, serviceContext);
