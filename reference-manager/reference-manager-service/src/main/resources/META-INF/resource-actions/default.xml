@@ -5,7 +5,7 @@
 
 <resource-action-mapping>
     <model-resource>
-        <model-name>ch.inofix.referencemanager.bibliography</model-name>
+        <model-name>ch.inofix.referencemanager.bibliographymanager</model-name>
         <portlet-ref>
             <portlet-name>ch_inofix_referencemanager_web_internal_portlet_BibliographyManagerPortlet</portlet-name>
         </portlet-ref>
@@ -14,18 +14,13 @@
         <permissions>
             <supports>
                 <action-key>ADD_BIBLIOGRAPHY</action-key>
-                <action-key>ADD_REFERENCE</action-key>
                 <action-key>IMPORT_BIBLIOGRAPHY</action-key>
-                <action-key>IMPORT_REFERENCES</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </supports>
             <site-member-defaults>
                 <action-key>ADD_BIBLIOGRAPHY</action-key>
-                <action-key>ADD_REFERENCE</action-key>
                 <action-key>IMPORT_BIBLIOGRAPHY</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
             <guest-defaults>
@@ -33,11 +28,8 @@
             </guest-defaults>
             <guest-unsupported>
                 <action-key>ADD_BIBLIOGRAPHY</action-key>
-                <action-key>ADD_REFERENCE</action-key>
                 <action-key>IMPORT_BIBLIOGRAPHY</action-key>
-                <action-key>IMPORT_REFERENCES</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
             </guest-unsupported>
         </permissions>
     </model-resource>
@@ -51,12 +43,10 @@
             <supports>
                 <action-key>DELETE</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>UPDATE</action-key>
                 <action-key>VIEW</action-key>
             </supports>
             <site-member-defaults>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
             <guest-defaults>
@@ -65,13 +55,38 @@
             <guest-unsupported>
                 <action-key>DELETE</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>UPDATE</action-key>
             </guest-unsupported>
         </permissions>
     </model-resource>
     <model-resource>
-        <model-name>ch.inofix.referencemanager.reference</model-name>
+        <model-name>ch.inofix.referencemanager.referenceeditor</model-name>
+        <portlet-ref>
+            <portlet-name>referencemanagerjsf_WAR_referencemanagerjsf</portlet-name>
+        </portlet-ref>
+        <root>true</root>
+        <weight>1</weight>
+        <permissions>
+            <supports>
+                <action-key>ADD_REFERENCE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>ADD_REFERENCE</action-key>
+                <action-key>VIEW</action-key>
+            </site-member-defaults>
+            <guest-defaults>
+                <action-key>VIEW</action-key>
+            </guest-defaults>
+            <guest-unsupported>
+                <action-key>ADD_REFERENCE</action-key>
+                <action-key>PERMISSIONS</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+    <model-resource>
+        <model-name>ch.inofix.referencemanager.referencemanager</model-name>
         <portlet-ref>
             <portlet-name>ch_inofix_referencemanager_web_internal_portlet_ReferenceManagerPortlet</portlet-name>
         </portlet-ref>
@@ -79,46 +94,38 @@
         <weight>1</weight>
         <permissions>
             <supports>
-                <action-key>ADD_REFERENCE</action-key>
                 <action-key>DELETE_GROUP_REFERENCES</action-key>
                 <action-key>IMPORT_REFERENCES</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </supports>
             <site-member-defaults>
-                <action-key>ADD_REFERENCE</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
             <guest-defaults>
                 <action-key>VIEW</action-key>
             </guest-defaults>
             <guest-unsupported>
-                <action-key>ADD_REFERENCE</action-key>
                 <action-key>DELETE_GROUP_REFERENCES</action-key>
                 <action-key>IMPORT_REFERENCES</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
             </guest-unsupported>
         </permissions>
     </model-resource>    
     <model-resource>
         <model-name>ch.inofix.referencemanager.model.Reference</model-name>
         <portlet-ref>
-            <portlet-name>ch_inofix_referencemanager_web_internal_portlet_ReferenceManagerPortlet</portlet-name>
+            <portlet-name>referencemanagerjsf_WAR_referencemanagerjsf</portlet-name>
         </portlet-ref>
         <weight>3</weight>
         <permissions>
             <supports>
                 <action-key>DELETE</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>UPDATE</action-key>
                 <action-key>VIEW</action-key>
             </supports>
             <site-member-defaults>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
             <guest-defaults>
@@ -127,7 +134,6 @@
             <guest-unsupported>
                 <action-key>DELETE</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>UPDATE</action-key>
             </guest-unsupported>
         </permissions>

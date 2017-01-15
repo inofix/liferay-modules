@@ -13,9 +13,9 @@ import ch.inofix.referencemanager.constants.PortletKeys;
 /**
  * 
  * @author Christian Berndt
- * @created 2016-11-20 12:42
- * @modified 2017-01-14 20:40
- * @version 1.0.1
+ * @created 2017-01-14 20:42
+ * @modified 2017-01-14 20:42
+ * @version 1.0.0
  *
  */
 @Component(
@@ -23,9 +23,9 @@ import ch.inofix.referencemanager.constants.PortletKeys;
     property = {"resource.name=" + ReferenceManagerPortletPermission.RESOURCE_NAME }, 
     service = ResourcePermissionChecker.class
 )
-public class ReferenceManagerPortletPermission extends BaseResourcePermissionChecker {
+public class ReferenceEditorPortletPermission extends BaseResourcePermissionChecker {
 
-    public static final String RESOURCE_NAME = "ch.inofix.referencemanager.referencemanager";
+    public static final String RESOURCE_NAME = "ch.inofix.referencemanager.referenceeditor";
 
     public static void check(PermissionChecker permissionChecker, long groupId, String actionId)
             throws PortalException {
@@ -36,8 +36,7 @@ public class ReferenceManagerPortletPermission extends BaseResourcePermissionChe
     }
 
     public static boolean contains(PermissionChecker permissionChecker, long groupId, String actionId) {
-
-        return contains(permissionChecker, RESOURCE_NAME, PortletKeys.REFERENCE_MANAGER, groupId, actionId);
+        return contains(permissionChecker, RESOURCE_NAME, PortletKeys.REFERENCE_EDITOR, groupId, actionId);
     }
 
     public Boolean checkResource(PermissionChecker permissionChecker, long classPK, String actionId) {

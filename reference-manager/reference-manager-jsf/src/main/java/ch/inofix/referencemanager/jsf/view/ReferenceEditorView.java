@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -53,8 +54,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-14 14:21
- * @version 1.1.3
+ * @modified 2017-01-15 20:12
+ * @version 1.1.4
  *
  */
 @ManagedBean
@@ -168,15 +169,14 @@ public class ReferenceEditorView {
         _log.info("onTabChange()");
     }
 
-    public void saveReference() {
+    public void saveReference() throws PortalException {
 
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
         HttpServletRequest request = PortalUtil.getHttpServletRequest(portletRequest);
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
         long userId = themeDisplay.getUserId();
-        ServiceContext serviceContext = new ServiceContext();
-        serviceContext.setScopeGroupId(themeDisplay.getScopeGroupId());
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(request);
 
         long[] bibliographyIds = new long[0];
 
