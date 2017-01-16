@@ -54,8 +54,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-15 20:12
- * @version 1.1.4
+ * @modified 2017-01-16 22:48
+ * @version 1.1.5
  *
  */
 @ManagedBean
@@ -176,7 +176,7 @@ public class ReferenceEditorView {
         HttpServletRequest request = PortalUtil.getHttpServletRequest(portletRequest);
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
         long userId = themeDisplay.getUserId();
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(request);
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), request);
 
         long[] bibliographyIds = new long[0];
 
