@@ -12,13 +12,16 @@ import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.model.Reference;
@@ -29,15 +32,12 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-18 21:49
- * @modified 2017-01-07 12:54
- * @version 1.0.1
+ * @modified 2017-01-16 23:00
+ * @version 1.0.2
  *
  */
-@Component(
-    immediate = true, 
-    property = { "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER }, 
-    service = AssetRendererFactory.class
-)
+@Component(immediate = true, property = {
+        "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER }, service = AssetRendererFactory.class)
 public class ReferenceAssetRendererFactory extends BaseAssetRendererFactory<Reference> {
 
     public static final String TYPE = "reference";
@@ -72,34 +72,35 @@ public class ReferenceAssetRendererFactory extends BaseAssetRendererFactory<Refe
     public String getType() {
         return TYPE;
     }
-    
+
     @Override
     public PortletURL getURLAdd(LiferayPortletRequest liferayPortletRequest,
-            LiferayPortletResponse liferayPortletResponse, long classTypeId) {
+            LiferayPortletResponse liferayPortletResponse, long classTypeId) throws PortalException {
 
-        long groupId = GetterUtil.getLong(PropsUtil.get("reference.common.group"));
+        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-        PortletURL portletURL = null;
+        User user = themeDisplay.getUser();
 
-        if (groupId > 0) {
+        Group group = user.getGroup();
 
-            try {
-                
-                long portletPlid = PortalUtil.getPlidFromPortletId(groupId, false, PortletKeys.REFERENCE_EDITOR);
+        if (group != null) {
 
-                portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.REFERENCE_EDITOR,
-                        portletPlid, PortletRequest.RENDER_PHASE);
-                
-            } catch (Exception e) {
-                _log.error(e);
+            long portletPlid = PortalUtil.getPlidFromPortletId(group.getGroupId(), false, PortletKeys.REFERENCE_EDITOR);
+
+            PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest,
+                    PortletKeys.REFERENCE_EDITOR, portletPlid, PortletRequest.RENDER_PHASE);
+
+            String redirect = (String) liferayPortletRequest.getAttribute("redirect");
+
+            if (Validator.isNotNull(redirect)) {
+                portletURL.setParameter("redirect", redirect);
             }
 
-        } else {
-            portletURL = PortalUtil.getControlPanelPortletURL(liferayPortletRequest, PortletKeys.REFERENCE_EDITOR,
-                    PortletRequest.RENDER_PHASE);
-        }
+            return portletURL;
 
-        return portletURL;
+        } else {
+            return null;
+        }
     }
 
     @Override
