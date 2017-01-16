@@ -99,20 +99,20 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Override
     public Reference addReference(long userId, String bibTeX, long[] bibliographyIds, ServiceContext serviceContext)
             throws PortalException {
-        
+
         // Reference
 
         User user = userPersistence.findByPrimaryKey(userId);
-        
+
         long groupId = GetterUtil.getLong(PropsUtil.get("reference.common.group"));
-        
+
         if (groupId <= 0) {
-            
-            // No reference.common.group configured      
+
+            // No reference.common.group configured
             groupId = serviceContext.getScopeGroupId();
-        
+
         } else {
-            
+
             serviceContext.setScopeGroupId(groupId);
         }
 
@@ -137,8 +137,8 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         // BibRefRelation
 
         for (long bibliographyId : bibliographyIds) {
-            
-            Bibliography bibliography = bibliographyLocalService.getBibliography(bibliographyId); 
+
+            Bibliography bibliography = bibliographyLocalService.getBibliography(bibliographyId);
 
             long bibRefRelationId = counterLocalService.increment();
             BibRefRelation bibRefRelation = bibRefRelationPersistence.create(bibRefRelationId);
@@ -453,15 +453,15 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(), assetLinkEntryIds,
                 AssetLinkConstants.TYPE_RELATED);
     }
-    
+
     public Reference updateReference(long referenceId, long userId, String bibTeX, ServiceContext serviceContext)
             throws PortalException {
         return updateReference(referenceId, userId, bibTeX, new long[0], serviceContext);
     }
 
     @Indexable(type = IndexableType.REINDEX)
-    public Reference updateReference(long referenceId, long userId, String bibTeX, long[] bibliographyIds, ServiceContext serviceContext)
-            throws PortalException {
+    public Reference updateReference(long referenceId, long userId, String bibTeX, long[] bibliographyIds,
+            ServiceContext serviceContext) throws PortalException {
 
         // Reference
 
@@ -483,12 +483,12 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setBibTeX(bibTeX);
 
         referencePersistence.update(reference);
-        
+
         // BibRefRelation
 
         for (long bibliographyId : bibliographyIds) {
 
-            Bibliography bibliography = bibliographyLocalService.getBibliography(bibliographyId); 
+            Bibliography bibliography = bibliographyLocalService.getBibliography(bibliographyId);
 
             long bibRefRelationId = counterLocalService.increment();
             BibRefRelation bibRefRelation = bibRefRelationPersistence.create(bibRefRelationId);
