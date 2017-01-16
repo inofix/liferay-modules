@@ -97,6 +97,7 @@ public class BibliographyAssetRendererFactory extends BaseAssetRendererFactory<B
             portletURL.setParameter("mvcPath", "/edit_bibliography.jsp");
 
             String redirect = (String) liferayPortletRequest.getAttribute("redirect");
+            
             if (Validator.isNotNull(redirect)) {
                 portletURL.setParameter("redirect", redirect);
             }
