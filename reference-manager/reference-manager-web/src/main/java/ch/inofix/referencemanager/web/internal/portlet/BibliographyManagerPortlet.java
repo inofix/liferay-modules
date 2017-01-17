@@ -47,8 +47,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2016-12-29 14:31
- * @version 1.1.3
+ * @modified 2017-01-17 15:21
+ * @version 1.1.4
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -100,9 +100,11 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         if (Validator.isNotNull(file)) {
 
             String message = PortletUtil.translate("upload-successfull-import-will-finish-in-a-separate-thread");
+            ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(),
+                    uploadPortletRequest);
 
-            _referenceService.importReferencesInBackground(userId, fileName, groupId, privateLayout, parameterMap,
-                    file);
+            _referenceService.importReferencesInBackground(userId, fileName, groupId, privateLayout, parameterMap, file,
+                    serviceContext);
 
             SessionMessages.add(actionRequest, "request_processed", message);
 

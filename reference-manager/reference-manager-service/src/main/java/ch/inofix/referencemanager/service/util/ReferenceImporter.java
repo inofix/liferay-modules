@@ -32,13 +32,13 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-08 16:17
- * @version 1.0.3
+ * @modified 2017-01-17 15:11
+ * @version 1.0.4
  */
 public class ReferenceImporter {
 
     public void importReferences(long userId, long groupId, boolean privateLayout, Map<String, String[]> parameterMap,
-            File file) throws PortalException {
+            File file, ServiceContext serviceContext) throws PortalException {
 
         User user = UserLocalServiceUtil.getUser(userId);
 
@@ -61,10 +61,10 @@ public class ReferenceImporter {
         _log.info("updateExisting = " + updateExisting);
         _log.info("urlTitle = " + urlTitle);
 
-        ServiceContext serviceContext = new ServiceContext();
-        serviceContext.setCompanyId(user.getCompanyId());
-        serviceContext.setScopeGroupId(groupId);
-        serviceContext.setUserId(userId);
+//        ServiceContext serviceContext = new ServiceContext();
+//        serviceContext.setCompanyId(user.getCompanyId());
+//        serviceContext.setScopeGroupId(groupId);
+//        serviceContext.setUserId(userId);
 
         long[] bibliographyIds = new long[0];
 

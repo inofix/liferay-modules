@@ -62,8 +62,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-12-16 23:42
- * @version 1.1.0
+ * @modified 2017-01-17 15:23
+ * @version 1.1.1
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -136,7 +136,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     public void importBibTeXFile(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-        
+
         _log.info("importBibTeXFile()");
 
         HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
@@ -157,14 +157,16 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         String[] servletContextNames = new String[] { servletContextName };
 
         Map<String, String[]> parameterMap = new HashMap<String, String[]>(actionRequest.getParameterMap());
-        parameterMap.put("servletContextNames", servletContextNames); 
+        parameterMap.put("servletContextNames", servletContextNames);
 
         if (Validator.isNotNull(file)) {
 
             String message = PortletUtil.translate("upload-successfull-import-will-finish-in-a-separate-thread");
+            ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(),
+                    uploadPortletRequest);
 
-            _referenceService.importReferencesInBackground(userId, fileName, groupId, privateLayout, parameterMap,
-                    file);
+            _referenceService.importReferencesInBackground(userId, fileName, groupId, privateLayout, parameterMap, file,
+                    serviceContext);
 
             SessionMessages.add(actionRequest, "request_processed", message);
 

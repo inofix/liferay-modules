@@ -57,8 +57,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-01-14 20:53
- * @version 1.0.9
+ * @modified 2017-01-17 15:18
+ * @version 1.1.0
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -236,17 +236,18 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
      * @param privateLayout
      * @param parameterMap
      * @param file
+     * @param serviceContext
      * @since 1.0.8
      * @return
      * @throws PortalException
      */
     public long importReferencesInBackground(long userId, String taskName, long groupId, boolean privateLayout,
-            Map<String, String[]> parameterMap, File file) throws PortalException {
+            Map<String, String[]> parameterMap, File file, ServiceContext serviceContext) throws PortalException {
 
         ReferenceManagerPortletPermission.check(getPermissionChecker(), groupId, ReferenceActionKeys.IMPORT_REFERENCES);
 
         return referenceLocalService.importReferencesInBackground(userId, taskName, groupId, privateLayout,
-                parameterMap, file);
+                parameterMap, file, serviceContext);
 
     }
 

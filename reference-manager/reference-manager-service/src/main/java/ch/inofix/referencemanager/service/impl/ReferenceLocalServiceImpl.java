@@ -303,6 +303,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      *            imported.
      * @param file
      *            the file with the data
+     * @param serviceContext
      * @since 1.0.2
      * @throws PortalException
      *             if a group or user with the primary key could not be found,
@@ -312,14 +313,12 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      * @see com.liferay.portal.lar.LayoutImporter
      */
     public void importReferences(long userId, long groupId, boolean privateLayout, Map<String, String[]> parameterMap,
-            File file) throws PortalException, SystemException {
-
-        _log.info("importReferences(file)");
+            File file, ServiceContext serviceContext) throws PortalException, SystemException {
 
         try {
             ReferenceImporter referenceImporter = new ReferenceImporter();
 
-            referenceImporter.importReferences(userId, groupId, privateLayout, parameterMap, file);
+            referenceImporter.importReferences(userId, groupId, privateLayout, parameterMap, file, serviceContext);
 
         } catch (PortalException pe) {
             Throwable cause = pe.getCause();
@@ -358,6 +357,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      *            imported.
      * @param inputStream
      *            the input stream
+     * @param serviceContext
      * @since 1.0.2
      * @throws PortalException
      *             if a group or user with the primary key could not be found,
@@ -366,9 +366,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      *             if a system exception occurred
      */
     public void importReferences(long userId, long groupId, boolean privateLayout, Map<String, String[]> parameterMap,
-            InputStream inputStream) throws PortalException, SystemException {
-
-        _log.info("importReferences(inputStream)");
+            InputStream inputStream, ServiceContext serviceContext) throws PortalException, SystemException {
 
         File file = null;
 
@@ -377,7 +375,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
             FileUtil.write(file, inputStream);
 
-            importReferences(userId, groupId, privateLayout, parameterMap, file);
+            importReferences(userId, groupId, privateLayout, parameterMap, file, serviceContext);
 
         } catch (IOException ioe) {
 
@@ -397,21 +395,23 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      * @param privateLayout
      * @param parameterMap
      * @param file
+     * @param serviceContext
      * @since 1.0.8
      * @return
      * @throws PortalException
      */
     public long importReferencesInBackground(long userId, String taskName, long groupId, boolean privateLayout,
-            Map<String, String[]> parameterMap, File file) throws PortalException {
+            Map<String, String[]> parameterMap, File file, ServiceContext serviceContext) throws PortalException {
 
         Map<String, Serializable> taskContextMap = new HashMap<String, Serializable>();
         taskContextMap.put("userId", userId);
         taskContextMap.put("groupId", groupId);
         taskContextMap.put("parameterMap", (Serializable) parameterMap);
         taskContextMap.put("privateLayout", privateLayout);
+        taskContextMap.put("serviceContext", serviceContext);
 
         BackgroundTask backgroundTask = backgroundTaskmanager.addBackgroundTask(userId, groupId, taskName,
-                ReferenceImportBackgroundTaskExecutor.class.getName(), taskContextMap, new ServiceContext());
+                ReferenceImportBackgroundTaskExecutor.class.getName(), taskContextMap, serviceContext);
 
         backgroundTask.addAttachment(userId, file.getName(), file);
 
