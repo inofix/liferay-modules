@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -63,8 +62,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2016-12-16 23:35
- * @version 1.0.9
+ * @modified 2016-12-16 23:42
+ * @version 1.1.0
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -209,36 +208,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
     /**
      * 
-     * @param actionRequest
-     * @param actionResponse
-     * @since 1.0.0
-     * @throws Exception
-     */
-    public void updateReference(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
-
-        String bibTeX = ParamUtil.getString(actionRequest, "bibTeX");
-
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), actionRequest);
-
-        long userId = serviceContext.getUserId();
-
-        Reference reference = null;
-
-        if (referenceId <= 0) {
-            reference = _referenceService.addReference(userId, bibTeX, serviceContext);
-        } else {
-            reference = _referenceService.updateReference(referenceId, userId, bibTeX, serviceContext);
-        }
-
-        String redirect = getEditReferenceURL(actionRequest, actionResponse, reference);
-
-        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
-    }
-
-    /**
-     * 
      */
     @Override
     protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse)
@@ -250,34 +219,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         } else {
             super.doDispatch(renderRequest, renderResponse);
         }
-    }
-
-    protected String getEditReferenceURL(ActionRequest actionRequest, ActionResponse actionResponse,
-            Reference reference) throws Exception {
-
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-        String editReferenceURL = getRedirect(actionRequest, actionResponse);
-
-        if (Validator.isNull(editReferenceURL)) {
-            editReferenceURL = PortalUtil.getLayoutFullURL(themeDisplay);
-        }
-
-        String namespace = actionResponse.getNamespace();
-        String windowState = actionResponse.getWindowState().toString();
-
-        editReferenceURL = HttpUtil.setParameter(editReferenceURL, "p_p_id", PortletKeys.REFERENCE_MANAGER);
-        editReferenceURL = HttpUtil.setParameter(editReferenceURL, "p_p_state", windowState);
-        editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "mvcPath",
-                templatePath + "edit_reference.jsp");
-        editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "redirect",
-                getRedirect(actionRequest, actionResponse));
-        editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "backURL",
-                ParamUtil.getString(actionRequest, "backURL"));
-        editReferenceURL = HttpUtil.setParameter(editReferenceURL, namespace + "referenceId",
-                reference.getReferenceId());
-
-        return editReferenceURL;
     }
 
     /**
