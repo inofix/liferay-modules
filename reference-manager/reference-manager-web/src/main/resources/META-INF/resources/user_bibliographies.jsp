@@ -2,19 +2,23 @@
     user_bibliographies: display a user's bibliographies.
     
     Created:    2016-12-16 00:12 by Christian Berndt
-    Modified:   2016-12-16 00:12 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-01-17 14:49 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
+   boolean hasAddPermission = false;
+
    long userGroupId = 0; 
    Group userGroup = user.getGroup(); 
    String userName = themeDisplay.getScopeGroupName();
 
    if (userGroup != null) {
        userGroupId = userGroup.getGroupId(); 
+       hasAddPermission = BibliographyManagerPortletPermission.contains(permissionChecker, userGroupId,
+               BibliographyActionKeys.ADD_BIBLIOGRAPHY); 
    } 
    boolean isUserGroup = themeDisplay.getScopeGroupId() == userGroupId;
 
@@ -51,6 +55,9 @@
 
    bibliographySearch.setResults(bibliographies);
    bibliographySearch.setTotal(hits.getLength());
+   
+   AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
+           .getAssetRendererFactoryByClass(Bibliography.class);  
 %>
 
 <div class="bibliography-head">
@@ -91,3 +98,22 @@
     <liferay-ui:search-iterator/>
                 
 </liferay-ui:search-container>
+
+<%
+    liferayPortletRequest.setAttribute("redirect", currentURL);
+    String editBibliographyURL = ""; 
+    
+    PortletURL addURL = assetRendererFactory
+            .getURLAdd(liferayPortletRequest, liferayPortletResponse);
+    
+    if (addURL != null) {
+        editBibliographyURL = addURL.toString(); 
+    } else {
+        // GUEST user
+        hasAddPermission = false; 
+    }
+%>
+
+<aui:button href="<%=editBibliographyURL%>"
+    cssClass="btn-primary btn-success" value="new-bibliography"
+    disabled="<%=!hasAddPermission%>" />
