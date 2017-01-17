@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
@@ -20,8 +21,8 @@ import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 00:30
- * @modified 2016-12-17 00:30
- * @version 1.0.0
+ * @modified 2017-01-17 15:15
+ * @version 1.0.1
  *
  */
 public class ReferenceImportBackgroundTaskExecutor extends BaseBackgroundTaskExecutor {
@@ -36,13 +37,14 @@ public class ReferenceImportBackgroundTaskExecutor extends BaseBackgroundTaskExe
         boolean privateLayout = MapUtil.getBoolean(taskContextMap, "privateLayout");
         @SuppressWarnings("unchecked")
         Map<String, String[]> parameterMap = (Map<String, String[]>) taskContextMap.get("parameterMap");
+        ServiceContext serviceContext = (ServiceContext) taskContextMap.get("serviceContext"); 
 
         List<FileEntry> attachmentsFileEntries = backgroundTask.getAttachmentsFileEntries();
 
         for (FileEntry attachmentsFileEntry : attachmentsFileEntries) {
 
             ReferenceLocalServiceUtil.importReferences(userId, groupId, privateLayout, parameterMap,
-                    attachmentsFileEntry.getContentStream());
+                    attachmentsFileEntry.getContentStream(), serviceContext);
         }
 
         return BackgroundTaskResult.SUCCESS;
