@@ -2,14 +2,16 @@
     reference_action.jsp: The action menu of the reference manager's default view.
     
     Created:    2016-11-29 18:51 by Christian Berndt
-    Modified:   2016-12-14 23:52 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-01-18 15:31 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
     ResultRow row = (ResultRow) request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+
+    Bibliography bibliography = (Bibliography) request.getAttribute("bibliography_entries.jsp-bibliography");
 
     Reference reference = null;
 
@@ -18,6 +20,19 @@
     } else {
         reference = (Reference) request.getAttribute("edit_reference.jsp-reference");
     }
+
+    AssetRendererFactory<Reference> referenceAssetRendererFactory = AssetRendererFactoryRegistryUtil
+            .getAssetRendererFactoryByClass(Reference.class);
+
+    AssetRenderer<Reference> referenceAssetRenderer = referenceAssetRendererFactory
+            .getAssetRenderer(reference.getReferenceId());
+
+    PortletURL editURL = referenceAssetRenderer.getURLEdit(liferayPortletRequest, liferayPortletResponse);
+    editURL.setParameter("redirect", currentURL);
+
+    String viewURL = referenceAssetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse,
+            null);
+    viewURL = HttpUtil.addParameter(viewURL, "redirect", currentURL);
 %>
 
 <liferay-ui:icon-menu icon="<%=StringPool.BLANK%>"
@@ -26,13 +41,6 @@
 
     <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)%>">
 
-        <portlet:renderURL var="viewURL">
-            <portlet:param name="mvcPath" value="/edit_reference.jsp" />
-            <portlet:param name="redirect" value="<%=currentURL%>" />
-            <portlet:param name="referenceId"
-                value="<%=String.valueOf(reference.getReferenceId())%>" />
-        </portlet:renderURL>
-
         <liferay-ui:icon iconCssClass="icon-eye-open" message="view"
             url="<%=viewURL%>" />
 
@@ -40,27 +48,18 @@
 
     <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)%>">
 
-        <portlet:renderURL var="editURL">
-            <portlet:param name="mvcPath" value="/edit_reference.jsp" />
-            <portlet:param name="redirect" value="<%=currentURL%>" />
-            <portlet:param name="referenceId"
-                value="<%=String.valueOf(reference.getReferenceId())%>" />
-        </portlet:renderURL>
-
         <liferay-ui:icon iconCssClass="icon-edit" message="edit"
-            url="<%=editURL%>" />
+            url="<%=editURL.toString()%>" />
 
     </c:if>
-
-    <portlet:renderURL var="redirectURL">
-        <portlet:param name="mvcPath" value="/view.jsp" />
-    </portlet:renderURL>
-
+    
     <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.DELETE)%>">
 
         <portlet:actionURL var="deleteURL" name="deleteReference">
-            <portlet:param name="redirect"
-                value="<%=(row == null) ? redirectURL : currentURL%>" />
+            <c:if test="<%= bibliography != null %>">
+                <portlet:param name="bibliographyId"
+                    value="<%=String.valueOf(bibliography.getBibliographyId())%>" />                
+            </c:if>  
             <portlet:param name="referenceId"
                 value="<%=String.valueOf(reference.getReferenceId())%>" />
         </portlet:actionURL>

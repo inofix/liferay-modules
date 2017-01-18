@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2017-01-08 15:40 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2017-01-18 15:52 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -12,10 +12,7 @@
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
-    
-    boolean hasAddPermission = ReferenceManagerPortletPermission.contains(permissionChecker, scopeGroupId,
-            ReferenceActionKeys.ADD_REFERENCE);
-    
+
     SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
     
     boolean reverse = false; 
@@ -48,11 +45,7 @@
     referenceSearch.setTotal(hits.getLength());
     
     AssetRendererFactory<Reference> referenceAssetRendererFactory = AssetRendererFactoryRegistryUtil
-            .getAssetRendererFactoryByClass(Reference.class);
-
-    PortletURL addReferenceURL = referenceAssetRendererFactory.getURLAdd(liferayPortletRequest,
-            liferayPortletResponse);
-    addReferenceURL.setParameter("redirect", currentURL);    
+            .getAssetRendererFactoryByClass(Reference.class);    
 %>
 
 <liferay-ui:error exception="<%= PrincipalException.class %>"
@@ -72,13 +65,6 @@
     </c:when>		
 
 	<c:otherwise>
-
-        <aui:button-row>
-            <aui:button href="<%=addReferenceURL.toString() %>"
-                cssClass="btn-primary"
-                value="add-reference"
-                disabled="<%= !hasAddPermission %>" />
-        </aui:button-row>
 
         <div class="search-results">
             <liferay-ui:search-speed hits="<%= hits %>" searchContainer="<%= referenceSearch %>" />

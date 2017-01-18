@@ -47,8 +47,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-01-17 15:21
- * @version 1.1.4
+ * @modified 2017-01-18 15:19
+ * @version 1.1.5
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -71,6 +71,27 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
 
         _bibliographyService.deleteBibliography(bibliographyId);
+
+    }
+
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.1.5
+     * @throws Exception
+     */
+    public void deleteReference(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+
+        _referenceService.deleteReference(referenceId);
+
+        String bibliographyId = ParamUtil.getString(actionRequest, "bibliographyId");
+        
+        actionResponse.setRenderParameter("bibliographyId", bibliographyId);
+        actionResponse.setRenderParameter("mvcPath", "/edit_bibliography.jsp");
+
     }
 
     /**
@@ -113,7 +134,6 @@ public class BibliographyManagerPortlet extends MVCPortlet {
             SessionErrors.add(actionRequest, "file-not-found");
 
         }
-
     }
 
     @Override
@@ -123,7 +143,6 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         try {
 
             getBibliography(renderRequest);
-            getReference(renderRequest);
 
         } catch (Exception e) {
             if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
@@ -177,47 +196,6 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
         actionRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
-        actionResponse.setRenderParameter("tabs1", tabs1);
-
-    }
-
-    /**
-     * 
-     * @param actionRequest
-     * @param actionResponse
-     * @since 1.0.9
-     * @throws Exception
-     */
-    public void updateReference(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
-        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
-
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(Bibliography.class.getName(), actionRequest);
-
-        long userId = serviceContext.getUserId();
-
-        String bibTeX = PortletUtil.getBibTeX(actionRequest);
-
-        Reference reference = null;
-
-        if (referenceId <= 0) {
-            reference = _referenceService.addReference(userId, bibTeX, serviceContext);
-        } else {
-            reference = _referenceService.updateReference(referenceId, userId, bibTeX, serviceContext);
-        }
-
-        Bibliography bibliography = _bibliographyService.getBibliography(bibliographyId);
-
-        String redirect = getEditBibliographyURL(actionRequest, actionResponse, bibliography);
-        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
-        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-
-        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
-        actionRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
-        actionRequest.setAttribute(ReferenceWebKeys.REFERENCE, reference);
-        actionResponse.setRenderParameter("mvcPath", mvcPath);
-        actionResponse.setRenderParameter("redirect", redirect);
         actionResponse.setRenderParameter("tabs1", tabs1);
 
     }
@@ -289,24 +267,6 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         Bibliography bibliography = _bibliographyService.getBibliography(bibliographyId);
 
         portletRequest.setAttribute(BibliographyWebKeys.BIBLIOGRAPHY, bibliography);
-    }
-
-    /**
-     * 
-     * @param portletRequest
-     * @throws Exception
-     */
-    protected void getReference(PortletRequest portletRequest) throws Exception {
-
-        long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
-
-        if (referenceId <= 0) {
-            return;
-        }
-
-        Reference reference = _referenceService.getReference(referenceId);
-
-        portletRequest.setAttribute(ReferenceWebKeys.REFERENCE, reference);
     }
 
     @org.osgi.service.component.annotations.Reference

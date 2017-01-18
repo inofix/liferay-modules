@@ -26,14 +26,12 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -54,7 +52,6 @@ import ch.inofix.referencemanager.exception.NoSuchReferenceException;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceService;
 import ch.inofix.referencemanager.setup.SampleDataUtil;
-import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
 /**
@@ -62,8 +59,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2017-01-17 15:23
- * @version 1.1.1
+ * @modified 2017-01-18 17:03
+ * @version 1.1.12
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
@@ -126,6 +123,7 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
 
         _referenceService.deleteReference(referenceId);
+        
     }
 
     /**
@@ -190,24 +188,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
 
     }
 
-    @Override
-    public void render(RenderRequest renderRequest, RenderResponse renderResponse)
-            throws IOException, PortletException {
-
-        try {
-            getReference(renderRequest);
-        } catch (Exception e) {
-            if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
-
-                SessionErrors.add(renderRequest, e.getClass());
-            } else {
-                throw new PortletException(e);
-            }
-        }
-
-        super.render(renderRequest, renderResponse);
-    }
-
     /**
      * 
      */
@@ -221,24 +201,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         } else {
             super.doDispatch(renderRequest, renderResponse);
         }
-    }
-
-    /**
-     * 
-     * @param portletRequest
-     * @throws Exception
-     */
-    protected void getReference(PortletRequest portletRequest) throws Exception {
-
-        long referenceId = ParamUtil.getLong(portletRequest, "referenceId");
-
-        if (referenceId <= 0) {
-            return;
-        }
-
-        Reference reference = _referenceService.getReference(referenceId);
-
-        portletRequest.setAttribute(ReferenceWebKeys.REFERENCE, reference);
     }
 
     @org.osgi.service.component.annotations.Reference
