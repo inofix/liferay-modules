@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-08 15:46 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2017-01-18 15:25 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -13,11 +13,11 @@
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
 
-    currentURL = PortalUtil.getCurrentURL(request);
-
     Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
     boolean hasUpdatePermission = BibliographyPermission.contains(permissionChecker, bibliography,
             BibliographyActionKeys.UPDATE);
+    
+    request.setAttribute("bibliography_entries.jsp-bibliography", bibliography);
 
     SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
 
@@ -90,31 +90,10 @@
         className="ch.inofix.referencemanager.model.Reference"
         escapedModel="true" modelVar="reference">
 
-        <%@ include file="/search_columns.jspf" %>       
+        <%@ include file="/search_columns.jspf" %>     
         
-        <liferay-ui:search-container-column-text>
-
-            <liferay-ui:icon-menu icon="<%=StringPool.BLANK%>"
-                message="<%=StringPool.BLANK%>"
-                showExpanded="<%=row == null%>" showWhenSingleIcon="true">
-    
-                <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.VIEW)%>">
-    
-                    <liferay-ui:icon iconCssClass="icon-eye-open"
-                        message="view" url="<%=viewURL %>" />
-    
-                </c:if>
-    
-                <c:if test="<%=ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)%>">
-    
-                    <liferay-ui:icon iconCssClass="icon-edit" message="edit"
-                        url="<%=editURL.toString() %>" />
-    
-                </c:if>
-    
-            </liferay-ui:icon-menu>
-        
-        </liferay-ui:search-container-column-text>
+        <liferay-ui:search-container-column-jsp cssClass="entry-action"
+             path="/reference_action.jsp" valign="top" />
 
     </liferay-ui:search-container-row>
 
