@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2016-12-28 21:26 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-01-19 21:01 by Christian Berndt
+    Version:    1.0.7
 */
 
 @import "bourbon";
@@ -47,6 +47,11 @@
     
     form {
     
+        .description {
+            height: 100px; 
+            width: 400px; 
+        }
+    
         input[type="file"] {
             height: auto;
             
@@ -57,17 +62,24 @@
     
         .form-group.dash {
             padding: 6px;
-        }   
-        
-        .help-message {
-        
-            margin-bottom: 15px;
-            
+        } 
+                
+        .help-block {            
             .icon {
                 font-size: 20px; 
                 margin-left: 5px;
             }
-        }      
+        } 
+        
+        span.help-block {
+            display: inline;
+        }     
+    }
+    
+    .upload {
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
     }
 }
 

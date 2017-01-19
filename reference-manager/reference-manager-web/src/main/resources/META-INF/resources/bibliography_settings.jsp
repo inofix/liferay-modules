@@ -2,8 +2,8 @@
     bibliography_settings.jsp: edit the bibliography's settings.
     
     Created:    2016-12-01 02:33 by Christian Berndt
-    Modified:   2016-12-16 01:37 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-01-19 22:49 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -58,40 +58,35 @@
     <aui:fieldset>
 
         <div class="form-group form-group-inline input-text-wrapper">
-            <label class="control-label" for="account">
-                <liferay-ui:message key="account" />
-            </label> <br/>
-                    
-            <input class="field form-control" id="account" readonly="readonly"
+            <label class="control-label" for="account"> <liferay-ui:message
+                    key="account" />
+            </label> <br /> <input class="field form-control" id="account"
+                readonly="readonly"
                 value="<%="/user/" + themeDisplay.getUser().getScreenName()%>" />
         </div>
-           
-        <div class="form-group form-group-inline input-text-wrapper dash">                    
-            / 
-        </div>
-            
-        <aui:input disabled="<%=!hasUpdatePermission%>" inlineField="true"
-            name="urlTitle" /> 
-            
-        <p class="help-message">
-            <liferay-ui:message
-                key="bibliography-url-title-help" />
-        </p>                 
+
+        <div  class="form-group form-group-inline input-text-wrapper dash">
+            /</div>
 
         <aui:input disabled="<%=!hasUpdatePermission%>"
-            name="title" />
+            inlineField="true" name="urlTitle" />
 
-        <p class="help-message">
-            <liferay-ui:message
-                key="bibliography-title-help" />
+        <p class="help-block">
+            <liferay-ui:message key="bibliography-url-title-help" />
         </p>
 
-        <aui:input disabled="<%=!hasUpdatePermission%>"
-            name="description" type="textarea" />
+        <aui:input disabled="<%=!hasUpdatePermission%>" name="title" />
 
-        <p class="help-message">
-            <liferay-ui:message
-                key="bibliography-description-help" />
+        <p class="help-block">
+            <liferay-ui:message key="bibliography-title-help" />
+        </p>
+
+        <aui:input cssClass="description"
+            disabled="<%=!hasUpdatePermission%>" name="description"
+            type="textarea" />
+
+        <p class="help-block">
+            <liferay-ui:message key="bibliography-description-help" />
         </p>
 
     </aui:fieldset>
@@ -105,7 +100,7 @@
             <aui:input checked="<%=!isPrivate%>" name="private" label=""
                 type="radio" value="false" />
                 
-            <span class="help-message">
+            <span class="help-block">
                 <liferay-ui:icon cssClass="icon icon-eye-open"/>
                 <liferay-ui:message key="bibliography-private-false"/>
             </span>
@@ -115,7 +110,7 @@
             <aui:input checked="<%=isPrivate%>" name="private" label=""
                 type="radio" value="true" disabled="true" />
                 
-            <span class="help-message text-muted">
+            <span class="help-block text-muted">
                 <liferay-ui:icon cssClass="icon icon-lock"/>
                 <liferay-ui:message key="bibliography-private-true"/>
             </span>
@@ -141,7 +136,7 @@
             </c:otherwise>
         </c:choose>
 
-        <p class="help-message">
+        <p class="help-block">
             <liferay-ui:message
                 key="bibliography-categories-help" />
         </p>
@@ -161,7 +156,7 @@
             </c:otherwise>
         </c:choose>
                     
-        <p class="help-message">
+        <p class="help-block">
             <liferay-ui:message
                 key="bibliography-tags-help" />
         </p>
