@@ -23,6 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbibtex.BibTeXEntry;
+import org.jbibtex.Key;
+import org.jbibtex.StringValue;
+import org.jbibtex.StringValue.Style;
+import org.jbibtex.Value;
+
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
@@ -55,6 +61,7 @@ import ch.inofix.referencemanager.model.BibRefRelation;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.base.ReferenceLocalServiceBaseImpl;
+import ch.inofix.referencemanager.service.util.BibTeXUtil;
 import ch.inofix.referencemanager.service.util.ReferenceImporter;
 import ch.inofix.referencemanager.social.ReferenceActivityKeys;
 
@@ -75,8 +82,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-01-08 16:35
- * @version 1.0.4
+ * @modified 2017-01-19 23:10
+ * @version 1.0.5
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -116,9 +123,6 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
             serviceContext.setScopeGroupId(groupId);
         }
 
-        // TODO: validate bibTeX
-        // validate(bibTeX);
-
         long referenceId = counterLocalService.increment();
 
         Reference reference = referencePersistence.create(referenceId);
@@ -129,6 +133,18 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setUserId(user.getUserId());
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
+
+        BibTeXEntry bibTeXEntry = BibTeXUtil.parse(bibTeX);
+        if (bibTeXEntry != null) {
+            Key key = new Key("bibshare-id");
+            Value value = new StringValue(String.valueOf(referenceId), Style.QUOTED);
+            bibTeXEntry.addField(key, value);
+        } else {
+            // TODO: raise an error and report to the user that something is
+            // wrong with the bibtex-src.
+        }
+
+        bibTeX = BibTeXUtil.format(bibTeXEntry);
 
         reference.setBibTeX(bibTeX);
 
@@ -467,9 +483,6 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         User user = userPersistence.findByPrimaryKey(userId);
 
-        // TODO: validate bibTeX
-        // validate(bibTeX);
-
         Reference reference = referencePersistence.findByPrimaryKey(referenceId);
         long groupId = serviceContext.getScopeGroupId();
 
@@ -479,6 +492,20 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setUserId(user.getUserId());
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
+        
+        BibTeXEntry bibTeXEntry = BibTeXUtil.parse(bibTeX);
+        if (bibTeXEntry != null) {
+            Key key = new Key("bibshare-last-modified");
+            Value value = new StringValue(String.valueOf(new Date().getTime()), Style.QUOTED);
+            bibTeXEntry.addField(key, value);
+        } else {
+            // TODO: raise an error and report to the user that something is
+            // wrong with the bibtex-src.
+        }
+        
+        bibTeX = BibTeXUtil.format(bibTeXEntry); 
+        
+        _log.info(bibTeX);
 
         reference.setBibTeX(bibTeX);
 

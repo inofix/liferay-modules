@@ -54,8 +54,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-16 22:48
- * @version 1.1.5
+ * @modified 2017-01-19 23:34
+ * @version 1.1.6
  *
  */
 @ManagedBean
@@ -191,6 +191,7 @@ public class ReferenceEditorView {
             } else {
                 _reference = ReferenceServiceUtil.addReference(userId, _bibTeX, bibliographyIds, serviceContext);
             }
+            _bibTeX = _reference.getBibTeX();
             FacesMessage msg = new FacesMessage("Saved Reference");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (Exception e) {
