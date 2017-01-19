@@ -2,6 +2,7 @@ package ch.inofix.referencemanager.web.internal.portlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
@@ -11,14 +12,21 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
@@ -26,9 +34,12 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -39,7 +50,6 @@ import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibliographyService;
 import ch.inofix.referencemanager.service.ReferenceService;
 import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
-import ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
 /**
@@ -47,8 +57,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-01-18 15:19
- * @version 1.1.5
+ * @modified 2017-01-19 20:48
+ * @version 1.1.6
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -88,7 +98,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         _referenceService.deleteReference(referenceId);
 
         String bibliographyId = ParamUtil.getString(actionRequest, "bibliographyId");
-        
+
         actionResponse.setRenderParameter("bibliographyId", bibliographyId);
         actionResponse.setRenderParameter("mvcPath", "/edit_bibliography.jsp");
 
@@ -163,6 +173,21 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         // methods.
     }
 
+    @Override
+    public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+            throws PortletException {
+
+        try {
+            String resourceID = resourceRequest.getResourceID();
+
+            if (resourceID.equals("exportBibliography")) {
+                exportBibliography(resourceRequest, resourceResponse);
+            }
+        } catch (Exception e) {
+            throw new PortletException(e);
+        }
+    }
+
     /**
      * 
      * @param actionRequest
@@ -213,6 +238,51 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         } else {
             super.doDispatch(renderRequest, renderResponse);
         }
+    }
+
+    /**
+     * 
+     * @param resourceRequest
+     * @param resourceResponse
+     * @since 1.1.6
+     * @throws PortalException
+     * @throws IOException
+     */
+    protected void exportBibliography(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+            throws PortalException, IOException {
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        long bibliographyId = ParamUtil.getLong(resourceRequest, "bibliographyId");
+
+        Bibliography bibliography = _bibliographyService.getBibliography(bibliographyId);
+
+        String fileName = bibliography.getTitle() + ".bib";
+
+        Hits hits = _referenceService.search(themeDisplay.getUserId(), 0, null, bibliography.getBibliographyId(), 0,
+                Integer.MAX_VALUE, null);
+
+        StringBuilder sb = new StringBuilder();
+        
+        List<Document> documents = hits.toList();
+        
+        for (Document document : documents) {
+
+            long referenceId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
+            
+            Reference reference = _referenceService.getReference(referenceId);
+            String bibTeX = reference.getBibTeX();
+            
+            sb.append(bibTeX); 
+            sb.append(StringPool.NEW_LINE); 
+
+        }
+        
+        String export = sb.toString();
+
+        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, fileName, export.getBytes(),
+                ContentTypes.TEXT_PLAIN_UTF8);
+
     }
 
     /**
