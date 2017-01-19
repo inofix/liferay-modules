@@ -61,11 +61,6 @@ public class ReferenceImporter {
         _log.info("updateExisting = " + updateExisting);
         _log.info("urlTitle = " + urlTitle);
 
-//        ServiceContext serviceContext = new ServiceContext();
-//        serviceContext.setCompanyId(user.getCompanyId());
-//        serviceContext.setScopeGroupId(groupId);
-//        serviceContext.setUserId(userId);
-
         long[] bibliographyIds = new long[0];
 
         if (bibliographyId > 0) {
