@@ -2,11 +2,13 @@
     search_columns.jspf: search_columns of the reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2017-01-08 15:38 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-01-19 23:56 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%
+    currentURL = PortalUtil.getCurrentCompleteURL(request);
+
     String detailURL = null;
 
     AssetRenderer<Reference> referenceAssetRenderer = referenceAssetRendererFactory
