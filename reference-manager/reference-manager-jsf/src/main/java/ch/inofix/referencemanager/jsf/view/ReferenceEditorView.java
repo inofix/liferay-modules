@@ -54,8 +54,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-19 23:34
- * @version 1.1.6
+ * @modified 2017-01-21 13:13
+ * @version 1.1.7
  *
  */
 @ManagedBean
@@ -77,49 +77,45 @@ public class ReferenceEditorView {
             _disabled = true;
         }
 
-        try {
-            if (referenceId > 0) {
-                _reference = ReferenceServiceUtil.getReference(referenceId);
-            }
-        } catch (PortalException e) {
-            FacesMessage msg = new FacesMessage("An error occured while loading the requested reference.");
-            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-
-        if (_reference != null) {
-
-            AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
-                    .getAssetRendererFactoryByClass(Bibliography.class);
-
-            _bibliographies = new ArrayList<>();
-
+        if (referenceId > 0) {
             try {
-                for (long bibliographyId : _reference.getBibliographyIds()) {
-                    AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliographyId);
-                    Map<String, String> map = new HashMap<String, String>();
-                    Locale locale = portletRequest.getLocale();
-                    String title = assetRenderer.getTitle(locale);
-                    LiferayPortletRequest liferayPortletRequest = PortalUtil.getLiferayPortletRequest(portletRequest);
-                    LiferayPortletResponse liferayPortletResponse = PortalUtil
-                            .getLiferayPortletResponse(portletResponse);
-                    String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse,
-                            null);
-
-                    map.put("title", title);
-                    map.put("url", viewURL);
-                    _bibliographies.add(map);
-
-                }
-            } catch (Exception e) {
-                _log.error(e);
+                _reference = ReferenceServiceUtil.getReference(referenceId);
+            } catch (PortalException e) {
+                FacesMessage msg = new FacesMessage("An error occured while loading the requested reference.");
+                msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                FacesContext.getCurrentInstance().addMessage(null, msg);
             }
-
-            _bibTeX = _reference.getBibTeX();
-            _citation = _reference.getCitation();
-            _entryType = _reference.getType();
-            _label = _reference.getLabel();
+        } else {
+            _reference = ReferenceLocalServiceUtil.createReference(0);
         }
+
+        AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
+                .getAssetRendererFactoryByClass(Bibliography.class);
+
+        _bibliographies = new ArrayList<>();
+
+        try {
+            for (long bibliographyId : _reference.getBibliographyIds()) {
+                AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliographyId);
+                Map<String, String> map = new HashMap<String, String>();
+                Locale locale = portletRequest.getLocale();
+                String title = assetRenderer.getTitle(locale);
+                LiferayPortletRequest liferayPortletRequest = PortalUtil.getLiferayPortletRequest(portletRequest);
+                LiferayPortletResponse liferayPortletResponse = PortalUtil.getLiferayPortletResponse(portletResponse);
+                String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse, null);
+
+                map.put("title", title);
+                map.put("url", viewURL);
+                _bibliographies.add(map);
+
+            }
+        } catch (Exception e) {
+            _log.error(e);
+        }
+
+        _bibTeX = _reference.getBibTeX();
+        _entryType = _reference.getType();
+        _label = _reference.getLabel();
 
         try {
             _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
@@ -136,15 +132,12 @@ public class ReferenceEditorView {
             _log.error(e);
         }
 
-        if (_reference != null) {
-            updateFields();
-        }
+        updateFields();
     }
 
     public void onEntryTypeChange() {
 
         try {
-
             _entryFields = JSONFactoryUtil.createJSONObject(BibTeXUtil.getProperty("entry.type." + _entryType));
             _optionalValues = new String[getOptionalFields().size()];
             _requiredValues = new String[getRequiredFields().size()];
@@ -159,14 +152,17 @@ public class ReferenceEditorView {
 
     public void onFieldChange() {
         updateBibTeX();
+        _reference.setBibTeX(_bibTeX);
     }
 
     public void onBibTeXChange() {
+        _reference.setBibTeX(_bibTeX);
         updateFields();
     }
 
     public void onTabChange(TabChangeEvent event) {
-        _log.info("onTabChange()");
+        updateBibTeX(); 
+        updateFields(); 
     }
 
     public void saveReference() throws PortalException {
@@ -185,7 +181,7 @@ public class ReferenceEditorView {
         }
 
         try {
-            if (_reference != null) {
+            if (_reference.getReferenceId() > 0) {
                 _reference = ReferenceLocalServiceUtil.updateReference(_reference.getReferenceId(), userId, _bibTeX,
                         bibliographyIds, serviceContext);
             } else {
@@ -202,7 +198,6 @@ public class ReferenceEditorView {
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-
     }
 
     /*
@@ -222,7 +217,7 @@ public class ReferenceEditorView {
     }
 
     public String getCitation() {
-        return _citation;
+        return _reference.getCitation();
     }
 
     public boolean isDisabled() {
@@ -307,7 +302,7 @@ public class ReferenceEditorView {
         if (Validator.isNotNull(_bibTeX)) {
             bibTeXEntry = BibTeXUtil.parse(_bibTeX);
         }
-        
+
         if (bibTeXEntry == null) {
             bibTeXEntry = new BibTeXEntry(type, key);
         }
@@ -344,6 +339,8 @@ public class ReferenceEditorView {
         String what = _bibTeX.substring(0, _bibTeX.indexOf(StringPool.OPEN_CURLY_BRACE) + 1);
         String with = StringPool.AT + _entryType + StringPool.OPEN_CURLY_BRACE;
         _bibTeX = _bibTeX.replace(what, with);
+        
+        _reference.setBibTeX(_bibTeX);
 
     }
 
@@ -371,29 +368,31 @@ public class ReferenceEditorView {
 
             String field = getOptionalFields().get(i).getString("name");
             Key key = new Key(field);
-            Value value = bibTeXEntry.getField(key);
-            if (value != null) {
-                _optionalValues[i] = value.toUserString();
+            if (bibTeXEntry != null) {
+                Value value = bibTeXEntry.getField(key);
+                if (value != null) {
+                    _optionalValues[i] = value.toUserString();
+                }
             }
         }
+
 
         for (int i = 0; i < _requiredValues.length; i++) {
 
             String field = getRequiredFields().get(i).getString("name");
             Key key = new Key(field);
-            Value value = bibTeXEntry.getField(key);
-            if (value != null) {
-                _requiredValues[i] = value.toUserString();
+            if (bibTeXEntry != null) {
+                Value value = bibTeXEntry.getField(key);
+                if (value != null) {
+                    _requiredValues[i] = value.toUserString();
+                }
             }
         }
-
     }
 
     private List<Map<String, String>> _bibliographies;
     private long _bibliographyId;
     private String _bibTeX;
-    private String _citation = "Add a new reference";
-    // TODO: check the user's updatePermission
     private boolean _disabled = false;
     private JSONObject _entryFields;
     private String _entryType = "article";
