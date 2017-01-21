@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-13 19:26 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2017-01-21 16:36 by Christian Berndt
+    Version:    1.1.2
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -21,19 +21,36 @@
     <h:body>
         <h:form id="form">
 
-            <blockquote>#{referenceEditorView.citation}</blockquote>
+            <p:outputPanel id="citation">
+                <p:outputPanel
+                    rendered="${not empty referenceEditorView.citation}">
+                    <blockquote>
+                        <h:outputText
+                            value="#{referenceEditorView.citation}" />
+                    </blockquote>
+                </p:outputPanel>
+                <p:outputPanel
+                    rendered="${empty referenceEditorView.citation}">
+                    <blockquote>
+                        <h:outputText value="#{i18n['new-reference']}" />
+                    </blockquote>
+                </p:outputPanel>
+            </p:outputPanel>
 
             <p:messages id="messages" showDetail="false"
-                autoUpdate="true" closable="true" />
+                autoUpdate="true" closable="true" />            
 
             <p:outputPanel styleClass="form-group clearfix">
 
-                <p:selectOneMenu disabled="#{referenceEditorView.disabled}"
+                <p:selectOneMenu
+                    disabled="#{referenceEditorView.disabled}"
                     id="entryType" styleClass="pull-left"
                     value="#{referenceEditorView.entryType}">
-                    <p:ajax listener="#{referenceEditorView.onEntryTypeChange}"
+                    <p:ajax
+                        listener="#{referenceEditorView.onEntryTypeChange}"
                         update="@(form)" />
-                    <f:selectItems value="#{referenceEditorView.entryTypes}" />
+                    <f:selectItems
+                        value="#{referenceEditorView.entryTypes}" />
                 </p:selectOneMenu>
 
                 <h:outputLink
@@ -43,7 +60,7 @@
 
             </p:outputPanel>
 
-            <p:tabView id="tabs" dynamic="true" cache="true">
+            <p:tabView id="tabs" dynamic="true" cache="false">
 
                 <p:ajax event="tabChange"
                     listener="#{referenceEditorView.onTabChange}" />
@@ -57,7 +74,7 @@
                             <span class="fa fa-question-circle muted"></span>
                         </h:outputLink>
                         <p:tooltip id="tool-tip-label-help"
-                            for="label-help"                            
+                            for="label-help"
                             value="#{i18n['label-help']}"
                             position="right" />
                         <p:inputText
@@ -151,21 +168,22 @@
                             <f:ajax execute="@form" />
                             <p:ajax event="blur"
                                 listener="#{referenceEditorView.onBibTeXChange}"
-                                update="@(form)" />
+                                update=":form:citation :form:entryType"/>
                         </p:inputTextarea>
                     </p:outputPanel>
                 </p:tab>
 
                 <p:tab title="#{i18n['usage']}">
                     <p:outputPanel styleClass="form-group">
-                        <h:outputText styleClass="help-block" 
-                            value="#{i18n['this-reference-is-used-in-following-bibliographies']}"/>                       
+                        <h:outputText styleClass="help-block"
+                            value="#{i18n['this-reference-is-used-in-following-bibliographies']}" />
                         <c:forEach
                             items="#{referenceEditorView.bibliographies}"
                             var="bibliography">
-                            <h:outputLink 
-                                styleClass="btn btn-default" value="#{bibliography['url']}" >
-                                <h:outputText value="#{bibliography['title']}"/>
+                            <h:outputLink styleClass="btn btn-default"
+                                value="#{bibliography['url']}">
+                                <h:outputText
+                                    value="#{bibliography['title']}" />
                             </h:outputLink>
                         </c:forEach>
                     </p:outputPanel>
@@ -174,13 +192,15 @@
             </p:tabView>
 
             <p:outputPanel>
-                <p:commandButton action="#{referenceEditorView.saveReference}"
+                <p:commandButton
+                    action="#{referenceEditorView.saveReference}"
                     disabled="#{referenceEditorView.disabled}"
                     styleClass="btn" update="@(form)"
                     value="#{i18n['save']}" />
                 <h:outputLink
                     rendered="${not empty referenceEditorView.redirect}"
-                    styleClass="btn" value="#{referenceEditorView.redirect}">#{i18n['cancel']}</h:outputLink>
+                    styleClass="btn"
+                    value="#{referenceEditorView.redirect}">#{i18n['cancel']}</h:outputLink>
             </p:outputPanel>
         </h:form>
     </h:body>
