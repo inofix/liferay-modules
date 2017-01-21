@@ -53,8 +53,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2017-01-07 22:26
- * @version 1.0.8
+ * @modified 2017-01-21 16:50
+ * @version 1.0.9
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -71,7 +71,7 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     public String getAuthor() {
 
-        String[] authors = getField("author").split("and");
+        String[] authors = getAuthors();
 
         String author = "";
 
@@ -86,6 +86,12 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         }
 
         return author;
+
+    }
+    
+    public String[] getAuthors() {
+
+        return tokenize("author");
 
     }
 
@@ -125,7 +131,7 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     public String getEditor() {
 
-        String[] editors = getField("editor").split("and");
+        String[] editors = getEditors();
 
         String editor = "";
 
@@ -141,6 +147,12 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
         return editor;
 
+    }
+    
+    public String[] getEditors() {
+
+        return tokenize("editor");
+        
     }
 
     public Map<String, String> getFields() {
@@ -191,7 +203,7 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     public String getType() {
 
-        String type = "misc";
+        String type = "article";
 
         if (_bibTeXEntry == null) {
             _bibTeXEntry = getBibTeXEntry();
@@ -237,6 +249,16 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         }
 
         return str;
+
+    }
+    
+    private String[] tokenize(String field) {
+
+        String str = getField(field);
+
+        String[] tokens = str.split(" (?i)and ");
+
+        return tokens;
 
     }
 
