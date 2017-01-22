@@ -40,8 +40,8 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-22 16:24
- * @version 1.0.5
+ * @modified 2017-01-22 21:03
+ * @version 1.0.6
  */
 public class ReferenceImporter {
 
