@@ -16,6 +16,9 @@ import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXEntry;
 import org.jbibtex.BibTeXObject;
 import org.jbibtex.BibTeXParser;
+import org.jbibtex.BibTeXPreamble;
+import org.jbibtex.BibTeXString;
+import org.jbibtex.Value;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -26,14 +29,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+
+import ch.inofix.referencemanager.model.Bibliography;
+import ch.inofix.referencemanager.service.BibliographyServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceServiceUtil;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-17 15:11
- * @version 1.0.4
+ * @modified 2017-01-22 16:24
+ * @version 1.0.5
  */
 public class ReferenceImporter {
 
@@ -50,11 +56,15 @@ public class ReferenceImporter {
 
         long bibliographyId = GetterUtil.getLong(ArrayUtil.getValue(parameterMap.get("bibliographyId"), 0));
         // TODO: read default value from resource bundle
+        String description = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("description"), 0), null);
+        // TODO: read default value from resource bundle
         String title = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("title"), 0), "New Bibliography");
         // TODO: handle update of existing references / bibliographies
         boolean updateExisting = GetterUtil.getBoolean(ArrayUtil.getValue(parameterMap.get("updateExisting"), 0));
         // TODO: read default value from resource bundle
         String urlTitle = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("urlTitle"), 0), "new-bibliography");
+
+        Bibliography bibliography = null;
 
         _log.info("bibliographyId = " + bibliographyId);
         _log.info("title = " + title);
@@ -65,6 +75,7 @@ public class ReferenceImporter {
 
         if (bibliographyId > 0) {
             bibliographyIds = new long[] { bibliographyId };
+            bibliography = BibliographyServiceUtil.getBibliography(bibliographyId);
         }
 
         try {
@@ -84,16 +95,38 @@ public class ReferenceImporter {
 
             BibTeXParser bibTeXParser = new BibTeXParser();
 
-            BibTeXDatabase database = bibTeXParser.parse(bufferedReader);
+            BibTeXDatabase database = bibTeXParser.parseFully(bufferedReader);
 
-            List<BibTeXObject> objects = database.getObjects();
+            List<Exception> exceptions = bibTeXParser.getExceptions();
 
-            for (BibTeXObject object : objects) {
+            for (Exception exception : exceptions) {
+                _log.error(exception.getMessage());
+            }
 
-                if (object.getClass() == BibTeXComment.class) {
-                    BibTeXComment comment = (BibTeXComment) object;
-                    _log.info(comment.getValue().toUserString());
+            List<BibTeXObject> bibTeXObjects = database.getObjects();
+
+            String comments = getComments(bibTeXObjects);
+            // TODO: retrieve preamble from file
+            String preamble = null; 
+            String strings = getStrings(bibTeXObjects);
+
+            for (BibTeXObject object : bibTeXObjects) {
+
+                if (object.getClass() == BibTeXPreamble.class) {
+                    BibTeXPreamble bibTeXPreamble = (BibTeXPreamble) object;
+                    _log.info(bibTeXPreamble.getValue().toUserString());
                 }
+            }
+
+            if (bibliography != null) {
+                
+                // import into an already existing bibliography
+                title = bibliography.getTitle(); 
+                description = bibliography.getDescription();
+                urlTitle = bibliography.getUrlTitle();
+                
+                bibliography = BibliographyServiceUtil.updateBibliography(bibliographyId, userId, title, description,
+                        urlTitle, comments, preamble, strings, serviceContext);
             }
 
             _log.info("Start import");
@@ -107,9 +140,6 @@ public class ReferenceImporter {
                 String bibTeX = "";
 
                 bibTeX = BibTeXUtil.format(bibTeXEntry);
-
-                // TODO: check whether a reference with the same uid has
-                // already been uploaded
 
                 ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds, serviceContext);
 
@@ -137,6 +167,44 @@ public class ReferenceImporter {
         } catch (Exception e) {
             _log.error(e);
         }
+    }
+
+    private static String getComments(List<BibTeXObject> bibTeXObjects) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (BibTeXObject bibTeXObject : bibTeXObjects) {
+
+            if (bibTeXObject.getClass() == BibTeXComment.class) {
+                BibTeXComment comment = (BibTeXComment) bibTeXObject;
+                Value value = comment.getValue();
+                if (value != null) {
+                    sb.append(value.toUserString());
+                }
+            }
+        }
+
+        return sb.toString();
+
+    }
+
+    private static String getStrings(List<BibTeXObject> bibTeXObjects) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (BibTeXObject bibTeXObject : bibTeXObjects) {
+
+            if (bibTeXObject.getClass() == BibTeXString.class) {
+                BibTeXString comment = (BibTeXString) bibTeXObject;
+                Value value = comment.getValue();
+                if (value != null) {
+                    sb.append(value.toUserString());
+                }
+            }
+        }
+
+        return sb.toString();
+
     }
 
     private static Log _log = LogFactoryUtil.getLog(ReferenceImporter.class.getName());

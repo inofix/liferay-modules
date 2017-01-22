@@ -22,6 +22,15 @@
 			<hint name="max-length">250</hint>
 			<validator name="required" />
 		</field>
+		<field name="comments" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+		<field name="preamble" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+		<field name="strings" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
 	</model>
 	<model name="ch.inofix.referencemanager.model.BibRefRelation">
 		<field name="uuid" type="String" />

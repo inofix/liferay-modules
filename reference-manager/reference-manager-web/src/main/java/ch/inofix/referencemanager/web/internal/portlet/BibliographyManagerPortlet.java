@@ -57,8 +57,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-01-19 20:48
- * @version 1.1.6
+ * @modified 2017-01-22 17:59
+ * @version 1.1.7
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -209,11 +209,18 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
         Bibliography bibliography = null;
 
+        // Only available in imported database, see
+        // ch.inofix.referencemanager.service.util.ReferenceImporter
+        String comments = null;
+        String preamble = null;
+        String strings = null;
+
         if (bibliographyId <= 0) {
-            bibliography = _bibliographyService.addBibliography(userId, title, description, urlTitle, serviceContext);
+            bibliography = _bibliographyService.addBibliography(userId, title, description, urlTitle, comments,
+                    preamble, strings, serviceContext);
         } else {
             bibliography = _bibliographyService.updateBibliography(bibliographyId, userId, title, description, urlTitle,
-                    serviceContext);
+                    comments, preamble, strings, serviceContext);
         }
 
         String redirect = getEditBibliographyURL(actionRequest, actionResponse, bibliography);

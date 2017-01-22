@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2016-12-02 22:13 by Christian Berndt 
-    Version:    1.0.6
+    Modified:   2017-01-22 16:50 by Christian Berndt 
+    Version:    1.0.7
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -42,7 +42,10 @@
         <column name="title" type="String" />
         <column name="description" type="String" />
         <column name="urlTitle" type="String" />
-
+        <column name="comments" type="String" />
+        <column name="preamble" type="String" />
+        <column name="strings" type="String" />
+        
         <!-- Order -->
 
         <!-- Finder methods -->
