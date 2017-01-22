@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2017-01-22 20:17 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-01-22 21:37 by Christian Berndt
+    Version:    1.0.9
 */
 
 @import "bourbon";
@@ -16,10 +16,8 @@
     }
     
     .bibliography-head {
-        border-bottom: 1px solid #ddd;
         margin-top: -15px;
-        margin-bottom: 30px; 
-        padding-bottom: 10px; 
+        padding-bottom: 20px; 
         position: relative;
         
         .add-reference {
@@ -78,12 +76,6 @@
         span.help-block {
             display: inline;
         }     
-    }
-    
-    .upload {
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
     }
 }
 

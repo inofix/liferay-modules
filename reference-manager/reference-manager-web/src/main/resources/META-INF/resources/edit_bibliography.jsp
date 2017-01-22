@@ -2,8 +2,8 @@
     edit_bibliography.jsp: default view of the bibliography manaager portlet.
     
     Created:    2016-11-30 00:18 by Christian Berndt
-    Modified:   2016-12-23 22:31 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-01-22 21:19 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -21,7 +21,7 @@
 
     if (bibliography != null) {
         hasUpdatePermission = BibliographyPermission.contains(permissionChecker, bibliography, BibliographyActionKeys.UPDATE);
-        tabNames = "browse,import-export,settings";
+        tabNames = "browse,import,settings";
         portletURL.setParameter("bibliographyId", String.valueOf(bibliography.getBibliographyId()));
         tabs1 = ParamUtil.getString(request, "tabs1", "browse");
         AssetEntryServiceUtil.incrementViewCounter(Bibliography.class.getName(), bibliography.getBibliographyId());
@@ -58,10 +58,23 @@
     <c:otherwise>
         <div class="bibliography-head">
             <h2><%=bibliography.getTitle()%></h2>
-            <div class="compiled-by">
-                <liferay-ui:message key="compiled-by-x"
-                    arguments="<%=new String[] { bibliography.getUserName() }%>" />
+            <div class="clearfix">
+                <div class="compiled-by pull-left">
+                    <liferay-ui:message key="compiled-by-x"
+                        arguments="<%=new String[] { bibliography.getUserName() }%>" />
+                </div>
+                <portlet:resourceURL id="exportBibliography"
+                    var="exportBibliographyURL">
+                    <portlet:param name="bibliographyId"
+                        value="<%=String.valueOf(bibliography.getBibliographyId())%>" />
+                </portlet:resourceURL>
+
+                <aui:button cssClass="btn-sm pull-right"
+                    href="<%=exportBibliographyURL%>"
+                    value="download" />
+
             </div>
+
         </div>
     </c:otherwise>
 </c:choose>
@@ -71,7 +84,7 @@
     
 <c:choose>
 
-    <c:when test='<%= tabs1.equals("import-export") %>'>
+    <c:when test='<%= tabs1.equals("import") %>'>
         <liferay-util:include page="/import_bibliography.jsp" servletContext="<%= application %>" />
     </c:when>
     
