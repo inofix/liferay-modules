@@ -59,8 +59,8 @@ import ch.inofix.referencemanager.social.BibliographyActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-12-02 22:24
- * @version 1.0.2
+ * @modified 2017-01-22 17:49
+ * @version 1.0.3
  * @see BibliographyLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyLocalServiceUtil
  */
@@ -75,8 +75,8 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
      */
     @Indexable(type = IndexableType.REINDEX)
     @Override
-    public Bibliography addBibliography(long userId, String title, String description, String urlTitle,
-            ServiceContext serviceContext) throws PortalException {
+    public Bibliography addBibliography(long userId, String title, String description, String urlTitle, String comments,
+            String preamble, String strings, ServiceContext serviceContext) throws PortalException {
 
         // Bibliography
 
@@ -97,6 +97,9 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
         bibliography.setTitle(title);
         bibliography.setDescription(description);
         bibliography.setUrlTitle(urlTitle);
+        bibliography.setComments(comments);
+        bibliography.setPreamble(preamble);
+        bibliography.setStrings(strings);
 
         bibliographyPersistence.update(bibliography);
 
@@ -271,7 +274,8 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
     @Indexable(type = IndexableType.REINDEX)
     public Bibliography updateBibliography(long bibliographyId, long userId, String title, String description,
-            String urlTitle, ServiceContext serviceContext) throws PortalException {
+            String urlTitle, String comments, String preamble, String strings, ServiceContext serviceContext)
+            throws PortalException {
 
         // Bibliography
 
@@ -293,6 +297,9 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
         bibliography.setTitle(title);
         bibliography.setDescription(description);
         bibliography.setUrlTitle(urlTitle);
+        bibliography.setComments(comments);
+        bibliography.setPreamble(preamble);
+        bibliography.setStrings(strings);
 
         bibliographyPersistence.update(bibliography);
 

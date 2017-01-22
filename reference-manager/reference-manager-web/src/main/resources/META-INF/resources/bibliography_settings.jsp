@@ -2,8 +2,8 @@
     bibliography_settings.jsp: edit the bibliography's settings.
     
     Created:    2016-12-01 02:33 by Christian Berndt
-    Modified:   2017-01-19 22:49 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-01-22 20:08 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -162,7 +162,30 @@
         </p>
             
     </aui:fieldset>
-    
+
+    <aui:fieldset>
+        <aui:input type="hidden" name="comments" />
+        <aui:input disabled="true" name="comments" type="textarea" />
+
+        <p class="help-block">
+            <liferay-ui:message key="comments-help" />
+        </p>
+
+        <aui:input type="hidden" name="preamble" />
+        <aui:input disabled="true" name="preamble" type="textarea" />
+
+        <p class="help-block">
+            <liferay-ui:message key="preamble-help" />
+        </p>
+
+        <aui:input type="hidden" name="strings" />
+        <aui:input disabled="true" name="strings" type="textarea" />
+
+        <p class="help-block">
+            <liferay-ui:message key="strings-help" />
+        </p>
+    </aui:fieldset>
+
     <aui:button-row>
         <aui:button
             disabled="<%=!hasUpdatePermission%>" type="submit" value="<%= submitLabel %>" />

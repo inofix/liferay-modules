@@ -52,8 +52,8 @@ import ch.inofix.referencemanager.service.permission.BibliographyPermission;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2016-12-15 00:33
- * @version 1.0.5
+ * @modified 2017-01-22 17:55
+ * @version 1.0.6
  * @see BibliographyServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyServiceUtil
  */
@@ -77,13 +77,14 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
      * @since 1.0.0
      * @throws PortalException
      */
-    public Bibliography addBibliography(long userId, String title, String description, String urlTitle,
-            ServiceContext serviceContext) throws PortalException {
+    public Bibliography addBibliography(long userId, String title, String description, String urlTitle, String comments,
+            String preamble, String strings, ServiceContext serviceContext) throws PortalException {
 
         BibliographyManagerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 BibliographyActionKeys.ADD_BIBLIOGRAPHY);
 
-        return bibliographyLocalService.addBibliography(userId, title, description, urlTitle, serviceContext);
+        return bibliographyLocalService.addBibliography(userId, title, description, urlTitle, comments, preamble,
+                strings, serviceContext);
     }
 
     /**
@@ -236,12 +237,13 @@ public class BibliographyServiceImpl extends BibliographyServiceBaseImpl {
      * @throws PortalException
      */
     public Bibliography updateBibliography(long bibliographyId, long userId, String title, String description,
-            String urlTitle, ServiceContext serviceContext) throws PortalException {
+            String urlTitle, String comments, String preamble, String strings, ServiceContext serviceContext)
+            throws PortalException {
 
         BibliographyPermission.check(getPermissionChecker(), bibliographyId, ActionKeys.UPDATE);
 
         return bibliographyLocalService.updateBibliography(bibliographyId, userId, title, description, urlTitle,
-                serviceContext);
+                comments, preamble, strings, serviceContext);
     }
 
     private static final Log _log = LogFactoryUtil.getLog(BibliographyServiceImpl.class);
