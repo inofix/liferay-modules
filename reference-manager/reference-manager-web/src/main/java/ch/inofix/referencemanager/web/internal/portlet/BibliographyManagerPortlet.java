@@ -57,8 +57,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-01-22 17:59
- * @version 1.1.7
+ * @modified 2017-01-22 22:24
+ * @version 1.1.8
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -271,6 +271,15 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
         StringBuilder sb = new StringBuilder();
         
+        sb.append(StringPool.PERCENT); 
+        sb.append(" Encoding: UTF-8");
+        sb.append(StringPool.NEW_LINE); 
+        sb.append(StringPool.NEW_LINE); 
+        
+        sb.append(bibliography.getPreamble());
+        
+        sb.append(bibliography.getStrings());
+        
         List<Document> documents = hits.toList();
         
         for (Document document : documents) {
@@ -284,6 +293,8 @@ public class BibliographyManagerPortlet extends MVCPortlet {
             sb.append(StringPool.NEW_LINE); 
 
         }
+        
+        sb.append(bibliography.getComments());
         
         String export = sb.toString();
 
