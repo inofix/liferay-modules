@@ -18,6 +18,7 @@ import org.jbibtex.BibTeXObject;
 import org.jbibtex.BibTeXParser;
 import org.jbibtex.BibTeXPreamble;
 import org.jbibtex.BibTeXString;
+import org.jbibtex.Key;
 import org.jbibtex.Value;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.service.BibliographyServiceUtil;
@@ -176,10 +178,14 @@ public class ReferenceImporter {
         for (BibTeXObject bibTeXObject : bibTeXObjects) {
 
             if (bibTeXObject.getClass() == BibTeXComment.class) {
-                BibTeXComment comment = (BibTeXComment) bibTeXObject;
+                BibTeXComment comment = (BibTeXComment) bibTeXObject;               
                 Value value = comment.getValue();
                 if (value != null) {
+                    sb.append("@Comment{");
                     sb.append(value.toUserString());
+                    sb.append("}");
+                    sb.append(StringPool.NEW_LINE);
+                    sb.append(StringPool.NEW_LINE);
                 }
             }
         }
@@ -195,10 +201,21 @@ public class ReferenceImporter {
         for (BibTeXObject bibTeXObject : bibTeXObjects) {
 
             if (bibTeXObject.getClass() == BibTeXString.class) {
-                BibTeXString comment = (BibTeXString) bibTeXObject;
-                Value value = comment.getValue();
-                if (value != null) {
+                BibTeXString string = (BibTeXString) bibTeXObject;
+                Key key = string.getKey(); 
+                Value value = string.getValue();
+                if (key != null && value != null) {
+                    sb.append("@String{");
+                    sb.append(key.getValue());
+                    sb.append(StringPool.BLANK);
+                    sb.append(StringPool.EQUAL);
+                    sb.append(StringPool.BLANK);
+                    sb.append(StringPool.OPEN_CURLY_BRACE);
                     sb.append(value.toUserString());
+                    sb.append(StringPool.CLOSE_CURLY_BRACE);
+                    sb.append("}");
+                    sb.append(StringPool.NEW_LINE);
+                    sb.append(StringPool.NEW_LINE);
                 }
             }
         }
