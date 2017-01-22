@@ -2,8 +2,8 @@
     import_bibliography.jsp: The import panel of bibliography manager.
     
     Created:    2016-12-01 02:50 by Christian Berndt
-    Modified:   2017-01-19 21:00 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-01-22 21:08 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -45,11 +45,3 @@
         </p>
     </div>
 </aui:form>
-
-<portlet:resourceURL id="exportBibliography" var="exportBibliographyURL">
-    <portlet:param name="bibliographyId"
-        value="<%=String.valueOf(bibliography.getBibliographyId())%>" />
-</portlet:resourceURL>
-
-<aui:button href="<%=exportBibliographyURL%>"
-    icon="download" primary="true" value="export-bibliography"/>

@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-18 15:25 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-01-22 21:07 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/init.jsp" %>
