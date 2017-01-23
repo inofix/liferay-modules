@@ -134,7 +134,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
 
-        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTexEntry(bibTeX);
+        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTeXEntry(bibTeX);
         if (bibTeXEntry != null) {
             Key key = new Key("bibshare-id");
             Value value = new StringValue(String.valueOf(referenceId), Style.QUOTED);
@@ -493,7 +493,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
         
-        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTexEntry(bibTeX);
+        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTeXEntry(bibTeX);
         if (bibTeXEntry != null) {
             Key key = new Key("bibshare-last-modified");
             Value value = new StringValue(String.valueOf(new Date().getTime()), Style.QUOTED);

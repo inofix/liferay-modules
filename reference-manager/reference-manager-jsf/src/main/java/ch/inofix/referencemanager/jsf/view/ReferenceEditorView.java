@@ -300,7 +300,7 @@ public class ReferenceEditorView {
 
         // parse src
         if (Validator.isNotNull(_bibTeX)) {
-            bibTeXEntry = BibTeXUtil.getBibTexEntry(_bibTeX);
+            bibTeXEntry = BibTeXUtil.getBibTeXEntry(_bibTeX);
         }
 
         if (bibTeXEntry == null) {
@@ -346,7 +346,7 @@ public class ReferenceEditorView {
 
     private void updateFields() {
 
-        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTexEntry(_bibTeX);
+        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTeXEntry(_bibTeX);
 
         if (bibTeXEntry != null) {
             if (bibTeXEntry.getType() != null) {

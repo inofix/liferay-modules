@@ -44,7 +44,7 @@ public class PortletUtil {
 
         // Read bibTeXEntry from source
 
-        BibTeXEntry srcEntry = BibTeXUtil.getBibTexEntry(bibTeX); 
+        BibTeXEntry srcEntry = BibTeXUtil.getBibTeXEntry(bibTeX); 
 
         _log.info("srcEntry = " + srcEntry);
 
