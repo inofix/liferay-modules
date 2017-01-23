@@ -54,8 +54,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-21 13:13
- * @version 1.1.7
+ * @modified 2017-01-23 23:35
+ * @version 1.1.8
  *
  */
 @ManagedBean
@@ -300,7 +300,7 @@ public class ReferenceEditorView {
 
         // parse src
         if (Validator.isNotNull(_bibTeX)) {
-            bibTeXEntry = BibTeXUtil.parse(_bibTeX);
+            bibTeXEntry = BibTeXUtil.getBibTexEntry(_bibTeX);
         }
 
         if (bibTeXEntry == null) {
@@ -346,7 +346,7 @@ public class ReferenceEditorView {
 
     private void updateFields() {
 
-        BibTeXEntry bibTeXEntry = BibTeXUtil.parse(_bibTeX);
+        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTexEntry(_bibTeX);
 
         if (bibTeXEntry != null) {
             if (bibTeXEntry.getType() != null) {

@@ -25,8 +25,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2017-01-14 14:27
- * @version 1.0.6
+ * @modified 2017-01-23 23:29
+ * @version 1.0.7
  *
  */
 public class BibTeXUtil {
@@ -95,7 +95,7 @@ public class BibTeXUtil {
         return _properties.getProperty(key);
     }
 
-    public static BibTeXEntry parse(String str) {
+    public static BibTeXEntry getBibTexEntry(String str) {
 
         // Read bibTeXEntry from str
 

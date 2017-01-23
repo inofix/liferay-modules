@@ -24,8 +24,8 @@ import ch.inofix.referencemanager.service.util.BibTeXUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-28 23:26
- * @modified 2017-01-06 17:57
- * @version 1.0.3
+ * @modified 2017-01-23 23:32
+ * @version 1.0.4
  */
 public class PortletUtil {
 
@@ -44,31 +44,7 @@ public class PortletUtil {
 
         // Read bibTeXEntry from source
 
-        BibTeXEntry srcEntry = BibTeXUtil.parse(bibTeX); 
-//
-//        StringReader stringReader = new StringReader(bibTeX);
-//
-//        BibTeXParser bibTeXParser = new BibTeXParser();
-//
-//        BibTeXDatabase database = bibTeXParser.parseFully(stringReader);
-//
-//        if (database != null) {
-//
-//            Map<Key, BibTeXEntry> entriesMap = database.getEntries();
-//
-//            if (entriesMap != null) {
-//
-//                Collection<BibTeXEntry> bibTexEntries = entriesMap.values();
-//
-//                if (bibTexEntries.size() > 0) {
-//
-//                    Iterator<BibTeXEntry> iterator = bibTexEntries.iterator();
-//
-//                    srcEntry = iterator.next();
-//
-//                }
-//            }
-//        }
+        BibTeXEntry srcEntry = BibTeXUtil.getBibTexEntry(bibTeX); 
 
         _log.info("srcEntry = " + srcEntry);
 

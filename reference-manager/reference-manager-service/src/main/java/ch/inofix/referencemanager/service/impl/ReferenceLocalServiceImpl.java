@@ -82,8 +82,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-01-19 23:10
- * @version 1.0.5
+ * @modified 2017-01-23 23:33
+ * @version 1.0.6
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -134,7 +134,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
 
-        BibTeXEntry bibTeXEntry = BibTeXUtil.parse(bibTeX);
+        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTexEntry(bibTeX);
         if (bibTeXEntry != null) {
             Key key = new Key("bibshare-id");
             Value value = new StringValue(String.valueOf(referenceId), Style.QUOTED);
@@ -493,7 +493,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
         
-        BibTeXEntry bibTeXEntry = BibTeXUtil.parse(bibTeX);
+        BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTexEntry(bibTeX);
         if (bibTeXEntry != null) {
             Key key = new Key("bibshare-last-modified");
             Value value = new StringValue(String.valueOf(new Date().getTime()), Style.QUOTED);
