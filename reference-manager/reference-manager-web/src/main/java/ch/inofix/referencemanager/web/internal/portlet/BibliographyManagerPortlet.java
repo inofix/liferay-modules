@@ -16,6 +16,8 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jbibtex.BibTeXComment;
+import org.jbibtex.Value;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -49,6 +51,7 @@ import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibliographyService;
 import ch.inofix.referencemanager.service.ReferenceService;
+import ch.inofix.referencemanager.service.util.BibTeXUtil;
 import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
@@ -295,6 +298,33 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         }
         
         sb.append(bibliography.getComments());
+        
+        String bibshareId = null; 
+        
+        List<BibTeXComment> bibTeXComments = BibTeXUtil.getBibTeXComments(bibliography.getComments()); 
+        
+        for (BibTeXComment bibTeXComment : bibTeXComments) {
+            
+            Value value = bibTeXComment.getValue(); 
+            
+            if (value != null) {
+                String str = value.toUserString();
+                
+                if (str.startsWith("bibshare-id:")) {
+                    bibshareId = str;
+                }
+            }           
+        }
+        
+        if (bibshareId == null) {
+
+            // database does not contain a bibshare-id yet
+            
+            sb.append("@Comment{");
+            sb.append("bibshare-id: " + String.valueOf(bibliographyId));
+            sb.append("}"); 
+
+        }
         
         String export = sb.toString();
 

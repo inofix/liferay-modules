@@ -3,14 +3,18 @@ package ch.inofix.referencemanager.service.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.jbibtex.BibTeXComment;
 import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXEntry;
+import org.jbibtex.BibTeXObject;
 import org.jbibtex.BibTeXParser;
 import org.jbibtex.Key;
 import org.jbibtex.ParseException;
@@ -25,8 +29,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2017-01-23 23:29
- * @version 1.0.7
+ * @modified 2017-01-24 00:25
+ * @version 1.0.8
  *
  */
 public class BibTeXUtil {
@@ -94,45 +98,82 @@ public class BibTeXUtil {
 
         return _properties.getProperty(key);
     }
+    
+    public static List<BibTeXComment> getBibTeXComments(String str) {
 
-    public static BibTeXEntry getBibTexEntry(String str) {
+        List<BibTeXComment> bibTeXComments = new ArrayList<BibTeXComment>();
 
-        // Read bibTeXEntry from str
+        BibTeXDatabase database = getBibTeXDatabase(str);
 
-        BibTeXEntry bibTexEntry = null;
+        if (database != null) {
+
+            List<BibTeXObject> bibTeXObjects = database.getObjects();
+
+            for (BibTeXObject bibTeXObject : bibTeXObjects) {
+
+                if (bibTeXObject.getClass() == BibTeXComment.class) {
+                    bibTeXComments.add((BibTeXComment) bibTeXObject);
+                }
+
+            }
+
+        }
+
+        return bibTeXComments;
+
+    }
+    
+    public static BibTeXDatabase getBibTeXDatabase(String str) {
+
+        // Read bibTeXDatabase from str
 
         StringReader stringReader = new StringReader(str);
 
         BibTeXParser bibTeXParser;
 
+        BibTeXDatabase database = null;
+
         try {
             bibTeXParser = new BibTeXParser();
 
-            BibTeXDatabase database = bibTeXParser.parseFully(stringReader);
+            database = bibTeXParser.parseFully(stringReader);
 
-            if (database != null) {
-
-                Map<Key, BibTeXEntry> entriesMap = database.getEntries();
-
-                if (entriesMap != null) {
-
-                    Collection<BibTeXEntry> bibTexEntries = entriesMap.values();
-
-                    if (bibTexEntries.size() > 0) {
-
-                        Iterator<BibTeXEntry> iterator = bibTexEntries.iterator();
-
-                        bibTexEntry = iterator.next();
-
-                    }
-                }
-            }
         } catch (TokenMgrException e) {
             _log.error(e);
         } catch (ParseException e) {
             _log.error(e);
         } catch (Exception e) {
             _log.error(e);
+        }
+
+        return database;
+
+    }
+
+    public static BibTeXEntry getBibTeXEntry(String str) {
+
+        // Read bibTeXEntry from str
+
+        BibTeXEntry bibTexEntry = null;
+
+        BibTeXDatabase database = getBibTeXDatabase(str);
+
+        if (database != null) {
+
+            Map<Key, BibTeXEntry> entriesMap = database.getEntries();
+
+            if (entriesMap != null) {
+
+                Collection<BibTeXEntry> bibTexEntries = entriesMap.values();
+
+                if (bibTexEntries.size() > 0) {
+
+                    Iterator<BibTeXEntry> iterator = bibTexEntries.iterator();
+
+                    bibTexEntry = iterator.next();
+
+                }
+            }
         }
 
         return bibTexEntry;
