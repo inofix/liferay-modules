@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-22 21:07 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2017-01-23 23:13 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -57,8 +57,14 @@
 
     PortletURL addReferenceURL = referenceAssetRendererFactory.getURLAdd(liferayPortletRequest,
             liferayPortletResponse);
-    addReferenceURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
-    addReferenceURL.setParameter("redirect", currentURL);
+    
+    String href = null; 
+    
+    if (addReferenceURL != null) {
+        addReferenceURL.setParameter("bibliographyId", String.valueOf(bibliographyId));
+        addReferenceURL.setParameter("redirect", currentURL);
+        href = addReferenceURL.toString(); 
+    }
 %>
 
 <div class="clearfix">
@@ -74,11 +80,12 @@
     <div class="pull-right">
         <aui:button cssClass="btn-success"
             disabled="<%=!hasUpdatePermission%>"
-            href="<%=addReferenceURL.toString()%>"
+            href="<%= href %>"
             value="add-reference" />
     </div>
     
 </div>
+
 
 <liferay-ui:search-container
     cssClass="references-search-container"            
