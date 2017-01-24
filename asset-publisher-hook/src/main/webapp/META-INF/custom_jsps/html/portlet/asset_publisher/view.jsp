@@ -1,4 +1,12 @@
 <%--
+    view.jsp: Customized default view of Liferay's asset-publisher
+    portlet which adds dynamic loading of pages to the asset-publisher.
+        
+    Created:    2017-01-24 17:42 by Christian Berndt
+    Modified:   2017-10-24 17:42 by Christian Berndt
+    Version:    1.0.0
+--%>
+<%--
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
@@ -207,7 +215,7 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
 
                 function loadNewContent() {
                 
-                    loadingBar.removeClass('loaded');
+                    loadingBar.addClass('loading-animation');
             
                     loading = true;
                                 
@@ -231,7 +239,7 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
             
                                             socialActivities.append(responseData);
             
-                                            loadingBar.addClass('loaded');
+                                            loadingBar.removeClass('loading-animation');
             
                                             loading = false;
 
