@@ -3,16 +3,15 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2016-12-05 15:55 by Christian Berndt
-    Version:    1.1.5
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    Modified:   2017-01-24 16:54 by Christian Berndt
+    Version:    1.1.6
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -26,12 +25,6 @@
     </scm>
 
     <properties>
-
-		<!-- liferay.base.dir is read by the modules from -->
-		<!-- dev.properties. Please create this file and  -->
-		<!-- adjust it to your personal environment.      -->
-<!--         <liferay.base.dir> -->
-<!--         </liferay.base.dir> -->
 
         <tomcat.version>tomcat-7.0.62</tomcat.version>
 
@@ -116,6 +109,7 @@
         <module>asset-categories-summary-hook</module>
         <module>asset-display-hook</module>
         <module>asset-links-hook</module>
+        <module>asset-publisher-hook</module>
         <module>asset-search-portlet</module>
         <module>cdav-manager-portlet</module>
         <module>contact-manager-portlet</module>
@@ -135,7 +129,7 @@
         <module>social-media-portlet</module>
         <module>taglib-util</module>
         <module>url-title-hook</module>
-    </modules>
+  </modules>
     
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
