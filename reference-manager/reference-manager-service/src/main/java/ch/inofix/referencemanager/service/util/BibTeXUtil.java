@@ -29,8 +29,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2017-01-24 00:25
- * @version 1.0.8
+ * @modified 2017-01-25 10:26
+ * @version 1.0.9
  *
  */
 public class BibTeXUtil {
@@ -60,9 +60,9 @@ public class BibTeXUtil {
             sb.append(StringPool.BLANK);
             sb.append(key);
             sb.append(" = ");
-            sb.append("\"");
+            sb.append(StringPool.OPEN_CURLY_BRACE);
             sb.append(fields.get(key).toUserString());
-            sb.append("\"");
+            sb.append(StringPool.CLOSE_CURLY_BRACE);
             if (iterator.hasNext()) {
                 sb.append(",");
             }
@@ -98,6 +98,7 @@ public class BibTeXUtil {
 
         return _properties.getProperty(key);
     }
+    
     
     public static List<BibTeXComment> getBibTeXComments(String str) {
 
@@ -178,6 +179,27 @@ public class BibTeXUtil {
 
         return bibTexEntry;
 
+    }
+    
+    public static String getCommentValue(String key, List<BibTeXComment> bibTeXComments) {
+        
+        String str = null; 
+        
+        for (BibTeXComment bibTeXComment : bibTeXComments) {
+            
+            Value value = bibTeXComment.getValue(); 
+            
+            if (value != null) {
+                
+                String val = value.toUserString();
+                
+                if (val.startsWith(key + StringPool.COLON)) {
+                    str = val.substring(val.indexOf(StringPool.COLON), val.length()).trim();
+                }
+            }           
+        }
+        
+        return str; 
     }
 
     private static Log _log = LogFactoryUtil.getLog(BibTeXUtil.class.getName());

@@ -2,8 +2,8 @@
     your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2016-12-23 20:00 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-01-25 13:06 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -119,43 +119,6 @@
             %> 
             
             <a href="<%=viewURL%>"><%=bibliography.getTitle()%></a>
-
-            <liferay-ui:icon-menu icon="" message=""
-                showWhenSingleIcon="true">
-
-                <c:if test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
-                                BibliographyActionKeys.VIEW)%>">
-
-                    <liferay-ui:icon iconCssClass="icon-eye-open"
-                        message="view" url="<%=viewURL%>" />
-
-                </c:if>
-
-                <c:if test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
-                                BibliographyActionKeys.UPDATE)%>">
-
-                    <liferay-ui:icon iconCssClass="icon-edit"
-                        message="edit" url="<%=editURL%>" />
-
-                </c:if>
-
-                <c:if test="<%=BibliographyPermission.contains(permissionChecker, bibliography,
-                                BibliographyActionKeys.DELETE)%>">
-
-                    <portlet:actionURL var="deleteURL"
-                        name="deleteBibliography">
-                        <portlet:param name="redirect"
-                            value="<%=currentURL%>" />
-                        <portlet:param name="bibliographyId"
-                            value="<%=String.valueOf(bibliography.getBibliographyId())%>" />
-                    </portlet:actionURL>
-
-                    <liferay-ui:icon-delete message="delete"
-                        url="<%=deleteURL%>" />
-
-                </c:if>
-
-            </liferay-ui:icon-menu>
 
         </li>
         <%

@@ -40,8 +40,8 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-22 21:03
- * @version 1.0.6
+ * @modified 2017-01-25 10:26
+ * @version 1.0.7
  */
 public class ReferenceImporter {
 
@@ -49,7 +49,7 @@ public class ReferenceImporter {
             File file, ServiceContext serviceContext) throws PortalException {
 
         User user = UserLocalServiceUtil.getUser(userId);
-
+                
         // Import into the user's group
         Group group = user.getGroup();
         if (group != null) {
@@ -59,6 +59,7 @@ public class ReferenceImporter {
         long bibliographyId = GetterUtil.getLong(ArrayUtil.getValue(parameterMap.get("bibliographyId"), 0));
         // TODO: read default value from resource bundle
         String description = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("description"), 0), null);
+        String fileName = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("fileName"), 0), null);
         // TODO: read default value from resource bundle
         String title = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("title"), 0), "New Bibliography");
         // TODO: handle update of existing references / bibliographies
@@ -107,10 +108,18 @@ public class ReferenceImporter {
 
             List<BibTeXObject> bibTeXObjects = database.getObjects();
 
-            String comments = getComments(bibTeXObjects);
+            StringBuilder comments = getComments(bibTeXObjects);
             // TODO: retrieve preamble from file
             String preamble = null; 
             String strings = getStrings(bibTeXObjects);
+            
+            
+            StringBuilder comment = new StringBuilder();
+            comment.append("@Comment{");
+            comment.append("bibshare-filename: " + fileName);
+            comment.append("}"); 
+            comment.append(StringPool.NEW_LINE);
+            comments.append(comment.toString());
 
             for (BibTeXObject object : bibTeXObjects) {
 
@@ -128,7 +137,7 @@ public class ReferenceImporter {
                 urlTitle = bibliography.getUrlTitle();
                 
                 bibliography = BibliographyServiceUtil.updateBibliography(bibliographyId, userId, title, description,
-                        urlTitle, comments, preamble, strings, serviceContext);
+                        urlTitle, comments.toString(), preamble, strings, serviceContext);
             }
 
             _log.info("Start import");
@@ -171,7 +180,7 @@ public class ReferenceImporter {
         }
     }
 
-    private static String getComments(List<BibTeXObject> bibTeXObjects) {
+    private static StringBuilder getComments(List<BibTeXObject> bibTeXObjects) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -190,7 +199,7 @@ public class ReferenceImporter {
             }
         }
 
-        return sb.toString();
+        return sb;
 
     }
 
