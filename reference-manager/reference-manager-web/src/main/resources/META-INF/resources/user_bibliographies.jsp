@@ -2,8 +2,8 @@
     user_bibliographies: display a user's bibliographies.
     
     Created:    2016-12-16 00:12 by Christian Berndt
-    Modified:   2017-01-22 17:21 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-01-25 12:52 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -73,7 +73,7 @@
 
 <liferay-ui:search-container
     cssClass="bibliographies-search-container"  
-    emptyResultsMessage="you-havent-created-any-bibliographies-yet"          
+    emptyResultsMessage="the-user-hasnt-created-any-bibliographies-yet"          
     id="references"
     searchContainer="<%= bibliographySearch %>"
     var="bibliographySearchContainer">
@@ -92,7 +92,10 @@
         <liferay-ui:search-container-column-text href="<%=viewURL%>"
             orderable="true"
             orderableProperty="title_sortable"
-            property="title" valign="top" />
+            property="title" valign="middle" />
+            
+        <liferay-ui:search-container-column-jsp cssClass="entry-action"
+              path="/bibliography_action.jsp" valign="top" />
 
     </liferay-ui:search-container-row>
 

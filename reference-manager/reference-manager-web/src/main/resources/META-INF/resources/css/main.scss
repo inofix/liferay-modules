@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2017-01-22 21:37 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-01-25 12:54 by Christian Berndt
+    Version:    1.1.0
 */
 
 @import "bourbon";
@@ -32,11 +32,11 @@
     }
     
     fieldset {
+    
         border-bottom: 1px solid #ddd;
         
-        &.tags-and-categories {
-            margin-bottom: 20px;
-        }
+        margin-bottom: 20px;
+        padding-bottom: 10px;
     }
     
     .search-form {

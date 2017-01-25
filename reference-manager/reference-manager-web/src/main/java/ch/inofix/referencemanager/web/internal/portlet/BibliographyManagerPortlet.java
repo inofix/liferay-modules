@@ -17,7 +17,6 @@ import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jbibtex.BibTeXComment;
-import org.jbibtex.Value;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -298,23 +297,12 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         }
         
         sb.append(bibliography.getComments());
-        
-        String bibshareId = null; 
-        
+                
         List<BibTeXComment> bibTeXComments = BibTeXUtil.getBibTeXComments(bibliography.getComments()); 
         
-        for (BibTeXComment bibTeXComment : bibTeXComments) {
-            
-            Value value = bibTeXComment.getValue(); 
-            
-            if (value != null) {
-                String str = value.toUserString();
-                
-                if (str.startsWith("bibshare-id:")) {
-                    bibshareId = str;
-                }
-            }           
-        }
+        String bibshareId = BibTeXUtil.getCommentValue("bibshare-id", bibTeXComments);
+        
+        _log.info(bibshareId);
         
         if (bibshareId == null) {
 
