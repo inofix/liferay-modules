@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.jbibtex.BibTeXComment;
@@ -21,6 +22,7 @@ import org.jbibtex.Key;
 import org.jbibtex.Value;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -40,8 +42,8 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-26 23:37
- * @version 1.0.8
+ * @modified 2017-01-27 00:50
+ * @version 1.0.9
  */
 public class ReferenceImporter {
 
@@ -57,15 +59,13 @@ public class ReferenceImporter {
         }
 
         long bibliographyId = GetterUtil.getLong(ArrayUtil.getValue(parameterMap.get("bibliographyId"), 0));
-        // TODO: read default value from resource bundle
         String description = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("description"), 0), null);
         String fileName = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("fileName"), 0), null);
-        // TODO: read default value from resource bundle
-        String title = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("title"), 0), "New Bibliography");
-        // TODO: handle update of existing references / bibliographies
+        String title = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("title"), 0),
+                LanguageUtil.get(serviceContext.getLocale(), "new-bibliography"));
         boolean updateExisting = GetterUtil.getBoolean(ArrayUtil.getValue(parameterMap.get("updateExisting"), 0));
-        // TODO: read default value from resource bundle
-        String urlTitle = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("urlTitle"), 0), "new-bibliography");
+        String urlTitle = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("urlTitle"), 0),
+                LanguageUtil.get(serviceContext.getLocale(), "new-bibliography-url-title"));
 
         Bibliography bibliography = null;
 
@@ -110,6 +110,8 @@ public class ReferenceImporter {
             long bibshareId = GetterUtil.getLong(BibTeXUtil.getCommentValue("bibshare-id", bibTeXComments));
 
             if (bibliographyId == bibshareId) {
+                
+                // TODO: Consider the scope, too
                 _log.info("Reimporting database");
                 _log.info("bibshareId = " + bibshareId);
             }
@@ -175,14 +177,14 @@ public class ReferenceImporter {
 
                             try {
 
-                                // TODO: check the scope, too
+                                // TODO: Consider the scope, too
                                 reference = ReferenceServiceUtil.getReference(referenceId);
 
                                 if (reference != null) {
-                                    
+
                                     reference = ReferenceServiceUtil.updateReference(referenceId, userId, bibTeX,
                                             serviceContext);
-                                    
+
                                     numUpdated++;
 
                                 }
