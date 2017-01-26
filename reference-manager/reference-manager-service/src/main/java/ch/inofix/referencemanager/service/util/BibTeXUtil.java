@@ -29,8 +29,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2017-01-25 10:26
- * @version 1.0.9
+ * @modified 2017-01-26 00:28
+ * @version 1.1.0
  *
  */
 public class BibTeXUtil {
@@ -98,13 +98,10 @@ public class BibTeXUtil {
 
         return _properties.getProperty(key);
     }
-    
-    
-    public static List<BibTeXComment> getBibTeXComments(String str) {
+
+    public static List<BibTeXComment> getBibTeXComments(BibTeXDatabase database) {
 
         List<BibTeXComment> bibTeXComments = new ArrayList<BibTeXComment>();
-
-        BibTeXDatabase database = getBibTeXDatabase(str);
 
         if (database != null) {
 
@@ -123,7 +120,15 @@ public class BibTeXUtil {
         return bibTeXComments;
 
     }
-    
+
+    public static List<BibTeXComment> getBibTeXComments(String str) {
+
+        BibTeXDatabase database = getBibTeXDatabase(str);
+
+        return getBibTeXComments(database);
+
+    }
+
     public static BibTeXDatabase getBibTeXDatabase(String str) {
 
         // Read bibTeXDatabase from str
@@ -180,26 +185,26 @@ public class BibTeXUtil {
         return bibTexEntry;
 
     }
-    
+
     public static String getCommentValue(String key, List<BibTeXComment> bibTeXComments) {
-        
-        String str = null; 
-        
+
+        String str = null;
+
         for (BibTeXComment bibTeXComment : bibTeXComments) {
-            
-            Value value = bibTeXComment.getValue(); 
-            
+
+            Value value = bibTeXComment.getValue();
+
             if (value != null) {
-                
+
                 String val = value.toUserString();
-                
+
                 if (val.startsWith(key + StringPool.COLON)) {
                     str = val.substring(val.indexOf(StringPool.COLON), val.length()).trim();
                 }
-            }           
+            }
         }
-        
-        return str; 
+
+        return str;
     }
 
     private static Log _log = LogFactoryUtil.getLog(BibTeXUtil.class.getName());
