@@ -40,8 +40,8 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-28 16:57
- * @version 1.1.0
+ * @modified 2017-01-28 17:44
+ * @version 1.1.1
  */
 public class ReferenceImporter {
 
@@ -121,7 +121,7 @@ public class ReferenceImporter {
             }
 
             // Update bibshare-metadata
-            
+
             comments.append(formatComment("bibshare-filename: " + fileName));
             comments.append(formatComment("bibshare-id: " + String.valueOf(bibliographyId)));
 
@@ -174,54 +174,72 @@ public class ReferenceImporter {
 
                 Reference reference = null;
 
-                if (updateExisting) {
+                _log.info("updateExisting = " + updateExisting);
 
-                    _log.info("updateExisting = " + updateExisting);
+                Value value = bibTeXEntry.getField(new Key("bibshare-id"));
 
-                    Value value = bibTeXEntry.getField(new Key("bibshare-id"));
+                if (value != null) {
 
-                    if (value != null) {
+                    // Imported bibTeXEntry contains a bibshare-id.
 
-                        // Imported bibTeXEntry contains a bibshare-id.
+                    long referenceId = GetterUtil.getLong(value.toUserString());
 
-                        long referenceId = GetterUtil.getLong(value.toUserString());
+                    if (referenceId > 0) {
 
-                        if (referenceId > 0) {
+                        try {
 
-                            try {
+                            reference = ReferenceServiceUtil.getReference(referenceId);
 
-                                reference = ReferenceServiceUtil.getReference(referenceId);
+                            // Consider the scope, since the user may upload
+                            // a bibliography he has downloaded from another
+                            // user.
 
-                                // Consider the scope, since the user may upload
-                                // a bibliography he has downloaded from another
-                                // user.
+                            if (groupId == reference.getGroupId()) {
 
-                                if (reference != null) {
+                                // reference exists and belongs to the user
 
-                                    if (groupId == reference.getGroupId()) {
+                                if (updateExisting) {
 
-                                        // reference exists and belongs to the
-                                        // user's scope
-                                        reference = ReferenceServiceUtil.updateReference(referenceId, userId, bibTeX,
-                                                serviceContext);
+                                    reference = ReferenceServiceUtil.updateReference(referenceId, userId, bibTeX,
+                                            serviceContext);
 
-                                        numUpdated++;
+                                    numUpdated++;
 
-                                    } else {
+                                } else {
 
-                                        reference = null;
+                                    numIgnored++;
 
-                                    }
                                 }
+                            } else {
 
-                            } catch (PortalException pe) {
-                                _log.warn(pe.getMessage());
+                                // reference exists, but belongs to another user
+
+                                _log.info("adding reference");
+
+                                numImported++;
+
+                                reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds,
+                                        serviceContext);
+
                             }
+
+                        } catch (PortalException pe) {
+
+                            _log.warn(pe.getMessage());
+
+                            // invalid referenceId
+
+                            _log.info("adding reference");
+
+                            numImported++;
+
+                            reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds,
+                                    serviceContext);
                         }
 
-                    }
+                    } else {
 
-                    if (reference == null) {
+                        // no referenceId
 
                         _log.info("adding reference");
 
@@ -229,11 +247,6 @@ public class ReferenceImporter {
 
                         reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds, serviceContext);
                     }
-
-                } else {
-
-                    reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds, serviceContext);
-
                 }
 
                 if (numProcessed % 100 == 0 && numProcessed > 0) {
