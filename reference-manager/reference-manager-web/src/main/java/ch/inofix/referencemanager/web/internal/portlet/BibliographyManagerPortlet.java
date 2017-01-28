@@ -17,6 +17,7 @@ import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jbibtex.BibTeXComment;
+import org.jbibtex.Value;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -59,8 +60,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-01-23 23:33
- * @version 1.1.9
+ * @modified 2017-01-28 17:20
+ * @version 1.2.0
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -272,48 +273,32 @@ public class BibliographyManagerPortlet extends MVCPortlet {
                 Integer.MAX_VALUE, null);
 
         StringBuilder sb = new StringBuilder();
-        
-        sb.append(StringPool.PERCENT); 
+
+        sb.append(StringPool.PERCENT);
         sb.append(" Encoding: UTF-8");
-        sb.append(StringPool.NEW_LINE); 
-        sb.append(StringPool.NEW_LINE); 
-        
+        sb.append(StringPool.NEW_LINE);
+        sb.append(StringPool.NEW_LINE);
+
         sb.append(bibliography.getPreamble());
-        
+
         sb.append(bibliography.getStrings());
-        
+
         List<Document> documents = hits.toList();
-        
+
         for (Document document : documents) {
 
             long referenceId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
-            
+
             Reference reference = _referenceService.getReference(referenceId);
             String bibTeX = reference.getBibTeX();
-            
-            sb.append(bibTeX); 
-            sb.append(StringPool.NEW_LINE); 
+
+            sb.append(bibTeX);
+            sb.append(StringPool.NEW_LINE);
 
         }
-        
+
         sb.append(bibliography.getComments());
-                
-        List<BibTeXComment> bibTeXComments = BibTeXUtil.getBibTeXComments(bibliography.getComments()); 
-        
-        String bibshareId = BibTeXUtil.getCommentValue("bibshare-id", bibTeXComments);
-        
-        _log.info(bibshareId);
-        
-        if (bibshareId == null) {
 
-            // database does not contain a bibshare-id yet
-            
-            sb.append("@Comment{");
-            sb.append("bibshare-id: " + String.valueOf(bibliographyId));
-            sb.append("}"); 
-
-        }
-        
         String export = sb.toString();
 
         PortletResponseUtil.sendFile(resourceRequest, resourceResponse, fileName, export.getBytes(),
