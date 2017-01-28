@@ -505,8 +505,6 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         
         bibTeX = BibTeXUtil.format(bibTeXEntry); 
         
-        _log.info(bibTeX);
-
         reference.setBibTeX(bibTeX);
 
         referencePersistence.update(reference);

@@ -29,8 +29,8 @@ import com.liferay.portal.kernel.util.StringPool;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 12:28
- * @modified 2017-01-26 00:28
- * @version 1.1.0
+ * @modified 2017-01-28 16:21
+ * @version 1.1.1
  *
  */
 public class BibTeXUtil {
@@ -186,22 +186,33 @@ public class BibTeXUtil {
 
     }
 
+    public static String getCommentValue(String key, BibTeXComment bibTeXComment) {
+
+        String str = null;
+
+        Value value = bibTeXComment.getValue();
+
+        if (value != null) {
+
+            String val = value.toUserString();
+
+            if (val.startsWith(key + StringPool.COLON)) {
+                str = val.substring(val.indexOf(StringPool.COLON) + 1, val.length()).trim();
+            }
+        }
+
+        return str;
+
+    }
+
     public static String getCommentValue(String key, List<BibTeXComment> bibTeXComments) {
 
         String str = null;
 
         for (BibTeXComment bibTeXComment : bibTeXComments) {
 
-            Value value = bibTeXComment.getValue();
+            str = getCommentValue(key, bibTeXComment);
 
-            if (value != null) {
-
-                String val = value.toUserString();
-
-                if (val.startsWith(key + StringPool.COLON)) {
-                    str = val.substring(val.indexOf(StringPool.COLON), val.length()).trim();
-                }
-            }
         }
 
         return str;

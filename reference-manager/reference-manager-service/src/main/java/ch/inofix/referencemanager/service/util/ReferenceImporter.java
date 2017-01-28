@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
-
 import org.apache.commons.lang.time.StopWatch;
 import org.jbibtex.BibTeXComment;
 import org.jbibtex.BibTeXDatabase;
@@ -42,8 +40,8 @@ import ch.inofix.referencemanager.service.ReferenceServiceUtil;
  * 
  * @author Christian Berndt
  * @created 2016-12-17 17:07
- * @modified 2017-01-27 00:50
- * @version 1.0.9
+ * @modified 2017-01-28 16:57
+ * @version 1.1.0
  */
 public class ReferenceImporter {
 
@@ -68,10 +66,6 @@ public class ReferenceImporter {
                 LanguageUtil.get(serviceContext.getLocale(), "new-bibliography-url-title"));
 
         Bibliography bibliography = null;
-
-        _log.info("bibliographyId = " + bibliographyId);
-        _log.info("title = " + title);
-        _log.info("urlTitle = " + urlTitle);
 
         long[] bibliographyIds = new long[0];
 
@@ -105,38 +99,55 @@ public class ReferenceImporter {
                 _log.error(exception.getMessage());
             }
 
+            List<BibTeXObject> bibTeXObjects = database.getObjects();
+
+            StringBuilder comments = new StringBuilder();
             List<BibTeXComment> bibTeXComments = BibTeXUtil.getBibTeXComments(database);
+
+            for (BibTeXComment bibTeXComment : bibTeXComments) {
+
+                Value value = bibTeXComment.getValue();
+                String bibshareFilename = BibTeXUtil.getCommentValue("bibshare-filename", bibTeXComment);
+                String bibshareId = BibTeXUtil.getCommentValue("bibshare-id", bibTeXComment);
+
+                if (bibshareFilename == null && bibshareId == null) {
+
+                    // Irrelevant for bibshare
+
+                    if (value != null) {
+                        comments.append(formatComment(value.toUserString()));
+                    }
+                }
+            }
+
+            // Update bibshare-metadata
+            
+            comments.append(formatComment("bibshare-filename: " + fileName));
+            comments.append(formatComment("bibshare-id: " + String.valueOf(bibliographyId)));
 
             long bibshareId = GetterUtil.getLong(BibTeXUtil.getCommentValue("bibshare-id", bibTeXComments));
 
-            if (bibliographyId == bibshareId) {
-                
-                // TODO: Consider the scope, too
-                _log.info("Reimporting database");
+            boolean reImport = false;
+
+            if (bibshareId > 0) {
+
                 _log.info("bibshareId = " + bibshareId);
+
+                if (bibliographyId == bibshareId) {
+
+                    _log.info("Re-importing database.");
+                    reImport = true;
+
+                } else {
+
+                    _log.info("Importing into another database.");
+
+                }
             }
 
-            List<BibTeXObject> bibTeXObjects = database.getObjects();
-
-            StringBuilder comments = getComments(bibTeXObjects);
             // TODO: retrieve preamble from file
             String preamble = null;
             String strings = getStrings(bibTeXObjects);
-
-            StringBuilder comment = new StringBuilder();
-            comment.append("@Comment{");
-            comment.append("bibshare-filename: " + fileName);
-            comment.append("}");
-            comment.append(StringPool.NEW_LINE);
-            comments.append(comment.toString());
-
-            // for (BibTeXObject object : bibTeXObjects) {
-            //
-            // if (object.getClass() == BibTeXPreamble.class) {
-            // BibTeXPreamble bibTeXPreamble = (BibTeXPreamble) object;
-            // _log.info(bibTeXPreamble.getValue().toUserString());
-            // }
-            // }
 
             if (bibliography != null) {
 
@@ -171,29 +182,46 @@ public class ReferenceImporter {
 
                     if (value != null) {
 
+                        // Imported bibTeXEntry contains a bibshare-id.
+
                         long referenceId = GetterUtil.getLong(value.toUserString());
 
                         if (referenceId > 0) {
 
                             try {
 
-                                // TODO: Consider the scope, too
                                 reference = ReferenceServiceUtil.getReference(referenceId);
+
+                                // Consider the scope, since the user may upload
+                                // a bibliography he has downloaded from another
+                                // user.
 
                                 if (reference != null) {
 
-                                    reference = ReferenceServiceUtil.updateReference(referenceId, userId, bibTeX,
-                                            serviceContext);
+                                    if (groupId == reference.getGroupId()) {
 
-                                    numUpdated++;
+                                        // reference exists and belongs to the
+                                        // user's scope
+                                        reference = ReferenceServiceUtil.updateReference(referenceId, userId, bibTeX,
+                                                serviceContext);
 
+                                        numUpdated++;
+
+                                    } else {
+
+                                        reference = null;
+
+                                    }
                                 }
 
                             } catch (PortalException pe) {
-                                _log.error(pe);
+                                _log.warn(pe.getMessage());
                             }
                         }
-                    } else {
+
+                    }
+
+                    if (reference == null) {
 
                         _log.info("adding reference");
 
@@ -234,27 +262,16 @@ public class ReferenceImporter {
         }
     }
 
-    private static StringBuilder getComments(List<BibTeXObject> bibTeXObjects) {
+    private static String formatComment(String str) {
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(5);
+        sb.append("@Comment{");
+        sb.append(str);
+        sb.append("}");
+        sb.append(StringPool.NEW_LINE);
+        sb.append(StringPool.NEW_LINE);
 
-        for (BibTeXObject bibTeXObject : bibTeXObjects) {
-
-            if (bibTeXObject.getClass() == BibTeXComment.class) {
-                BibTeXComment comment = (BibTeXComment) bibTeXObject;
-                Value value = comment.getValue();
-                if (value != null) {
-                    sb.append("@Comment{");
-                    sb.append(value.toUserString());
-                    sb.append("}");
-                    sb.append(StringPool.NEW_LINE);
-                    sb.append(StringPool.NEW_LINE);
-                }
-            }
-        }
-
-        return sb;
-
+        return sb.toString();
     }
 
     private static String getStrings(List<BibTeXObject> bibTeXObjects) {
