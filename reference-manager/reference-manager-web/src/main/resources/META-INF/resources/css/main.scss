@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2017-01-25 12:54 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2017-01-29 22:57 by Christian Berndt
+    Version:    1.1.1
 */
 
 @import "bourbon";
@@ -37,6 +37,25 @@
         
         margin-bottom: 20px;
         padding-bottom: 10px;
+        
+        &.tags {
+            padding-bottom: 20px;
+        }
+        
+        &.private-settings,
+        &.tags-and-categories {
+            
+            padding-top: 15px;
+            
+            .tagselector-content .textboxlistentry-holder {
+                border-bottom: 1px solid #ddd;
+            }
+                 
+            .textboxlistentry-holder {
+                min-height: 35px;
+            }
+        }        
+        
     }
     
     .search-form {
@@ -76,20 +95,6 @@
         span.help-block {
             display: inline;
         }     
-    }
-}
-
-fieldset.private-settings,
-fieldset.tags-and-categories {
-    
-    padding-top: 15px;
-    
-    .tagselector-content .textboxlistentry-holder {
-        border-bottom: 1px solid #ddd;
-    }
-         
-    .textboxlistentry-holder {
-        min-height: 35px;
     }
 }
 
@@ -149,6 +154,19 @@ fieldset.tags-and-categories {
         }        
     }  
 }
+
+.taglib-ratings {
+    
+    &.stars {
+        .liferay-rating-vote {
+            margin-right: 20px;    
+        } 
+        .liferay-rating-score {
+            padding-left: 0; 
+        }
+    }
+}
+
 
 textarea {
     &.form-control {
