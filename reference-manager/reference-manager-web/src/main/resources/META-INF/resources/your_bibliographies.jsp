@@ -2,8 +2,8 @@
     your_bibliographies.jsp: Default view of the your-bibliographies-portlet.
     
     Created:    2016-11-29 22:52 by Christian Berndt
-    Modified:   2017-01-25 13:06 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-01-30 23:34 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -32,18 +32,18 @@
 
     List<Document> documents = ListUtil.toList(hits.getDocs());
 
-    List<Bibliography> bibliographies = new ArrayList<Bibliography>();
+    List<Bibliography> bibliographies = BibliographyUtil.documentsToBibliographies(documents);
 
-    for (Document document : documents) {
-        try {
-            long bibliographyId = GetterUtil.getLong(document.get("entryClassPK"));
-            Bibliography bibliography = BibliographyServiceUtil.getBibliography(bibliographyId);
-            bibliographies.add(bibliography);
-        } catch (Exception e) {
-            // TODO: use logging
-            System.out.println(e);
-        }
-    }
+//     for (Document document : documents) {
+//         try {
+//             long bibliographyId = GetterUtil.getLong(document.get("entryClassPK"));
+//             Bibliography bibliography = BibliographyServiceUtil.getBibliography(bibliographyId);
+//             bibliographies.add(bibliography);
+//         } catch (Exception e) {
+//             // TODO: use logging
+//             System.out.println(e);
+//         }
+//     }
 
     bibliographySearch.setResults(bibliographies);
     bibliographySearch.setTotal(hits.getLength());
