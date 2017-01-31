@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-01-21 16:36 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-01-31 22:10 by Christian Berndt
+    Version:    1.1.3
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -186,6 +186,17 @@
                                     value="#{bibliography['title']}" />
                             </h:outputLink>
                         </c:forEach>
+                    </p:outputPanel>
+                    <p:outputPanel styleClass="form-group">
+                        <h:outputText styleClass="help-block"
+                            value="#{i18n['add-this-reference-to-your-bibliographies']}" />
+                        <p:autoComplete id="dropDown" dropdown="true"
+                            label="#{referenceEditorView.bibliographyId}"
+                            value="#{referenceEditorView.bibliographyId}"
+                            completeMethod="#{referenceEditorView.completeText}">
+                            <p:ajax event="itemSelect"
+                                listener="#{referenceEditorView.onItemSelect}" />
+                        </p:autoComplete>
                     </p:outputPanel>
                 </p:tab>
 
