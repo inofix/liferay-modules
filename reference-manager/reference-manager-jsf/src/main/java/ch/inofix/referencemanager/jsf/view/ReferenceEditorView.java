@@ -21,6 +21,7 @@ import org.jbibtex.Key;
 import org.jbibtex.StringValue;
 import org.jbibtex.StringValue.Style;
 import org.jbibtex.Value;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
@@ -35,9 +36,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -46,16 +51,18 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.BibliographyServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceServiceUtil;
 import ch.inofix.referencemanager.service.util.BibTeXUtil;
+import ch.inofix.referencemanager.service.util.BibliographyUtil;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-23 23:35
- * @version 1.1.8
+ * @modified 2017-01-31 00:17
+ * @version 1.2.0
  *
  */
 @ManagedBean
@@ -132,6 +139,45 @@ public class ReferenceEditorView {
             _log.error(e);
         }
 
+        try {
+            Sort sort = new Sort("title_sortable", false);
+
+            Hits hits = BibliographyServiceUtil.search(themeDisplay.getUserId(), 0, themeDisplay.getUserId(), null, 0,
+                    Integer.MAX_VALUE, sort);
+
+            List<Document> documents = ListUtil.toList(hits.getDocs());
+
+            _userBibliographies = BibliographyUtil.documentsToBibliographies(documents);
+
+        } catch (PortalException pe) {
+            _log.error(pe);
+        }
+
+        updateFields();
+    }
+
+    public List<String> completeText(String query) {
+
+        List<String> results = new ArrayList<String>();
+
+        for (Bibliography bibliography : _userBibliographies) {
+            String title = bibliography.getTitle();
+
+            if (title != null) {
+                if (title.toLowerCase().contains(query.toLowerCase())) {
+                    results.add(title);
+                }
+            }
+        }
+        // for (int i = 0; i < 10; i++) {
+        // results.add(query + i);
+        // }
+
+        return results;
+    }
+
+    public void onBibTeXChange() {
+        _reference.setBibTeX(_bibTeX);
         updateFields();
     }
 
@@ -155,14 +201,15 @@ public class ReferenceEditorView {
         _reference.setBibTeX(_bibTeX);
     }
 
-    public void onBibTeXChange() {
-        _reference.setBibTeX(_bibTeX);
-        updateFields();
+    public void onItemSelect(SelectEvent event) {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage("Item Selected", event.getObject().toString()));
+        _log.info("Item Selected");
     }
 
     public void onTabChange(TabChangeEvent event) {
-        updateBibTeX(); 
-        updateFields(); 
+        updateBibTeX();
+        updateFields();
     }
 
     public void saveReference() throws PortalException {
@@ -203,6 +250,14 @@ public class ReferenceEditorView {
     /*
      * Getters and Setters
      */
+
+    public long getBibliographyId() {
+        return _bibliographyId;
+    }
+
+    public void setBibliographyId(long bibliographyId) {
+        this._bibliographyId = bibliographyId;
+    }
 
     public List<Map<String, String>> getBibliographies() {
         return _bibliographies;
@@ -291,6 +346,14 @@ public class ReferenceEditorView {
         this._requiredValues = requiredValues;
     }
 
+    public Bibliography getSelectedBibliography() {
+        return _selectedBibliography;
+    }
+
+    public void setSelectedBibliography(Bibliography selectedBibliography) {
+        this._selectedBibliography = selectedBibliography;
+    }
+
     private void updateBibTeX() {
 
         Key type = new Key(_entryType);
@@ -339,7 +402,7 @@ public class ReferenceEditorView {
         String what = _bibTeX.substring(0, _bibTeX.indexOf(StringPool.OPEN_CURLY_BRACE) + 1);
         String with = StringPool.AT + _entryType + StringPool.OPEN_CURLY_BRACE;
         _bibTeX = _bibTeX.replace(what, with);
-        
+
         _reference.setBibTeX(_bibTeX);
 
     }
@@ -376,7 +439,6 @@ public class ReferenceEditorView {
             }
         }
 
-
         for (int i = 0; i < _requiredValues.length; i++) {
 
             String field = getRequiredFields().get(i).getString("name");
@@ -402,6 +464,8 @@ public class ReferenceEditorView {
     private String _redirect;
     private Reference _reference;
     private String[] _requiredValues;
+    private Bibliography _selectedBibliography;
+    private List<Bibliography> _userBibliographies;
 
     private static final Log _log = LogFactoryUtil.getLog(ReferenceEditorView.class);
 
