@@ -61,8 +61,8 @@ import ch.inofix.referencemanager.service.util.BibliographyUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-01-31 00:17
- * @version 1.2.0
+ * @modified 2017-02-01 22:02
+ * @version 1.2.1
  *
  */
 @ManagedBean
@@ -156,24 +156,30 @@ public class ReferenceEditorView {
         updateFields();
     }
 
-    public List<String> completeText(String query) {
+    public List<Bibliography> completeBibliography(String query) {
 
-        List<String> results = new ArrayList<String>();
+        List<Bibliography> results = new ArrayList<Bibliography>();
 
         for (Bibliography bibliography : _userBibliographies) {
             String title = bibliography.getTitle();
 
             if (title != null) {
                 if (title.toLowerCase().contains(query.toLowerCase())) {
-                    results.add(title);
+                    results.add(bibliography);
                 }
             }
         }
-        // for (int i = 0; i < 10; i++) {
-        // results.add(query + i);
-        // }
 
         return results;
+    }
+    
+    public void onBibliographySelect(SelectEvent event) {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage("Bibliography Selected", event.getObject().toString()));
+        _log.info("Bibliography Selected");
+        // TODO: Add bibRefRelation
+        
+        _selectedBibliography = null; 
     }
 
     public void onBibTeXChange() {
@@ -199,12 +205,6 @@ public class ReferenceEditorView {
     public void onFieldChange() {
         updateBibTeX();
         _reference.setBibTeX(_bibTeX);
-    }
-
-    public void onItemSelect(SelectEvent event) {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage("Item Selected", event.getObject().toString()));
-        _log.info("Item Selected");
     }
 
     public void onTabChange(TabChangeEvent event) {
