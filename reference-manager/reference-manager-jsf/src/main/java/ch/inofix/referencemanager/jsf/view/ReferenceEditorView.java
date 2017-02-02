@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -49,8 +50,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import ch.inofix.referencemanager.model.BibRefRelation;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
 import ch.inofix.referencemanager.service.BibliographyServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
 import ch.inofix.referencemanager.service.ReferenceServiceUtil;
@@ -61,8 +64,8 @@ import ch.inofix.referencemanager.service.util.BibliographyUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-02-01 22:02
- * @version 1.2.1
+ * @modified 2017-02-02 19:09
+ * @version 1.2.2
  *
  */
 @ManagedBean
@@ -172,14 +175,37 @@ public class ReferenceEditorView {
 
         return results;
     }
-    
+
     public void onBibliographySelect(SelectEvent event) {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage("Bibliography Selected", event.getObject().toString()));
-        _log.info("Bibliography Selected");
-        // TODO: Add bibRefRelation
-        
-        _selectedBibliography = null; 
+
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+        HttpServletRequest request = PortalUtil.getHttpServletRequest(portletRequest);
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+        long userId = themeDisplay.getUserId();
+
+        try {
+            ServiceContext serviceContext = ServiceContextFactory.getInstance(Reference.class.getName(), request);
+
+            BibRefRelationLocalServiceUtil.addBibRefRelation(userId, _selectedBibliography.getBibliographyId(),
+                    _reference.getReferenceId(), serviceContext);
+
+            String[] args = new String[2];
+            args[0] = _reference.getCitation();
+            args[1] = _selectedBibliography.getTitle();
+
+            String message = LanguageUtil.format(request, "successfully-added-reference-x-to-bibliography-x", args);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(message, event.getObject().toString()));
+
+        } catch (Exception e) {
+
+            String message = LanguageUtil.format(request, "an-error-ocurred-x", e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, message, event.getObject().toString()));
+
+        }
+
+        _selectedBibliography = null;
     }
 
     public void onBibTeXChange() {
