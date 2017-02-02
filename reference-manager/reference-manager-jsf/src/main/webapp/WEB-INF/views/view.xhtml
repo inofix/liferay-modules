@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-02-01 22:01 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2017-02-02 19:10 by Christian Berndt
+    Version:    1.1.5
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -37,8 +37,8 @@
                 </p:outputPanel>
             </p:outputPanel>
 
-            <p:messages id="messages" showDetail="false"
-                autoUpdate="true" closable="true" />            
+            <p:messages id="messages" escape="false" showDetail="false"
+                autoUpdate="true" closable="true" />
 
             <p:outputPanel styleClass="form-group clearfix">
 
@@ -168,13 +168,13 @@
                             <f:ajax execute="@form" />
                             <p:ajax event="blur"
                                 listener="#{referenceEditorView.onBibTeXChange}"
-                                update=":form:citation :form:entryType"/>
+                                update=":form:citation :form:entryType" />
                         </p:inputTextarea>
                     </p:outputPanel>
                 </p:tab>
 
                 <p:tab title="#{i18n['usage']}">
-                    <p:outputPanel styleClass="form-group">
+                    <p:outputPanel styleClass="form-group related-bibliographies">
                         <h:outputText styleClass="help-block"
                             value="#{i18n['this-reference-is-used-in-following-bibliographies']}" />
                         <c:forEach
@@ -192,6 +192,7 @@
                             value="#{i18n['add-this-reference-to-your-bibliographies']}" />
                         <p:autoComplete
                             converter="#{bibliographyConverter}"
+                            disabled="#{referenceEditorView.disabled}"
                             id="dropDown" dropdown="true"
                             var="bibliography"
                             itemLabel="#{bibliography.title}"
@@ -202,6 +203,11 @@
                                 listener="#{referenceEditorView.onBibliographySelect}" />
                         </p:autoComplete>
                     </p:outputPanel>
+                    <h:panelGroup layout="block" rendered="#{referenceEditorView.disabled}"
+                        styleClass="alert alert-info">
+                        <h:outputText
+                            value="#{i18n['sign-in-and-add-this-reference-to-your-bibliographies']}" />
+                    </h:panelGroup>
                 </p:tab>
 
             </p:tabView>

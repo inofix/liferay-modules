@@ -17,9 +17,17 @@ package ch.inofix.referencemanager.service.impl;
 import java.util.List;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.referencemanager.model.BibRefRelation;
+import ch.inofix.referencemanager.model.Bibliography;
+import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.BibliographyLocalServiceUtil;
+import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
 import ch.inofix.referencemanager.service.base.BibRefRelationLocalServiceBaseImpl;
 
 /**
@@ -39,8 +47,8 @@ import ch.inofix.referencemanager.service.base.BibRefRelationLocalServiceBaseImp
  *
  * @author Christian Berndt
  * @created 2016-12-03 15:33
- * @modified 2017-01-07 22:18
- * @version 1.0.1
+ * @modified 2017-02-02 19:28
+ * @version 1.0.3
  * @see BibRefRelationLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil
  */
@@ -54,12 +62,63 @@ public class BibRefRelationLocalServiceImpl extends BibRefRelationLocalServiceBa
      * access the bib ref relation local service.
      */
 
+    public BibRefRelation addBibRefRelation(long userId, long bibliographyId, long referenceId,
+            ServiceContext serviceContext) throws PortalException {
+
+        // BibRefRelation
+
+        User user = userPersistence.findByPrimaryKey(userId);
+        long groupId = serviceContext.getScopeGroupId();
+
+        BibRefRelation bibRefRelation = null;
+
+        bibRefRelation = bibRefRelationPersistence.fetchByB_R(bibliographyId, referenceId);
+
+        if (bibRefRelation == null) {
+
+            long bibRefRelationId = counterLocalService.increment();
+
+            bibRefRelation = bibRefRelationPersistence.create(bibRefRelationId);
+
+            bibRefRelation.setUuid(serviceContext.getUuid());
+            bibRefRelation.setGroupId(groupId);
+            bibRefRelation.setCompanyId(user.getCompanyId());
+            bibRefRelation.setUserId(user.getUserId());
+            bibRefRelation.setUserName(user.getFullName());
+            bibRefRelation.setExpandoBridgeAttributes(serviceContext);
+
+            bibRefRelation.setBibliographyId(bibliographyId);
+            bibRefRelation.setReferenceId(referenceId);
+
+            bibRefRelationPersistence.update(bibRefRelation);
+
+            // Update (and re-index) both parts of the relation
+
+            Bibliography bibliography = BibliographyLocalServiceUtil.getBibliography(bibliographyId);
+            bibliography = BibliographyLocalServiceUtil.updateBibliography(bibliography.getBibliographyId(),
+                    bibliography.getUserId(), bibliography.getTitle(), bibliography.getDescription(),
+                    bibliography.getUrlTitle(), bibliography.getComments(), bibliography.getPreamble(),
+                    bibliography.getStrings(), serviceContext);
+
+            Reference reference = ReferenceLocalServiceUtil.getReference(referenceId);
+            reference = ReferenceLocalServiceUtil.updateReference(reference.getReferenceId(), reference.getUserId(),
+                    reference.getBibTeX(), reference.getBibliographyIds(), serviceContext);
+
+        } else {
+            _log.info("The bibRefRelation already exists.");
+        }
+
+        return bibRefRelation;
+    }
+
     public List<BibRefRelation> getBibRefRelationsByBibliographyId(long bibliographyId) {
-        return bibRefRelationPersistence.findByBibliographyId(bibliographyId); 
+        return bibRefRelationPersistence.findByBibliographyId(bibliographyId);
     }
-    
+
     public List<BibRefRelation> getBibRefRelationsByReferenceId(long referenceId) {
-        return bibRefRelationPersistence.findByReferenceId(referenceId); 
+        return bibRefRelationPersistence.findByReferenceId(referenceId);
     }
+
+    private static final Log _log = LogFactoryUtil.getLog(BibRefRelationLocalServiceImpl.class);
 
 }
