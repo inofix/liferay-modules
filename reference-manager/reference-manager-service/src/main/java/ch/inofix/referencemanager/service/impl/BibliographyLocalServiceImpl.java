@@ -59,8 +59,8 @@ import ch.inofix.referencemanager.social.BibliographyActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2017-01-22 17:49
- * @version 1.0.3
+ * @modified 2017-02-02 19:31
+ * @version 1.0.4
  * @see BibliographyLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyLocalServiceUtil
  */
@@ -189,6 +189,10 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
         // Asset
 
         assetEntryLocalService.deleteEntry(Bibliography.class.getName(), bibliography.getBibliographyId());
+
+        // BibRefRelation
+
+        bibRefRelationLocalService.deleteBibRefRelations(bibliography.getBibliographyId());
 
         // Comment
 
