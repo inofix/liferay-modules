@@ -47,8 +47,8 @@ import ch.inofix.referencemanager.service.base.BibRefRelationLocalServiceBaseImp
  *
  * @author Christian Berndt
  * @created 2016-12-03 15:33
- * @modified 2017-02-02 19:28
- * @version 1.0.3
+ * @modified 2017-02-02 19:32
+ * @version 1.0.4
  * @see BibRefRelationLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil
  */
@@ -109,6 +109,17 @@ public class BibRefRelationLocalServiceImpl extends BibRefRelationLocalServiceBa
         }
 
         return bibRefRelation;
+    }
+
+    public void deleteBibRefRelations(long bibliographyId) {
+
+        List<BibRefRelation> bibRefRelations = bibRefRelationPersistence.findByBibliographyId(bibliographyId);
+
+        for (BibRefRelation bibRefRelation : bibRefRelations) {
+            deleteBibRefRelation(bibRefRelation);
+            _log.info("delete " + bibRefRelation);
+        }
+
     }
 
     public List<BibRefRelation> getBibRefRelationsByBibliographyId(long bibliographyId) {
