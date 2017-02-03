@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-02-02 19:10 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2017-02-03 22:13 by Christian Berndt
+    Version:    1.1.6
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -175,7 +175,9 @@
 
                 <p:tab title="#{i18n['usage']}">
                     <p:outputPanel styleClass="form-group related-bibliographies">
-                        <h:outputText styleClass="help-block"
+                        <h:outputText 
+                            rendered="#{not empty referenceEditorView.bibliographies}"
+                            styleClass="help-block"
                             value="#{i18n['this-reference-is-used-in-following-bibliographies']}" />
                         <c:forEach
                             items="#{referenceEditorView.bibliographies}"
