@@ -16,8 +16,6 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jbibtex.BibTeXComment;
-import org.jbibtex.Value;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -49,9 +47,9 @@ import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchBibliographyException;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
+import ch.inofix.referencemanager.service.BibRefRelationService;
 import ch.inofix.referencemanager.service.BibliographyService;
 import ch.inofix.referencemanager.service.ReferenceService;
-import ch.inofix.referencemanager.service.util.BibTeXUtil;
 import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
@@ -61,7 +59,7 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @created 2016-11-29 22:33
  * @modified 2017-01-28 17:20
- * @version 1.2.0
+ * @version 1.2.1
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -84,6 +82,25 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
 
         _bibliographyService.deleteBibliography(bibliographyId);
+
+    }
+
+    /**
+     * 
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.1.5
+     * @throws Exception
+     */
+    public void deleteBibRefRelation(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        long referenceId = ParamUtil.getLong(actionRequest, "referenceId");
+        long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
+
+        _bibRefRelationService.deleteBibRefRelation(bibliographyId, referenceId);
+
+        actionResponse.setRenderParameter("bibliographyId", String.valueOf(bibliographyId));
+        actionResponse.setRenderParameter("mvcPath", "/edit_bibliography.jsp");
 
     }
 
@@ -366,11 +383,17 @@ public class BibliographyManagerPortlet extends MVCPortlet {
     }
 
     @org.osgi.service.component.annotations.Reference
+    protected void setBibRefRelationService(BibRefRelationService bibRefRelationService) {
+        this._bibRefRelationService = bibRefRelationService;
+    }
+
+    @org.osgi.service.component.annotations.Reference
     protected void setReferenceService(ReferenceService referenceService) {
         this._referenceService = referenceService;
     }
 
     private BibliographyService _bibliographyService;
+    private BibRefRelationService _bibRefRelationService;
     private ReferenceService _referenceService;
 
     private static final String REQUEST_PROCESSED = "request_processed";

@@ -50,7 +50,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import ch.inofix.referencemanager.model.BibRefRelation;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;

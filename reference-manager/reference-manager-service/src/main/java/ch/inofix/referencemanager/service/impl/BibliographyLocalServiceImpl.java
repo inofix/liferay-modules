@@ -59,8 +59,8 @@ import ch.inofix.referencemanager.social.BibliographyActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2017-02-02 19:31
- * @version 1.0.4
+ * @modified 2017-02-03 22:18
+ * @version 1.0.5
  * @see BibliographyLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyLocalServiceUtil
  */
@@ -192,7 +192,7 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
         // BibRefRelation
 
-        bibRefRelationLocalService.deleteBibRefRelations(bibliography.getBibliographyId());
+        bibRefRelationLocalService.deleteByBibliographyId(bibliography.getBibliographyId());
 
         // Comment
 
@@ -240,6 +240,13 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
     @Override
     public Bibliography getBibliography(long groupId, String urlTitle) throws PortalException {
         return bibliographyPersistence.fetchByG_UT(groupId, urlTitle);
+    }
+
+    @Indexable(type = IndexableType.REINDEX)
+    public Bibliography reIndexBibligraphy(long bibliographyId) throws PortalException {
+
+        return getBibliography(bibliographyId);
+
     }
 
     @Override

@@ -82,8 +82,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-01-23 23:33
- * @version 1.0.6
+ * @modified 2017-02-03 22:19
+ * @version 1.0.7
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -435,6 +435,11 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
     }
 
+    @Indexable(type = IndexableType.REINDEX)
+    public Reference reIndexReference(long referenceId) throws PortalException {
+        return getReference(referenceId);
+    }
+
     @Override
     public void subscribe(long userId, long groupId) throws PortalException {
         subscriptionLocalService.addSubscription(userId, groupId, Reference.class.getName(), groupId);
@@ -492,7 +497,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setUserId(user.getUserId());
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
-        
+
         BibTeXEntry bibTeXEntry = BibTeXUtil.getBibTeXEntry(bibTeX);
         if (bibTeXEntry != null) {
             Key key = new Key("bibshare-last-modified");
@@ -502,9 +507,9 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
             // TODO: raise an error and report to the user that something is
             // wrong with the bibtex-src.
         }
-        
-        bibTeX = BibTeXUtil.format(bibTeXEntry); 
-        
+
+        bibTeX = BibTeXUtil.format(bibTeXEntry);
+
         reference.setBibTeX(bibTeX);
 
         referencePersistence.update(reference);
