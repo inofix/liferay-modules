@@ -24,10 +24,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.referencemanager.model.BibRefRelation;
-import ch.inofix.referencemanager.model.Bibliography;
-import ch.inofix.referencemanager.model.Reference;
-import ch.inofix.referencemanager.service.BibliographyLocalServiceUtil;
-import ch.inofix.referencemanager.service.ReferenceLocalServiceUtil;
 import ch.inofix.referencemanager.service.base.BibRefRelationLocalServiceBaseImpl;
 
 /**
@@ -47,8 +43,8 @@ import ch.inofix.referencemanager.service.base.BibRefRelationLocalServiceBaseImp
  *
  * @author Christian Berndt
  * @created 2016-12-03 15:33
- * @modified 2017-02-02 19:32
- * @version 1.0.4
+ * @modified 2017-02-03 22:18
+ * @version 1.0.5
  * @see BibRefRelationLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil
  */
@@ -94,15 +90,8 @@ public class BibRefRelationLocalServiceImpl extends BibRefRelationLocalServiceBa
 
             // Update (and re-index) both parts of the relation
 
-            Bibliography bibliography = BibliographyLocalServiceUtil.getBibliography(bibliographyId);
-            bibliography = BibliographyLocalServiceUtil.updateBibliography(bibliography.getBibliographyId(),
-                    bibliography.getUserId(), bibliography.getTitle(), bibliography.getDescription(),
-                    bibliography.getUrlTitle(), bibliography.getComments(), bibliography.getPreamble(),
-                    bibliography.getStrings(), serviceContext);
-
-            Reference reference = ReferenceLocalServiceUtil.getReference(referenceId);
-            reference = ReferenceLocalServiceUtil.updateReference(reference.getReferenceId(), reference.getUserId(),
-                    reference.getBibTeX(), reference.getBibliographyIds(), serviceContext);
+            bibliographyLocalService.reIndexBibligraphy(bibliographyId);
+            referenceLocalService.reIndexReference(referenceId);
 
         } else {
             _log.info("The bibRefRelation already exists.");
@@ -111,15 +100,50 @@ public class BibRefRelationLocalServiceImpl extends BibRefRelationLocalServiceBa
         return bibRefRelation;
     }
 
-    public void deleteBibRefRelations(long bibliographyId) {
+    public void deleteBibRefRelation(long bibliographyId, long referenceId) throws PortalException {
+
+        BibRefRelation bibRefRelation = bibRefRelationPersistence.fetchByB_R(bibliographyId, referenceId);
+
+        deleteBibRefRelation(bibRefRelation);
+
+        // Update (and re-index) both parts of the relation
+
+        bibliographyLocalService.reIndexBibligraphy(bibliographyId);
+        referenceLocalService.reIndexReference(referenceId);
+
+    }
+
+    public void deleteByBibliographyId(long bibliographyId) throws PortalException {
 
         List<BibRefRelation> bibRefRelations = bibRefRelationPersistence.findByBibliographyId(bibliographyId);
 
         for (BibRefRelation bibRefRelation : bibRefRelations) {
-            deleteBibRefRelation(bibRefRelation);
-            _log.info("delete " + bibRefRelation);
-        }
 
+            long referenceId = bibRefRelation.getReferenceId();
+
+            deleteBibRefRelation(bibRefRelation);
+
+            // Re-index the remaining part of the relation
+
+            referenceLocalService.reIndexReference(referenceId);
+        }
+    }
+
+    public void deleteByReferenceId(long referenceId) throws PortalException {
+
+        List<BibRefRelation> bibRefRelations = bibRefRelationPersistence.findByReferenceId(referenceId);
+
+        for (BibRefRelation bibRefRelation : bibRefRelations) {
+
+            long bibliographyId = bibRefRelation.getBibliographyId();
+
+            deleteBibRefRelation(bibRefRelation);
+
+            // Re-index the remaining part of the relation
+
+            bibliographyLocalService.reIndexBibligraphy(bibliographyId);
+
+        }
     }
 
     public List<BibRefRelation> getBibRefRelationsByBibliographyId(long bibliographyId) {

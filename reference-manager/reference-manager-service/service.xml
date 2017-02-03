@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2017-02-02 16:19 by Christian Berndt 
-    Version:    1.0.8
+    Modified:   2017-02-03 21:34 by Christian Berndt 
+    Version:    1.0.9
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -72,7 +72,7 @@
 
     </entity>
     
-    <entity local-service="true" name="BibRefRelation" remote-service="false"
+    <entity local-service="true" name="BibRefRelation" remote-service="true"
         uuid="true">
 
         <!-- PK fields -->
