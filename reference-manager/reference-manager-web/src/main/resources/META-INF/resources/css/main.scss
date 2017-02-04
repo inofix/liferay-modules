@@ -2,8 +2,8 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2017-01-29 22:57 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2017-02-04 17:54 by Christian Berndt
+    Version:    1.1.2
 */
 
 @import "bourbon";
@@ -100,6 +100,25 @@
 
 .form-section {
     margin-top: 15px;
+}
+
+.item-remove {
+    .taglib-text-icon {    
+        &:before {
+            content: "\f00d"; 
+            font-family: 'fontawesome-alloy';
+            -webkit-font-smoothing: antialiased;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: normal;
+            line-height: 1;
+            *margin-right: .3em;
+            margin-right: .4em;
+            speak: none;
+            text-decoration: inherit;
+            text-transform: none;
+        }
+    }
 }
 
 .panel {
