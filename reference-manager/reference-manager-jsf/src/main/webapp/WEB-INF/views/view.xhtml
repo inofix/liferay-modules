@@ -4,8 +4,8 @@
     view.xhtml: view of the reference editor portlet
     
     Created:    2017-01-05 19:29 by Christian Berndt
-    Modified:   2017-02-03 22:13 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2017-02-04 17:01 by Christian Berndt
+    Version:    1.1.7
 -->
 
 <f:view xmlns="http://www.w3.org/1999/xhtml"
@@ -174,8 +174,9 @@
                 </p:tab>
 
                 <p:tab title="#{i18n['usage']}">
-                    <p:outputPanel styleClass="form-group related-bibliographies">
-                        <h:outputText 
+                    <p:outputPanel id="relatedBibliographies"
+                        styleClass="form-group related-bibliographies">
+                        <h:outputText
                             rendered="#{not empty referenceEditorView.bibliographies}"
                             styleClass="help-block"
                             value="#{i18n['this-reference-is-used-in-following-bibliographies']}" />
@@ -202,10 +203,12 @@
                             value="#{referenceEditorView.selectedBibliography}"
                             completeMethod="#{referenceEditorView.completeBibliography}">
                             <p:ajax event="itemSelect"
-                                listener="#{referenceEditorView.onBibliographySelect}" />
+                                listener="#{referenceEditorView.onBibliographySelect}"
+                                update=":form:tabs:relatedBibliographies" />
                         </p:autoComplete>
                     </p:outputPanel>
-                    <h:panelGroup layout="block" rendered="#{referenceEditorView.disabled}"
+                    <h:panelGroup layout="block"
+                        rendered="#{referenceEditorView.disabled}"
                         styleClass="alert alert-info">
                         <h:outputText
                             value="#{i18n['sign-in-and-add-this-reference-to-your-bibliographies']}" />

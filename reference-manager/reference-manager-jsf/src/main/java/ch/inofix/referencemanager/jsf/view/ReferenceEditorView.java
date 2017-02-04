@@ -63,8 +63,8 @@ import ch.inofix.referencemanager.service.util.BibliographyUtil;
  * 
  * @author Christian Berndt
  * @created 2017-01-03 14:34
- * @modified 2017-02-02 19:09
- * @version 1.2.2
+ * @modified 2017-02-04 17:19
+ * @version 1.2.3
  *
  */
 @ManagedBean
@@ -96,30 +96,6 @@ public class ReferenceEditorView {
             }
         } else {
             _reference = ReferenceLocalServiceUtil.createReference(0);
-        }
-
-        AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
-                .getAssetRendererFactoryByClass(Bibliography.class);
-
-        _bibliographies = new ArrayList<>();
-
-        try {
-            for (long bibliographyId : _reference.getBibliographyIds()) {
-                AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliographyId);
-                Map<String, String> map = new HashMap<String, String>();
-                Locale locale = portletRequest.getLocale();
-                String title = assetRenderer.getTitle(locale);
-                LiferayPortletRequest liferayPortletRequest = PortalUtil.getLiferayPortletRequest(portletRequest);
-                LiferayPortletResponse liferayPortletResponse = PortalUtil.getLiferayPortletResponse(portletResponse);
-                String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse, null);
-
-                map.put("title", title);
-                map.put("url", viewURL);
-                _bibliographies.add(map);
-
-            }
-        } catch (Exception e) {
-            _log.error(e);
         }
 
         _bibTeX = _reference.getBibTeX();
@@ -155,6 +131,7 @@ public class ReferenceEditorView {
             _log.error(pe);
         }
 
+        updateBibliographies(portletRequest, portletResponse);
         updateFields();
     }
 
@@ -179,6 +156,7 @@ public class ReferenceEditorView {
 
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+        PortletResponse portletResponse = (PortletResponse) externalContext.getResponse();
         HttpServletRequest request = PortalUtil.getHttpServletRequest(portletRequest);
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
         long userId = themeDisplay.getUserId();
@@ -195,6 +173,14 @@ public class ReferenceEditorView {
 
             String message = LanguageUtil.format(request, "successfully-added-reference-x-to-bibliography-x", args);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(message, event.getObject().toString()));
+
+            // reload the re-indexed reference
+            
+            _reference = ReferenceServiceUtil.getReference(_reference.getReferenceId());
+            
+            // update related bibliographies
+            
+            updateBibliographies(portletRequest, portletResponse);
 
         } catch (Exception e) {
 
@@ -377,6 +363,33 @@ public class ReferenceEditorView {
 
     public void setSelectedBibliography(Bibliography selectedBibliography) {
         this._selectedBibliography = selectedBibliography;
+    }
+    
+    private void updateBibliographies(PortletRequest portletRequest, PortletResponse portletResponse) {
+
+        AssetRendererFactory<Bibliography> assetRendererFactory = AssetRendererFactoryRegistryUtil
+                .getAssetRendererFactoryByClass(Bibliography.class);
+
+        _bibliographies = new ArrayList<>();
+
+        try {
+            for (long bibliographyId : _reference.getBibliographyIds()) {
+                AssetRenderer<Bibliography> assetRenderer = assetRendererFactory.getAssetRenderer(bibliographyId);
+                Map<String, String> map = new HashMap<String, String>();
+                Locale locale = portletRequest.getLocale();
+                String title = assetRenderer.getTitle(locale);
+                LiferayPortletRequest liferayPortletRequest = PortalUtil.getLiferayPortletRequest(portletRequest);
+                LiferayPortletResponse liferayPortletResponse = PortalUtil.getLiferayPortletResponse(portletResponse);
+                String viewURL = assetRenderer.getURLViewInContext(liferayPortletRequest, liferayPortletResponse, null);
+
+                map.put("title", title);
+                map.put("url", viewURL);
+                _bibliographies.add(map);
+
+            }
+        } catch (Exception e) {
+            _log.error(e);
+        }
     }
 
     private void updateBibTeX() {
