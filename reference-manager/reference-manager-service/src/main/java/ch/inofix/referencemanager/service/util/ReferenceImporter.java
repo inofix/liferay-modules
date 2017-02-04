@@ -236,17 +236,17 @@ public class ReferenceImporter {
                             reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds,
                                     serviceContext);
                         }
+                    } 
+                    
+                } else {
 
-                    } else {
+                    // no bibshare-id
 
-                        // no referenceId
+                    _log.info("adding reference");
 
-                        _log.info("adding reference");
+                    numImported++;
 
-                        numImported++;
-
-                        reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds, serviceContext);
-                    }
+                    reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds, serviceContext);
                 }
 
                 if (numProcessed % 100 == 0 && numProcessed > 0) {
