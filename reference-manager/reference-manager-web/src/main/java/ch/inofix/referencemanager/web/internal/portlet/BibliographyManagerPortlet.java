@@ -58,8 +58,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-01-28 17:20
- * @version 1.2.1
+ * @modified 2017-02-05 20:31
+ * @version 1.2.2
  */
 @Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
@@ -82,6 +82,8 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         long bibliographyId = ParamUtil.getLong(actionRequest, "bibliographyId");
 
         _bibliographyService.deleteBibliography(bibliographyId);
+
+        actionResponse.setRenderParameter("postDelete", "true");
 
     }
 
@@ -171,9 +173,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
             throws IOException, PortletException {
 
         try {
-
             getBibliography(renderRequest);
-
         } catch (Exception e) {
             if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
                 SessionErrors.add(renderRequest, e.getClass());
@@ -367,8 +367,9 @@ public class BibliographyManagerPortlet extends MVCPortlet {
     protected void getBibliography(PortletRequest portletRequest) throws Exception {
 
         long bibliographyId = ParamUtil.getLong(portletRequest, "bibliographyId");
+        boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
 
-        if (bibliographyId <= 0) {
+        if (bibliographyId <= 0 || postDelete) {
             return;
         }
 
