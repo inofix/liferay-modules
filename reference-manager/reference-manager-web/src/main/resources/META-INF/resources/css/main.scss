@@ -2,18 +2,14 @@
     main.scss: reference-manager specific css
 
     Created:    2016-12-13 23:49 by Christian Berndt
-    Modified:   2017-02-04 17:54 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-02-06 22:10 by Christian Berndt
+    Version:    1.1.3
 */
 
 @import "bourbon";
 @import "mixins";
 
 .bibliography-manager-portlet {
-    
-    .alert {
-        margin-top: 20px;
-    }
     
     .bibliography-head {
         margin-top: -15px;
@@ -54,16 +50,7 @@
             .textboxlistentry-holder {
                 min-height: 35px;
             }
-        }        
-        
-    }
-    
-    .search-form {
-            
-        .form-group {
-            margin-bottom: 0; 
-            margin-right: 10px;
-        }
+        }   
     }
     
     form {
@@ -96,6 +83,18 @@
             display: inline;
         }     
     }
+    
+    .navbar {
+        min-height: 0;
+    }
+    
+    .search-form {
+            
+        .form-group {
+            margin-bottom: 0; 
+            margin-right: 10px;
+        }
+    }
 }
 
 .form-section {
@@ -119,6 +118,11 @@
             text-transform: none;
         }
     }
+}
+
+.lfr-alert-wrapper {
+    padding-left: 0; 
+    padding-right: 0; 
 }
 
 .panel {
