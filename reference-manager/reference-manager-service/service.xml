@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2017-02-03 21:34 by Christian Berndt 
-    Version:    1.0.9
+    Modified:   2017-02-06 21:52 by Christian Berndt 
+    Version:    1.1.0
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -69,6 +69,8 @@
         <reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
         <reference entity="Subscription" package-path="com.liferay.portal" />
         <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
+        
+        
 
     </entity>
     
@@ -165,5 +167,6 @@
     
     <exceptions>
         <exception>BibliographyUrlTitle</exception>
+        <exception>DuplicateUrlTitle</exception>
     </exceptions>
 </service-builder>

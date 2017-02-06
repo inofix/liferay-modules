@@ -2,11 +2,13 @@
     bibliography_settings.jsp: edit the bibliography's settings.
     
     Created:    2016-12-01 02:33 by Christian Berndt
-    Modified:   2017-01-22 20:08 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-02-06 22:34 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
+
+<%@page import="ch.inofix.referencemanager.exception.DuplicateUrlTitleException"%>
 
 <%
     long bibliographyId = ParamUtil.getLong(request, "bibliographyId");
@@ -51,6 +53,10 @@
     <liferay-ui:asset-categories-error />
 
     <liferay-ui:asset-tags-error />
+
+    <liferay-ui:error
+        exception="<%= DuplicateUrlTitleException.class %>"
+        message="please-enter-a-unique-url-title" />
 
     <aui:model-context bean="<%=bibliography%>"
         model="<%=Bibliography.class%>" />
