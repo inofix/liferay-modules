@@ -36,8 +36,12 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.referencemanager.exception.BibliographyUrlTitleException;
+import ch.inofix.referencemanager.exception.DuplicateUrlTitleException;
+import ch.inofix.referencemanager.exception.NoSuchBibliographyException;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.service.base.BibliographyLocalServiceBaseImpl;
 import ch.inofix.referencemanager.social.BibliographyActivityKeys;
@@ -59,8 +63,8 @@ import ch.inofix.referencemanager.social.BibliographyActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-11-29 21:27
- * @modified 2017-02-03 22:18
- * @version 1.0.5
+ * @modified 2017-02-06 22:33
+ * @version 1.0.6
  * @see BibliographyLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.BibliographyLocalServiceUtil
  */
@@ -82,6 +86,8 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
         User user = userPersistence.findByPrimaryKey(userId);
         long groupId = serviceContext.getScopeGroupId();
+
+        validate(groupId, urlTitle);
 
         long bibliographyId = counterLocalService.increment();
 
@@ -292,11 +298,17 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
         User user = userPersistence.findByPrimaryKey(userId);
 
-        // TODO: validate urlTitle
-        // validate(urlTitle);
-
         Bibliography bibliography = bibliographyPersistence.findByPrimaryKey(bibliographyId);
+        
         long groupId = serviceContext.getScopeGroupId();
+
+        if (!bibliography.getUrlTitle().equals(urlTitle)) {
+            
+            // modified urlTitle
+            
+            validate(groupId, urlTitle);            
+        }
+        
 
         bibliography.setUuid(serviceContext.getUuid());
         bibliography.setGroupId(groupId);
@@ -350,6 +362,21 @@ public class BibliographyLocalServiceImpl extends BibliographyLocalServiceBaseIm
 
         resourceLocalService.updateResources(bibliography.getCompanyId(), bibliography.getGroupId(),
                 Bibliography.class.getName(), bibliography.getBibliographyId(), groupPermissions, guestPermissions);
+    }
+
+    protected void validate(long groupId, String urlTitle) throws PortalException {
+        if (Validator.isNull(urlTitle)) {
+            throw new BibliographyUrlTitleException();
+        } else {
+            try {
+                Bibliography bibliography = getBibliography(groupId, urlTitle);
+                if (bibliography != null) {
+                    throw new DuplicateUrlTitleException();
+                }
+            } catch (NoSuchBibliographyException e) {
+                // ignore
+            }
+        }
     }
 
     private static final Log _log = LogFactoryUtil.getLog(BibliographyLocalServiceImpl.class);
