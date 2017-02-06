@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-01-29 22:43 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2017-02-06 22:30 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -67,7 +67,7 @@
     }
 %>
 
-<div class="clearfix">
+<nav class="clearfix navbar">
 
     <div class="pull-left">
         <aui:form name="fm1" cssClass="search-form">
@@ -84,7 +84,7 @@
             value="add-reference" />
     </div>
     
-</div>
+</nav>
 
 
 <liferay-ui:search-container
