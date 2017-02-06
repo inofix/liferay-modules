@@ -1,0 +1,40 @@
+<%--
+    shipping_address.jspf: shipping address section of the payment-portlet.
+    
+    Created:     2017-02-03 16:49 by Christian Berndt
+    Modified:    2017-02-03 16:49 by Christian Berndt
+    Version:     1.0.0
+ --%>
+
+<%@ include file="/html/init.jsp"%>
+        
+<aui:fieldset label="billing-address">
+    <aui:row>
+    
+        <aui:col span="6">
+            <aui:input name="shipping_address" required="true" />
+            <aui:input name="shipping_address2" />
+            <aui:input name="shipping_company" />
+            <aui:input name="shipping_city" required="true" />
+            <aui:input name="shipping_postal_code" required="true" />
+            <aui:input name="shipping_state" />
+            <aui:field-wrapper>
+                <aui:select name="shipping_country" required="true">
+                    <aui:option value="" />
+                    <aui:option label="en" value="en" />
+                    <aui:option label="de" value="de" />
+                </aui:select>
+                <div class="help-block">
+                    ISO 3166-1 country code, e.g. DE
+                </div>
+            </aui:field-wrapper>
+        </aui:col>
+        
+        <aui:col span="6">
+            <aui:input name="shipping_first_name" required="true" />
+            <aui:input name="shipping_last_name" required="true" />
+        </aui:col>
+        
+    </aui:row>
+        
+</aui:fieldset>

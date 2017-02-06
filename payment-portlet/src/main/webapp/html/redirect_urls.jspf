@@ -1,0 +1,30 @@
+<%--
+    redirect_urls.jspf: redirect_urls section of the payment-portlet.
+    
+    Created:     2017-02-03 15:57 by Christian Berndt
+    Modified:    2017-02-03 15:57 by Christian Berndt
+    Version:     1.0.0
+ --%>
+
+<%@ include file="/html/init.jsp"%>
+
+<%
+    PortletURL errorURL = renderResponse.createRenderURL();
+    errorURL.setParameter("result", "error");
+
+    PortletURL successURL = renderResponse.createRenderURL();
+    successURL.setParameter("result", "success");
+%>
+
+<aui:fieldset label="">
+    <aui:row>
+        <aui:col span="6">
+            <aui:input name="success_url" type="hidden" required="true"
+                value="<%=successURL.toString()%>" />
+        </aui:col>
+        <aui:col span="6">
+            <aui:input name="error_url" type="hidden" required="true"
+                value="<%=errorURL.toString()%>" />
+        </aui:col>
+    </aui:row>
+</aui:fieldset>

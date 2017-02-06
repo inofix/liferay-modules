@@ -1,0 +1,27 @@
+/**
+ * main.css: css specific to the payment-portlet.
+ *
+ * Created:     2017-02-03 15:15 by Christian Berndt
+ * Modified:    2017-02-03 15:15 by Christian Berndt
+ * Version:     1.0.0
+ * 
+ */
+.aui {
+    .portlet-payment {
+    
+        dl.build-info dfn, 
+        dl.build-info dt {
+            display: inline;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        dl.build-info dfn {
+            margin-right: 20px;
+        }
+    
+        .lfr-panel {
+            margin-bottom: 20px; 
+        }
+    }
+}
