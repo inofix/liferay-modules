@@ -1,0 +1,51 @@
+<%--
+    common_parameters.jspf: common parameters section of the payment-portlet.
+    
+    Created:     2017-02-03 13:59 by Christian Berndt
+    Modified:    2017-02-03 13:59 by Christian Berndt
+    Version:     1.0.0
+ --%>
+
+<%@ include file="/html/init.jsp"%>
+
+<%
+    String amount = "1";
+    String currency = "EUR";
+    String apiKey = "aab1fbbca555e0e70c27";
+    String orderId = "Teilnahmegebühr Flussbad Pokal";
+    String merchantReference = "Flussbad Berlin e.V. " + orderId;
+    PortletURL postbackURL = renderResponse.createRenderURL(); 
+%>
+
+<aui:fieldset label="common-parameters">
+    <aui:row>
+
+        <aui:col span="6">
+            <aui:input name="api_key" required="true"
+                value="<%=apiKey%>" />
+            <aui:input name="order_id" required="true"
+                value="<%=orderId%>" />
+            <aui:input name="merchant_reference"
+                value="<%=merchantReference%>" />
+            <aui:input name="amount" required="true" value="<%=amount%>" />
+            <aui:input name="shipping_costs" />
+        </aui:col>
+
+        <aui:col span="6">
+            <aui:input name="vat" />
+            <aui:input name="currency" value="<%=currency%>" />
+            <aui:input name="postback_url" required="true" type="hidden"
+                value="<%=postbackURL.toString()%>" />
+            <aui:input name="customer_ip" type="hidden" />
+            <aui:input name="customer_ip_proxy" type="hidden" />
+            <aui:input name="original_transaction_id" />
+            <aui:input name="duration" />
+            <aui:select name="locale">
+                <aui:option value="" />
+                <aui:option label="en" value="en" />
+                <aui:option label="de" value="de" />
+            </aui:select>
+        </aui:col>
+
+    </aui:row>
+</aui:fieldset>
