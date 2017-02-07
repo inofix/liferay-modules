@@ -53,8 +53,8 @@ import ch.inofix.referencemanager.service.BibRefRelationLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-29 14:43
- * @modified 2017-01-21 16:50
- * @version 1.0.9
+ * @modified 2017-02-07 18:38
+ * @version 1.1.0
  */
 @SuppressWarnings("serial")
 @ProviderType
@@ -71,28 +71,17 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     public String getAuthor() {
 
-        String[] authors = getAuthors();
+        String author = null;
 
-        String author = "";
+        String str = getField("author");
 
-        if (authors.length == 1) {
-            author = authors[0];
-        }
-        if (authors.length == 2) {
-            author = getField("author");
-        }
-        if (authors.length > 2) {
-            author = authors[0] + " et al.";
+        if (str != null) {
+            author = getNameNormalized(str);
+        } else {
+            return getEditor();
         }
 
         return author;
-
-    }
-    
-    public String[] getAuthors() {
-
-        return tokenize("author");
-
     }
 
     public long[] getBibliographyIds() throws PortalException {
@@ -131,28 +120,18 @@ public class ReferenceImpl extends ReferenceBaseImpl {
 
     public String getEditor() {
 
-        String[] editors = getEditors();
+        String editor = null;
 
-        String editor = "";
+        String str = getField("editor");
 
-        if (editors.length == 1) {
-            editor = editors[0];
-        }
-        if (editors.length == 2) {
-            editor = getField("editor");
-        }
-        if (editors.length > 2) {
-            editor = editors[0] + " et al.";
+        if (str != null) {
+            editor = getNameNormalized(str);
+            // TODO: consider language
+            // TODO: consider multiple editors (either "and" or "et.al.").
+            editor = editor + " (ed.)";
         }
 
         return editor;
-
-    }
-    
-    public String[] getEditors() {
-
-        return tokenize("editor");
-        
     }
 
     public Map<String, String> getFields() {
@@ -251,14 +230,115 @@ public class ReferenceImpl extends ReferenceBaseImpl {
         return str;
 
     }
-    
-    private String[] tokenize(String field) {
 
-        String str = getField(field);
+    private String getNameFormatted(String[] nameParts) {
 
-        String[] tokens = str.split(" (?i)and ");
+        // names[0] = first;
+        // names[1] = von;
+        // names[2] = last;
+        // names[3] = jr;
 
-        return tokens;
+        StringBuilder sb = new StringBuilder();
+        
+        if (Validator.isNotNull(nameParts[2])) {           
+            sb.append(nameParts[2]);
+        }
+        
+        if (Validator.isNotNull(nameParts[0])) {
+            sb.append(StringPool.COMMA);
+            sb.append(StringPool.SPACE);
+            sb.append(nameParts[0].substring(0, 1));
+            sb.append(StringPool.PERIOD);
+            
+            if (Validator.isNotNull(nameParts[1])) {
+                sb.append(StringPool.SPACE);
+                sb.append(nameParts[1]);
+            }
+        }
+
+
+        if (Validator.isNotNull(nameParts[3])) {
+            // TODO: how do we handle the jr part?
+            // sb.append(nameParts[3]);
+        }
+
+        return sb.toString();
+
+    }
+
+    private String getNameNormalized(String str) {
+
+        String name = null;
+        String[] names = str.split(" (?i)and ");
+
+        if (names.length == 1) {
+            String[] nameParts = getNameParts(names[0]);
+            name = getNameFormatted(nameParts);
+        } else if (names.length == 2) {
+            String[] nameParts1 = getNameParts(names[0]);
+            String[] nameParts2 = getNameParts(names[1]);
+            // TODO: consider configured language
+            name = getNameFormatted(nameParts1) + " and " + getNameFormatted(nameParts2);
+        } else {
+            String[] nameParts = getNameParts(names[0]);
+            // TODO: consider configured et al.
+            name = getNameFormatted(nameParts) + " et al.";
+        }
+
+        return name;
+    }
+
+    private String[] getNameParts(String name) {
+
+        // see:
+        // http://maverick.inria.fr/~Xavier.Decoret/resources/xdkbibtex/bibtex_summary.html
+
+        String last = null;
+        String first = null;
+        String von = null;
+        String jr = null;
+
+        String[] tokens = name.split(StringPool.COMMA);
+
+        if (tokens.length == 1) {
+
+            // no comma
+            String[] parts = tokens[0].split(" ");
+
+            if (parts.length == 1) {
+                last = parts[parts.length - 1];
+            } else if (parts.length == 2) {
+                last = parts[parts.length - 1];
+                first = parts[0];
+            } else {
+                // TODO: implement cases mentioned above
+                last = parts[parts.length - 1];
+                first = parts[0];
+            }
+
+        } else if (tokens.length == 2) {
+
+            // one comma
+
+            last = tokens[0];
+            first = tokens[1];
+
+            // TODO: implement cases mentioned above
+
+        } else if (tokens.length == 3) {
+            // TODO: two commas
+        } else {
+            // TODO: invalid
+        }
+
+        String[] parts = new String[4];
+
+        parts[0] = first;
+        parts[1] = von;
+        parts[2] = last;
+        parts[3] = jr;
+
+        return parts;
 
     }
 
