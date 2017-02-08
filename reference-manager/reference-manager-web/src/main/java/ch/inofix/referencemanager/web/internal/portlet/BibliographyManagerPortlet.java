@@ -16,7 +16,9 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -43,6 +45,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchBibliographyException;
 import ch.inofix.referencemanager.model.Bibliography;
@@ -50,6 +53,7 @@ import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibRefRelationService;
 import ch.inofix.referencemanager.service.BibliographyService;
 import ch.inofix.referencemanager.service.ReferenceService;
+import ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletInstanceConfiguration;
 import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
@@ -58,16 +62,26 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-02-05 20:31
- * @version 1.2.2
+ * @modified 2017-02-08 23:15
+ * @version 1.2.3
  */
-@Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
+@Component(
+    configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletInstanceConfiguration",
+    immediate = true, 
+    property = { 
+        "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=bibliography-manager-portlet",
-        "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
-        "com.liferay.portlet.instanceable=false", "javax.portlet.init-param.template-path=/",
+        "com.liferay.portlet.display-category=category.inofix", 
+        "com.liferay.portlet.header-portlet-css=/css/main.css",
+        "com.liferay.portlet.instanceable=false", 
+        "javax.portlet.init-param.template-path=/",
         "javax.portlet.init-param.view-template=/user_bibliographies.jsp",
-        "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER, "javax.portlet.resource-bundle=content.Language",
-        "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
+        "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER, 
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user" 
+    }, 
+    service = Portlet.class
+)
 public class BibliographyManagerPortlet extends MVCPortlet {
 
     /**
@@ -251,6 +265,28 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         actionResponse.setRenderParameter("tabs1", tabs1);
 
     }
+    
+    @Override
+    public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+
+        renderRequest.setAttribute(BibliographyManagerPortletInstanceConfiguration.class.getName(),
+                _instanceConfiguration);
+
+        super.doView(renderRequest, renderResponse);
+    }
+    
+    public String getFavoriteColor(Map<?, ?> labels) {
+            return (String) labels.get(_instanceConfiguration.favoriteColor());
+    }
+    
+    @Activate
+    @Modified
+    protected void activate(Map<Object, Object> properties) {
+        _instanceConfiguration = Configurable.createConfigurable(BibliographyManagerPortletInstanceConfiguration.class,
+                properties);
+    }
+
 
     /**
      * 
@@ -396,6 +432,8 @@ public class BibliographyManagerPortlet extends MVCPortlet {
     private BibliographyService _bibliographyService;
     private BibRefRelationService _bibRefRelationService;
     private ReferenceService _referenceService;
+    
+    private volatile BibliographyManagerPortletInstanceConfiguration _instanceConfiguration;
 
     private static final String REQUEST_PROCESSED = "request_processed";
 
