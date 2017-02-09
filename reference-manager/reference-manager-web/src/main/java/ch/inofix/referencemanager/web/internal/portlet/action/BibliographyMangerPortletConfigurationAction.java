@@ -26,20 +26,24 @@ import ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletIn
  * 
  * @author Christian Berndt
  * @created 2017-02-08 23:31
- * @modified 2017-02-08 23:31
- * @version 1.0.0
+ * @modified 2017-02-09 19:40
+ * @version 1.0.1
  */
 @Component(
     configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletInstanceConfiguration",
     configurationPolicy = ConfigurationPolicy.OPTIONAL,
     immediate = true,
     property = {
-        "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER_CONFIGURATION, 
-
+        "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER
     },
     service = ConfigurationAction.class
 )
 public class BibliographyMangerPortletConfigurationAction extends DefaultConfigurationAction {
+    
+    @Override
+    public String getJspPath(HttpServletRequest httpServletRequest) {
+        return "/bibliography_configuration.jsp";
+    }
 
     @Override
     public void processAction(PortletConfig portletConfig, ActionRequest actionRequest, ActionResponse actionResponse)
