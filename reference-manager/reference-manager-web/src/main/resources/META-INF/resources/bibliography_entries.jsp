@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-02-06 22:30 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2017-02-11 18:48 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -12,6 +12,12 @@
     String bibliographyId = ParamUtil.getString(request, "bibliographyId");
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    
+    String [] columns = new String[] {"author", "title", "year"}; 
+
+    if (Validator.isNotNull(bibliographyManagerConfiguration)) {
+        columns = portletPreferences.getValues("columns", bibliographyManagerConfiguration.columns());
+    }
 
     Bibliography bibliography = (Bibliography) request.getAttribute(BibliographyWebKeys.BIBLIOGRAPHY);
     boolean hasUpdatePermission = BibliographyPermission.contains(permissionChecker, bibliography,

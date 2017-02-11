@@ -53,7 +53,7 @@ import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibRefRelationService;
 import ch.inofix.referencemanager.service.BibliographyService;
 import ch.inofix.referencemanager.service.ReferenceService;
-import ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletInstanceConfiguration;
+import ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration;
 import ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
@@ -62,11 +62,11 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-02-08 23:15
- * @version 1.2.3
+ * @modified 2017-02-11 18:47
+ * @version 1.2.4
  */
 @Component(
-    configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletInstanceConfiguration",
+    configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration",
     immediate = true, 
     property = { 
         "com.liferay.portlet.add-default-resource=true",
@@ -196,6 +196,9 @@ public class BibliographyManagerPortlet extends MVCPortlet {
             }
         }
 
+        renderRequest.setAttribute(BibliographyManagerConfiguration.class.getName(),
+                _bibliographyManagerConfiguration);
+
         super.render(renderRequest, renderResponse);
     }
 
@@ -270,20 +273,24 @@ public class BibliographyManagerPortlet extends MVCPortlet {
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
 
-        renderRequest.setAttribute(BibliographyManagerPortletInstanceConfiguration.class.getName(),
-                _instanceConfiguration);
+        renderRequest.setAttribute(BibliographyManagerConfiguration.class.getName(),
+                _bibliographyManagerConfiguration);
 
         super.doView(renderRequest, renderResponse);
     }
-    
-    public String getFavoriteColor(Map<?, ?> labels) {
-            return (String) labels.get(_instanceConfiguration.favoriteColor());
-    }
+//    
+//    public String[] getColumns(Map<?, ?> labels) {
+//        return (String[]) labels.get(_bibliographyManagerConfiguration.columns());
+//    }
+//    
+//    public String getFavoriteColor(Map<?, ?> labels) {
+//            return (String) labels.get(_bibliographyManagerConfiguration.favoriteColor());
+//    }
     
     @Activate
     @Modified
     protected void activate(Map<Object, Object> properties) {
-        _instanceConfiguration = Configurable.createConfigurable(BibliographyManagerPortletInstanceConfiguration.class,
+        _bibliographyManagerConfiguration = Configurable.createConfigurable(BibliographyManagerConfiguration.class,
                 properties);
     }
 
@@ -433,7 +440,7 @@ public class BibliographyManagerPortlet extends MVCPortlet {
     private BibRefRelationService _bibRefRelationService;
     private ReferenceService _referenceService;
     
-    private volatile BibliographyManagerPortletInstanceConfiguration _instanceConfiguration;
+    private volatile BibliographyManagerConfiguration _bibliographyManagerConfiguration;
 
     private static final String REQUEST_PROCESSED = "request_processed";
 

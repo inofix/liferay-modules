@@ -2,13 +2,14 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2017-01-30 23:37 by Christian Berndt
-    Version:    1.2.2
+    Modified:   2017-02-11 13:53 by Christian Berndt
+    Version:    1.2.3
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
+<%@taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 <%@taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
 <%@taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
@@ -26,6 +27,7 @@
 <%@page import="ch.inofix.referencemanager.service.ReferenceServiceUtil"%>
 <%@page import="ch.inofix.referencemanager.service.util.BibliographyUtil"%>
 <%@page import="ch.inofix.referencemanager.service.util.BibTeXUtil"%>
+<%@page import="ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration"%>
 <%@page import="ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.BibliographySearchTerms"%>
@@ -44,6 +46,7 @@
 <%@page import="com.liferay.portal.kernel.json.JSONArray"%>
 <%@page import="com.liferay.portal.kernel.json.JSONFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.json.JSONObject"%>
+<%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.model.Group"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
@@ -53,18 +56,26 @@
 <%@page import="com.liferay.portal.kernel.upload.UploadException"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
+<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
+<%@page import="com.liferay.portal.kernel.util.KeyValuePairComparator"%>
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.PortalUtil"%>
+<%@page import="com.liferay.portal.kernel.util.SetUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
+<%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Arrays"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="java.util.HashSet"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
+<%@page import="java.util.Set"%>
 
 <%@page import="javax.portlet.PortletURL"%>
 
@@ -73,7 +84,10 @@
 <liferay-theme:defineObjects />
 
 <%
-	PortletURL portletURL = renderResponse.createRenderURL();
+    PortletURL portletURL = renderResponse.createRenderURL();
 
-	String currentURL = portletURL.toString();
+    String currentURL = portletURL.toString();
+
+    BibliographyManagerConfiguration bibliographyManagerConfiguration = (BibliographyManagerConfiguration) renderRequest
+            .getAttribute(BibliographyManagerConfiguration.class.getName());
 %>

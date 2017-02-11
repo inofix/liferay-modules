@@ -19,27 +19,20 @@ import com.liferay.portal.kernel.util.ParamUtil;
 
 import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.referencemanager.constants.PortletKeys;
-import ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletInstanceConfiguration;
+import ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration;
 
 /**
  * Configuration of Inofix' bibliography-manager.
  * 
  * @author Christian Berndt
  * @created 2017-02-08 23:31
- * @modified 2017-02-09 19:40
- * @version 1.0.1
+ * @modified 2017-02-11 18:47
+ * @version 1.0.2
  */
-@Component(
-    configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerPortletInstanceConfiguration",
-    configurationPolicy = ConfigurationPolicy.OPTIONAL,
-    immediate = true,
-    property = {
-        "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER
-    },
-    service = ConfigurationAction.class
-)
+@Component(configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, property = {
+        "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER }, service = ConfigurationAction.class)
 public class BibliographyMangerPortletConfigurationAction extends DefaultConfigurationAction {
-    
+
     @Override
     public String getJspPath(HttpServletRequest httpServletRequest) {
         return "/bibliography_configuration.jsp";
@@ -49,8 +42,9 @@ public class BibliographyMangerPortletConfigurationAction extends DefaultConfigu
     public void processAction(PortletConfig portletConfig, ActionRequest actionRequest, ActionResponse actionResponse)
             throws Exception {
 
-        String favoriteColor = ParamUtil.getString(actionRequest, "favoriteColor");
-        setPreference(actionRequest, "favoriteColor", favoriteColor);
+        String columns = ParamUtil.getString(actionRequest, "columns");
+
+        setPreference(actionRequest, "columns", columns.split(","));
 
         super.processAction(portletConfig, actionRequest, actionResponse);
     }
@@ -59,8 +53,8 @@ public class BibliographyMangerPortletConfigurationAction extends DefaultConfigu
     public void include(PortletConfig portletConfig, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws Exception {
 
-        httpServletRequest.setAttribute(BibliographyManagerPortletInstanceConfiguration.class.getName(),
-                _instanceConfiguration);
+        httpServletRequest.setAttribute(BibliographyManagerConfiguration.class.getName(),
+                _bibliographyManagerConfiguration);
 
         super.include(portletConfig, httpServletRequest, httpServletResponse);
     }
@@ -68,10 +62,10 @@ public class BibliographyMangerPortletConfigurationAction extends DefaultConfigu
     @Activate
     @Modified
     protected void activate(Map<Object, Object> properties) {
-        _instanceConfiguration = Configurable.createConfigurable(BibliographyManagerPortletInstanceConfiguration.class,
+        _bibliographyManagerConfiguration = Configurable.createConfigurable(BibliographyManagerConfiguration.class,
                 properties);
     }
 
-    private volatile BibliographyManagerPortletInstanceConfiguration _instanceConfiguration;
+    private volatile BibliographyManagerConfiguration _bibliographyManagerConfiguration;
 
 }
