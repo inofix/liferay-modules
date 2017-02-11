@@ -2,8 +2,8 @@
     search_columns.jspf: search_columns of the reference manager portlet.
     
     Created:    2016-12-03 16:20 by Christian Berndt
-    Modified:   2017-01-19 23:56 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-02-11 18:50 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%
@@ -28,9 +28,6 @@
     if (ReferencePermission.contains(permissionChecker, reference, ReferenceActionKeys.UPDATE)) {
         detailURL = editURL.toString();
     }
-
-    // TODO: Read columns from configuration.
-    String[] columns = new String[] { "referenceId", "type", "label", "author", "title", "year", "modified" };
 
     for (String column : columns) {
 %>
