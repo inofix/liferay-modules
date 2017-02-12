@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2017-02-06 21:52 by Christian Berndt 
-    Version:    1.1.0
+    Modified:   2017-02-12 15:33 by Christian Berndt 
+    Version:    1.1.1
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -168,5 +168,6 @@
     <exceptions>
         <exception>BibliographyUrlTitle</exception>
         <exception>DuplicateUrlTitle</exception>
+        <exception>NoReferences</exception>
     </exceptions>
 </service-builder>
