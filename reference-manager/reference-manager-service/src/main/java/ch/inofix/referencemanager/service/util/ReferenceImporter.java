@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
+import ch.inofix.referencemanager.exception.NoReferencesException;
 import ch.inofix.referencemanager.model.Bibliography;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.BibliographyServiceUtil;
@@ -165,6 +166,12 @@ public class ReferenceImporter {
             Collection<BibTeXEntry> bibTeXEntries = database.getEntries().values();
 
             _log.info("bibTeXEntries.size() = " + bibTeXEntries.size());
+            
+            if (bibTeXEntries.size() == 0) {
+                
+                throw new NoReferencesException();
+                
+            }
 
             for (BibTeXEntry bibTeXEntry : bibTeXEntries) {
 
