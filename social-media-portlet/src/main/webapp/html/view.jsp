@@ -2,8 +2,8 @@
     view.jsp: Default view of the social-media-portlet
     
     Created:    2015-08-19 22:17 by Christian Berndt
-    Modified:   2015-08-26 16:04 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-02-13 15:13 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -56,19 +56,29 @@
 
 <div class="portlet-social-media">
 
-	<div class="<%= cssClass %>">
+    <div class="<%=cssClass%>">
 
-		<div class="shariff" data-backend-url="<%= backendUrl %>"
-			data-url="<%= currentURL %>" data-mail-body="<%= mailBody %>"
-			data-mail-subject="<%= mailSubject %>" data-mail-url="<%= mailUrl %>"
-			data-orientation="<%= selectedOrientation %>"
-			data-services="<%= servicesConfig %>"
-			data-theme="<%= selectedTheme %>" data-twitter-via="<%= twitterVia %>"></div>
-	
-		<c:if test="<%= showBuildInfo %>">
-			<ifx-util:build-info />
-		</c:if>
+        <div class="shariff" data-backend-url="<%=backendUrl%>"
+            data-fb-api-key="<%= fbApiKey %>"
+            data-fb-caption="<%= fbCaption %>"
+            data-fb-description="<%= fbDescription %>"
+            data-fb-display="<%= fbDisplay %>"
+            data-fb-from="<%= fbFrom %>" data-fb-name="<%= fbName %>"
+            data-fb-picture="<%= fbPicture %>"
+            data-fb-redirect-uri="<%= fbRedirectUri %>"
+            data-fb-ref="<%= fbRef %>" data-fb-source="<%= fbSource %>"
+            data-fb-to="<%= fbTo %>" data-url="<%=currentURL%>"
+            data-mail-body="<%=mailBody%>"
+            data-mail-subject="<%=mailSubject%>"
+            data-mail-url="<%=mailUrl%>"
+            data-orientation="<%=selectedOrientation%>"
+            data-services="<%=servicesConfig%>"
+            data-theme="<%=selectedTheme%>"
+            data-twitter-via="<%=twitterVia%>"></div>
 
-	</div>
+        <c:if test="<%= showBuildInfo %>">
+            <ifx-util:build-info />
+        </c:if>
+
+    </div>
 </div>
-

@@ -2,8 +2,8 @@
     configuration.jsp: Configure the social-media portlet's preferences.
     
     Created:    2015-08-20 13:05 by Christian Berndt
-    Modified:   2015-09-26 16:04 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-02-13 14:39 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -58,39 +58,70 @@
         </liferay-ui:panel>
         
         <liferay-ui:panel id="socialmediaServiceSettingsPanel" title="service-settings" extended="true">
-        
-            <aui:fieldset label="url">
-	            
-	            <aui:input name="shareUrl" value="<%= shareUrl %>"
-	                helpMessage="share-url-help" />
-                
-            </aui:fieldset>
 
-            <aui:fieldset label="mail">
-            
-	            <aui:input name="mailSubject" value="<%= mailSubject%>"
-	                helpMessage="mail-subject-help" />
-	
-	            <aui:input name="mailBody" value="<%= mailBody%>"
-	                helpMessage="mail-body-help" />
-	
-	            <aui:input name="mailUrl" value="<%= mailUrl%>"
-	                helpMessage="mail-url-help" />
-                
-            </aui:fieldset>
-            
-            <aui:fieldset label="other">
+            <aui:row>
+                <aui:col span="3">
+                    <aui:fieldset label="url">
+                        <aui:input name="shareUrl" value="<%=shareUrl%>"
+                            helpMessage="share-url-help" />
+                    </aui:fieldset>
+                </aui:col>
+                <aui:col span="3">
+                    <aui:fieldset label="mail">
+                        <aui:input name="mailSubject"
+                            value="<%=mailSubject%>"
+                            helpMessage="mail-subject-help" />
+                        <aui:input name="mailBody" value="<%=mailBody%>"
+                            helpMessage="mail-body-help" />
+                        <aui:input name="mailUrl" value="<%=mailUrl%>"
+                            helpMessage="mail-url-help" />
 
-                <%-- Not yet implemented in view.jsp
-	            <aui:input name="githubUrl" value="<%= githubUrl%>"
-	                helpMessage="github-url-help" />
-	            --%>
-	            
-	            <aui:input name="twitterVia" value="<%= twitterVia%>"
-	                helpMessage="twitter-via-help" />
-                
-            </aui:fieldset>
+                    </aui:fieldset>
+                </aui:col>
 
+                <aui:col span="3">
+                    <aui:fieldset label="facebook">
+                        <aui:input helpMessage="fb-api-key-help"
+                            name="fbApiKey" value="<%=fbApiKey%>" />
+                        <aui:input helpMessage="fb-caption-help"
+                            name="fbCaption" value="<%=fbCaption%>" />
+                        <aui:input helpMessage="fb-description-help"
+                            name="fbDescription"
+                            value="<%=fbDescription%>" />
+                        <aui:input helpMessage="fb-display-help"
+                            name="fbDisplay" value="<%=fbDisplay%>" />
+                        <aui:input helpMessage="fb-from-help"
+                            name="fbFrom" value="<%=fbFrom%>" />
+                        <aui:input helpMessage="fb-name-help"
+                            name="fbName" value="<%=fbName%>" />
+                        <aui:input helpMessage="fb-picture-help"
+                            name="fbPicture" value="<%=fbPicture%>" />
+                        <aui:input helpMessage="fb-redirect-uri-help"
+                            name="fbRedirectUri"
+                            value="<%=fbRedirectUri%>" />
+                        <aui:input helpMessage="fb-ref-help"
+                            name="fbRef" value="<%=fbRef%>" />
+                        <aui:input helpMessage="fb-source-help"
+                            name="fbSource" value="<%=fbSource%>" />
+                        <aui:input helpMessage="fb-to-help" name="fbTo"
+                            value="<%=fbTo%>" />
+                    </aui:fieldset>
+                </aui:col>
+                <aui:col span="3">
+                    <aui:fieldset label="other">
+
+                        <%-- Not yet implemented in view.jsp
+                        <aui:input name="githubUrl" value="<%= githubUrl%>"
+                            helpMessage="github-url-help" />
+                        --%>
+
+                        <aui:input name="twitterVia"
+                            value="<%=twitterVia%>"
+                            helpMessage="twitter-via-help" />
+
+                    </aui:fieldset>
+                </aui:col>
+            </aui:row>
         </liferay-ui:panel>
 
 		<liferay-ui:panel id="socialmediaBackenPanel" title="backend" extended="true">
