@@ -2,8 +2,8 @@
     user_bibliographies: display a user's bibliographies.
     
     Created:    2016-12-16 00:12 by Christian Berndt
-    Modified:   2017-01-25 12:52 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-02-13 22:56 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -95,7 +95,7 @@
             property="title" valign="middle" />
             
         <liferay-ui:search-container-column-jsp cssClass="entry-action"
-              path="/bibliography_action.jsp" valign="top" />
+              path="/bibliography/bibliography_action.jsp" valign="top" />
 
     </liferay-ui:search-container-row>
 

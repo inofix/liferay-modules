@@ -2,8 +2,8 @@
     bibliography_entries.jsp: browse the bibliography's references.
     
     Created:    2016-12-03 15:50 by Christian Berndt
-    Modified:   2017-02-11 18:48 by Christian Berndt
-    Version:    1.1.7
+    Modified:   2017-02-13 22:58 by Christian Berndt
+    Version:    1.1.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -106,7 +106,7 @@
         <%@ include file="/search_columns.jspf" %>     
         
         <liferay-ui:search-container-column-jsp cssClass="entry-action"
-             path="/reference_action.jsp" valign="top" />
+             path="/reference/reference_action.jsp" valign="top" />
 
     </liferay-ui:search-container-row>
 
