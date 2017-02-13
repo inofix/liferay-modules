@@ -57,8 +57,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-01-17 15:18
- * @version 1.1.0
+ * @modified 2017-02-13 23:21
+ * @version 1.1.1
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -205,6 +205,8 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
         Indexer<Reference> indexer = IndexerRegistryUtil.getIndexer(Reference.class.getName());
 
         SearchContext searchContext = new SearchContext();
+        
+        searchContext.setKeywords(keywords);
 
         searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
 
