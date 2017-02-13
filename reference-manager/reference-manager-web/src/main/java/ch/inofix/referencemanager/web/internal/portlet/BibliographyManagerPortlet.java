@@ -62,8 +62,8 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-11-29 22:33
- * @modified 2017-02-11 18:47
- * @version 1.2.4
+ * @modified 2017-02-13 22:50
+ * @version 1.2.5
  */
 @Component(
     configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration",
@@ -269,31 +269,12 @@ public class BibliographyManagerPortlet extends MVCPortlet {
 
     }
     
-    @Override
-    public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
-            throws IOException, PortletException {
-
-        renderRequest.setAttribute(BibliographyManagerConfiguration.class.getName(),
-                _bibliographyManagerConfiguration);
-
-        super.doView(renderRequest, renderResponse);
-    }
-//    
-//    public String[] getColumns(Map<?, ?> labels) {
-//        return (String[]) labels.get(_bibliographyManagerConfiguration.columns());
-//    }
-//    
-//    public String getFavoriteColor(Map<?, ?> labels) {
-//            return (String) labels.get(_bibliographyManagerConfiguration.favoriteColor());
-//    }
-    
     @Activate
     @Modified
     protected void activate(Map<Object, Object> properties) {
         _bibliographyManagerConfiguration = Configurable.createConfigurable(BibliographyManagerConfiguration.class,
                 properties);
     }
-
 
     /**
      * 
@@ -308,6 +289,16 @@ public class BibliographyManagerPortlet extends MVCPortlet {
         } else {
             super.doDispatch(renderRequest, renderResponse);
         }
+    }
+    
+    @Override
+    public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+
+        renderRequest.setAttribute(BibliographyManagerConfiguration.class.getName(),
+                _bibliographyManagerConfiguration);
+
+        super.doView(renderRequest, renderResponse);
     }
 
     /**

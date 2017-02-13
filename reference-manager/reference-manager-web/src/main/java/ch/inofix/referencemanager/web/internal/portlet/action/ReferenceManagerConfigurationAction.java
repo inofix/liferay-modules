@@ -19,23 +19,30 @@ import com.liferay.portal.kernel.util.ParamUtil;
 
 import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.referencemanager.constants.PortletKeys;
-import ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration;
+import ch.inofix.referencemanager.web.configuration.ReferenceManagerConfiguration;
 
 /**
- * Configuration of Inofix' bibliography-manager.
+ * Configuration of Inofix' reference-manager.
  * 
  * @author Christian Berndt
- * @created 2017-02-08 23:31
- * @modified 2017-02-11 18:47
- * @version 1.0.2
+ * @created 2017-02-13 21:55
+ * @modified 2017-02-13 21:55
+ * @version 1.0.0
  */
-@Component(configurationPid = "ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, property = {
-        "javax.portlet.name=" + PortletKeys.BIBLIOGRAPHY_MANAGER }, service = ConfigurationAction.class)
-public class BibliographyMangerPortletConfigurationAction extends DefaultConfigurationAction {
+@Component(
+    configurationPid = "ch.inofix.referencemanager.web.configuration.ReferenceManagerConfiguration", 
+    configurationPolicy = ConfigurationPolicy.OPTIONAL, 
+    immediate = true, 
+    property = {
+        "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER 
+    }, 
+    service = ConfigurationAction.class
+)
+public class ReferenceManagerConfigurationAction extends DefaultConfigurationAction {
 
     @Override
     public String getJspPath(HttpServletRequest httpServletRequest) {
-        return "/bibliography_configuration.jsp";
+        return "/reference/configuration.jsp";
     }
 
     @Override
@@ -53,8 +60,8 @@ public class BibliographyMangerPortletConfigurationAction extends DefaultConfigu
     public void include(PortletConfig portletConfig, HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws Exception {
 
-        httpServletRequest.setAttribute(BibliographyManagerConfiguration.class.getName(),
-                _bibliographyManagerConfiguration);
+        httpServletRequest.setAttribute(ReferenceManagerConfiguration.class.getName(),
+                _referenceManagerConfiguration);
 
         super.include(portletConfig, httpServletRequest, httpServletResponse);
     }
@@ -62,10 +69,9 @@ public class BibliographyMangerPortletConfigurationAction extends DefaultConfigu
     @Activate
     @Modified
     protected void activate(Map<Object, Object> properties) {
-        _bibliographyManagerConfiguration = Configurable.createConfigurable(BibliographyManagerConfiguration.class,
+        _referenceManagerConfiguration = Configurable.createConfigurable(ReferenceManagerConfiguration.class,
                 properties);
     }
 
-    private volatile BibliographyManagerConfiguration _bibliographyManagerConfiguration;
-
+    private volatile ReferenceManagerConfiguration _referenceManagerConfiguration;
 }

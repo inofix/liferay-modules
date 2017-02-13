@@ -1,9 +1,9 @@
 <%--
-    bibliography_configuration.jsp: configuration of the bibliography manager portlet.
+    reference/configuration.jsp: configuration of the reference manager portlet.
     
-    Created:    2017-02-09 00:04 by Christian Berndt
-    Modified:   2017-02-11 18:48 by Christian Berndt
-    Version:    1.0.1
+    Created:    2017-02-13 21:58 by Christian Berndt
+    Modified:   2017-02-13 21:58 by Christian Berndt
+    Version:    1.0.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -11,11 +11,11 @@
 <%
     String[] columns = new String[0];
 
-    if (Validator.isNotNull(bibliographyManagerConfiguration)) {
-        columns = portletPreferences.getValues("columns", bibliographyManagerConfiguration.columns());
+    if (Validator.isNotNull(referenceManagerConfiguration)) {
+        columns = portletPreferences.getValues("columns", referenceManagerConfiguration.columns());
     }
 
-    String allColumns = "author,categories,created,label,modified,referenceId,status,tags,title,type,year";
+    String allColumns = SearchColumns.REFERENCE_SEARCH_COLUMNS;
 %>
 
 <liferay-portlet:actionURL portletConfiguration="<%= true %>"
@@ -32,8 +32,6 @@
 
     <aui:input name="redirect" type="hidden"
         value="<%=configurationRenderURL%>" />
-
-<!--     <div class="portlet-configuration-body-content"> -->
         
         <aui:input name="columns" type="hidden"/>
 
@@ -72,9 +70,7 @@
                 rightBoxName="availableColumns"
                 rightList="<%=rightList%>" rightTitle="available" />
         </aui:fieldset>
-        
-<!--     </div> -->
-        
+                
     <aui:button-row>
         <aui:button type="submit"></aui:button>
     </aui:button-row>
