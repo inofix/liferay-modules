@@ -2,8 +2,8 @@
     view.jsp: Default view of the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2017-01-18 15:52 by Christian Berndt
-    Version:    1.1.7
+    Modified:   2017-02-13 22:14 by Christian Berndt
+    Version:    1.1.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -12,6 +12,12 @@
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    
+    String [] columns = new String[] {"author", "title", "year"}; 
+
+    if (Validator.isNotNull(referenceManagerConfiguration)) {
+        columns = portletPreferences.getValues("columns", referenceManagerConfiguration.columns());
+    }
 
     SearchContainer<Reference> referenceSearch = new ReferenceSearch(renderRequest, "cur", portletURL);
     

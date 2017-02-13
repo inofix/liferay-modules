@@ -30,7 +30,9 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -47,11 +49,13 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.referencemanager.constants.PortletKeys;
 import ch.inofix.referencemanager.exception.NoSuchReferenceException;
 import ch.inofix.referencemanager.model.Reference;
 import ch.inofix.referencemanager.service.ReferenceService;
 import ch.inofix.referencemanager.setup.SampleDataUtil;
+import ch.inofix.referencemanager.web.configuration.ReferenceManagerConfiguration;
 import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
 
 /**
@@ -59,16 +63,26 @@ import ch.inofix.referencemanager.web.internal.portlet.util.PortletUtil;
  * 
  * @author Christian Berndt
  * @created 2016-04-10 22:32
- * @modified 2017-01-18 17:03
- * @version 1.1.12
+ * @modified 2017-02-13 22:20
+ * @version 1.1.3
  */
-@Component(immediate = true, property = { "com.liferay.portlet.add-default-resource=true",
+@Component(
+    configurationPid = "ch.inofix.referencemanager.web.configuration.ReferenceManagerConfiguration",
+    immediate = true, 
+    property = { 
+        "com.liferay.portlet.add-default-resource=true",
         "com.liferay.portlet.css-class-wrapper=reference-manager-portlet",
-        "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
-        "com.liferay.portlet.instanceable=false", "javax.portlet.init-param.template-path=/",
-        "javax.portlet.init-param.view-template=/view.jsp", "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER,
+        "com.liferay.portlet.display-category=category.inofix", 
+        "com.liferay.portlet.header-portlet-css=/css/main.css",
+        "com.liferay.portlet.instanceable=false", 
+        "javax.portlet.init-param.template-path=/",
+        "javax.portlet.init-param.view-template=/view.jsp", 
+        "javax.portlet.name=" + PortletKeys.REFERENCE_MANAGER,
         "javax.portlet.resource-bundle=content.Language",
-        "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
+        "javax.portlet.security-role-ref=power-user,user" 
+    }, 
+    service = Portlet.class
+)
 public class ReferenceManagerPortlet extends MVCPortlet {
 
     /**
@@ -135,8 +149,6 @@ public class ReferenceManagerPortlet extends MVCPortlet {
      */
     public void importBibTeXFile(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("importBibTeXFile()");
-
         HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
@@ -187,6 +199,13 @@ public class ReferenceManagerPortlet extends MVCPortlet {
         SampleDataUtil.importSampleData();
 
     }
+    
+    @Activate
+    @Modified
+    protected void activate(Map<Object, Object> properties) {
+        _referenceManagerConfiguration = Configurable.createConfigurable(ReferenceManagerConfiguration.class,
+                properties);
+    }
 
     /**
      * 
@@ -202,6 +221,16 @@ public class ReferenceManagerPortlet extends MVCPortlet {
             super.doDispatch(renderRequest, renderResponse);
         }
     }
+    
+    @Override
+    public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+        
+        renderRequest.setAttribute(ReferenceManagerConfiguration.class.getName(),
+                _referenceManagerConfiguration);
+
+        super.doView(renderRequest, renderResponse);
+    }
 
     @org.osgi.service.component.annotations.Reference
     protected void setReferenceService(ReferenceService referenceService) {
@@ -209,6 +238,8 @@ public class ReferenceManagerPortlet extends MVCPortlet {
     }
 
     private ReferenceService _referenceService;
+
+    private volatile ReferenceManagerConfiguration _referenceManagerConfiguration;
 
     private static final String REQUEST_PROCESSED = "request_processed";
 

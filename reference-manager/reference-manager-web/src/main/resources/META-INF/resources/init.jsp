@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the reference manager portlet.
     
     Created:    2016-01-10 22:51 by Christian Berndt
-    Modified:   2017-02-11 13:53 by Christian Berndt
-    Version:    1.2.3
+    Modified:   2017-02-13 21:59 by Christian Berndt
+    Version:    1.2.4
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -17,6 +17,7 @@
 
 <%@page import="ch.inofix.referencemanager.constants.BibliographyActionKeys"%>
 <%@page import="ch.inofix.referencemanager.constants.ReferenceActionKeys"%>
+<%@page import="ch.inofix.referencemanager.constants.SearchColumns"%>
 <%@page import="ch.inofix.referencemanager.model.Bibliography"%>
 <%@page import="ch.inofix.referencemanager.model.Reference"%>
 <%@page import="ch.inofix.referencemanager.service.permission.BibliographyManagerPortletPermission"%>
@@ -28,6 +29,7 @@
 <%@page import="ch.inofix.referencemanager.service.util.BibliographyUtil"%>
 <%@page import="ch.inofix.referencemanager.service.util.BibTeXUtil"%>
 <%@page import="ch.inofix.referencemanager.web.configuration.BibliographyManagerConfiguration"%>
+<%@page import="ch.inofix.referencemanager.web.configuration.ReferenceManagerConfiguration"%>
 <%@page import="ch.inofix.referencemanager.web.internal.constants.BibliographyWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.constants.ReferenceWebKeys"%>
 <%@page import="ch.inofix.referencemanager.web.internal.search.BibliographySearchTerms"%>
@@ -90,4 +92,7 @@
 
     BibliographyManagerConfiguration bibliographyManagerConfiguration = (BibliographyManagerConfiguration) renderRequest
             .getAttribute(BibliographyManagerConfiguration.class.getName());
+    
+    ReferenceManagerConfiguration referenceManagerConfiguration = (ReferenceManagerConfiguration) renderRequest
+            .getAttribute(ReferenceManagerConfiguration.class.getName());
 %>
