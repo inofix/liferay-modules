@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the social-media portlet.
     
     Created:    2015-08-20 13:12 by Christian Berndt
-    Modified:   2016-07-08 23:39 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-02-13 13:12 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%-- Import required classes --%>
@@ -37,8 +37,22 @@
 
 <%
     // backend-url
-
+    
     String backendUrl = portletPreferences.getValue("backend-url", "");
+
+    // facebook dialog-feed parameters
+    
+    String fbApiKey = portletPreferences.getValue("fb-api-key", "");
+    String fbCaption = portletPreferences.getValue("fb-caption", "");
+    String fbDescription = portletPreferences.getValue("fb-description", "");
+    String fbDisplay = portletPreferences.getValue("fb-display", "");
+    String fbFrom = portletPreferences.getValue("fb-from", "");
+    String fbName = portletPreferences.getValue("fb-name", "");
+    String fbPicture = portletPreferences.getValue("fb-picture", "");
+    String fbRedirectUri = portletPreferences.getValue("fb-redirect-uri", "");
+    String fbRef = portletPreferences.getValue("fb-ref", "");
+    String fbSource = portletPreferences.getValue("fb-source", "");
+    String fbTo = portletPreferences.getValue("fb-to", "");            
 
     // github-url
 
