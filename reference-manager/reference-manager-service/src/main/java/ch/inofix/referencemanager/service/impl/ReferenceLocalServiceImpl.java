@@ -43,9 +43,16 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -54,6 +61,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import ch.inofix.referencemanager.backgroundtask.ReferenceImportBackgroundTaskExecutor;
@@ -82,8 +91,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-02-03 22:19
- * @version 1.0.7
+ * @modified 2017-02-14 18:43
+ * @version 1.0.8
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -111,17 +120,9 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         User user = userPersistence.findByPrimaryKey(userId);
 
-        long groupId = GetterUtil.getLong(PropsUtil.get("reference.common.group"));
+        long groupId = serviceContext.getScopeGroupId();
 
-        if (groupId <= 0) {
-
-            // No reference.common.group configured
-            groupId = serviceContext.getScopeGroupId();
-
-        } else {
-
-            serviceContext.setScopeGroupId(groupId);
-        }
+        long companyId = user.getCompanyId();
 
         long referenceId = counterLocalService.increment();
 
@@ -129,7 +130,7 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         reference.setUuid(serviceContext.getUuid());
         reference.setGroupId(groupId);
-        reference.setCompanyId(user.getCompanyId());
+        reference.setCompanyId(companyId);
         reference.setUserId(user.getUserId());
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
@@ -149,6 +150,14 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         reference.setBibTeX(bibTeX);
 
         referencePersistence.update(reference);
+
+        // Match with bibshare resources
+
+        long commonGroupId = GetterUtil.getLong(PropsUtil.get("reference.common.group.id"));
+
+        Hits hits = referenceLocalService.search(companyId, commonGroupId, reference.getTitle());
+
+        _log.info(hits.getLength());
 
         // BibRefRelation
 
@@ -438,6 +447,89 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Indexable(type = IndexableType.REINDEX)
     public Reference reIndexReference(long referenceId) throws PortalException {
         return getReference(referenceId);
+    }
+
+    public Hits search(long companyId, long groupId, String referenceTitle) {
+        try {
+
+            Indexer<Reference> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Reference.class);
+
+            SearchContext searchContext = new SearchContext();
+
+            searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
+
+            searchContext.setAttribute("paginationType", "more");
+
+            searchContext.setCompanyId(companyId);
+
+            if (groupId > 0) {
+                searchContext.setGroupIds(new long[] { groupId });
+            }
+
+            if (Validator.isNotNull(referenceTitle)) {
+                searchContext.setAttribute("referenceTitle", referenceTitle);
+            }
+
+            return indexer.search(searchContext);
+
+        } catch (Exception e) {
+            throw new SystemException(e);
+        }
+    }
+
+    /**
+     * 
+     * @param companyId
+     * @param groupId
+     * @param userId
+     * @param keywords
+     * @param bibliographyId
+     * @param start
+     * @param end
+     * @param sort
+     * @return
+     */
+    public Hits search(long userId, long groupId, String keywords, long bibliographyId, int start, int end, Sort sort) {
+
+        try {
+
+            Indexer<Reference> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Reference.class);
+
+            SearchContext searchContext = new SearchContext();
+
+            if (Validator.isNotNull(keywords)) {
+                searchContext.setKeywords(keywords);
+            }
+
+            searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
+
+            searchContext.setAttribute("paginationType", "more");
+
+            User user = UserLocalServiceUtil.getUser(userId);
+
+            searchContext.setCompanyId(user.getCompanyId());
+
+            searchContext.setEnd(end);
+            if (groupId > 0) {
+                searchContext.setGroupIds(new long[] { groupId });
+            }
+            searchContext.setSorts(sort);
+            searchContext.setStart(start);
+            searchContext.setUserId(userId);
+
+            if (bibliographyId > 0) {
+                searchContext.setAttribute("bibliographyId", bibliographyId);
+            }
+
+            if (sort == null) {
+                sort = new Sort(Field.MODIFIED_DATE, true);
+            }
+
+            return indexer.search(searchContext);
+
+        } catch (Exception e) {
+            throw new SystemException(e);
+        }
     }
 
     @Override
