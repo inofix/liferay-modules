@@ -25,9 +25,12 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
+import com.liferay.portal.kernel.search.generic.FuzzyQuery;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.referencemanager.model.Reference;
@@ -38,8 +41,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  * 
  * @author Christian Berndt
  * @created 2016-11-18 01:15
- * @modified 2017-01-08 15:17
- * @version 1.0.7
+ * @modified 2017-02-14 22:02
+ * @version 1.0.8
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -81,6 +84,7 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
         document.addKeyword("bibliographyId", reference.getBibliographyIds());
         document.addTextSortable("label", reference.getLabel());
         document.addNumberSortable("referenceId", reference.getReferenceId());
+        document.addTextSortable("referenceTitle", reference.getTitle());
         document.addTextSortable(Field.TITLE, reference.getCitation());
         document.addTextSortable(Field.TYPE, reference.getType());
         document.addTextSortable("year", reference.getYear());
@@ -125,16 +129,37 @@ public class ReferenceIndexer extends BaseIndexer<Reference> {
         IndexWriterHelperUtil.updateDocument(getSearchEngineId(), reference.getCompanyId(), document,
                 isCommitImmediately());
     }
-    
+
     @Override
     public void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) throws Exception {
 
-        long bibliographyId = (Long) searchContext.getAttribute("bibliographyId");
+        long bibliographyId = GetterUtil.getLong(searchContext.getAttribute("bibliographyId"));
 
         if (bibliographyId > 0) {
             BooleanQuery booleanQuery = new BooleanQueryImpl();
             booleanQuery.addExactTerm("bibliographyId", bibliographyId);
             fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
+        }
+
+        String referenceTitle = (String) searchContext.getAttribute("referenceTitle");
+
+        if (Validator.isNotNull(referenceTitle)) {
+
+            BooleanQuery booleanQuery = new BooleanQueryImpl();
+            booleanQuery.addTerm("referenceTitle", StringPool.DOUBLE_QUOTE + referenceTitle + StringPool.DOUBLE_QUOTE);
+            fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
+
+            // FuzzyQuery fuzzyQuery = new FuzzyQuery("referenceTitle",
+            // referenceTitle);
+            // fuzzyQuery.setFuzziness(new Float(20));
+            // fuzzyQuery.setMaxExpansions(new Integer(100));
+            // fuzzyQuery.setPrefixLength(new Integer(50));
+            //
+            // _log.info(fuzzyQuery.getFuzziness());
+            // _log.info(fuzzyQuery.getMaxExpansions());
+            // _log.info(fuzzyQuery.getValue());
+
+            // fullQuery.add(fuzzyQuery, BooleanClauseOccur.MUST);
         }
     }
 

@@ -21,18 +21,10 @@ import java.util.Map;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
-
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.referencemanager.constants.ReferenceActionKeys;
 import ch.inofix.referencemanager.model.Reference;
@@ -57,8 +49,8 @@ import ch.inofix.referencemanager.service.permission.ReferencePermission;
  *
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-02-13 23:21
- * @version 1.1.1
+ * @modified 2017-02-14 22:03
+ * @version 1.1.2
  * @see ReferenceServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceServiceUtil
  */
@@ -198,35 +190,7 @@ public class ReferenceServiceImpl extends ReferenceServiceBaseImpl {
     public Hits search(long userId, long groupId, String keywords, long bibliographyId, int start, int end, Sort sort)
             throws PortalException {
 
-        if (sort == null) {
-            sort = new Sort(Field.MODIFIED_DATE, true);
-        }
-
-        Indexer<Reference> indexer = IndexerRegistryUtil.getIndexer(Reference.class.getName());
-
-        SearchContext searchContext = new SearchContext();
-        
-        searchContext.setKeywords(keywords);
-
-        searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
-
-        searchContext.setAttribute("paginationType", "more");
-
-        User user = UserLocalServiceUtil.getUser(userId);
-
-        searchContext.setCompanyId(user.getCompanyId());
-
-        searchContext.setEnd(end);
-        if (groupId > 0) {
-            searchContext.setGroupIds(new long[] { groupId });
-        }
-        searchContext.setSorts(sort);
-        searchContext.setStart(start);
-        searchContext.setUserId(userId);
-
-        searchContext.setAttribute("bibliographyId", bibliographyId);
-
-        return indexer.search(searchContext);
+        return referenceLocalService.search(userId, groupId, keywords, bibliographyId, start, end, sort);
 
     }
 
