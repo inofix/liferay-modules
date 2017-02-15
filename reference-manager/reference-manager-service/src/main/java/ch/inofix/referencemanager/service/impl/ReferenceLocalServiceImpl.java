@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -51,15 +52,14 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -91,8 +91,8 @@ import ch.inofix.referencemanager.social.ReferenceActivityKeys;
  * @author Brian Wing Shun Chan
  * @author Christian Berndt
  * @created 2016-03-28 17:08
- * @modified 2017-02-14 18:43
- * @version 1.0.8
+ * @modified 2017-02-15 22:33
+ * @version 1.0.9
  * @see ReferenceLocalServiceBaseImpl
  * @see ch.inofix.referencemanager.service.ReferenceLocalServiceUtil
  */
@@ -104,12 +104,6 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
      * ch.inofix.referencemanager.service.ReferenceLocalServiceUtil} to access
      * the reference local service.
      */
-    @Override
-    public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
-
-        return addReference(userId, bibTeX, new long[0], serviceContext);
-
-    }
 
     @Indexable(type = IndexableType.REINDEX)
     @Override
@@ -151,13 +145,14 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         referencePersistence.update(reference);
 
-        // Match with bibshare resources
+        // Match user and group references against global references
 
-        long commonGroupId = GetterUtil.getLong(PropsUtil.get("reference.common.group.id"));
+        Company company = CompanyLocalServiceUtil.getCompany(companyId);
+        long globalGroupId = company.getGroupId();
 
-        Hits hits = referenceLocalService.search(companyId, commonGroupId, reference.getTitle());
-
-        _log.info(hits.getLength());
+        if (reference.getGroupId() != globalGroupId) {
+            match(reference);
+        }
 
         // BibRefRelation
 
@@ -205,6 +200,13 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
                 ReferenceActivityKeys.ADD_REFERENCE, extraDataJSONObject.toString(), 0);
 
         return reference;
+
+    }
+
+    @Override
+    public Reference addReference(long userId, String bibTeX, ServiceContext serviceContext) throws PortalException {
+
+        return addReference(userId, bibTeX, new long[0], serviceContext);
 
     }
 
@@ -444,6 +446,36 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
     }
 
+    public void match(Reference reference) throws PortalException {
+
+        long companyId = reference.getCompanyId();
+        Company company = CompanyLocalServiceUtil.getCompany(companyId);
+        long globalGroupId = company.getGroupId();
+
+        Hits hits = search(companyId, globalGroupId, reference.getTitle());
+
+        _log.info("hits.getLength() = " + hits.getLength());
+
+        if (hits.getLength() > 0) {
+            // TODO: link reference with common reference (if the link does not
+            // yet exist)
+        } else {
+
+            // not yet in the common references
+
+            // TODO: strip the private fields from the reference
+            String bibTeX = reference.getBibTeX();
+
+            ServiceContext serviceContext = new ServiceContext();
+            serviceContext.setScopeGroupId(globalGroupId);
+
+            Reference commonReference = addReference(reference.getUserId(), bibTeX, serviceContext);
+
+            // TODO: link reference with common reference
+        }
+
+    }
+
     @Indexable(type = IndexableType.REINDEX)
     public Reference reIndexReference(long referenceId) throws PortalException {
         return getReference(referenceId);
@@ -582,10 +614,11 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         Reference reference = referencePersistence.findByPrimaryKey(referenceId);
         long groupId = serviceContext.getScopeGroupId();
+        long companyId = user.getCompanyId();
 
         reference.setUuid(serviceContext.getUuid());
         reference.setGroupId(groupId);
-        reference.setCompanyId(user.getCompanyId());
+        reference.setCompanyId(companyId);
         reference.setUserId(user.getUserId());
         reference.setUserName(user.getFullName());
         reference.setExpandoBridgeAttributes(serviceContext);
@@ -604,7 +637,16 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
 
         reference.setBibTeX(bibTeX);
 
-        referencePersistence.update(reference);
+        reference = referencePersistence.update(reference);
+
+        // Match user and group references against global references
+
+        Company company = CompanyLocalServiceUtil.getCompany(companyId);
+        long globalGroupId = company.getGroupId();
+
+        if (reference.getGroupId() != globalGroupId) {
+            match(reference);
+        }
 
         // BibRefRelation
 
