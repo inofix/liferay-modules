@@ -4,8 +4,8 @@
     service.xml: ORM Configuration of the reference manager. 
 
     Created:    2016-01-03 16:50 by Christian Berndt 
-    Modified:   2017-02-12 15:33 by Christian Berndt 
-    Version:    1.1.1
+    Modified:   2017-02-15 22:38 by Christian Berndt 
+    Version:    1.1.2
 -->
 <!DOCTYPE service-builder 
     PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" 
@@ -164,6 +164,57 @@
         <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
 
     </entity>
+    
+    <entity local-service="true" name="RefRefRelation" remote-service="true"
+        uuid="true">
+
+        <!-- PK fields -->
+
+        <column name="refRefRelationId" type="long" primary="true" />
+
+        <!-- Group instance -->
+
+        <column name="groupId" type="long" />
+
+        <!-- Audit fields -->
+
+        <column name="companyId" type="long" />
+        <column name="userId" type="long" />
+        <column name="userName" type="String" />
+        <column name="createDate" type="Date" />
+        <column name="modifiedDate" type="Date" />
+        <column name="status" type="int" />
+
+        <!-- Other fields -->
+
+        <column name="referenceId1" type="long" />
+        <column name="referenceId2" type="long" />
+        <column name="type" type="String" />
+
+        <!-- Order -->
+
+        <!-- Finder methods -->
+     
+        <finder name="ReferenceId1" return-type="Collection">
+            <finder-column name="referenceId1" />
+        </finder>
+        
+        <finder name="ReferenceId2" return-type="Collection">
+            <finder-column name="referenceId2" />
+        </finder>
+        
+        <finder name="Type" return-type="Collection">
+            <finder-column name="type" />
+        </finder>        
+
+        <finder name="R_R" return-type="RefRefRelation" unique="true">
+            <finder-column name="referenceId1" />
+            <finder-column name="referenceId2" />
+        </finder>
+
+        <!-- References -->
+
+    </entity> 
     
     <exceptions>
         <exception>BibliographyUrlTitle</exception>
