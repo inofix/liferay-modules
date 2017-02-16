@@ -1,9 +1,3 @@
-/ReferenceBaseImpl.java
-/ReferenceCacheModel.java
-/ReferenceModelImpl.java
-/BibliographyBaseImpl.java
-/BibliographyCacheModel.java
-/BibliographyModelImpl.java
-/BibRefRelationBaseImpl.java
-/BibRefRelationCacheModel.java
-/BibRefRelationModelImpl.java
+*BaseImpl.java
+*CacheModel.java
+*ModelImpl.java

@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -59,6 +60,7 @@ import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -302,6 +304,10 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
     @Override
     public Reference deleteReference(long referenceId) throws PortalException {
         Reference reference = referencePersistence.findByPrimaryKey(referenceId);
+        
+        bibRefRelationLocalService.deleteByReferenceId(referenceId);
+        
+        refRefRelationLocalService.deleteByReferenceId(referenceId);
 
         return referenceLocalService.deleteReference(reference);
     }
@@ -457,11 +463,18 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
         _log.info("hits.getLength() = " + hits.getLength());
 
         if (hits.getLength() > 0) {
-            // TODO: link reference with common reference (if the link does not
-            // yet exist)
+
+            Document document = hits.doc(0);
+            long referenceId1 = GetterUtil.getLong(document.get(Field.CLASS_PK));
+            
+            _log.info("referenceId1 = " + referenceId1);
+            
+            refRefRelationLocalService.addRefRefRelation(reference.getUserId(), referenceId1,
+                    reference.getReferenceId(), new ServiceContext());
+
         } else {
 
-            // not yet in the common references
+            // not yet in the global references
 
             // TODO: strip the private fields from the reference
             String bibTeX = reference.getBibTeX();
@@ -469,11 +482,11 @@ public class ReferenceLocalServiceImpl extends ReferenceLocalServiceBaseImpl {
             ServiceContext serviceContext = new ServiceContext();
             serviceContext.setScopeGroupId(globalGroupId);
 
-            Reference commonReference = addReference(reference.getUserId(), bibTeX, serviceContext);
+            Reference globalReference = addReference(reference.getUserId(), bibTeX, serviceContext);
 
-            // TODO: link reference with common reference
+            refRefRelationLocalService.addRefRefRelation(reference.getUserId(), globalReference.getReferenceId(),
+                    reference.getReferenceId(), new ServiceContext());
         }
-
     }
 
     @Indexable(type = IndexableType.REINDEX)
