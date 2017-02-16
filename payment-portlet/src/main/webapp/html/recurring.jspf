@@ -2,11 +2,9 @@
     recurring.jspf: recurring section of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-03 13:59 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-02-16 19:06 by Christian Berndt
+    Version:     1.0.1
  --%>
-
-<%@ include file="/html/init.jsp"%>
 
 <%
     String originalTransactionId = "Mitgliedsbeitrag 2017";

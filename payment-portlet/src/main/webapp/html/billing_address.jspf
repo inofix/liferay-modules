@@ -2,11 +2,9 @@
     billing_address.jspf: billing address section of the payment-portlet.
     
     Created:     2017-02-03 15:53 by Christian Berndt
-    Modified:    2017-02-03 15:53 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-02-16 19:05 by Christian Berndt
+    Version:     1.0.1
  --%>
-
-<%@ include file="/html/init.jsp"%>
 
 <%
     String address = "Falckensteinstraße 4";

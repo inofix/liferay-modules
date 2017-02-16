@@ -2,11 +2,9 @@
     shipping_address.jspf: shipping address section of the payment-portlet.
     
     Created:     2017-02-03 16:49 by Christian Berndt
-    Modified:    2017-02-03 16:49 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-02-16 19:07 by Christian Berndt
+    Version:     1.0.1
  --%>
-
-<%@ include file="/html/init.jsp"%>
         
 <aui:fieldset label="billing-address">
     <aui:row>

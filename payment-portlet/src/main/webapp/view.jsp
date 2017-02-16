@@ -2,8 +2,8 @@
     view.jsp: Default view of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-03 13:59 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-02-16 18:48 by Christian Berndt
+    Version:     1.0.1
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -15,27 +15,23 @@
     String backURL = ParamUtil.getString(request, "backURL");
 
     PortletURL portletURL = renderResponse.createRenderURL();
+    
+    List<String> serviceList = Arrays.asList(services); 
+    Iterator<String> iterator = serviceList.iterator(); 
 
-    String tabs1 = ParamUtil.getString(renderRequest, "tabs1", "credit-card-inline");
-    StringBuilder sb = new StringBuilder(); 
-    sb.append("credit-card-redirect");
-    sb.append(StringPool.COMMA);
-    sb.append("credit-card-inline");
-    sb.append(StringPool.COMMA);
-    sb.append("direct-debit");
-    sb.append(StringPool.COMMA);
-    sb.append("purchase-on-account-b2c");
-    sb.append(StringPool.COMMA);
-    sb.append("purchase-on-account-b2b");
-    sb.append(StringPool.COMMA);
-    sb.append("giro-pay");
-    sb.append(StringPool.COMMA);
-    sb.append("sofort-ueberweisung");
-    sb.append(StringPool.COMMA);
-    sb.append("paypal");
-    sb.append(StringPool.COMMA);
-    sb.append("pay-direkt");
-    String tabNames = sb.toString(); 
+    String tabs1 = ParamUtil.getString(renderRequest, "tabs1",
+            "credit-card-inline");
+    
+    StringBuilder sb = new StringBuilder();
+    
+    while (iterator.hasNext()) {
+        sb.append(iterator.next()); 
+        if (iterator.hasNext()) {
+            sb.append(StringPool.COMMA);            
+        }
+    }
+
+    String tabNames = sb.toString();
 %>
 
 <portlet:actionURL name="submitPayment" var="actionURL">
