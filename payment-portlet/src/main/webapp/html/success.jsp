@@ -8,8 +8,6 @@
  
 <%@ include file="/html/init.jsp"%>
 
-<%@ include file="/html/init.jsp"%>
-
 <%
     String backURL = ParamUtil.getString(request, "backURL");
     String message = (String) request.getAttribute("message"); 
