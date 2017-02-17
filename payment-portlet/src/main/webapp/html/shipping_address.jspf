@@ -2,22 +2,27 @@
     shipping_address.jspf: shipping address section of the payment-portlet.
     
     Created:     2017-02-03 16:49 by Christian Berndt
-    Modified:    2017-02-17 18:03 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-02-17 19:31 by Christian Berndt
+    Version:     1.0.3
  --%>
-        
-<aui:fieldset label="billing-address">
+ 
+<%-- <aui:input label="show-shipping-address" name="showShippingAddress" type="checkbox" value="<%= false %>" /> --%>
+
+<aui:fieldset id="shippingAddress" label="shipping-address">
     <aui:row>
-    
+
         <aui:col span="6">
-            <aui:input name="shipping_address" required="true" />
-            <aui:input name="shipping_address2" />
-            <aui:input name="shipping_company" />
-            <aui:input name="shipping_city" required="true" />
-            <aui:input name="shipping_postal_code" required="true" />
-            <aui:input name="shipping_state" />
+            <aui:input label="address" name="shipping_address" required="true" />
+            <aui:input label="address2" name="shipping_address2" />
+            <aui:input label="company" name="shipping_company" />
+            <aui:input label="city" name="shipping_city" required="true" />
+            <aui:input label="postal-code" name="shipping_postal_code" required="true" />
+        </aui:col>
+
+        <aui:col span="6">
+            <aui:input label="state" name="shipping_state" />
             <aui:field-wrapper>
-                <aui:select name="shipping_country" required="true">
+                <aui:select label="country" name="shipping_country" required="true">
                     <%
                         countryIterator = countrySet.iterator();
                         while (countryIterator.hasNext()) {
@@ -32,14 +37,17 @@
                         }
                     %>
                 </aui:select>
-            </aui:field-wrapper>
+            </aui:field-wrapper>        
+            <aui:input label="first-name" name="shipping_first_name" required="true" />
+            <aui:input label="last-name" name="shipping_last_name" required="true" />
         </aui:col>
-        
-        <aui:col span="6">
-            <aui:input name="shipping_first_name" required="true" />
-            <aui:input name="shipping_last_name" required="true" />
-        </aui:col>
-        
+
     </aui:row>
-        
+
 </aui:fieldset>
+
+<%-- 
+<aui:script>
+    Liferay.Util.toggleBoxes('<portlet:namespace />showShippingAddressCheckbox','<portlet:namespace />shippingAddress', false);
+</aui:script>
+--%>
