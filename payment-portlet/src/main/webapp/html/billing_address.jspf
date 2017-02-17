@@ -2,8 +2,8 @@
     billing_address.jspf: billing address section of the payment-portlet.
     
     Created:     2017-02-03 15:53 by Christian Berndt
-    Modified:    2017-02-16 19:05 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2017-02-17 12:33 by Christian Berndt
+    Version:     1.0.2
  --%>
 
 <%
@@ -24,8 +24,8 @@
                 value="<%=address%>" />
             <aui:input name="address2" />
             <aui:input name="city" required="true" value="<%=city%>" />
-            <aui:input name="postal_code" required="true"
-                value="<%=postalCode%>" />
+            <aui:input label="postal-code" name="postal_code"
+                required="true" value="<%=postalCode%>" />
             <aui:input name="state" />
         </aui:col>
 
@@ -41,9 +41,9 @@
                     e.g. DE</div>
                 --%>
             </aui:field-wrapper>
-            <aui:input name="first_name" required="true"
-                value="<%=firstName%>" />
-            <aui:input name="last_name" required="true"
+            <aui:input label="first-name" name="first_name"
+                required="true" value="<%=firstName%>" />
+            <aui:input label="last-name" name="last_name" required="true"
                 value="<%=lastName%>" />
             <aui:input name="email" required="true" value="<%=email%>" />
             <aui:input name="phone" />
