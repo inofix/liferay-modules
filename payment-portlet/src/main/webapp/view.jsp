@@ -2,8 +2,8 @@
     view.jsp: Default view of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-17 13:59 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-02-17 19:28 by Christian Berndt
+    Version:     1.0.3
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -55,7 +55,6 @@
                     type="hidden" value="cc" />
                 <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
-                <%@ include file="/html/shipping_address.jspf"%>
                 <%@ include file="/html/redirect_urls.jspf"%>
                 <c:if test="<%= showRecurring %>">
                     <%@ include file="/html/recurring.jspf"%>
@@ -100,6 +99,7 @@
                     type="hidden" value="kar" />
                 <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
+                <%@ include file="/html/shipping_address.jspf"%>
             </c:if>
 
             <c:if test='<%= tabs1.equals("purchase-on-account-b2b") %>'>
@@ -107,6 +107,7 @@
                     type="hidden" value="kar_b2b" />
                 <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
+                <%@ include file="/html/shipping_address.jspf"%>
             </c:if>
 
             <c:if test='<%= tabs1.equals("giro-pay") %>'>
@@ -149,6 +150,7 @@
                         label="cancel" title="cancel" />
                 </c:if>
             </aui:button-row>
+            
         </aui:form>
     </div>
 </div>
@@ -156,4 +158,3 @@
 <hr>
 
 <ifx-util:build-info />
-
