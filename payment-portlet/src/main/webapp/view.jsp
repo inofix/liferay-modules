@@ -2,8 +2,8 @@
     view.jsp: Default view of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-16 18:48 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2017-02-17 13:59 by Christian Berndt
+    Version:     1.0.2
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -15,19 +15,19 @@
     String backURL = ParamUtil.getString(request, "backURL");
 
     PortletURL portletURL = renderResponse.createRenderURL();
-    
-    List<String> serviceList = Arrays.asList(services); 
-    Iterator<String> iterator = serviceList.iterator(); 
+
+    List<String> serviceList = Arrays.asList(services);
+    Iterator<String> iterator = serviceList.iterator();
 
     String tabs1 = ParamUtil.getString(renderRequest, "tabs1",
             "credit-card-inline");
-    
+
     StringBuilder sb = new StringBuilder();
-    
+
     while (iterator.hasNext()) {
-        sb.append(iterator.next()); 
+        sb.append(iterator.next());
         if (iterator.hasNext()) {
-            sb.append(StringPool.COMMA);            
+            sb.append(StringPool.COMMA);
         }
     }
 
@@ -44,6 +44,7 @@
     <liferay-ui:tabs names="<%= tabNames %>" param="tabs1"
         portletURL="<%= portletURL %>" />
 
+
     <div class="tab-content">
         <aui:form action="<%= actionURL.toString() %>" method="post"
             name="fm1">
@@ -54,8 +55,11 @@
                     type="hidden" value="cc" />
                 <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
+                <%@ include file="/html/shipping_address.jspf"%>
                 <%@ include file="/html/redirect_urls.jspf"%>
-                <%@ include file="/html/recurring.jspf"%>
+                <c:if test="<%= showRecurring %>">
+                    <%@ include file="/html/recurring.jspf"%>
+                </c:if>
             </c:if>
 
             <c:if test='<%= tabs1.equals("credit-card-inline") %>'>
@@ -63,7 +67,9 @@
                     type="hidden" value="cc" />
                 <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
-                <%@ include file="/html/recurring.jspf"%>
+                <c:if test="<%= showRecurring %>">
+                    <%@ include file="/html/recurring.jspf"%>
+                </c:if>
             </c:if>
 
             <c:if test='<%= tabs1.equals("direct-debit") %>'>
@@ -71,7 +77,9 @@
                     type="hidden" value="dd" />
                 <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
-                <%@ include file="/html/recurring.jspf"%>
+                <c:if test="<%= showRecurring %>">
+                    <%@ include file="/html/recurring.jspf"%>
+                </c:if>
                 <aui:fieldset label="direct-debit">
                     <aui:row>
                         <aui:col span="6">
@@ -121,7 +129,9 @@
                 <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
                 <%@ include file="/html/redirect_urls.jspf"%>
-                <%@ include file="/html/recurring.jspf"%>
+                <c:if test="<%= showRecurring %>">
+                    <%@ include file="/html/recurring.jspf"%>
+                </c:if>
             </c:if>
 
             <c:if test='<%= tabs1.equals("pay-direkt") %>'>
