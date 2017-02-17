@@ -2,8 +2,8 @@
     configuration.jsp: Configure the payment-portlet's preferences.
     
     Created:    2017-02-16 17:45 by Christian Berndt
-    Modified:   2017-02-16 17:45 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-02-17 18:01 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -41,12 +41,63 @@
 
     <aui:input name="services" type="hidden" value="" />
 
-    <liferay-ui:panel id="paymentportletApiKeyPanelContainer"
-        title="api-key" extended="true">
+    <liferay-ui:panel id="paymentportletCommonParametersPanelContainer"
+        title="common-parameters" extended="true">
 
-        <aui:input name="apiKey" value="<%=apiKey%>"
-            helpMessage="api-key-help" />
+        <aui:row>
+            <aui:col span="4">
+                <aui:input name="apiKey" value="<%=apiKey%>"
+                    helpMessage="api-key-help" />                    
+                <aui:input name="merchantName" value="<%=merchantName%>"
+                    helpMessage="merchant-name-help" />
+                <aui:select helpMessage="default-country-help"
+                    name="defaultCountry">
+                    <%
+                        while (countryIterator.hasNext()) {
+                            String countryName = countryIterator.next();
+                            String countryCode = countryMap.get(
+                                    countryName).getCountry();
+                    %>
+                    <aui:option label="<%=countryName%>"
+                        selected="<%=defaultCountry.equals(countryCode)%>"
+                        value="<%=countryCode%>" />
+                    <%
+                        }
+                    %>
+                </aui:select>
+            </aui:col>
+            <aui:col span="4">
+                <aui:input name="currency" value="<%=currency%>"
+                    helpMessage="currency-help" />
 
+                <aui:input name="vat" value="<%=vat%>"
+                    helpMessage="vat-help" />
+            </aui:col>
+            
+            <aui:col span="4">
+                <aui:input helpMessage="show-currency-help"
+                    name="showCurrency" type="checkbox"
+                    value="<%=showCurrency%>" />
+                <aui:input helpMessage="show-duration-help"
+                    name="showDuration" type="checkbox"
+                    value="<%=showDuration%>" />
+                <aui:input helpMessage="show-locale-help"
+                    name="showLocale" type="checkbox"
+                    value="<%=showLocale%>" />
+                <aui:input
+                    helpMessage="show-original-transaction-id-help"
+                    name="showOriginalTransactionId" type="checkbox"
+                    value="<%=showOriginalTransactionId%>" />
+                <aui:input helpMessage="show-recurring-help" name="showRecurring"
+                    type="checkbox" value="<%=showRecurring%>" />
+                <aui:input helpMessage="show-shipping-costs-help"
+                    name="showShippingCosts" type="checkbox"
+                    value="<%=showShippingCosts%>" />
+                <aui:input helpMessage="show-vat-help" name="showVat"
+                    type="checkbox" value="<%=showVat%>" />
+            </aui:col>
+        </aui:row>
+        
     </liferay-ui:panel>
 
     <liferay-ui:panel-container

@@ -2,14 +2,13 @@
     billing_address.jspf: billing address section of the payment-portlet.
     
     Created:     2017-02-03 15:53 by Christian Berndt
-    Modified:    2017-02-17 12:33 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-02-17 18:02 by Christian Berndt
+    Version:     1.0.3
  --%>
 
 <%
     String address = "Falckensteinstraße 4";
     String city = "Berlin";
-    String country = "Deutschland";
     String email = "kai.dolata@flussbad-berlin.de"; 
     String firstName = "Kai"; 
     String lastName = "Dolata"; 
@@ -31,15 +30,21 @@
 
         <aui:col span="6">
             <aui:field-wrapper>
-                <aui:select name="country" required="true"
-                    value="<%=country%>">
-                    <aui:option label="en" value="en" />
-                    <aui:option label="de" value="de" selected="true" />
+                <aui:select name="country" required="true">
+                    <%
+                        countryIterator = countrySet.iterator();                    
+                        while (countryIterator.hasNext()) {
+                            String countryName = countryIterator.next();
+                            String countryCode = countryMap.get(
+                                    countryName).getCountry();
+                    %>
+                    <aui:option label="<%=countryName%>"
+                        selected="<%=defaultCountry.equals(countryCode)%>"
+                        value="<%=countryCode%>" />
+                    <%
+                        }
+                    %>
                 </aui:select>
-                <%-- 
-                <div class="help-block">ISO 3166-1 country code,
-                    e.g. DE</div>
-                --%>
             </aui:field-wrapper>
             <aui:input label="first-name" name="first_name"
                 required="true" value="<%=firstName%>" />

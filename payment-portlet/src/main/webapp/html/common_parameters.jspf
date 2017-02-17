@@ -2,15 +2,13 @@
     common_parameters.jspf: common parameters section of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-17 12:28 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-02-17 18:02 by Christian Berndt
+    Version:     1.0.3
  --%>
 
 <%
-    String amount = "1";
-    String currency = "EUR";
     String orderId = "Teilnahmegebühr Flussbad Pokal";
-    String merchantReference = "Flussbad Berlin e.V. " + orderId;
+    String merchantReference = merchantName + " " + orderId;
     PortletURL postbackURL = renderResponse.createRenderURL(); 
 %>
 
@@ -19,30 +17,39 @@
 
         <aui:col span="6">
             <aui:input label="api-key" name="api_key" required="true"
-                value="<%=apiKey%>" />
+                type="hidden" value="<%=apiKey%>" />
             <aui:input label="order-id" name="order_id" required="true"
                 value="<%=orderId%>" />
-            <aui:input label="merchant-reference"
-                name="merchant_reference" value="<%=merchantReference%>" />
-            <aui:input name="amount" required="true" value="<%=amount%>" />
-            <aui:input label="shipping-costs" name="shipping_costs" />
+            <aui:input helpMessage="merchant-reference-help"
+                label="merchant-reference" name="merchant_reference"
+                value="<%=merchantReference%>" />
+            <aui:input name="amount" required="true" />
+            <aui:input label="shipping-costs" name="shipping_costs"
+                type='<%=showShippingCosts ? "" : "hidden"%>' />
         </aui:col>
 
         <aui:col span="6">
-            <aui:input name="vat" />
-            <aui:input name="currency" value="<%=currency%>" />
+            <aui:input name="vat" type='<%=showVat ? "" : "hidden"%>'
+                value="<%=vat%>" />
+            <aui:input name="currency"
+                type='<%=showCurrency ? "" : "hidden"%>'
+                value="<%=currency%>" />
             <aui:input name="postback_url" required="true" type="hidden"
                 value="<%=postbackURL.toString()%>" />
             <aui:input name="customer_ip" type="hidden" />
             <aui:input name="customer_ip_proxy" type="hidden" />
             <aui:input label="original-transaction-id"
-                name="original_transaction_id" />
-            <aui:input name="duration" />
-            <aui:select name="locale">
-                <aui:option value="" />
-                <aui:option label="en" value="en" />
-                <aui:option label="de" value="de" />
-            </aui:select>
+                name="original_transaction_id"
+                type='<%=showOriginalTransactionId ? "" : "hidden"%>' />
+            <aui:input name="duration"
+                type='<%=showDuration ? "" : "hidden"%>' />
+            <c:if test="<%=showLocale%>">
+                <aui:select name="locale">
+                    <aui:option value="" />
+                    <aui:option label="en" value="en" />
+                    <aui:option label="de" value="de" />
+                </aui:select>
+            </c:if>
         </aui:col>
 
     </aui:row>
