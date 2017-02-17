@@ -2,8 +2,8 @@
     common_parameters.jspf: common parameters section of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-16 19:05 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2017-02-17 12:28 by Christian Berndt
+    Version:     1.0.2
  --%>
 
 <%
@@ -18,14 +18,14 @@
     <aui:row>
 
         <aui:col span="6">
-            <aui:input name="api_key" required="true"
+            <aui:input label="api-key" name="api_key" required="true"
                 value="<%=apiKey%>" />
-            <aui:input name="order_id" required="true"
+            <aui:input label="order-id" name="order_id" required="true"
                 value="<%=orderId%>" />
-            <aui:input name="merchant_reference"
-                value="<%=merchantReference%>" />
+            <aui:input label="merchant-reference"
+                name="merchant_reference" value="<%=merchantReference%>" />
             <aui:input name="amount" required="true" value="<%=amount%>" />
-            <aui:input name="shipping_costs" />
+            <aui:input label="shipping-costs" name="shipping_costs" />
         </aui:col>
 
         <aui:col span="6">
@@ -35,7 +35,8 @@
                 value="<%=postbackURL.toString()%>" />
             <aui:input name="customer_ip" type="hidden" />
             <aui:input name="customer_ip_proxy" type="hidden" />
-            <aui:input name="original_transaction_id" />
+            <aui:input label="original-transaction-id"
+                name="original_transaction_id" />
             <aui:input name="duration" />
             <aui:select name="locale">
                 <aui:option value="" />

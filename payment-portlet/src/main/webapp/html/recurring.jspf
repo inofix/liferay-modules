@@ -2,8 +2,8 @@
     recurring.jspf: recurring section of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-16 19:06 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2017-02-17 12:36 by Christian Berndt
+    Version:     1.0.2
  --%>
 
 <%
@@ -16,8 +16,9 @@
             <aui:input name="recurring" type="checkbox" value="1" />
         </aui:col>
         <aui:col span="6">
-            <aui:input name="original _transaction_id" required="true"
-                value="<%= originalTransactionId %>" />
+            <aui:input label="original-transaction-id"
+                name="original _transaction_id" required="true"
+                value="<%=originalTransactionId%>" />
         </aui:col>
     </aui:row>
 </aui:fieldset>
