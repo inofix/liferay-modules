@@ -2,8 +2,8 @@
     configuration.jsp: Configure the payment-portlet's preferences.
     
     Created:    2017-02-16 17:45 by Christian Berndt
-    Modified:   2017-02-17 18:01 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-02-17 19:57 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -75,9 +75,6 @@
             </aui:col>
             
             <aui:col span="4">
-                <aui:input helpMessage="show-currency-help"
-                    name="showCurrency" type="checkbox"
-                    value="<%=showCurrency%>" />
                 <aui:input helpMessage="show-duration-help"
                     name="showDuration" type="checkbox"
                     value="<%=showDuration%>" />
@@ -93,8 +90,6 @@
                 <aui:input helpMessage="show-shipping-costs-help"
                     name="showShippingCosts" type="checkbox"
                     value="<%=showShippingCosts%>" />
-                <aui:input helpMessage="show-vat-help" name="showVat"
-                    type="checkbox" value="<%=showVat%>" />
             </aui:col>
         </aui:row>
         
