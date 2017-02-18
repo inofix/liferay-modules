@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2017-02-03 14:00 by Christian Berndt
-    Modified:    2017-02-17 12:44 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-02-18 13:49 by Christian Berndt
+    Version:     1.0.3
 --%>
 
 <%-- Required classes --%>
@@ -69,8 +69,6 @@
     String shippingCosts = portletPreferences.getValue("shippingCosts",
             "");
 
-    boolean showCurrency = GetterUtil.getBoolean(portletPreferences
-            .getValue("showCurrency", "true"));
     boolean showDuration = GetterUtil.getBoolean(portletPreferences
             .getValue("showDuration", "false"));
     boolean showLocale = GetterUtil.getBoolean(portletPreferences
@@ -83,8 +81,6 @@
     boolean showShippingCosts = GetterUtil
             .getBoolean(portletPreferences.getValue(
                     "showShippingCosts", "false"));
-    boolean showVat = GetterUtil.getBoolean(portletPreferences
-            .getValue("showVat", "true"));
 
     String vat = portletPreferences.getValue("vat", "19%");
 %>
