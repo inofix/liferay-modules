@@ -2,8 +2,8 @@
  * main.css: css specific to the payment-portlet.
  *
  * Created:     2017-02-03 15:15 by Christian Berndt
- * Modified:    2017-02-17 19:45 by Christian Berndt
- * Version:     1.0.1
+ * Modified:    2017-02-20 21:59 by Christian Berndt
+ * Version:     1.0.2
  * 
  */
 .aui {
@@ -25,10 +25,15 @@
         }
         
         .payment-details {
-            input[type="text"] {
+            input[type="text"],
+            textarea {
                 box-sizing : border-box;
                 min-height: 30px; 
                 width: 100%;
+            } 
+            
+            textarea {
+                min-height: 72px; 
             }     
         }
     }

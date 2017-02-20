@@ -2,33 +2,42 @@
     billing_address.jspf: billing address section of the payment-portlet.
     
     Created:     2017-02-03 15:53 by Christian Berndt
-    Modified:    2017-02-17 18:02 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2017-02-20 19:14 by Christian Berndt
+    Version:     1.0.4
  --%>
-
-<%
-    String address = "Falckensteinstraße 4";
-    String city = "Berlin";
-    String email = "kai.dolata@flussbad-berlin.de"; 
-    String firstName = "Kai"; 
-    String lastName = "Dolata"; 
-    String postalCode = "10997";
-%>
 
 <aui:fieldset label="billing-address">
     <aui:row>
-
+        <aui:col span="6">
+            <aui:input label="first-name" name="first_name"
+                required="true" value="<%=firstName%>" />
+        </aui:col>
+        <aui:col span="6">
+            <aui:input label="last-name" name="last_name" required="true"
+                value="<%=lastName%>" />
+        </aui:col>
+    </aui:row>
+    <aui:row>
         <aui:col span="6">
             <aui:input name="address" required="true"
                 value="<%=address%>" />
-            <aui:input name="address2" />
-            <aui:input name="city" required="true" value="<%=city%>" />
+        </aui:col>
+        <aui:col span="6">
+            <aui:input name="address2" value="<%= address2 %>" />
+        </aui:col>
+    </aui:row>  
+    <aui:row>
+        <aui:col span="6">        
             <aui:input label="postal-code" name="postal_code"
                 required="true" value="<%=postalCode%>" />
-            <aui:input name="state" />
         </aui:col>
-
         <aui:col span="6">
+            <aui:input name="city" required="true" value="<%=city%>" />
+        </aui:col>
+    </aui:row>
+    <aui:row>
+        <aui:col span="6">
+        
             <aui:field-wrapper>
                 <aui:select name="country" required="true">
                     <%
@@ -46,14 +55,14 @@
                     %>
                 </aui:select>
             </aui:field-wrapper>
-            <aui:input label="first-name" name="first_name"
-                required="true" value="<%=firstName%>" />
-            <aui:input label="last-name" name="last_name" required="true"
-                value="<%=lastName%>" />
+        </aui:col>
+        <aui:col span="6">
             <aui:input name="email" required="true" value="<%=email%>" />
+        </aui:col>        
+    </aui:row>
+    <aui:row>
+        <aui:col span="6">
             <aui:input name="phone" />
         </aui:col>
-
     </aui:row>
-
 </aui:fieldset>
