@@ -1,0 +1,42 @@
+/**
+ * main.css: css specific to the form-portlet.
+ *
+ * Created:     2017-02-20 17:42 by Christian Berndt
+ * Modified:    2017-02-20 17:42 by Christian Berndt
+ * Version:     1.0.0
+ * 
+ */
+.aui {
+    .portlet-form {
+    
+        dl.build-info dfn, 
+        dl.build-info dt {
+            display: inline;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        dl.build-info dfn {
+            margin-right: 20px;
+        }       
+    
+        .lfr-panel {
+            margin-bottom: 20px; 
+        }
+                
+        .width-auto {
+            width: auto;
+        }
+              
+        .width-max {
+            box-sizing : border-box;
+            min-height: 30px; 
+            width: 100%;
+        } 
+        
+        .width-1col {
+            margin-right: 30px;
+            width: 70px;
+        }
+    }
+}
