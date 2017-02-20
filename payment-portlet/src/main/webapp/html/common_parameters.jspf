@@ -2,54 +2,54 @@
     common_parameters.jspf: common parameters section of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-20 21:59 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2017-02-20 22:38 by Christian Berndt
+    Version:     1.0.6
  --%>
 
 <%
     PortletURL postbackURL = renderResponse.createRenderURL(); 
 %>
 
+<aui:input label="api-key" name="api_key" type="hidden"
+    value="<%=apiKey%>" />
+
 <aui:fieldset cssClass="payment-details" label="payment-details">
-    <aui:row>
-        <aui:col span="12">
-            <aui:input label="api-key" name="api_key" required="true"
-                type="hidden" value="<%=apiKey%>" />
-            <aui:input label="order-id" name="order_id" required="true"
-                value="<%=orderId%>" />
-            <aui:input label="" name="merchant_reference" type="hidden"
-                value="<%=merchantReference%>" />
-            <aui:input disabled="<%=true%>" label=""
-                name="merchant_reference" value="<%=merchantReference%>" />
-            <aui:input cssClass="field-amount" inlineField="true"
-                name="amount" required="true" value="<%= amount %>" />
-            <aui:input name="amount" type="hidden" value="<%=amount%>" />
-            <aui:input cssClass="field-currency" disabled="true"
-                inlineField="<%=true%>" name="currency"
-                value="<%=currency%>" />
-            <aui:input name="currency" type="hidden"
-                value="<%=currency%>" />
+
+    <aui:input name="order_id" type="hidden" value="<%=orderId%>" />
+    
+    <aui:input name="merchant_reference" type="hidden"
+        value="<%=merchantReference%>" />
+    <aui:input disabled="true" label="subject" name="merchant_reference"
+        type="textarea" value="<%=merchantReference%>" />
+
+    <aui:input name="amount" type="hidden" value="<%=amount%>" />
+    <aui:input disabled="true" inlineField="<%=true%>" name="amount"
+        value="<%=amount%>" />
+        
+    <aui:input name="currency" type="hidden" value="<%=currency%>" />
+    <aui:input disabled="true" inlineField="<%=true%>" label=""
+        name="currency" value="<%=currency%>" />
+
+    <%-- 
             <aui:input cssClass="field-vat" disabled="true"
                 inlineField="true" name="vat" value="<%=vat%>" />
-            <aui:input name="vat" type="hidden" value="<%=vat%>" />
-            <aui:input label="shipping-costs" name="shipping_costs"
-                type='<%=showShippingCosts ? "" : "hidden"%>' />
-            <aui:input name="postback_url" required="true" type="hidden"
-                value="<%=postbackURL.toString()%>" />
-            <aui:input name="customer_ip" type="hidden" />
-            <aui:input name="customer_ip_proxy" type="hidden" />
-            <aui:input label="original-transaction-id"
-                name="original_transaction_id"
-                type='<%=showOriginalTransactionId ? "" : "hidden"%>' />
-            <aui:input name="duration"
-                type='<%=showDuration ? "" : "hidden"%>' />
-            <c:if test="<%=showLocale%>">
-                <aui:select name="locale">
-                    <aui:option value="" />
-                    <aui:option label="en" value="en" />
-                    <aui:option label="de" value="de" />
-                </aui:select>
-            </c:if>
-        </aui:col>
-    </aui:row>
+            --%>
+    <aui:input name="vat" type="hidden" value="<%=vat%>" />
+    <aui:input label="shipping-costs" name="shipping_costs"
+        type='<%=showShippingCosts ? "" : "hidden"%>' />
+    <aui:input name="postback_url" required="true" type="hidden"
+        value="<%=postbackURL.toString()%>" />
+    <aui:input name="customer_ip" type="hidden" />
+    <aui:input name="customer_ip_proxy" type="hidden" />
+    <aui:input label="original-transaction-id"
+        name="original_transaction_id"
+        type='<%=showOriginalTransactionId ? "" : "hidden"%>' />
+    <aui:input name="duration" type='<%=showDuration ? "" : "hidden"%>' />
+    <c:if test="<%=showLocale%>">
+        <aui:select name="locale">
+            <aui:option value="" />
+            <aui:option label="en" value="en" />
+            <aui:option label="de" value="de" />
+        </aui:select>
+    </c:if>
 </aui:fieldset>
