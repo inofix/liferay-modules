@@ -2,8 +2,8 @@
     view.jsp: Default view of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-20 21:58 by Christian Berndt
-    Version:     1.0.4
+    Modified:    2017-02-20 22:38 by Christian Berndt
+    Version:     1.0.5
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -62,39 +62,7 @@
                 <aui:input name="payment_type" required="true"
                     type="hidden" value="cc" />
 
-                <aui:fieldset cssClass="payment-details"
-                    label="payment-details">
-                    <aui:row>
-                        <aui:col span="12">
-                            <aui:input name="api_key" type="hidden"
-                                value="<%=apiKey%>" />
-                            <aui:input name="order_id" type="hidden"
-                                value="<%=orderId%>" />
-                            <aui:input name="merchant_reference"
-                                type="hidden"
-                                value="<%=merchantReference%>" />
-                            <aui:input disabled="true" label="subject"
-                                name="merchant_reference" type="textarea"
-                                value="<%=merchantReference%>" />
-                        </aui:col>
-                    </aui:row>
-                    <aui:row>
-                        <aui:col span="12">
-                            <aui:input name="amount" type="hidden"
-                                value="<%=amount%>" />
-                            <aui:input disabled="true"
-                                inlineField="<%=true%>" name="amount"
-                                value="<%=amount%>" />
-                            <aui:input name="currency" type="hidden"
-                                value="<%=currency%>" />
-                            <aui:input disabled="true"
-                                inlineField="<%=true%>" label=""
-                                name="currency" value="<%=currency%>" />
-                        </aui:col>
-                    </aui:row>
-                </aui:fieldset>
-
-                <%--                 <%@ include file="/html/common_parameters.jspf"%> --%>
+                <%@ include file="/html/common_parameters.jspf"%>
                 <%@ include file="/html/billing_address.jspf"%>
                 <%@ include file="/html/redirect_urls.jspf"%>
                 <c:if test="<%= showRecurring %>">
