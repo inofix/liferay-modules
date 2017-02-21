@@ -2,8 +2,8 @@
     view.jsp: Default view of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-21 18:10 by Christian Berndt
-    Version:     1.0.6
+    Modified:    2017-02-21 19:38 by Christian Berndt
+    Version:     1.0.7
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -62,6 +62,14 @@
     }
 
     String tabNames = sb.toString();
+    
+    String cssClass = ""; 
+    if ("left".equals(tabOrientation)) {
+        cssClass = "tabbable tabs-left";       
+    }
+    if ("right".equals(tabOrientation)) {
+        cssClass = "tabbable tabs-right";               
+    }
 %>
 
 <portlet:actionURL name="submitPayment" var="actionURL">
@@ -69,7 +77,7 @@
 
 <liferay-ui:header backURL="<%=backURL%>" title="payment-portlet" />
 
-<div class="tabbable tabs-right">
+<div class="<%= cssClass %>">
 
     <liferay-ui:tabs names="<%= tabNames %>" param="tabs1"
         portletURL="<%= portletURL %>" />
