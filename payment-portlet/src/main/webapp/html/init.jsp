@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2017-02-03 14:00 by Christian Berndt
-    Modified:    2017-02-21 18:14 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2017-02-21 19:14 by Christian Berndt
+    Version:     1.0.6
 --%>
 
 <%-- Required classes --%>
@@ -105,6 +105,8 @@
     boolean showShippingCosts = GetterUtil
             .getBoolean(portletPreferences.getValue(
                     "showShippingCosts", "false"));
+    
+    String tabOrientation = portletPreferences.getValue("tabOrientation", "default");
 
     String vat = portletPreferences.getValue("vat", "19%");
 %>

@@ -13,7 +13,7 @@
 <aui:input label="api-key" name="api_key" type="hidden"
     value="<%=apiKey%>" />
 
-<aui:fieldset cssClass="payment-details" label="payment-details">
+<aui:fieldset cssClass="payment-details" label="payment-info">
 
     <aui:input name="order_id" type="hidden" value="<%=orderId%>" />
     

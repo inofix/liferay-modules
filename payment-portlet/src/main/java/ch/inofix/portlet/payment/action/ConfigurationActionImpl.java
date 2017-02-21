@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
  * 
  * @author Christian Berndt
  * @created 2017-02-16 17:43
- * @modified 2017-02-17 12:42
- * @version 1.0.1
+ * @modified 2017-02-21 19:16
+ * @version 1.0.2
  *
  */
 public class ConfigurationActionImpl extends DefaultConfigurationAction {
@@ -42,6 +42,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         String showShippingCosts = ParamUtil.getString(actionRequest,
                 "showShippingCosts");
         String showVat = ParamUtil.getString(actionRequest, "showVat");
+        String tabOrientation = ParamUtil.getString(actionRequest, "tabOrientation");
         String vat = ParamUtil.getString(actionRequest, "vat");
 
         setPreference(actionRequest, "apiKey", apiKey);
@@ -56,6 +57,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
         setPreference(actionRequest, "showRecurring", showRecurring);
         setPreference(actionRequest, "showShippingCosts", showShippingCosts);
         setPreference(actionRequest, "showVat", showVat);
+        setPreference(actionRequest, "tabOrientation", tabOrientation);
         setPreference(actionRequest, "vat", vat);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
