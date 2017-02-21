@@ -2,8 +2,8 @@
     view.jsp: Default view of the payment-portlet.
     
     Created:     2017-02-03 13:59 by Christian Berndt
-    Modified:    2017-02-20 22:38 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2017-02-21 18:10 by Christian Berndt
+    Version:     1.0.6
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -23,6 +23,28 @@
     }
     
     PortletURL portletURL = renderResponse.createRenderURL();
+    
+    for (String param : PaymentConstants.BILLING_ADDRESS_PARAMETERS) {
+        String value = ParamUtil.getString(renderRequest, param);
+        if (Validator.isNull(value)) {
+            value = ParamUtil.getString(originalRequest, param);
+        }
+        if (Validator.isNotNull(value)) {
+            portletURL.setParameter(param, value);
+        }
+    }
+    
+    for (String param : PaymentConstants.COMMON_PARAMETERS) {
+        String value = ParamUtil.getString(renderRequest, param);
+        if (Validator.isNull(value)) {
+            value = ParamUtil.getString(originalRequest, param);
+        }
+        if (Validator.isNotNull(value)) {
+            portletURL.setParameter(param, value);
+        }
+    }
+    
+    portletURL.setParameter("backURL", backURL); 
 
     List<String> serviceList = Arrays.asList(services);
     Iterator<String> iterator = serviceList.iterator();
