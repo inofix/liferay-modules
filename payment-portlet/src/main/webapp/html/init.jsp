@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2017-02-03 14:00 by Christian Berndt
-    Modified:    2017-02-20 21:15 by Christian Berndt
-    Version:     1.0.4
+    Modified:    2017-02-21 18:14 by Christian Berndt
+    Version:     1.0.5
 --%>
 
 <%-- Required classes --%>
@@ -50,16 +50,15 @@
             .getOriginalServletRequest(request);
 
     // common_parameters from request
-    String orderId = ParamUtil.getString(originalRequest, "order_id",
-            "");
-    String merchantReference = ParamUtil.getString(originalRequest,
-            "merchant_reference", "");
-    String address = ParamUtil.getString(originalRequest, "address", "");
-    String address2 = ParamUtil.getString(originalRequest, "address2", "");
-    String amount = ParamUtil.getString(originalRequest, "amount", "");
+    String orderId = ParamUtil.getString(request, "order_id", ParamUtil.getString(originalRequest, "order_id", ""));
+    String merchantReference = ParamUtil.getString(request, "merchant_reference", ParamUtil.getString(originalRequest, "merchant_reference", ""));
+    String address = ParamUtil.getString(request, "address", ParamUtil.getString(originalRequest, "address", ""));
+    String address2 = ParamUtil.getString(request, "address2", ParamUtil.getString(originalRequest, "address2", ""));
+    String amount = ParamUtil.getString(request, "amount", ParamUtil.getString(originalRequest, "amount", ""));
     String apiKey = portletPreferences.getValue("apiKey", "");
-    String city = ParamUtil.getString(originalRequest, "city", "");
-    String currency = ParamUtil.getString(originalRequest, "currency", "");
+    String city = ParamUtil.getString(request, "city", ParamUtil.getString(originalRequest, "city", ""));
+    String country = ParamUtil.getString(request, "country", ParamUtil.getString(originalRequest, "country", ""));
+    String currency = ParamUtil.getString(request, "currency", ParamUtil.getString(originalRequest, "currency", ""));
     if (Validator.isNull(currency)) {
         currency = portletPreferences.getValue("currency", "EUR");
     }
@@ -76,24 +75,23 @@
 
     String defaultCountry = portletPreferences.getValue(
             "defaultCountry", "DE");
-    String email = ParamUtil.getString(originalRequest, "email", "");    
-    String firstName = ParamUtil.getString(originalRequest, "first_name", "");
-    String lastName = ParamUtil.getString(originalRequest, "last_name", "");
+    if (Validator.isNotNull(country)) {
+        defaultCountry = country; 
+    }
+    String email = ParamUtil.getString(request, "email", ParamUtil.getString(originalRequest, "email", ""));    
+    String firstName = ParamUtil.getString(request, "first_name", ParamUtil.getString(originalRequest, "first_name", ""));
+    String lastName = ParamUtil.getString(request, "last_name", ParamUtil.getString(originalRequest, "last_name", ""));
 
-    String merchantName = portletPreferences.getValue("merchantName",
-            "");
+    String merchantName = portletPreferences.getValue("merchantName","");
 
     if (Validator.isNull(merchantReference)) {
-        merchantReference = merchantName + StringPool.NEW_LINE
-                + orderId;
+        merchantReference = merchantName + StringPool.NEW_LINE + orderId;
     }
-    String postalCode = ParamUtil.getString(originalRequest, "postal_code", "");
+    String postalCode = ParamUtil.getString(request, "postal_code", ParamUtil.getString(originalRequest, "postal_code", ""));
 
-    String[] services = portletPreferences.getValues("services",
-            PaymentConstants.SERVICE_KEYS);
+    String[] services = portletPreferences.getValues("services",PaymentConstants.SERVICE_KEYS);
 
-    String shippingCosts = portletPreferences.getValue("shippingCosts",
-            "");
+    String shippingCosts = portletPreferences.getValue("shippingCosts", "");
 
     boolean showDuration = GetterUtil.getBoolean(portletPreferences
             .getValue("showDuration", "false"));
