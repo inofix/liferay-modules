@@ -23,8 +23,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * 
  * @author Christian Berndt
  * @created 2016-02-20 14:24
- * @modified 2016-02-20 14:24
- * @version 1.0.0
+ * @modified 2016-02-21 18:49
+ * @version 1.0.1
  *
  */
 public class FormPortlet extends MVCPortlet {
@@ -61,7 +61,8 @@ public class FormPortlet extends MVCPortlet {
             actionResponse.setRenderParameter("country", country);
             actionResponse.setRenderParameter("email", email);
             actionResponse.setRenderParameter("first_name", firstName);
-            actionResponse.setRenderParameter("isMember", String.valueOf(isMember));
+            actionResponse.setRenderParameter("isMember",
+                    String.valueOf(isMember));
             actionResponse.setRenderParameter("last_name", lastName);
             actionResponse.setRenderParameter("postal_code", postalCode);
             throw new MemberNumberException();
@@ -83,10 +84,14 @@ public class FormPortlet extends MVCPortlet {
                     successTarget = HttpUtil.addParameter(successTarget,
                             "address2", address2);
                 }
-                if (Validator.isNotNull(amount)) {
-                    successTarget = HttpUtil.addParameter(successTarget,
-                            "amount", amount);
+                if (Validator.isNotNull(memberNumber)) {
+                    amount = "5";
+                } else {
+                    amount = "15";
                 }
+                successTarget = HttpUtil.addParameter(successTarget, "amount",
+                        amount);
+                
                 if (Validator.isNotNull(city)) {
                     successTarget = HttpUtil.addParameter(successTarget,
                             "city", city);
@@ -118,14 +123,18 @@ public class FormPortlet extends MVCPortlet {
                 if (Validator.isNotNull(orderId)) {
 
                     orderId = orderId + StringPool.NEW_LINE + firstName
-                            + StringPool.BLANK + lastName;
+                            + StringPool.SPACE + lastName;
+
+                    if (Validator.isNotNull(memberNumber)) {
+                        orderId = orderId + StringPool.SPACE
+                                + StringPool.OPEN_PARENTHESIS + memberNumber
+                                + StringPool.CLOSE_PARENTHESIS;
+                    }
 
                     successTarget = HttpUtil.addParameter(successTarget,
                             "order_id", orderId);
                 }
             }
-
-            _log.info("successTarget = " + successTarget);
 
             actionResponse.sendRedirect(successTarget);
         }
