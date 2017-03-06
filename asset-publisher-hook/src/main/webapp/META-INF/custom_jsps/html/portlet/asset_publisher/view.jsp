@@ -3,8 +3,8 @@
     portlet which adds dynamic loading of pages to the asset-publisher.
         
     Created:    2017-01-24 17:42 by Christian Berndt
-    Modified:   2017-10-24 17:42 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-03-06 18:52 by Christian Berndt
+    Version:    1.0.1
 --%>
 <%--
 /**
@@ -191,99 +191,148 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
 <c:if test='<%= !paginationType.equals("none") && (searchContainer.getTotal() > searchContainer.getResults().size()) %>'>
     <c:choose>
         <c:when test='<%= paginationType.equals("more") && (searchContainer.getTotal() > searchContainer.getResults().size()) %>'>
-           
+                      
+            <%
+                boolean includeScript = ParamUtil.getBoolean(request, "includeScript", true); 
+            %>
             <div class="more-assets"></div>
-    
-            <div class="loading-bar"></div>          
             
-            <aui:script use="aui-base,aui-io-request-deprecated,aui-parse-content">
+            <c:if test="<%= searchContainer.getTotal() == 0 %>">
+                <div class="no-assets">no assets</div>
+            </c:if>
+                                                            
+            <div class="loading-bar"></div> 
             
-                var activities = A.one('#p_p_id<portlet:namespace />');
-            
-                var loadingBar = activities.one('.loading-bar');
-                var socialActivities = activities.one('.more-assets');
-            
-                socialActivities.plug(A.Plugin.ParseContent);
-            
-                var win = A.getWin();  
-            
-                var loading = false;  
+            <script>
+                <portlet:namespace />cur = <%= searchContainer.getCur() %>;
+                <portlet:namespace />delta = <%= searchContainer.getDelta() %>;
+                <portlet:namespace />total = <%= searchContainer.getTotal() %>;            
+            </script>
+                    
+            <c:if test="<%= includeScript %>">
                 
-                <portlet:namespace />cur = <%= searchContainer.getCur() + 1 %>;
+                <script src='/html/portlet/asset_publisher/js/main.js' type='text/javascript'></script>          
                 
-                console.log(<portlet:namespace />cur);      
-
-                function loadNewContent() {
+                <aui:script use="aui-base,aui-io-request-deprecated,aui-parse-content,liferay-so-scroll">
                 
-                    loadingBar.addClass('loading-animation');
-            
-                    loading = true;
-                                
-                    setTimeout(
-                        function() {
+                    var activities = A.one('#p_p_id<portlet:namespace />');
+                    var body = A.getBody();
+                    var footer = A.one('#footer');                
+                
+                    var loadingBar = activities.one('.loading-bar');
+                    var moreAssets = activities.one('.more-assets');
+                
+                    moreAssets.plug(A.Plugin.ParseContent);
+                
+                    var win = A.getWin();
+                                        
+                    win.plug(
                         
-                            <portlet:renderURL var="viewAssetsURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-                                <portlet:param name="mvcPath" value="/html/portlet/asset_publisher/view.jsp" />
-                            </portlet:renderURL>
-            
-                            var uri = '<%= viewAssetsURL %>';
-            
-                            uri = Liferay.Util.addParams('<portlet:namespace />cur=' + <portlet:namespace />cur, uri) || uri;
-            
-                            A.io.request(
-                                uri,
-                                {
-                                    after: {
-                                        success: function(event, id, obj) {
-                                            var responseData = this.get('responseData');
-            
-                                            socialActivities.append(responseData);
-            
-                                            loadingBar.removeClass('loading-animation');
-            
-                                            loading = false;
-
+                        Liferay.SO.Scroll,
+                        {
+                            edgeProximity: footer.height() 
+                        }
+                    ); 
+                
+                    var loading = false;
+                    
+                    // console.log('cur = ' + <portlet:namespace />cur); 
+                    // console.log('total = ' + <portlet:namespace />total); 
+                    // console.log('delta = ' + <portlet:namespace />delta); 
+                    
+                    function loadNewContent(page) {
+                    
+                        loadingBar.addClass('loading-animation');
+                
+                        loading = true;
+                                                        
+                        setTimeout(
+                            function() {
+                            
+                                <portlet:renderURL var="viewAssetsURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
+                                    <portlet:param name="mvcPath" value="/html/portlet/asset_publisher/view.jsp" />
+                                    <portlet:param name="includeScript" value="false"/>
+                                </portlet:renderURL>
+                
+                                var uri = '<%= viewAssetsURL %>';
+                
+                                uri = Liferay.Util.addParams('<portlet:namespace />cur=' + page, uri) || uri;
+                                            
+                                A.io.request(
+                                    uri,
+                                    {
+                                        after: {
+                                            success: function(event, id, obj) {
+                                                var responseData = this.get('responseData');
+                
+                                                moreAssets.append(responseData);
+                
+                                                loadingBar.removeClass('loading-animation');
+                
+                                                loading = false;
+                                                
+                                                // console.log('loading = ' + loading);      
+                                                                                            
+                                                if (!activities.one('.no-assets')) {
+                                                    if (body.height() < win.height()) {
+                                                        loadNewContent();
+                                                    }
+                                                    
+                                                    // else if (win.width() < 768) {
+                                                    //    loading = true;
+                                                    //
+                                                    //    var manualLoaderTemplate =
+                                                    //        '<div class="manual-loader">' +
+                                                    //            '<button href="javascript:;"><liferay-ui:message key="load-more-activities" /></button>' +
+                                                    //        '</div>';                
+                                                    //    moreAssets.append(manualLoaderTemplate);
+                                                    // }
+                                                }
+                                            }
                                         }
                                     }
-                                }
-                            );
-                        },
-                        1000
-                    );                    
+                                );
+                            },
+                            1000
+                        );                   
+                    }
+                  
+                moreAssets.delegate(
+                    'click',
+                    function(event) {
                     
-                }
+                        var moreButton = moreAssets.one('.btn-more');
+                        var moreButtonWrapper = moreAssets.one('.btn-more-wrapper');
+            
+                        moreButton.remove(true);
+                        moreButtonWrapper.remove(true);
+            
+                        loadNewContent();
+                    },
+                    '.btn-more'
+                )
                 
-            var disabled = 'disabled="disabled"';
+    
+                win.scroll.on(
+                    'bottom-edge',
+                    function(event) {
+                                    
+                        if (activities.one('.no-assets')) {
+                            loading = true;
+                        }
             
-            <c:if test="<%= searchContainer.getTotal() > searchContainer.getDelta() * searchContainer.getCur() %>">
-                disabled = "";
-            </c:if>
-              
-            var moreButtonTemplate = 
-              
-            '<div class="clearfix lfr-pagination">' + 
-                '<ul class="pager lfr-pagination-buttons">' + 
-                    '<li>' + 
-                        '<button class="btn-more"' + disabled + 'href="javascript:;"><liferay-ui:message key="more"/></button>' +                       
-                    '</li>' + 
-                '</ul>' + 
-            '</div>';
-            
-            socialActivities.append(moreButtonTemplate);
-              
-            socialActivities.delegate(
-                'click',
-                function(event) {
-                    var moreButton = socialActivities.one('.btn-more');
-        
-                    moreButton.remove(true);
-        
-                    loadNewContent();
-                },
-                '.btn-more'
-            )
-                                             
-            </aui:script> 
+                        if (!loading) {
+                                                
+                            if (<portlet:namespace />total / <portlet:namespace />delta >=  <portlet:namespace />cur + 1) {
+                                loading = true;                            
+                                loadNewContent(<portlet:namespace />cur + 1);    
+                            }               
+                        }
+                    }
+                );
+                                                 
+                </aui:script>  
+            </c:if>          
             
         </c:when>
         <c:otherwise>
