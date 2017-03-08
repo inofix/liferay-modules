@@ -7,7 +7,7 @@
     <portlet>
         <portlet-name>data-portlet</portlet-name>
         <display-name>Data Portlet</display-name>
-        <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+        <portlet-class>ch.inofix.portlet.data.portlet.DataManagerPortlet</portlet-class>
         <init-param>
             <name>view-template</name>
             <value>/view.jsp</value>
