@@ -11,7 +11,7 @@
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -114,6 +114,7 @@
         <module>cdav-manager-portlet</module>
         <module>contact-manager-portlet</module>
         <module>ckeditor-hook</module>
+        <module>data-portlet</module>
         <module>display-page-hook</module>
         <module>download-filter-hook</module>
         <module>form-portlet</module>
