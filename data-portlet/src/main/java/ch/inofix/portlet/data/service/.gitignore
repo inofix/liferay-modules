@@ -1,0 +1,11 @@
+/base/
+/http/
+/ClpSerializer.java
+/MeasurementLocalService.java
+/MeasurementLocalServiceClp.java
+/MeasurementLocalServiceUtil.java
+/MeasurementLocalServiceWrapper.java
+/MeasurementService.java
+/MeasurementServiceClp.java
+/MeasurementServiceUtil.java
+/MeasurementServiceWrapper.java
