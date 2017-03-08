@@ -82,7 +82,6 @@
     <liferay-ui:tabs names="<%= tabNames %>" param="tabs1"
         portletURL="<%= portletURL %>" />
 
-
     <div class="tab-content">
         <aui:form action="<%= actionURL.toString() %>" method="post"
             name="fm1">
