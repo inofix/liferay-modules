@@ -7,10 +7,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.model.SystemEventConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 
@@ -30,8 +26,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-03-08 19:46
- * @version 1.0.0
+ * @modified 2017-03-09 17:40
+ * @version 1.0.1
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -45,6 +41,7 @@ public class MeasurementLocalServiceImpl extends
      * measurement local service.
      */
 
+    @Override
     public Measurement addMeasurement(long userId, String data,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
@@ -73,9 +70,7 @@ public class MeasurementLocalServiceImpl extends
 
     }
 
-    @Indexable(type = IndexableType.DELETE)
     @Override
-    @SystemEvent(type = SystemEventConstants.TYPE_DELETE)
     public Measurement deleteMeasurement(Measurement measurement)
             throws SystemException {
 
@@ -101,7 +96,7 @@ public class MeasurementLocalServiceImpl extends
         return measurementPersistence.findByPrimaryKey(measurementId);
     }
 
-    @Indexable(type = IndexableType.REINDEX)
+    @Override
     public Measurement updateMeasurement(long measurementId, long userId,
             String data, ServiceContext serviceContext) throws PortalException,
             SystemException {
