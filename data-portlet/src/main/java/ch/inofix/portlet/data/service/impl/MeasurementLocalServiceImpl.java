@@ -1,6 +1,18 @@
 package ch.inofix.portlet.data.service.impl;
 
+import ch.inofix.portlet.data.model.Measurement;
 import ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl;
+
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.model.SystemEventConstants;
+import com.liferay.portal.model.User;
+import com.liferay.portal.service.ServiceContext;
 
 /**
  * The implementation of the measurement local service.
@@ -32,4 +44,92 @@ public class MeasurementLocalServiceImpl extends
      * ch.inofix.portlet.data.service.MeasurementLocalServiceUtil} to access the
      * measurement local service.
      */
+
+    public Measurement addMeasurement(long userId, String data,
+            ServiceContext serviceContext) throws PortalException,
+            SystemException {
+
+        // Measurement
+
+        User user = userPersistence.findByPrimaryKey(userId);
+        long groupId = serviceContext.getScopeGroupId();
+
+        long measurementId = counterLocalService.increment();
+
+        Measurement measurement = measurementPersistence.create(measurementId);
+
+        measurement.setUuid(serviceContext.getUuid());
+        measurement.setGroupId(groupId);
+        measurement.setCompanyId(user.getCompanyId());
+        measurement.setUserId(user.getUserId());
+        measurement.setUserName(user.getFullName());
+        measurement.setExpandoBridgeAttributes(serviceContext);
+
+        measurement.setData(data);
+
+        measurementPersistence.update(measurement);
+
+        return measurement;
+
+    }
+
+    @Indexable(type = IndexableType.DELETE)
+    @Override
+    @SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+    public Measurement deleteMeasurement(Measurement measurement)
+            throws SystemException {
+
+        // Measurement
+
+        measurementPersistence.remove(measurement);
+
+        return measurement;
+    }
+
+    @Override
+    public Measurement deleteMeasurement(long measurementId)
+            throws PortalException, SystemException {
+        Measurement measurement = measurementPersistence
+                .findByPrimaryKey(measurementId);
+
+        return measurementLocalService.deleteMeasurement(measurement);
+    }
+
+    @Override
+    public Measurement getMeasurement(long measurementId)
+            throws PortalException, SystemException {
+        return measurementPersistence.findByPrimaryKey(measurementId);
+    }
+
+    @Indexable(type = IndexableType.REINDEX)
+    public Measurement updateMeasurement(long measurementId, long userId,
+            String data, ServiceContext serviceContext) throws PortalException,
+            SystemException {
+
+        // Measurement
+
+        User user = userPersistence.findByPrimaryKey(userId);
+
+        Measurement measurement = measurementPersistence
+                .findByPrimaryKey(measurementId);
+
+        long groupId = serviceContext.getScopeGroupId();
+
+        measurement.setUuid(serviceContext.getUuid());
+        measurement.setGroupId(groupId);
+        measurement.setCompanyId(user.getCompanyId());
+        measurement.setUserId(user.getUserId());
+        measurement.setUserName(user.getFullName());
+        measurement.setExpandoBridgeAttributes(serviceContext);
+
+        measurement.setData(data);
+
+        measurementPersistence.update(measurement);
+
+        return measurement;
+
+    }
+
+    private static final Log _log = LogFactoryUtil
+            .getLog(MeasurementLocalServiceImpl.class);
 }
