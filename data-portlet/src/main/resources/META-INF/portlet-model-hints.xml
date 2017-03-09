@@ -11,7 +11,7 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="data" type="String">
-            <hint name="max-length">5000</hint>            
-        </field>
+			<hint name="max-length">5000</hint>
+		</field>
 	</model>
 </model-hints>
