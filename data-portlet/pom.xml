@@ -225,5 +225,35 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
+        
+        <!-- data-portlet specific dependencies -->
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        
+        <!-- jstl support -->
+        
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        
+        <!-- inofix-util support -->
+        
+        <dependency>
+            <groupId>ch.inofix</groupId>
+            <artifactId>taglib-util</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
+        
     </dependencies>
 </project>
