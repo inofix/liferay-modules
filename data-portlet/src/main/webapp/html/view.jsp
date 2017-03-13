@@ -2,22 +2,63 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-03-09 19:59 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-03-13 16:22 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
+<%@page import="ch.inofix.portlet.data.model.Measurement"%>
+
+<%@page import="com.liferay.portal.kernel.search.Document"%>
+<%@page import="com.liferay.portal.kernel.search.Hits"%>
+<%@page import="com.liferay.portal.kernel.search.IndexerRegistryUtil"%>
+<%@page import="com.liferay.portal.kernel.search.Indexer"%>
+<%@page import="com.liferay.portal.kernel.search.Sort"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
+    int delta = ParamUtil.getInteger(request, "delta", 20);
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+
+    int idx = ParamUtil.getInteger(request, "cur");
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "modifiedDate");
+    String orderByType = ParamUtil.getString(request, "orderByType", "desc");
+
     PortletURL portletURL = renderResponse.createRenderURL();
 
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("mvcPath", "/html/view.jsp");
     portletURL.setParameter("backURL", backURL);
+%>
+
+<%
+
+    if (idx > 0) {
+        idx = idx - 1;
+    }
+    int start = delta * idx;
+    int end = delta * idx + delta;
+
+    SearchContext searchContext =
+        SearchContextFactory.getInstance(request);
+
+    boolean reverse = "desc".equals(orderByType);
+
+    Sort sort = new Sort(orderByCol, reverse);
+
+    searchContext.setAttribute("paginationType", "more");
+    searchContext.setStart(start);
+    searchContext.setEnd(end);
+    searchContext.setSorts(sort);
+
+    Indexer indexer = IndexerRegistryUtil.getIndexer(Measurement.class);
+
+    Hits hits = indexer.search(searchContext);
+    List<Document> documents = hits.toList(); 
 %>
 
 <liferay-ui:header backURL="<%=backURL%>" title="data-manager" />
@@ -32,7 +73,9 @@
 
     <c:when test='<%=tabs1.equals("import-export")%>'>
     
-        <portlet:actionURL var="importMeasurementsURL" name="importMeasurements" />
+        <portlet:actionURL var="importMeasurementsURL" name="importMeasurements" >
+            <portlet:param name="mvcPath" value="/html/import.jsp"/>
+        </portlet:actionURL>
         
         <portlet:renderURL var="browseURL" />
 
@@ -86,7 +129,24 @@
     </c:when>
 
     <c:otherwise>
-        Browse
+    
+        <liferay-ui:search-container emptyResultsMessage="no-data-found">
+            <liferay-ui:search-container-results
+                results="<%=documents%>"
+                total="<%= hits.getLength() %>" />
+            <liferay-ui:search-container-row className="com.liferay.portal.kernel.search.Document" 
+                modelVar="document">
+            
+            <liferay-ui:search-container-column-text>
+                <%= document %>
+            </liferay-ui:search-container-column-text>
+            
+            </liferay-ui:search-container-row>
+            
+            <liferay-ui:search-iterator/>
+            
+        </liferay-ui:search-container>
+    
     </c:otherwise>
 </c:choose>
 
