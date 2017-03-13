@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-03-13 16:22 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-03-13 17:50 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -11,12 +11,14 @@
 <%@page import="ch.inofix.portlet.data.model.Measurement"%>
 
 <%@page import="com.liferay.portal.kernel.search.Document"%>
+<%@page import="com.liferay.portal.kernel.search.Field"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
 <%@page import="com.liferay.portal.kernel.search.IndexerRegistryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.Indexer"%>
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
+<%@page import="com.liferay.portal.kernel.xml.SAXReaderUtil"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
@@ -137,9 +139,18 @@
             <liferay-ui:search-container-row className="com.liferay.portal.kernel.search.Document" 
                 modelVar="document">
             
-            <liferay-ui:search-container-column-text>
-                <%= document %>
-            </liferay-ui:search-container-column-text>
+            <%
+                String xml = document.getField(Field.CONTENT).getValue();
+                com.liferay.portal.kernel.xml.Document docXml = SAXReaderUtil.read(xml);
+                
+                for (String column : columns) {
+            %>
+                <liferay-ui:search-container-column-text 
+                    name="<%= column %>"
+                    value='<%= docXml.valueOf("//__" + column) %>'/>               
+            <%
+                }
+            %>
             
             </liferay-ui:search-container-row>
             

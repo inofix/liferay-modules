@@ -2,11 +2,9 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2015-07-03 19:04 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2017-03-13 17:50 by Christian Berndt
+    Version:    1.1.1
 --%>
-
-<%-- Import required classes --%>
 
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
@@ -14,9 +12,9 @@
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 
-<%-- Import required taglibs --%>
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -32,3 +30,11 @@
 
 <portlet:defineObjects />
 <theme:defineObjects />
+
+<%
+    String[] columns = portletPreferences.getValue("columns",
+            "groupid,userId").split(StringPool.COMMA);
+
+    String[] headerNames = portletPreferences.getValue("headerNames",
+            "companyId,groupid,userId,createDate,modifiedDate").split(StringPool.COMMA);
+%>
