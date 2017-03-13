@@ -5,6 +5,7 @@
     <portlet>
         <portlet-name>data-portlet</portlet-name>
         <icon>/icon.png</icon>
+        <indexer-class>ch.inofix.portlet.data.search.MeasurementIndexer</indexer-class>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
         <css-class-wrapper>portlet-data-manager</css-class-wrapper>
