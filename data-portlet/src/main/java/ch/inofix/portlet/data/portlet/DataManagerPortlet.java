@@ -11,9 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import ch.inofix.portlet.data.service.MeasurementServiceUtil;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
@@ -27,8 +30,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-03-10 09:34
- * @version 1.0.1
+ * @modified 2017-03-13 15:39
+ * @version 1.0.2
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -90,6 +93,11 @@ public class DataManagerPortlet extends MVCPortlet {
 
             SessionMessages.add(actionRequest, "request_processed", message);
 
+            String mvcPath = ParamUtil.getString(uploadPortletRequest,
+                    "mvcPath");
+
+            actionResponse.setRenderParameter("mvcPath", mvcPath);
+
         } else {
 
             SessionErrors.add(actionRequest, "file-not-found");
@@ -97,5 +105,8 @@ public class DataManagerPortlet extends MVCPortlet {
         }
 
     }
+
+    private static Log _log = LogFactoryUtil.getLog(DataManagerPortlet.class
+            .getName());
 
 }
