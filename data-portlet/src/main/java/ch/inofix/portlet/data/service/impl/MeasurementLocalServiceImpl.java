@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.model.BackgroundTask;
 import com.liferay.portal.model.User;
@@ -39,8 +41,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-03-10 09:34
- * @version 1.0.2
+ * @modified 2017-03-23 18:22
+ * @version 1.0.3
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -78,6 +80,12 @@ public class MeasurementLocalServiceImpl extends
         measurement.setData(data);
 
         measurementPersistence.update(measurement);
+
+        // Indexing
+
+        Indexer indexer = IndexerRegistryUtil
+                .nullSafeGetIndexer(Measurement.class);
+        indexer.reindex(measurement);
 
         return measurement;
 

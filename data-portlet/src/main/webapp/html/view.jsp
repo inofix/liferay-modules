@@ -2,14 +2,16 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-03-13 17:50 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-03-23 18:26 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
 <%@page import="ch.inofix.portlet.data.model.Measurement"%>
 
+<%@page import="com.liferay.portal.kernel.json.JSONFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.json.JSONObject"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Field"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
@@ -18,7 +20,6 @@
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
-<%@page import="com.liferay.portal.kernel.xml.SAXReaderUtil"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
@@ -29,6 +30,8 @@
     int idx = ParamUtil.getInteger(request, "cur");
     String orderByCol = ParamUtil.getString(request, "orderByCol", "modifiedDate");
     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
+    
+    System.out.println("orderByType = " + orderByType);
 
     PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -136,18 +139,20 @@
             <liferay-ui:search-container-results
                 results="<%=documents%>"
                 total="<%= hits.getLength() %>" />
+                
             <liferay-ui:search-container-row className="com.liferay.portal.kernel.search.Document" 
                 modelVar="document">
             
             <%
-                String xml = document.getField(Field.CONTENT).getValue();
-                com.liferay.portal.kernel.xml.Document docXml = SAXReaderUtil.read(xml);
+                JSONObject data = JSONFactoryUtil.createJSONObject(document.get(Field.CONTENT));
                 
                 for (String column : columns) {
             %>
                 <liferay-ui:search-container-column-text 
                     name="<%= column %>"
-                    value='<%= docXml.valueOf("//__" + column) %>'/>               
+                    orderableProperty='<%= column + "_sortable" %>'
+                    orderable="<%= true %>"
+                    value='<%= data.getString(column) %>'/>               
             <%
                 }
             %>
