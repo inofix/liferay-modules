@@ -14,6 +14,9 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -27,8 +30,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 /**
  * @author Christian Berndt
  * @created 2017-03-13 15:52
- * @modified 2017-03-13 15:52
- * @version 1.0.0
+ * @modified 2017-03-23 18:22
+ * @version 1.0.1
  */
 public class MeasurementIndexer extends BaseIndexer {
 
@@ -69,6 +72,20 @@ public class MeasurementIndexer extends BaseIndexer {
 
         document.addKeyword("measurementId", measurement.getMeasurementId());
         document.addKeyword(Field.USER_ID, measurement.getUserId());
+
+        // Store the jsonObject's properties
+        JSONObject jsonObject = JSONFactoryUtil.createJSONObject(measurement
+                .getData());
+
+        JSONArray names = jsonObject.names();
+
+        for (int i = 0; i < names.length(); i++) {
+
+            String name = names.getString(i);
+
+            document.addTextSortable(name, jsonObject.getString(name));
+
+        }
 
         return document;
     }

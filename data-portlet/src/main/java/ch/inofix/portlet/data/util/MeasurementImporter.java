@@ -6,15 +6,17 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import ch.inofix.portlet.data.model.Measurement;
 import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
+import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.model.User;
@@ -25,8 +27,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-09 17:53
- * @modified 2017-03-13 15:39
- * @version 1.0.1
+ * @modified 2017-03-23 18:24
+ * @version 1.0.2
  *
  */
 public class MeasurementImporter {
@@ -56,28 +58,50 @@ public class MeasurementImporter {
             Document document = SAXReaderUtil.read(file);
 
             // TODO: read xPath selector from configuration
-            List<Node> nodes = document
-                    .selectNodes("//ch.inofix.portlet.timetracker.model.impl.TaskRecordImpl");
+            String selector = "//ChannelData";
+            List<Node> channels = document.selectNodes(selector);
+            int numValues = document.selectNodes("//VT").size();
 
-            _log.info("nodes.size() = " + nodes.size());
+            for (Node channel : channels) {
 
-            for (Node node : nodes) {
+                Element channelElement = (Element) channel;
 
-                // TODO: Store node data in database and index.
-                Measurement measurement = MeasurementLocalServiceUtil
-                        .addMeasurement(userId, node.asXML(), serviceContext);
+                String channelId = channelElement.attributeValue("channelId");
+                String channelName = channelElement.attributeValue("name");
+                String channelUnit = channelElement.attributeValue("unit");
 
-                if (numProcessed % 100 == 0 && numProcessed > 0) {
+                List<Node> values = channel.selectNodes("descendant::VT");
 
-                    float completed = ((Integer) numProcessed).floatValue()
-                            / ((Integer) nodes.size()).floatValue() * 100;
+                for (Node value : values) {
 
-                    _log.info("Processed " + numProcessed + " of "
-                            + nodes.size() + " measurements in "
-                            + stopWatch.getTime() + " ms (" + completed + "%).");
+                    Element valueElement = (Element) value;
+                    String timestamp = valueElement.attributeValue("t");
+                    String val = valueElement.getText();
+
+                    JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+                    jsonObject.put("channelId", channelId);
+                    jsonObject.put("channelName", channelName);
+                    jsonObject.put("channelUnit", channelUnit);
+                    jsonObject.put("timestamp", timestamp);
+                    jsonObject.put("value", val);
+
+                    MeasurementLocalServiceUtil.addMeasurement(userId,
+                            jsonObject.toString(), serviceContext);
+
+                    if (numProcessed % 100 == 0 && numProcessed > 0) {
+
+                        float completed = ((Integer) numProcessed).floatValue()
+                                / numValues * 100;
+
+                        _log.info("Processed " + numProcessed + " of "
+                                + numValues + " measurements in "
+                                + stopWatch.getTime() + " ms (" + completed
+                                + "%).");
+                    }
+
+                    numProcessed++;
+
                 }
-
-                numProcessed++;
             }
 
             _log.info("Import took " + stopWatch.getTime() + " ms");
