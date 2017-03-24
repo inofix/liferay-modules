@@ -16,6 +16,7 @@
         <supports>
             <mime-type>text/html</mime-type>
         </supports>
+        <resource-bundle>Language</resource-bundle>        
         <portlet-info>
             <title>Data Portlet</title>
             <short-title>Data Portlet</short-title>
