@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-03-13 17:50 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2017-03-24 15:21 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -11,6 +11,15 @@
 
 <%@page import="javax.portlet.PortletURL"%>
 
+<%@page import="ch.inofix.portlet.data.model.Measurement"%>
+
+<%@page import="com.liferay.portal.kernel.search.facet.MultiValueFacet"%>
+<%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
+<%@page import="com.liferay.portal.kernel.search.Hits"%>
+<%@page import="com.liferay.portal.kernel.search.IndexerRegistryUtil"%>
+<%@page import="com.liferay.portal.kernel.search.Indexer"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContext"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
@@ -33,8 +42,8 @@
 
 <%
     String[] columns = portletPreferences.getValue("columns",
-            "groupid,userId").split(StringPool.COMMA);
+            "channelId,value,channelUnit,timestamp").split(StringPool.COMMA);
 
     String[] headerNames = portletPreferences.getValue("headerNames",
-            "companyId,groupid,userId,createDate,modifiedDate").split(StringPool.COMMA);
+            "channelId,channelName,value,channelUnit,createDate,modifiedDate").split(StringPool.COMMA);
 %>
