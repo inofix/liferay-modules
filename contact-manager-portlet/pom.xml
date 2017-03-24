@@ -10,7 +10,7 @@
     <artifactId>contact-manager-portlet</artifactId>
     <packaging>war</packaging>
     <name>Contact Manager Portlet</name>
-    <version>0.7.8-SNAPSHOT</version>
+    <version>0.7.9</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->

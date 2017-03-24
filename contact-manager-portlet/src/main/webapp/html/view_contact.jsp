@@ -68,34 +68,31 @@
 			liferayPortletResponse, windowState, portletURL).toString();
 %>
 
-<div class="portlet-contact-manager">
 
-	<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
+<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
 
-	<c:if test="<%=assetRenderer.hasEditPermission(permissionChecker)%>">
-		<div class="lfr-meta-actions asset-actions">
+<c:if test="<%=assetRenderer.hasEditPermission(permissionChecker)%>">
+	<div class="lfr-meta-actions asset-actions">
 
-			<%
-				String taglibEditURL = null;
+		<%
+			String taglibEditURL = null;
 
-				// Do not open a new pop-up if we're already in popup-mode
-				if (themeDisplay.isStatePopUp()) {
-					taglibEditURL = editURL;
-				} else {
-					taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()	+ "editContact', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", HtmlUtil.escape(assetRenderer.getTitle(locale))))	+ "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
-				}
-			%>
+			// Do not open a new pop-up if we're already in popup-mode
+			if (themeDisplay.isStatePopUp()) {
+				taglibEditURL = editURL;
+			} else {
+				taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()	+ "editContact', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", HtmlUtil.escape(assetRenderer.getTitle(locale))))	+ "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+			}
+		%>
 
-			<liferay-ui:icon image="edit" label="true" message='edit'
-				url="<%=taglibEditURL%>" />
+		<liferay-ui:icon image="edit" label="true" message='edit'
+			url="<%=taglibEditURL%>" />
 
-		</div>
-	</c:if>
+	</div>
+</c:if>
 
-	<liferay-util:include servletContext="<%=session.getServletContext()%>"
-		page="/html/asset/full_content.jsp" />
+<liferay-util:include servletContext="<%=session.getServletContext()%>"
+	page="/html/asset/full_content.jsp" />
 
-	<liferay-ui:asset-links className="<%=Contact.class.getName()%>"
-		classPK="<%=contact_.getContactId()%>" />
-
-</div>
+<liferay-ui:asset-links className="<%=Contact.class.getName()%>"
+	classPK="<%=contact_.getContactId()%>" />

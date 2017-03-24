@@ -2,8 +2,8 @@
     view.jsp: Default view of the contact manager portlet.
     
     Created:    2015-05-07 15:18 by Christian Berndt
-    Modified:   2015-07-04 12:00 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-03-24 15:52 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -103,7 +103,7 @@
     rowChecker.setCssClass("entry-selector");
 %>
 
-<div class="portlet-contact-manager" id="<portlet:namespace />contactManagerContainer">
+<div id="<portlet:namespace />contactManagerContainer">
 
 	<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
 	
