@@ -2,8 +2,8 @@
     edit_contact.jsp: edit a single contact. 
     
     Created:    2015-05-07 23:40 by Christian Berndt
-    Modified:   2015-06-30 14:06 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2017-03-24 15:53 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@include file="/html/edit_contact/init.jsp"%>
@@ -60,58 +60,54 @@
     resourcePrimKey="<%= String.valueOf(contact_.getContactId()) %>"
     var="permissionsURL"   />
 
-<div class="portlet-contact-manager">
+<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
 
-	<liferay-ui:header backURL="<%=backURL%>" title="contact-manager" />
+<liferay-ui:tabs
+    names="edit,permissions"
+    param="tabs1" url="<%= permissionsURL %>" />
+
+<c:choose>
+
+	<c:when test='<%=tabs1.equals("permissions")%>'>
+
+        Permissions
+        
+	</c:when>
+
+	<c:otherwise>
+
+		<portlet:actionURL var="saveContactURL" name="saveContact" />
+
+		<aui:form action="<%=saveContactURL%>" method="post" name="fm" enctype="multipart/form-data"
+			onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveForm();" %>'>
+
+			<aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+			<aui:input name="contactId" type="hidden"
+				value="<%=String.valueOf(contact_.getContactId())%>" />
+			<aui:input name="historyKey" type="hidden" value="<%=historyKey%>" />
+			<aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
+			<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
+			<aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
+			<aui:input name="uid" type="hidden" value="<%=contact_.getUid()%>" />
+			<aui:input name="windowId" type="hidden" value="<%=windowId%>" />
+
+            <%-- The value of the languages field is managed by the  --%>
+            <%-- move-boxes field and the javascript below.          --%>
+		    <aui:input name="languageKeys" value="" type="hidden"/>
+
+			<liferay-ui:form-navigator categorySections="<%=categorySections%>"
+				categoryNames="<%=categoryNames%>" jspPath="/html/edit_contact/"
+				showButtons="<%=hasUpdatePermission%>" backURL="<%=backURL%>" />
+
+		</aui:form>
+
+	</c:otherwise>
+</c:choose>
+
+<hr>
+
+<ifx-util:build-info/>
 	
-	<liferay-ui:tabs
-        names="edit,permissions"
-        param="tabs1" url="<%= permissionsURL %>" />
-
-	<c:choose>
-
-		<c:when test='<%=tabs1.equals("permissions")%>'>
-
-            Permissions
-            
-		</c:when>
-
-		<c:otherwise>
-
-			<portlet:actionURL var="saveContactURL" name="saveContact" />
-
-			<aui:form action="<%=saveContactURL%>" method="post" name="fm" enctype="multipart/form-data"
-				onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveForm();" %>'>
-
-				<aui:input name="backURL" type="hidden" value="<%=backURL%>" />
-				<aui:input name="contactId" type="hidden"
-					value="<%=String.valueOf(contact_.getContactId())%>" />
-				<aui:input name="historyKey" type="hidden" value="<%=historyKey%>" />
-				<aui:input name="mvcPath" type="hidden" value="<%=mvcPath%>" />
-				<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
-				<aui:input name="tabs1" type="hidden" value="<%=tabs1%>" />
-				<aui:input name="uid" type="hidden" value="<%=contact_.getUid()%>" />
-				<aui:input name="windowId" type="hidden" value="<%=windowId%>" />
-
-                <%-- The value of the languages field is managed by the  --%>
-                <%-- move-boxes field and the javascript below.          --%>
-			    <aui:input name="languageKeys" value="" type="hidden"/>
-
-				<liferay-ui:form-navigator categorySections="<%=categorySections%>"
-					categoryNames="<%=categoryNames%>" jspPath="/html/edit_contact/"
-					showButtons="<%=hasUpdatePermission%>" backURL="<%=backURL%>" />
-
-			</aui:form>
-
-		</c:otherwise>
-	</c:choose>
-
-	<hr>
-    
-    <ifx-util:build-info/>
-	
-</div>
-
 <aui:script>
 	Liferay.provide(window, '<portlet:namespace />saveForm', 
 		function() {
