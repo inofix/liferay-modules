@@ -1,0 +1,66 @@
+/**
+ * main.css: css specific to the data-portlet.
+ *
+ * Created:     2017-03-24 15:46 by Christian Berndt
+ * Modified:    2017-03-24 15:46 by Christian Berndt
+ * Version:     1.0.0
+ * 
+ */
+@import "compass";
+@import "mixins";
+ 
+.aui  {
+    /** 
+     * Decrease font size of headings in popup-mode
+     * (like in the popup-mode of asset-publisher).
+     */ 
+    .dialog-iframe-popup h3 { 
+        color:#8D8D8D;
+        font-weight: normal;
+        font-size: 20px;
+    }
+    
+    .dialog-iframe-popup .legend {
+        color: #8D8D8D;
+        font-size: 18px;
+        font-weight: 200;
+    }
+
+    .portlet-data-manager {
+    
+        .button-holder {
+            margin: 6px 0; 
+        }
+    
+        .control-group {
+            margin-bottom: 0;
+            margin-top: 10px;
+        }
+    
+        .control-group-inline {
+            margin-right: 20px; 
+            
+            &.field-wrapper {
+                margin-bottom: 0; 
+            }
+        }
+    
+        .lfr-input-date {
+        
+            float: left;
+            margin-right: 10px;
+            
+            > .control-group {
+                margin-top: 0; 
+            }
+            
+            input {
+                width: 120px;
+            } 
+        }  
+        
+        .navbar-inner {
+            padding: 0; 
+        }
+    }
+}
