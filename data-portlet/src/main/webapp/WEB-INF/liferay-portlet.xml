@@ -1,12 +1,29 @@
 <?xml version="1.0"?>
-<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
-
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" 
+    "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
+<!-- 
+    liferay-portlet.xml: Main configuration file of the 
+    data-portlet.
+    
+    Created:    2017-03-27 23:58 by Christian Berndt
+    Modified:   2017-03-27 23:58 by Christian Berndt
+    Version:    1.0.2
+ -->
 <liferay-portlet-app>
     <portlet>
         <portlet-name>data-portlet</portlet-name>
         <icon>/icon.png</icon>
         <configuration-action-class>com.liferay.portal.kernel.portlet.DefaultConfigurationAction</configuration-action-class>
         <indexer-class>ch.inofix.portlet.data.search.MeasurementIndexer</indexer-class>
+        <scheduler-entry>
+            <scheduler-event-listener-class>ch.inofix.portlet.data.messaging.SyncDataMessageListener</scheduler-event-listener-class>
+            <trigger>
+                <simple>
+                    <property-key>data.sync.interval</property-key>
+                    <time-unit>minute</time-unit>
+                </simple>
+            </trigger>
+        </scheduler-entry>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
         <css-class-wrapper>portlet-data-manager</css-class-wrapper>
