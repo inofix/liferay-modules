@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-03-23 18:34 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-03-27 22:40 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -73,9 +73,9 @@
 <c:choose>
 
     <c:when test='<%=tabs1.equals("import-export")%>'>
-    
-        <%@include file="/html/import.jsp" %>
-
+            
+        <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/import.jsp" />   
+        
     </c:when>
 
     <c:otherwise>
@@ -88,6 +88,7 @@
         </liferay-ui:app-view-toolbar>        
     
         <liferay-ui:search-container emptyResultsMessage="no-data-found" iteratorURL="<%= portletURL %>">
+                
             <liferay-ui:search-container-results
                 results="<%=documents%>"
                 total="<%= hits.getLength() %>" />
@@ -110,8 +111,8 @@
             
             </liferay-ui:search-container-row>
             
-            <liferay-ui:search-iterator/>
-            
+            <liferay-ui:search-iterator type="more" />
+                        
         </liferay-ui:search-container>
     
     </c:otherwise>

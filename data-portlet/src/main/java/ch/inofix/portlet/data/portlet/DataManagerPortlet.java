@@ -1,6 +1,7 @@
 package ch.inofix.portlet.data.portlet;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.Map;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.FileUtils;
 
 import ch.inofix.portlet.data.service.MeasurementServiceUtil;
 
@@ -30,8 +33,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-03-13 15:39
- * @version 1.0.2
+ * @modified 2017-03-27 19:29
+ * @version 1.0.3
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -56,8 +59,17 @@ public class DataManagerPortlet extends MVCPortlet {
         UploadPortletRequest uploadPortletRequest = PortalUtil
                 .getUploadPortletRequest(actionRequest);
 
+        String dataURL = ParamUtil.getString(uploadPortletRequest, "dataURL");
+
         File file = uploadPortletRequest.getFile("file");
-        String fileName = file.getName();
+
+        if (Validator.isNotNull(dataURL)) {
+
+            URL url = new URL(dataURL);
+            file = new File(dataURL);
+            FileUtils.copyURLToFile(url, file);
+
+        }
 
         long userId = themeDisplay.getUserId();
         long groupId = themeDisplay.getScopeGroupId();
@@ -74,6 +86,8 @@ public class DataManagerPortlet extends MVCPortlet {
 
         if (Validator.isNotNull(file)) {
 
+            String fileName = file.getName();
+
             Document document = SAXReaderUtil.read(file);
             List<Node> nodes = document.selectNodes("/");
 
@@ -84,7 +98,7 @@ public class DataManagerPortlet extends MVCPortlet {
 
                 message = PortletUtil
                         .translate(
-                                "received-x-measurements-the-import-will-finish-in-separate-thread",
+                                "found-x-measurements-the-import-will-finish-in-separate-thread",
                                 nodes.size());
 
                 MeasurementServiceUtil.importMeasurementsInBackground(userId,
