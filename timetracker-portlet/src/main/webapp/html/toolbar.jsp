@@ -174,6 +174,7 @@
 
 				</aui:fieldset>
 			</liferay-ui:search-toggle>
+            
 			<portlet:renderURL var="clearURL" />
 
 			<aui:button value="reset" href="<%=clearURL%>" cssClass="clear-btn" />

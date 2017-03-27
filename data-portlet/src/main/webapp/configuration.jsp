@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-03-13 16:32 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-03-26 19:20 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -49,16 +49,31 @@
     <liferay-ui:panel-container
         id="datamanagerSettingsPanelContainer"
         persistState="<%=true%>">
+        
+        <liferay-ui:panel id="datamanagerDataPanel"
+            title="data" extended="true">
+
+            <aui:fieldset>
+
+                <aui:input name="preferences--dataURL--"
+                    helpMessage="data-url-help"
+                    value="<%= dataURL %>" />
+
+            </aui:fieldset>
+
+        </liferay-ui:panel>        
 
         <liferay-ui:panel id="datamanagerColumnsPanel"
             title="columns" extended="true">
 
             <aui:fieldset>
 
+                <%-- 
                 <aui:input name="preferences--headerNames--"
                     helpMessage="header-names-help"
                     value="<%=StringUtil.merge(headerNames, StringPool.COMMA) %>" />
-
+                --%>
+            
                 <aui:input name="preferences--columns--" type="hidden" />
                 
                 <liferay-ui:input-move-boxes

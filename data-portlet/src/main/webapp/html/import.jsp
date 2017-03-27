@@ -2,9 +2,15 @@
     import.jsp: The import panel of the data-portlet
     
     Created:    2017-03-13 12:46 by Christian Berndt
-    Modified:   2017-03-13 12:46 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-03-27 23:30 by Christian Berndt
+    Version:    1.0.1
 --%>
+
+<%@ include file="/html/init.jsp"%>
+
+<%
+    String tabs1 = ParamUtil.getString(request, "tabs1", "import-export");
+%>
 
 <portlet:actionURL var="importMeasurementsURL" name="importMeasurements">
     <portlet:param name="mvcPath" value="/html/import_processes.jsp" />
@@ -13,31 +19,61 @@
 
 <portlet:renderURL var="browseURL" />
 
-<aui:form action="<%=importMeasurementsURL%>"
-    enctype="multipart/form-data" method="post" name="fm"
-    cssClass="import-form">
+<aui:form action="<%=importMeasurementsURL%>" enctype="multipart/form-data"
+    method="post" name="fm" cssClass="import-form">
 
     <%
         // TODO: Add error handling
     %>
     <%-- 
-               <liferay-ui:error exception="<%= FileExtensionException.class %>">
-           
-               </liferay-ui:error>
-               --%>
-
-    <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
+       <liferay-ui:error exception="<%= FileExtensionException.class %>">
+   
+       </liferay-ui:error>
+       --%>
 
     <aui:fieldset label="import">
-
+    
+        <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
+    
+    
         <aui:input name="file" type="file" inlineField="true" label="" />
-
+    
         <aui:button name="import" type="submit" value="import"
             disabled="true" />
         <aui:button href="<%=browseURL%>" type="cancel" />
 
     </aui:fieldset>
 
+</aui:form>
+
+<div class="separator"></div>
+
+<aui:form action="<%=importMeasurementsURL%>" name="fm1" cssClass="import-form">
+
+    <%
+        // TODO: Add error handling
+    %>
+    <%-- 
+       <liferay-ui:error exception="<%= FileExtensionException.class %>">
+   
+       </liferay-ui:error>
+       --%>
+
+
+        <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
+    
+        <aui:input name="dataURL" type="hidden" value="<%=dataURL%>" />
+        <aui:input name="dataURL" disabled="<%=true%>" inlineField="true"
+            value="<%=dataURL%>" />
+    
+        <%
+            boolean isConfigured = Validator.isNotNull(dataURL);
+        %>
+    
+        <aui:button name="import" type="submit" value="import"
+            disabled="<%=!isConfigured%>" />
+        <aui:button href="<%=browseURL%>" type="cancel" />
+    
 </aui:form>
 
 <aui:script use="aui-base">
@@ -56,7 +92,6 @@
             });
         }
 
-    });
-
-    
+    });  
 </aui:script>
+
