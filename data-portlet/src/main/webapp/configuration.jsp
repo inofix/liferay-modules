@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-03-26 19:20 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-03-27 23:34 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -84,6 +84,22 @@
                     rightBoxName="availableColumns" 
                     leftTitle="current"
                     leftReorder="true" />
+
+            </aui:fieldset>
+
+        </liferay-ui:panel>
+        
+        <liferay-ui:panel id="datamanagerMiscellaneousPanel"
+            title="miscellaneous" extended="true">
+
+            <aui:fieldset>
+
+                <aui:select name="preferences--paginationType--">
+                    <aui:option value="approximate" label="approximate" selected='<%= "approximate".equals(paginationType) %>'/>
+                    <aui:option value="article" label="article" selected='<%= "article".equals(paginationType) %>'/>
+                    <aui:option value="more" label="more" selected='<%= "more".equals(paginationType) %>'/>
+                    <aui:option value="regular" label="regular" selected='<%= "regular".equals(paginationType) %>'/>
+                </aui:select>
 
             </aui:fieldset>
 
