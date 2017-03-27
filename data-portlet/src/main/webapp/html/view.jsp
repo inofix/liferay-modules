@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-03-27 22:40 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-03-27 23:44 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -111,7 +111,7 @@
             
             </liferay-ui:search-container-row>
             
-            <liferay-ui:search-iterator type="more" />
+            <liferay-ui:search-iterator type="<%= paginationType %>" />
                         
         </liferay-ui:search-container>
     

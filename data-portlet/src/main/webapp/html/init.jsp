@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-03-27 23:30 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2017-03-27 23:33 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -50,4 +50,7 @@
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "channelId,channelName,value,channelUnit,createDate,modifiedDate")
             .split(StringPool.COMMA);
+    
+    String paginationType = portletPreferences.getValue("paginationType", "regular");
+
 %>
