@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-03-27 23:33 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2017-03-28 16:29 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -20,6 +20,7 @@
 <%@page import="com.liferay.portal.kernel.search.Indexer"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
@@ -52,5 +53,7 @@
             .split(StringPool.COMMA);
     
     String paginationType = portletPreferences.getValue("paginationType", "regular");
+    
+    long userId = GetterUtil.getLong(portletPreferences.getValue("userId", "0"));  
 
 %>

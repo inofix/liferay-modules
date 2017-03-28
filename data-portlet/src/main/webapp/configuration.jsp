@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-03-27 23:34 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-03-28 16:18 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -13,6 +13,8 @@
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
 <%@page import="com.liferay.portal.kernel.util.StringUtil"%>
+<%@page import="com.liferay.portal.model.User"%>
+<%@page import="com.liferay.portal.service.UserServiceUtil"%>
 
 <%
     PortletURL portletURL = renderResponse.createRenderURL();
@@ -31,6 +33,8 @@
                     headerName));
         }
     }
+    
+    List<User> users = UserServiceUtil.getGroupUsers(scopeGroupId); 
 %>
 
 <liferay-portlet:actionURL portletConfiguration="true"
@@ -56,8 +60,28 @@
             <aui:fieldset>
 
                 <aui:input name="preferences--dataURL--"
-                    helpMessage="data-url-help"
-                    value="<%= dataURL %>" />
+                    helpMessage="data-url-help" inlineField="<%=true%>"
+                    value="<%=dataURL%>" />
+
+                <aui:select name="preferences--userId--"
+                    helpMessage="user-id-help" inlineField="<%=true%>">
+                    <%
+                        for (User user1 : users) {
+                    %>
+                    <aui:option value="<%=user1.getUserId()%>"
+                        label="<%=user1.getFullName()%>"
+                        selected="<%=user1.getUserId() == userId%>" />
+                    <%
+                        }
+                    %>
+                </aui:select>
+
+                <aui:input name="preferences--groupId--" type="hidden"
+                    value="<%=scopeGroupId%>" />
+
+                <aui:input name="preferences--groupId--"
+                    disabled="<%=true%>" helpMessage="group-id-help"
+                    inlineField="true" value="<%=scopeGroupId%>" />
 
             </aui:fieldset>
 

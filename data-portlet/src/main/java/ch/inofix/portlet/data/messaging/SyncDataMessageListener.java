@@ -1,6 +1,14 @@
 package ch.inofix.portlet.data.messaging;
 
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+
+import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -8,6 +16,7 @@ import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.PortletPreferences;
 import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
 
@@ -17,8 +26,8 @@ import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-27 23:53
- * @modified 2017-03-27 23:53
- * @version 1.0.0
+ * @modified 2017-03-28 17:10
+ * @version 1.0.1
  *
  */
 public class SyncDataMessageListener extends BaseMessageListener {
@@ -53,23 +62,38 @@ public class SyncDataMessageListener extends BaseMessageListener {
                 String username = PrefsPropsUtil.getString(prefs, companyId,
                         "username");
 
-                log.info("dataURL = " + dataURL);
-                log.info("password = " + password);
-                log.info("username = " + username);
+                _log.info("dataURL = " + dataURL);
+                _log.info("password = " + password);
+                _log.info("username = " + username);
 
-                // try {
-                // SyncUtil.syncWithCalDAVServer(calendarId,
-                // configuredCalendar, servername, domain, username,
-                // password, restoreFromTrash, syncOnlyUpcoming);
-                // } catch (Exception e) {
-                // log.error(e.getMessage());
-                // }
+                File file = null;
 
+                if (Validator.isNotNull(dataURL)) {
+
+                    URL url = new URL(dataURL);
+                    file = new File(dataURL);
+                    FileUtils.copyURLToFile(url, file);
+
+                    long userId = PrefsPropsUtil.getLong(prefs, companyId,
+                            "userId");
+                    String taskName = file.getName();
+                    long groupId = PrefsPropsUtil.getLong(prefs, companyId,
+                            "groupId");
+                    boolean privateLayout = true;
+                    Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+
+                    _log.info("taskName = " + taskName);
+                    _log.info("userId = " + userId);
+                    _log.info("groupId = " + groupId);
+
+                    MeasurementLocalServiceUtil.importMeasurements(userId,
+                            groupId, privateLayout, parameterMap, file);
+
+                }
             }
-
         }
     }
 
-    private static Log log = LogFactoryUtil
+    private static Log _log = LogFactoryUtil
             .getLog(SyncDataMessageListener.class.getName());
 }
