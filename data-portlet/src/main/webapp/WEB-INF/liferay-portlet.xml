@@ -6,8 +6,8 @@
     data-portlet.
     
     Created:    2017-03-27 23:58 by Christian Berndt
-    Modified:   2017-03-27 23:58 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-03-29 18:59 by Christian Berndt
+    Version:    1.0.3
  -->
 <liferay-portlet-app>
     <portlet>
@@ -24,6 +24,7 @@
                 </simple>
             </trigger>
         </scheduler-entry>
+        <asset-renderer-factory>ch.inofix.portlet.data.asset.MeasurementAssetRendererFactory</asset-renderer-factory>
         <header-portlet-css>/css/main.css</header-portlet-css>
         <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
         <css-class-wrapper>portlet-data-manager</css-class-wrapper>

@@ -41,8 +41,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-03-23 18:22
- * @version 1.0.3
+ * @modified 2017-03-29 15:56
+ * @version 1.0.4
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -108,6 +108,12 @@ public class MeasurementLocalServiceImpl extends
 
         Measurement measurement = measurementPersistence
                 .findByPrimaryKey(measurementId);
+
+        // Indexer
+
+        Indexer indexer = IndexerRegistryUtil
+                .nullSafeGetIndexer(Measurement.class);
+        indexer.delete(measurement);
 
         return measurementLocalService.deleteMeasurement(measurement);
     }
@@ -283,6 +289,12 @@ public class MeasurementLocalServiceImpl extends
         measurement.setData(data);
 
         measurementPersistence.update(measurement);
+
+        // Indexing
+
+        Indexer indexer = IndexerRegistryUtil
+                .nullSafeGetIndexer(Measurement.class);
+        indexer.reindex(measurement);
 
         return measurement;
 
