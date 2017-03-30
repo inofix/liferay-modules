@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-03-28 16:18 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-03-30 19:24 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -62,6 +62,15 @@
                 <aui:input name="preferences--dataURL--"
                     helpMessage="data-url-help" inlineField="<%=true%>"
                     value="<%=dataURL%>" />
+                    
+                <aui:input name="preferences--userName--"
+                    helpMessage="user-name-help" inlineField="<%=true%>"
+                    value="<%=userName%>" />
+                    
+                <aui:input name="preferences--password--"
+                    helpMessage="password-help" inlineField="<%=true%>"
+                    type="password"
+                    value="<%=password%>" />
 
                 <aui:select name="preferences--userId--"
                     helpMessage="user-id-help" inlineField="<%=true%>">
