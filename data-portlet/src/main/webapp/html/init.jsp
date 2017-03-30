@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-03-28 16:29 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2017-03-30 19:28 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -54,6 +54,10 @@
     
     String paginationType = portletPreferences.getValue("paginationType", "regular");
     
-    long userId = GetterUtil.getLong(portletPreferences.getValue("userId", "0"));  
+    String password = portletPreferences.getValue("password", "");
+    
+    long userId = GetterUtil.getLong(portletPreferences.getValue("userId", "0"));
+    
+    String userName = portletPreferences.getValue("userName", "");
 
 %>

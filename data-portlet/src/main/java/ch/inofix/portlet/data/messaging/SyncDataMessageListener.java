@@ -1,6 +1,8 @@
 package ch.inofix.portlet.data.messaging;
 
 import java.io.File;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -57,14 +59,18 @@ public class SyncDataMessageListener extends BaseMessageListener {
                 // Retrieve the configuration parameter
                 String dataURL = PrefsPropsUtil.getString(prefs, companyId,
                         "dataURL");
-                String password = PrefsPropsUtil.getString(prefs, companyId,
+                final String password = PrefsPropsUtil.getString(prefs, companyId,
                         "password");
-                String username = PrefsPropsUtil.getString(prefs, companyId,
-                        "username");
+                final String userName = PrefsPropsUtil.getString(prefs, companyId,
+                        "userName");
 
-                _log.info("dataURL = " + dataURL);
-                _log.info("password = " + password);
-                _log.info("username = " + username);
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(userName,
+                                password.toCharArray());
+                    }
+                });
 
                 File file = null;
 
