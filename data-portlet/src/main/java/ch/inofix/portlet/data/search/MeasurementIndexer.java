@@ -30,8 +30,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 /**
  * @author Christian Berndt
  * @created 2017-03-13 15:52
- * @modified 2017-03-23 18:22
- * @version 1.0.1
+ * @modified 2017-03-31 23:17
+ * @version 1.0.2
  */
 public class MeasurementIndexer extends BaseIndexer {
 
@@ -83,7 +83,7 @@ public class MeasurementIndexer extends BaseIndexer {
 
             String name = names.getString(i);
 
-            document.addTextSortable(name, jsonObject.getString(name));
+            document.addKeyword(name, jsonObject.getString(name));
 
         }
 
@@ -159,7 +159,6 @@ public class MeasurementIndexer extends BaseIndexer {
 
         };
 
-        // TODO: Check Liferay-Indexer for a more recent implementation
         actionableDynamicQuery.setCompanyId(companyId);
 
         actionableDynamicQuery.performActions();

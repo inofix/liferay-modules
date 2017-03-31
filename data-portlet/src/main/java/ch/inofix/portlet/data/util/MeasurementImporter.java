@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.Element;
@@ -27,8 +28,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-09 17:53
- * @modified 2017-03-23 18:24
- * @version 1.0.2
+ * @modified 2017-03-31 23:18
+ * @version 1.0.3
  *
  */
 public class MeasurementImporter {
@@ -85,8 +86,22 @@ public class MeasurementImporter {
                     jsonObject.put("timestamp", timestamp);
                     jsonObject.put("value", val);
 
-                    MeasurementLocalServiceUtil.addMeasurement(userId,
-                            jsonObject.toString(), serviceContext);
+                    Hits hits = MeasurementLocalServiceUtil.search(
+                            serviceContext.getCompanyId(),
+                            serviceContext.getScopeGroupId(), channelId,
+                            channelName, timestamp, true, 0, Integer.MAX_VALUE,
+                            null);
+
+                    if (hits.getLength() == 0) {
+
+                        MeasurementLocalServiceUtil.addMeasurement(userId,
+                                jsonObject.toString(), serviceContext);
+
+                        numImported++;
+
+                    } else {
+                        numIgnored++;
+                    }
 
                     if (numProcessed % 100 == 0 && numProcessed > 0) {
 

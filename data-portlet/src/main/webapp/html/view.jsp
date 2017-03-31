@@ -2,11 +2,13 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-03-27 23:44 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-03-30 20:21 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
+
+<%@page import="ch.inofix.portlet.data.service.MeasurementLocalServiceUtil"%>
 
 <%@page import="com.liferay.portal.kernel.util.CamelCaseUtil"%>
 <%@page import="com.liferay.portal.kernel.json.JSONFactoryUtil"%>
@@ -19,6 +21,7 @@
 <%
     String backURL = ParamUtil.getString(request, "backURL");
     String channelId = ParamUtil.getString(request, "channelId"); 
+    String channelName = ParamUtil.getString(request, "channelName"); 
     int delta = ParamUtil.getInteger(request, "delta", 20);
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
 
@@ -30,6 +33,7 @@
 
     portletURL.setParameter("backURL", backURL);
     portletURL.setParameter("channelId", channelId);
+    portletURL.setParameter("channelName", channelName);
     portletURL.setParameter("mvcPath", "/html/view.jsp");
     portletURL.setParameter("tabs1", tabs1);
 
@@ -38,28 +42,18 @@
     }
     int start = delta * idx;
     int end = delta * idx + delta;
-
-    SearchContext searchContext =
-        SearchContextFactory.getInstance(request);
-
+    
     boolean reverse = "desc".equals(orderByType);
 
     Sort sort = new Sort(orderByCol, reverse);
 
-    searchContext.setAttribute("paginationType", "more");
-    searchContext.setStart(start);
-    searchContext.setEnd(end);
-    searchContext.setSorts(sort);
-    
-    Facet channelIdFacet = new MultiValueFacet(searchContext);
-    channelIdFacet.setFieldName("channelId");
+    String timestamp = null; 
 
-    searchContext.addFacet(channelIdFacet);
-    
-    Indexer indexer = IndexerRegistryUtil.getIndexer(Measurement.class);
+    Hits hits = MeasurementLocalServiceUtil.search(
+            themeDisplay.getCompanyId(), scopeGroupId, channelId,
+            channelName, timestamp, false, start, end, sort);
 
-    Hits hits = indexer.search(searchContext);
-    List<Document> documents = hits.toList();   
+    List<Document> documents = hits.toList();
 %>
 
 <liferay-ui:header backURL="<%=backURL%>" title="data-manager" />

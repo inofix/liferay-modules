@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-03-23 15:18 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-03-31 23:18 by Christian Berndt
+    Version:    1.0.1
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -49,24 +49,16 @@
         <liferay-portlet:renderURL varImpl="searchURL" />
     
         <aui:form action="<%= searchURL %>" name="fm1">
-         
-            <aui:select label="" name="channelId" inlineField="true" onChange='<%= renderResponse.getNamespace() + "selectChannelId();" %>'>
-                <aui:option value="" label="any-channel"/>
-                <c:forEach items="<%=channelIdTermCollectors%>" var="termCollector">
-                    <aui:option value="${termCollector.term}"
-                        label="${termCollector.term} (${termCollector.frequency})" />
-                </c:forEach>
-            </aui:select>
             
-            <%-- TODO: fix indexing of channel names
-            <aui:select label="" name="channelName" inlineField="true">
-                <aui:option value="" label="any-name"/>
+            <aui:select label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "selectChannelName();" %>'>
+                <aui:option value="" label="any-channel"/>
                 <c:forEach items="<%=channelNameTermCollectors%>" var="termCollector">
                     <aui:option value="${termCollector.term}"
                         label="${termCollector.term} (${termCollector.frequency})" />
                 </c:forEach>
             </aui:select>
             
+            <%-- 
             <aui:field-wrapper inlineField="true">
                 <liferay-ui:input-date name="startDate" nullable="<%= true %>" />
                 <liferay-ui:input-time name="startTime" minuteParam=""
@@ -79,7 +71,6 @@
             </aui:field-wrapper>
             
             --%>
-            
             
             <portlet:renderURL var="clearURL" />
             
@@ -95,7 +86,7 @@
 </aui:nav-bar>
 
 <aui:script>
-    function <portlet:namespace />selectChannelId() {
+    function <portlet:namespace />selectChannelName() {
         submitForm(document.<portlet:namespace />fm1);
     }
 </aui:script>
