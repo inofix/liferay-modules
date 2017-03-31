@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-03-30 19:28 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2017-03-31 23:18 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -43,7 +43,7 @@
 
 <%
     String[] columns = portletPreferences.getValue("columns",
-            "channelId,value,channelUnit,timestamp").split(
+            "channelName,value,channelUnit,timestamp").split(
             StringPool.COMMA);
 
     String dataURL = portletPreferences.getValue("dataURL", "");

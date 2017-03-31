@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ch.inofix.portlet.data.backgroundtask.MeasurementImportBackgroundTaskExecutor;
@@ -17,9 +19,15 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.facet.Facet;
+import com.liferay.portal.kernel.search.facet.MultiValueFacet;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BackgroundTask;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.BackgroundTaskLocalServiceUtil;
@@ -41,8 +49,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-03-29 15:56
- * @version 1.0.4
+ * @modified 2017-03-30 20:29
+ * @version 1.0.5
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -262,6 +270,95 @@ public class MeasurementLocalServiceImpl extends
                 backgroundTask.getBackgroundTaskId(), taskName, file);
 
         return backgroundTask.getBackgroundTaskId();
+
+    }
+
+    /**
+     * Returns an ordered range of all the measurements whose channelId, or
+     * timestamp fields match the keywords specified for them, using the
+     * indexer.
+     *
+     * <p>
+     * Useful when paginating results. Returns a maximum of <code>end -
+     * start</code> instances. <code>start</code> and <code>end</code> are not
+     * primary keys, they are indexes in the result set. Thus, <code>0</code>
+     * refers to the first result in the set. Setting both <code>start</code>
+     * and <code>end</code> to
+     * {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return
+     * the full result set.
+     * </p>
+     *
+     *
+     * @param companyId
+     * @param channelId
+     * @param timestamp
+     * @param andSearch
+     * @param start
+     * @param end
+     * @param sort
+     * @return
+     * @throws SystemException
+     */
+    @Override
+    public Hits search(long companyId, long groupId, String channelId,
+            String channelName, String timestamp, boolean andSearch, int start,
+            int end, Sort sort) throws SystemException {
+
+        try {
+
+            SearchContext searchContext = new SearchContext();
+
+            searchContext.setCompanyId(companyId);
+            searchContext.setGroupIds(new long[] { groupId });
+
+            searchContext.setAttribute("paginationType", "more");
+            searchContext.setStart(start);
+            searchContext.setEnd(end);
+
+            searchContext.setAndSearch(andSearch);
+
+            Map<String, Serializable> attributes = new HashMap<String, Serializable>();
+
+            attributes.put("channelId", channelId);
+            attributes.put("channelName", channelName);
+            attributes.put("timestamp", timestamp);
+
+            searchContext.setAttributes(attributes);
+
+            List<Facet> facets = new ArrayList<Facet>();
+
+            if (Validator.isNotNull(channelId)) {
+                Facet facet = new MultiValueFacet(searchContext);
+                facet.setFieldName("channelId");
+                facets.add(facet);
+            }
+
+            if (Validator.isNotNull(channelName)) {
+                Facet facet = new MultiValueFacet(searchContext);
+                facet.setFieldName("channelName");
+                facets.add(facet);
+            }
+
+            if (Validator.isNotNull(timestamp)) {
+                Facet facet = new MultiValueFacet(searchContext);
+                facet.setFieldName("timestamp");
+                facets.add(facet);
+            }
+
+            searchContext.setFacets(facets);
+
+            if (Validator.isNotNull(sort)) {
+                searchContext.setSorts(sort);
+            }
+
+            Indexer indexer = IndexerRegistryUtil
+                    .nullSafeGetIndexer(Measurement.class);
+
+            return indexer.search(searchContext);
+
+        } catch (Exception e) {
+            throw new SystemException(e);
+        }
 
     }
 
