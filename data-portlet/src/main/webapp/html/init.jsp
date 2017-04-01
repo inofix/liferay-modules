@@ -2,11 +2,12 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-03-31 23:18 by Christian Berndt
-    Version:    1.1.7
+    Modified:   2017-04-01 13:16 by Christian Berndt
+    Version:    1.1.8
 --%>
 
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Date"%>
 <%@page import="java.util.List"%>
 
 <%@page import="javax.portlet.PortletURL"%>
@@ -24,7 +25,7 @@
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
-
+<%@page import="com.liferay.portal.util.PortalUtil"%>
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -47,6 +48,11 @@
             StringPool.COMMA);
 
     String dataURL = portletPreferences.getValue("dataURL", "");
+    
+    int fromDateDay = ParamUtil.getInteger(request, "fromDateDay");  
+    int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth"); 
+    int fromDateYear = ParamUtil.getInteger(request, "fromDateYear");
+    Date fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear);
 
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "channelId,channelName,value,channelUnit,createDate,modifiedDate")
@@ -55,6 +61,11 @@
     String paginationType = portletPreferences.getValue("paginationType", "regular");
     
     String password = portletPreferences.getValue("password", "");
+    
+    int untilDateDay = ParamUtil.getInteger(request, "untilDateDay");  
+    int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth"); 
+    int untilDateYear = ParamUtil.getInteger(request, "untilDateYear"); 
+    Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
     
     long userId = GetterUtil.getLong(portletPreferences.getValue("userId", "0"));
     
