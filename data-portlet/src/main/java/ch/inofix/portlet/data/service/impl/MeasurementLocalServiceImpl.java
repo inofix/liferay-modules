@@ -49,7 +49,7 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-03-30 20:29
+ * @modified 2017-04-01 14:43
  * @version 1.0.5
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
@@ -304,6 +304,45 @@ public class MeasurementLocalServiceImpl extends
             String channelName, String timestamp, boolean andSearch, int start,
             int end, Sort sort) throws SystemException {
 
+        return search(companyId, groupId, channelId, channelName, timestamp, 0,
+                0, andSearch, start, end, sort);
+
+    }
+
+    /**
+     * Returns an ordered range of all the measurements whose channelId, or
+     * timestamp fields match the keywords specified for them, using the
+     * indexer.
+     *
+     * <p>
+     * Useful when paginating results. Returns a maximum of <code>end -
+     * start</code> instances. <code>start</code> and <code>end</code> are not
+     * primary keys, they are indexes in the result set. Thus, <code>0</code>
+     * refers to the first result in the set. Setting both <code>start</code>
+     * and <code>end</code> to
+     * {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return
+     * the full result set.
+     * </p>
+     *
+     *
+     * @param companyId
+     * @param channelId
+     * @param timestamp
+     * @param from
+     * @param until
+     * @param andSearch
+     * @param start
+     * @param end
+     * @param sort
+     * @return
+     * @throws SystemException
+     */
+    @Override
+    public Hits search(long companyId, long groupId, String channelId,
+            String channelName, String timestamp, long from, long until,
+            boolean andSearch, int start, int end, Sort sort)
+            throws SystemException {
+
         try {
 
             SearchContext searchContext = new SearchContext();
@@ -322,6 +361,8 @@ public class MeasurementLocalServiceImpl extends
             attributes.put("channelId", channelId);
             attributes.put("channelName", channelName);
             attributes.put("timestamp", timestamp);
+            attributes.put("from", from);
+            attributes.put("until", until);
 
             searchContext.setAttributes(attributes);
 

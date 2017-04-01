@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-03-31 23:18 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-04-01 14:46 by Christian Berndt
+    Version:    1.0.2
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -26,7 +26,7 @@
     
     // remove facet attributes from context, since we need the field's index here
     searchContext.setAttribute("channelId", null); 
-    searchContext.setAttribute("channelName", null); 
+    searchContext.setAttribute("channelName", null);
 
     Indexer indexer = IndexerRegistryUtil.getIndexer(Measurement.class);
     indexer.search(searchContext);
@@ -50,7 +50,7 @@
     
         <aui:form action="<%= searchURL %>" name="fm1">
             
-            <aui:select label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "selectChannelName();" %>'>
+            <aui:select label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
                 <aui:option value="" label="any-channel"/>
                 <c:forEach items="<%=channelNameTermCollectors%>" var="termCollector">
                     <aui:option value="${termCollector.term}"
@@ -58,20 +58,32 @@
                 </c:forEach>
             </aui:select>
             
-            <%-- 
-            <aui:field-wrapper inlineField="true">
-                <liferay-ui:input-date name="startDate" nullable="<%= true %>" />
-                <liferay-ui:input-time name="startTime" minuteParam=""
-                    amPmParam="" hourParam="" />
+            <aui:field-wrapper inlineField="<%= true %>" inlineLabel="true" name="from">
+            
+                <liferay-ui:input-date name="from"            
+                    nullable="<%= fromDate == null %>" 
+                    dayParam="fromDateDay"
+                    dayValue="<%=fromDateDay%>"
+                    monthParam="fromDateMonth"
+                    monthValue="<%=fromDateMonth%>"
+                    yearParam="fromDateYear"
+                    yearValue="<%=fromDateYear%>" />
+
             </aui:field-wrapper>
             
-            <aui:field-wrapper inlineField="true">
-                <liferay-ui:input-date name="endDate" nullable="<%= true %>"/>
-                <liferay-ui:input-time name="endTime" minuteParam="" amPmParam="" hourParam=""/> 
+            <aui:field-wrapper inlineField="<%= true %>" inlineLabel="true" name="until" >
+            
+                <liferay-ui:input-date name="until"
+                    nullable="<%= untilDate == null %>" 
+                    dayParam="untilDateDay"
+                    dayValue="<%=untilDateDay%>"
+                    monthParam="untilDateMonth"
+                    monthValue="<%=untilDateMonth%>"
+                    yearParam="untilDateYear"
+                    yearValue="<%=untilDateYear%>" />
+
             </aui:field-wrapper>
-            
-            --%>
-            
+                        
             <portlet:renderURL var="clearURL" />
             
             <aui:button-row cssClass="pull-right">
@@ -86,7 +98,7 @@
 </aui:nav-bar>
 
 <aui:script>
-    function <portlet:namespace />selectChannelName() {
+    function <portlet:namespace />select() {
         submitForm(document.<portlet:namespace />fm1);
     }
 </aui:script>

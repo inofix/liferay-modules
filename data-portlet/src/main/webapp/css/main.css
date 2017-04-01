@@ -2,8 +2,8 @@
  * main.css: css specific to the data-portlet.
  *
  * Created:     2017-03-24 15:46 by Christian Berndt
- * Modified:    2017-03-24 15:46 by Christian Berndt
- * Version:     1.0.0
+ * Modified:    2017-04-01 13:27 by Christian Berndt
+ * Version:     1.0.1
  * 
  */
 @import "compass";
@@ -38,7 +38,8 @@
         }
     
         .control-group-inline {
-            margin-right: 20px; 
+        
+            margin-right: 20px;
             
             &.field-wrapper {
                 margin-bottom: 0; 
@@ -47,8 +48,8 @@
     
         .lfr-input-date {
         
-            float: left;
-            margin-right: 10px;
+            margin-left: 10px;
+            display: inline-block; 
             
             > .control-group {
                 margin-top: 0; 
