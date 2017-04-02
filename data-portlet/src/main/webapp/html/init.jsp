@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-04-01 13:16 by Christian Berndt
-    Version:    1.1.8
+    Modified:   2017-04-01 23:34 by Christian Berndt
+    Version:    1.1.9
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -13,14 +13,18 @@
 <%@page import="javax.portlet.PortletURL"%>
 
 <%@page import="ch.inofix.portlet.data.model.Measurement"%>
+<%@page import="ch.inofix.portlet.data.service.MeasurementLocalServiceUtil"%>
 
 <%@page import="com.liferay.portal.kernel.search.facet.MultiValueFacet"%>
 <%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
+<%@page import="com.liferay.portal.kernel.search.Document"%>
+<%@page import="com.liferay.portal.kernel.search.Field"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
 <%@page import="com.liferay.portal.kernel.search.IndexerRegistryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.Indexer"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
+<%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
@@ -61,6 +65,8 @@
     String paginationType = portletPreferences.getValue("paginationType", "regular");
     
     String password = portletPreferences.getValue("password", "");
+    
+    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
     int untilDateDay = ParamUtil.getInteger(request, "untilDateDay");  
     int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth"); 

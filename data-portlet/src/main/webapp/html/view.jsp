@@ -2,32 +2,26 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-04-01 14:46 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-04-02 23:38 by Christian Berndt
+    Version:    1.0.0
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
-<%@page import="ch.inofix.portlet.data.service.MeasurementLocalServiceUtil"%>
-
 <%@page import="com.liferay.portal.kernel.util.CamelCaseUtil"%>
 <%@page import="com.liferay.portal.kernel.json.JSONFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.json.JSONObject"%>
-<%@page import="com.liferay.portal.kernel.search.Document"%>
-<%@page import="com.liferay.portal.kernel.search.Field"%>
-<%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
-    String channelId = ParamUtil.getString(request, "channelId"); 
+    String channelId = ParamUtil.getString(request, "channelId");
     String channelName = ParamUtil.getString(request, "channelName");
     int delta = ParamUtil.getInteger(request, "delta", 20);
-    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
 
     int idx = ParamUtil.getInteger(request, "cur");
-    String orderByCol = ParamUtil.getString(request, "orderByCol", "timestamp_sortable");
-//     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
+    String orderByCol = ParamUtil.getString(request, "orderByCol","date_sortable");
+    //     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 
     PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -35,39 +29,44 @@
     portletURL.setParameter("channelId", channelId);
     portletURL.setParameter("channelName", channelName);
     portletURL.setParameter("fromDateDay", String.valueOf(fromDateDay));
-    portletURL.setParameter("fromDateMonth", String.valueOf(fromDateMonth));
-    portletURL.setParameter("fromDateYear", String.valueOf(fromDateYear));
+    portletURL.setParameter("fromDateMonth",
+            String.valueOf(fromDateMonth));
+    portletURL.setParameter("fromDateYear",
+            String.valueOf(fromDateYear));
     portletURL.setParameter("mvcPath", "/html/view.jsp");
     portletURL.setParameter("tabs1", tabs1);
-    portletURL.setParameter("untilDateDay", String.valueOf(untilDateDay));
-    portletURL.setParameter("untilDateMonth", String.valueOf(untilDateMonth));
-    portletURL.setParameter("untilDateYear", String.valueOf(untilDateYear));
-    
-    long from = 0; 
+    portletURL.setParameter("untilDateDay",
+            String.valueOf(untilDateDay));
+    portletURL.setParameter("untilDateMonth",
+            String.valueOf(untilDateMonth));
+    portletURL.setParameter("untilDateYear",
+            String.valueOf(untilDateYear));
+
+    long from = 0;
     if (fromDate != null) {
         from = fromDate.getTime();
     }
-    
-    long until = 0; 
+
+    long until = 0;
     if (untilDate != null) {
         until = untilDate.getTime();
     }
+
     if (idx > 0) {
         idx = idx - 1;
     }
+
     int start = delta * idx;
     int end = delta * idx + delta;
-    
+
     boolean reverse = false;
-//     boolean reverse = "desc".equals(orderByType);
+    //     boolean reverse = "desc".equals(orderByType);
 
     Sort sort = new Sort(orderByCol, reverse);
 
-    String timestamp = null; 
-
     Hits hits = MeasurementLocalServiceUtil.search(
             themeDisplay.getCompanyId(), scopeGroupId, channelId,
-            channelName, timestamp, from, until, false, start, end, sort);
+            channelName, from, until, false, start, end, sort);
 
     List<Document> documents = hits.toList();
 %>
@@ -77,10 +76,16 @@
 <liferay-ui:error exception="<%=PrincipalException.class%>"
     message="you-dont-have-the-required-permissions" />
 
-<liferay-ui:tabs names="browse,import-export" param="tabs1"
+<liferay-ui:tabs names="browse,charts,import-export" param="tabs1"
     url="<%=portletURL.toString()%>" />
 
 <c:choose>
+
+    <c:when test='<%=tabs1.equals("charts")%>'>
+            
+        <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/d3.jsp" />   
+        
+    </c:when>
 
     <c:when test='<%=tabs1.equals("import-export")%>'>
             
