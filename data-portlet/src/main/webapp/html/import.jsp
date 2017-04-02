@@ -2,15 +2,11 @@
     import.jsp: The import panel of the data-portlet
     
     Created:    2017-03-13 12:46 by Christian Berndt
-    Modified:   2017-03-27 23:30 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-04-02 23:37 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
-
-<%
-    String tabs1 = ParamUtil.getString(request, "tabs1", "import-export");
-%>
 
 <portlet:actionURL var="importMeasurementsURL" name="importMeasurements">
     <portlet:param name="mvcPath" value="/html/import_processes.jsp" />

@@ -49,8 +49,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-04-01 14:43
- * @version 1.0.5
+ * @modified 2017-04-02 23:36
+ * @version 1.0.6
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -307,6 +307,30 @@ public class MeasurementLocalServiceImpl extends
         return search(companyId, groupId, channelId, channelName, timestamp, 0,
                 0, andSearch, start, end, sort);
 
+    }
+
+    /**
+     *
+     * @param companyId
+     * @param groupId
+     * @param channelId
+     * @param channelName
+     * @param from
+     * @param until
+     * @param andSearch
+     * @param start
+     * @param end
+     * @param sort
+     * @return
+     * @throws SystemException
+     */
+    @Override
+    public Hits search(long companyId, long groupId, String channelId,
+            String channelName, long from, long until, boolean andSearch,
+            int start, int end, Sort sort) throws SystemException {
+
+        return search(companyId, groupId, channelId, channelName, null, from,
+                until, andSearch, start, end, sort);
     }
 
     /**
