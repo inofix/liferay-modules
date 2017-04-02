@@ -156,7 +156,6 @@ public class MeasurementIndexer extends BaseIndexer {
     protected void postProcessFullQuery(BooleanQuery fullQuery,
             SearchContext searchContext) throws Exception {
 
-        // from / until
         long from = GetterUtil.getLong(searchContext.getAttribute("from"));
         long until = GetterUtil.getLong(searchContext.getAttribute("until"));
 
