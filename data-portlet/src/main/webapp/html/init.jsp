@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-04-03 12:42 by Christian Berndt
-    Version:    1.2.0
+    Modified:   2017-04-03 19:26 by Christian Berndt
+    Version:    1.2.1
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -53,7 +53,7 @@
 
     String dataURL = portletPreferences.getValue("dataURL", "");
     
-    int frequency = ParamUtil.getInteger(request, "frequency", 15);
+    int frequency = GetterUtil.getInteger(portletPreferences.getValue("frequency", "15"));
     
     int fromDateDay = ParamUtil.getInteger(request, "fromDateDay");  
     int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth"); 
@@ -64,13 +64,13 @@
                     "channelId,channelName,value,channelUnit,createDate,modifiedDate")
             .split(StringPool.COMMA);
     
-    int interval = ParamUtil.getInteger(request, "interval", 24 * 60);
+    int interval = GetterUtil.getInteger(portletPreferences.getValue("interval", "1440"));
     
     String paginationType = portletPreferences.getValue("paginationType", "regular");
     
     String password = portletPreferences.getValue("password", "");
     
-    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "chart");
     
     int untilDateDay = ParamUtil.getInteger(request, "untilDateDay");  
     int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth"); 

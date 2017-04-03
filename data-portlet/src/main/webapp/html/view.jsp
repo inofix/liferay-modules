@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-04-02 23:38 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-04-03 19:32 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -76,14 +76,14 @@
 <liferay-ui:error exception="<%=PrincipalException.class%>"
     message="you-dont-have-the-required-permissions" />
 
-<liferay-ui:tabs names="browse,charts,import-export" param="tabs1"
+<liferay-ui:tabs names="chart,list,import-export" param="tabs1"
     url="<%=portletURL.toString()%>" />
 
 <c:choose>
 
-    <c:when test='<%=tabs1.equals("charts")%>'>
+    <c:when test='<%=tabs1.equals("chart")%>'>
             
-        <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/d3.jsp" />   
+        <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/chart.jsp" />   
         
     </c:when>
 
