@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-03-30 19:24 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-04-03 12:41 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -127,11 +127,26 @@
 
             <aui:fieldset>
 
-                <aui:select name="preferences--paginationType--">
-                    <aui:option value="approximate" label="approximate" selected='<%= "approximate".equals(paginationType) %>'/>
-                    <aui:option value="article" label="article" selected='<%= "article".equals(paginationType) %>'/>
-                    <aui:option value="more" label="more" selected='<%= "more".equals(paginationType) %>'/>
-                    <aui:option value="regular" label="regular" selected='<%= "regular".equals(paginationType) %>'/>
+                <aui:input name="preferences--interval--"
+                    helpMessage="interval-help" inlineField="<%=true%>"
+                    value="<%=interval%>" />
+
+                <aui:input name="preferences--frequency--"
+                    helpMessage="frequency-help" inlineField="<%=true%>"
+                    value="<%=frequency%>" />
+
+                <aui:select name="preferences--paginationType--"
+                    inlineField="<%=true%>">
+                    
+                    <aui:option value="approximate" label="approximate"
+                        selected='<%="approximate".equals(paginationType)%>' />
+                    <aui:option value="article" label="article"
+                        selected='<%="article".equals(paginationType)%>' />
+                    <aui:option value="more" label="more"
+                        selected='<%="more".equals(paginationType)%>' />
+                    <aui:option value="regular" label="regular"
+                        selected='<%="regular".equals(paginationType)%>' />
+                        
                 </aui:select>
 
             </aui:fieldset>
