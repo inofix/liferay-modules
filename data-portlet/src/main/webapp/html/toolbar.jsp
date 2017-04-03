@@ -2,14 +2,17 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-04-03 19:16 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-04-03 19:50 by Christian Berndt
+    Version:    1.0.5
  --%>
 
 <%@ include file="/html/init.jsp"%>
 
+<%@page import="java.util.Collections"%>
+
 <%@page import="com.liferay.portal.kernel.search.facet.collector.TermCollector"%>
 <%@page import="com.liferay.portal.kernel.search.facet.collector.FacetCollector"%>
+<%@page import="com.liferay.util.PropertyComparator"%>
 
 <%
     SearchContext searchContext = SearchContextFactory
@@ -40,6 +43,9 @@
             .getFacetCollector();
     List<TermCollector> channelNameTermCollectors = channelNameFacetCollector
             .getTermCollectors();
+    
+    PropertyComparator termComparator = new PropertyComparator("term");
+    Collections.sort(channelNameTermCollectors, termComparator); 
 %>
 
 <aui:nav-bar>
