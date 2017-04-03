@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-04-03 12:41 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-04-03 19:26 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -127,9 +127,25 @@
 
             <aui:fieldset>
 
-                <aui:input name="preferences--interval--"
-                    helpMessage="interval-help" inlineField="<%=true%>"
-                    value="<%=interval%>" />
+                <aui:select name="preferences--interval--"
+                    helpMessage="interval-help" inlineField="<%=true%>">
+
+                    <aui:option value="1440" label="24 h"
+                        selected='<%="1440".equals(String.valueOf(interval))%>' />
+                        
+                    <aui:option value="2880" label="48 h"
+                        selected='<%="2880".equals(String.valueOf(interval))%>' />
+
+<%--                      <aui:option value="4320" label="72 h" --%>
+<%--                         selected='<%="4320".equals(String.valueOf(interval))%>' /> --%>
+
+<%--                     <aui:option value="5760" label="96 h" --%>
+<%--                         selected='<%="5760".equals(String.valueOf(interval))%>' /> --%>
+
+<%--                      <aui:option value="7200" label="120 h" --%>
+<%--                         selected='<%="7200".equals(String.valueOf(interval))%>' /> --%>
+
+                 </aui:select>
 
                 <aui:input name="preferences--frequency--"
                     helpMessage="frequency-help" inlineField="<%=true%>"

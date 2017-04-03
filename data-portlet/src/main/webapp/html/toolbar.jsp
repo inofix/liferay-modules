@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-04-02 23:38 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-04-03 19:16 by Christian Berndt
+    Version:    1.0.4
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -53,7 +53,7 @@
             <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/>
             
             <aui:select label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
-                <aui:option value="" label="any-channel"/>
+                <aui:option value="" label="select-channel"/>
                 <c:forEach items="<%=channelNameTermCollectors%>" var="termCollector">
                     <aui:option value="${termCollector.term}"
                         label="${termCollector.term} (${termCollector.frequency})" />
