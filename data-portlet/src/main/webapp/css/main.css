@@ -10,6 +10,18 @@
 @import "mixins";
  
 .aui  {
+    
+    .chart-browser {
+    
+        margin-bottom: 20px;
+        text-align: center; 
+        vertical-align: middle;
+        
+        .btn {
+            min-width: 70px;
+        }
+    }
+    
     /** 
      * Decrease font size of headings in popup-mode
      * (like in the popup-mode of asset-publisher).

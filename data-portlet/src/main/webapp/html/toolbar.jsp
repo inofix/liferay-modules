@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-04-03 19:50 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-04-04 11:30 by Christian Berndt
+    Version:    1.0.6
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -68,7 +68,7 @@
             
             <aui:field-wrapper inlineField="<%= true %>" inlineLabel="true" name="from">
             
-                <liferay-ui:input-date name="from"            
+                <liferay-ui:input-date name="from"          
                     nullable="<%= fromDate == null %>" 
                     dayParam="fromDateDay"
                     dayValue="<%=fromDateDay%>"
@@ -81,7 +81,8 @@
             
             <aui:field-wrapper inlineField="<%= true %>" inlineLabel="true" name="until" >
             
-                <liferay-ui:input-date name="until"
+                <liferay-ui:input-date name="until"                
+                    disabled="<%= true %>"
                     nullable="<%= untilDate == null %>" 
                     dayParam="untilDateDay"
                     dayValue="<%=untilDateDay%>"
@@ -109,4 +110,29 @@
     function <portlet:namespace />select() {
         submitForm(document.<portlet:namespace />fm1);
     }
+</aui:script>
+
+<aui:script use="aui-base">
+
+    // Because hidden fields don't fire a change event, we have to 
+    // observe it's value manually.
+    
+    var fromDateDayInput = A.one('#<portlet:namespace />fromDateDay');
+    var fromDateDay = fromDateDayInput.get('value');
+    
+    var fromDatePicker = A.one('#<portlet:namespace />from');
+    
+    fromDatePicker.after('click', function(e) {
+        
+        datepickerPopover = A.one('.datepicker-popover');
+        
+        datepickerPopover.after('click', function(e) {
+            
+            if (fromDateDay != fromDateDayInput.get('value')) {
+                submitForm(document.<portlet:namespace />fm1);                
+            }
+            
+        }); 
+    });
+    
 </aui:script>
