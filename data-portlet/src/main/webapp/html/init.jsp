@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-04-04 11:30 by Christian Berndt
-    Version:    1.2.2
+    Modified:   2017-04-04 12:41 by Christian Berndt
+    Version:    1.2.3
 --%>
 
 <%@page import="java.util.Calendar"%>
@@ -54,7 +54,10 @@
 
     String dataURL = portletPreferences.getValue("dataURL", "");
     
-    int frequency = GetterUtil.getInteger(portletPreferences.getValue("frequency", "15"));
+    int limit = GetterUtil.getInteger(portletPreferences.getValue("limit", "1000"));
+    if (limit > 10000) limit = 10000; // maximumn number of hits returned by indexer
+    
+    long interval = GetterUtil.getLong(portletPreferences.getValue("interval", "0"), 1000 * 60 * 60 * 24); // 24 h
         
     Date now = new Date(); 
     Calendar cal = Calendar.getInstance();
@@ -64,9 +67,7 @@
     int nowMonth = cal.get(Calendar.MONTH); 
     int nowYear = cal.get(Calendar.YEAR); 
     
-    long oneDay = 1000 * 60 * 60 * 24; 
-    
-    Date yesterday = new Date(now.getTime() - oneDay); 
+    Date yesterday = new Date(now.getTime() - interval); 
     cal.setTime(yesterday); 
     int yesterdayDay = cal.get(Calendar.DAY_OF_MONTH); 
     int yesterdayMonth = cal.get(Calendar.MONTH); 
@@ -88,9 +89,7 @@
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "channelId,channelName,value,channelUnit,createDate,modifiedDate")
             .split(StringPool.COMMA);
-    
-    int interval = GetterUtil.getInteger(portletPreferences.getValue("interval", "1440"));
-    
+        
     String paginationType = portletPreferences.getValue("paginationType", "regular");
     
     String password = portletPreferences.getValue("password", "");

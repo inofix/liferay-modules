@@ -66,8 +66,6 @@ public class MeasurementIndexer extends BaseIndexer {
     protected Document doGetDocument(Object obj) throws Exception {
         Measurement measurement = (Measurement) obj;
 
-        _log.info("doGetDocument");
-
         Document document = getBaseModelDocument(PORTLET_ID, measurement);
 
         // Set document field values (in alphabetical order)
