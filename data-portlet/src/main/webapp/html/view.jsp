@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-04-03 19:32 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-04-04 11:31 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -41,16 +41,6 @@
             String.valueOf(untilDateMonth));
     portletURL.setParameter("untilDateYear",
             String.valueOf(untilDateYear));
-
-    long from = 0;
-    if (fromDate != null) {
-        from = fromDate.getTime();
-    }
-
-    long until = 0;
-    if (untilDate != null) {
-        until = untilDate.getTime();
-    }
 
     if (idx > 0) {
         idx = idx - 1;
