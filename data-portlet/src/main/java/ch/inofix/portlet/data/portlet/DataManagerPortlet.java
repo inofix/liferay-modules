@@ -45,8 +45,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-04-03 12:39
- * @version 1.0.5
+ * @modified 2017-04-04 13:05
+ * @version 1.0.6
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -68,16 +68,13 @@ public class DataManagerPortlet extends MVCPortlet {
 
         String channelId = ParamUtil.getString(resourceRequest, "channelId");       // channel by id
         String channelName = ParamUtil.getString(resourceRequest, "channelName");   // channel by name
-        int frequency = ParamUtil.getInteger(resourceRequest, "frequency", 15);     // frequency in minutes
         long from = ParamUtil.getLong(resourceRequest, "from");                     // begin of selected interval
-        int interval = ParamUtil.getInteger(resourceRequest, "interval", 24 * 60);  // interval in minutes
+        int limit = ParamUtil.getInteger(resourceRequest, "limit", 1000);           // maximum number of data points
         long until = ParamUtil.getLong(resourceRequest, "until");                   // end of selected interval
-
-        int end = interval / frequency; // by default, limit displayed results to one day
 
         Hits hits = MeasurementLocalServiceUtil.search(
                 themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-                channelId, channelName, from, until, true, 0, end, null);
+                channelId, channelName, from, until, true, 0, limit, null);
 
         List<Document> documents = hits.toList();
         Iterator<Document> iterator = documents.iterator();

@@ -90,6 +90,10 @@
                     monthValue="<%=untilDateMonth%>"
                     yearParam="untilDateYear"
                     yearValue="<%=untilDateYear%>" />
+                    
+                <aui:input name="untilDateDay" type="hidden" value="<%= untilDateDay %>"/>
+                <aui:input name="untilDateMonth" type="hidden" value="<%= untilDateMonth %>"/>
+                <aui:input name="untilDateYear" type="hidden" value="<%= untilDateYear %>"/>
 
             </aui:field-wrapper>
                         

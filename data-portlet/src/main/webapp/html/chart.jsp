@@ -2,8 +2,8 @@
     chart.jsp: a d3 driven chart panel for the data-portlet
     
     Created:    2017-04-01 23:15 by Christian Berndt
-    Modified:   2017-04-04 11:29 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-04-04 13:06 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -19,13 +19,13 @@
             channelName, from, until, false, 0, Integer.MAX_VALUE,
             sort);
     
-    Date previousDate = new Date(fromDate.getTime() - oneDay); 
+    Date previousDate = new Date(fromDate.getTime() - interval); 
     cal.setTime(previousDate); 
     int previousDateDay = cal.get(Calendar.DAY_OF_MONTH); 
     int previousDateMonth = cal.get(Calendar.MONTH); 
     int previousDateYear = cal.get(Calendar.YEAR); 
     
-    Date nextDate = new Date(untilDate.getTime() + oneDay); 
+    Date nextDate = new Date(untilDate.getTime() + interval); 
     cal.setTime(nextDate); 
     int nextDateDay = cal.get(Calendar.DAY_OF_MONTH); 
     int nextDateMonth = cal.get(Calendar.MONTH); 
@@ -89,11 +89,9 @@
 
     <portlet:resourceURL id="getJSON" var="getJSONURL">
         <portlet:param name="channelName" value="<%=channelName%>" />
-        <portlet:param name="frequency"
-            value="<%=String.valueOf(frequency)%>" />
         <portlet:param name="from" value="<%=String.valueOf(from)%>" />
-        <portlet:param name="interval"
-            value="<%=String.valueOf(interval)%>" />
+        <portlet:param name="interval" value="<%=String.valueOf(interval)%>" />
+        <portlet:param name="limit" value="<%=String.valueOf(limit)%>" />
         <portlet:param name="until" value="<%=String.valueOf(until)%>" />
     </portlet:resourceURL>
 
@@ -114,17 +112,14 @@
     var formatTime = d3.timeFormat("%H:%M");
     
     d3.json("<%= getJSONURL %>", function(error, data) {
+        
         if (error) throw error;
-        
-    //     console.log(data);
-        
+                
         var unit = ""; 
         if (data && data.length > 0) {
             unit = data[0].channelUnit; 
         }
-        
-    //    console.log("unit = " + unit); 
-    
+            
         // format the date
         data.forEach(function(d) {
             d.timestamp = parseTime(d.timestamp);
@@ -132,9 +127,6 @@
         
         var minDate = d3.min(data, function(d) {return d.timestamp}); 
         var maxDate = d3.max(data, function(d) {return d.timestamp});
-        
-//         console.log("minDate = " + minDate); 
-//         console.log("maxDate = " + maxDate); 
             
         x.domain([minDate, maxDate]);
         y.domain([0, d3.max(data, function(d) { return d.value; })]);
@@ -156,7 +148,7 @@
                 .attr("class", "bar")
                 .attr("x", function(d) { return x(d.timestamp); })
                 .attr("y", function(d) { return y(d.value); })
-                .attr("width", (width / data.length) - 1)
+                .attr("width", (width / data.length))
                 .attr("height", function(d) { return height - y(d.value); })
         ;
     });

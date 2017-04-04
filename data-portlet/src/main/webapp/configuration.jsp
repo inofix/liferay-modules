@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-04-03 19:26 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-04-04 13:06 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -34,7 +34,10 @@
         }
     }
     
-    List<User> users = UserServiceUtil.getGroupUsers(scopeGroupId); 
+    List<User> users = UserServiceUtil.getGroupUsers(scopeGroupId);
+
+    String h24 = String.valueOf(1000 * 60 * 60 * 24); 
+    String h48 = String.valueOf(1000 * 60 * 60 * 48); 
 %>
 
 <liferay-portlet:actionURL portletConfiguration="true"
@@ -94,18 +97,35 @@
 
             </aui:fieldset>
 
-        </liferay-ui:panel>        
+        </liferay-ui:panel> 
+        
+        <liferay-ui:panel id="datamanagerChartPanel"
+            title="chart" extended="true">
+
+            <aui:fieldset>
+
+                <aui:select name="preferences--interval--"
+                    helpMessage="interval-help" inlineField="<%=true%>">
+
+                    <aui:option value="<%= h24 %>" label="24 h"
+                        selected='<%=h24.equals(String.valueOf(interval))%>' />
+                        
+                    <aui:option value="<%= h48 %>" label="48 h"
+                        selected='<%=h48.equals(String.valueOf(interval))%>' />
+
+                 </aui:select>
+                
+                <aui:input name="preferences--limit--"
+                    helpMessage="limit-help" inlineField="<%=true%>"
+                    value="<%=limit%>" />
+                    
+            </aui:fieldset>
+        </liferay-ui:panel>       
 
         <liferay-ui:panel id="datamanagerColumnsPanel"
             title="columns" extended="true">
 
             <aui:fieldset>
-
-                <%-- 
-                <aui:input name="preferences--headerNames--"
-                    helpMessage="header-names-help"
-                    value="<%=StringUtil.merge(headerNames, StringPool.COMMA) %>" />
-                --%>
             
                 <aui:input name="preferences--columns--" type="hidden" />
                 
@@ -126,31 +146,7 @@
             title="miscellaneous" extended="true">
 
             <aui:fieldset>
-
-                <aui:select name="preferences--interval--"
-                    helpMessage="interval-help" inlineField="<%=true%>">
-
-                    <aui:option value="1440" label="24 h"
-                        selected='<%="1440".equals(String.valueOf(interval))%>' />
-                        
-                    <aui:option value="2880" label="48 h"
-                        selected='<%="2880".equals(String.valueOf(interval))%>' />
-
-<%--                      <aui:option value="4320" label="72 h" --%>
-<%--                         selected='<%="4320".equals(String.valueOf(interval))%>' /> --%>
-
-<%--                     <aui:option value="5760" label="96 h" --%>
-<%--                         selected='<%="5760".equals(String.valueOf(interval))%>' /> --%>
-
-<%--                      <aui:option value="7200" label="120 h" --%>
-<%--                         selected='<%="7200".equals(String.valueOf(interval))%>' /> --%>
-
-                 </aui:select>
-
-                <aui:input name="preferences--frequency--"
-                    helpMessage="frequency-help" inlineField="<%=true%>"
-                    value="<%=frequency%>" />
-
+                
                 <aui:select name="preferences--paginationType--"
                     inlineField="<%=true%>">
                     
