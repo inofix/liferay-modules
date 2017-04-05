@@ -18,6 +18,9 @@ import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.SystemProperties;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.PortletPreferences;
 import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
@@ -59,16 +62,16 @@ public class SyncDataMessageListener extends BaseMessageListener {
                 // Retrieve the configuration parameter
                 String dataURL = PrefsPropsUtil.getString(prefs, companyId,
                         "dataURL");
-                final String password = PrefsPropsUtil.getString(prefs, companyId,
-                        "password");
-                final String userName = PrefsPropsUtil.getString(prefs, companyId,
-                        "userName");
+                final String password = PrefsPropsUtil.getString(prefs,
+                        companyId, "password");
+                final String userName = PrefsPropsUtil.getString(prefs,
+                        companyId, "userName");
 
                 Authenticator.setDefault(new Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(userName,
-                                password.toCharArray());
+                        return new PasswordAuthentication(userName, password
+                                .toCharArray());
                     }
                 });
 
@@ -76,8 +79,13 @@ public class SyncDataMessageListener extends BaseMessageListener {
 
                 if (Validator.isNotNull(dataURL)) {
 
+                    String tmpDir = SystemProperties
+                            .get(SystemProperties.TMP_DIR)
+                            + StringPool.SLASH
+                            + Time.getTimestamp();
+
                     URL url = new URL(dataURL);
-                    file = new File(dataURL);
+                    file = new File(tmpDir + "/data.xml");
                     FileUtils.copyURLToFile(url, file);
 
                     long userId = PrefsPropsUtil.getLong(prefs, companyId,
@@ -89,8 +97,8 @@ public class SyncDataMessageListener extends BaseMessageListener {
                     Map<String, String[]> parameterMap = new HashMap<String, String[]>();
 
                     _log.info("taskName = " + taskName);
-                    _log.info("userId = " + userId);
-                    _log.info("groupId = " + groupId);
+//                    _log.info("userId = " + userId);
+//                    _log.info("groupId = " + groupId);
 
                     MeasurementLocalServiceUtil.importMeasurements(userId,
                             groupId, privateLayout, parameterMap, file);
