@@ -33,6 +33,8 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.SystemProperties;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 //import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
@@ -48,8 +50,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-04-05 12:29
- * @version 1.0.7
+ * @modified 2017-04-05 14:58
+ * @version 1.0.8
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -93,22 +95,20 @@ public class DataManagerPortlet extends MVCPortlet {
         ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest
                 .getAttribute(WebKeys.THEME_DISPLAY);
 
-        String channelId = ParamUtil.getString(resourceRequest, "channelId"); // channel
-                                                                              // by
-                                                                              // id
-        String channelName = ParamUtil
-                .getString(resourceRequest, "channelName"); // channel by name
-        long from = ParamUtil.getLong(resourceRequest, "from"); // begin of
-                                                                // selected
-                                                                // interval
-        int limit = ParamUtil.getInteger(resourceRequest, "limit", 1000); // maximum
-                                                                          // number
-                                                                          // of
-                                                                          // data
-                                                                          // points
-        long until = ParamUtil.getLong(resourceRequest, "until"); // end of
-                                                                  // selected
-                                                                  // interval
+        // channel by id
+        String channelId = ParamUtil.getString(resourceRequest, "channelId");
+
+        // channel by name
+        String channelName = ParamUtil.getString(resourceRequest, "channelName");
+
+        // begin of selected interval
+        long from = ParamUtil.getLong(resourceRequest, "from");
+
+        // maximum number of data points
+        int limit = ParamUtil.getInteger(resourceRequest, "limit", 1000);
+
+        // end of selected interval
+        long until = ParamUtil.getLong(resourceRequest, "until");
 
         Hits hits = MeasurementLocalServiceUtil.search(
                 themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
@@ -167,8 +167,11 @@ public class DataManagerPortlet extends MVCPortlet {
 
         if (Validator.isNotNull(dataURL)) {
 
+            String tmpDir = SystemProperties.get(SystemProperties.TMP_DIR)
+                    + StringPool.SLASH + Time.getTimestamp();
+
             URL url = new URL(dataURL);
-            file = new File(dataURL);
+            file = new File(tmpDir + "/data.xml");
             FileUtils.copyURLToFile(url, file);
 
         }
