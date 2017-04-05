@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-04-04 12:41 by Christian Berndt
-    Version:    1.2.3
+    Modified:   2017-04-05 12:49 by Christian Berndt
+    Version:    1.2.4
 --%>
 
 <%@page import="java.util.Calendar"%>
@@ -34,7 +34,7 @@
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%-- <%@ taglib uri="/inofix-util" prefix="ifx-util" %> --%>
+<%@ taglib uri="/inofix-util" prefix="ifx-util" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 <%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security" %>

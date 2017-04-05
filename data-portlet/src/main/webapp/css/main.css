@@ -2,8 +2,8 @@
  * main.css: css specific to the data-portlet.
  *
  * Created:     2017-03-24 15:46 by Christian Berndt
- * Modified:    2017-04-05 12:22 by Christian Berndt
- * Version:     1.0.2
+ * Modified:    2017-04-05 12:54 by Christian Berndt
+ * Version:     1.0.3
  * 
  */
 @import "compass";
@@ -70,6 +70,18 @@
             &.field-wrapper {
                 margin-bottom: 0; 
             }
+        }
+        
+                
+        dl.build-info dfn, 
+        dl.build-info dt {
+            display: inline;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        dl.build-info dfn {
+            margin-right: 20px;
         }
     
         .lfr-input-date {
