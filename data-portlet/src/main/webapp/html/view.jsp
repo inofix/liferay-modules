@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-04-04 11:31 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-04-05 12:48 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -126,4 +126,4 @@
 
 <hr>
 
-<!-- <ifx-util:build-info /> -->
+<ifx-util:build-info />
