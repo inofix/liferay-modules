@@ -1,8 +1,10 @@
 package ch.inofix.portlet.data.service.impl;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
+import ch.inofix.portlet.data.model.Measurement;
 import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 import ch.inofix.portlet.data.service.base.MeasurementServiceBaseImpl;
 
@@ -25,8 +27,8 @@ import com.liferay.portal.kernel.exception.SystemException;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-03-09 18:42
- * @version 1.0.1
+ * @modified 2017-04-05 12:32
+ * @version 1.0.2
  * @see ch.inofix.portlet.data.service.base.MeasurementServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementServiceUtil
  */
@@ -40,14 +42,25 @@ public class MeasurementServiceImpl extends MeasurementServiceBaseImpl {
      */
 
     @Override
+    public List<Measurement> deleteGroupMeasurements(long groupId)
+            throws PortalException, SystemException {
+
+        // TODO: enable permission checks
+        // DataPortletPermission.check(getPermissionChecker(), groupId,
+        // ActionKeys.DELETE_GROUP_MEASUREMENTS);
+
+        return MeasurementLocalServiceUtil.deleteGroupMeasurements(groupId);
+    }
+
+    @Override
     public long importMeasurementsInBackground(long userId, String taskName,
             long groupId, boolean privateLayout,
             Map<String, String[]> parameterMap, File file)
             throws PortalException, SystemException {
 
         // TODO: enable permission check
-//        DataPortletPermission.check(getPermissionChecker(), groupId,
-//                ActionKeys.IMPORT_MEASUREMENTS);
+        // DataPortletPermission.check(getPermissionChecker(), groupId,
+        // ActionKeys.IMPORT_MEASUREMENTS);
 
         return MeasurementLocalServiceUtil.importMeasurementsInBackground(
                 userId, taskName, groupId, privateLayout, parameterMap, file);

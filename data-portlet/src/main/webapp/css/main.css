@@ -2,14 +2,28 @@
  * main.css: css specific to the data-portlet.
  *
  * Created:     2017-03-24 15:46 by Christian Berndt
- * Modified:    2017-04-01 13:27 by Christian Berndt
- * Version:     1.0.1
+ * Modified:    2017-04-05 12:22 by Christian Berndt
+ * Version:     1.0.2
  * 
  */
 @import "compass";
 @import "mixins";
  
 .aui  {
+    
+    .btn-danger {
+        a {
+            color: white;
+            
+            &:hover {
+                color: white; 
+            }
+            
+            img {
+                display: none; 
+            }
+        }
+    }
     
     .chart-browser {
     
