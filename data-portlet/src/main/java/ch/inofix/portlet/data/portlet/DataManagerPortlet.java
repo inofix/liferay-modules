@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 
+import ch.inofix.portlet.data.model.Measurement;
 import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 import ch.inofix.portlet.data.service.MeasurementServiceUtil;
 
@@ -36,6 +37,8 @@ import com.liferay.portal.kernel.util.Validator;
 //import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
@@ -45,11 +48,35 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-04-04 13:05
- * @version 1.0.6
+ * @modified 2017-04-05 12:29
+ * @version 1.0.7
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
+
+    /**
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.8
+     * @throws Exception
+     */
+    public void deleteGroupMeasurements(ActionRequest actionRequest,
+            ActionResponse actionResponse) throws Exception {
+
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+                Measurement.class.getName(), actionRequest);
+
+        List<Measurement> measurements = MeasurementServiceUtil
+                .deleteGroupMeasurements(serviceContext.getScopeGroupId());
+
+        SessionMessages.add(actionRequest, "request_processed", PortletUtil
+                .translate("successfully-deleted-x-measurements",
+                        measurements.size()));
+
+        actionResponse.setRenderParameter("tabs1", tabs1);
+    }
 
     /**
      *
@@ -66,11 +93,22 @@ public class DataManagerPortlet extends MVCPortlet {
         ThemeDisplay themeDisplay = (ThemeDisplay) resourceRequest
                 .getAttribute(WebKeys.THEME_DISPLAY);
 
-        String channelId = ParamUtil.getString(resourceRequest, "channelId");       // channel by id
-        String channelName = ParamUtil.getString(resourceRequest, "channelName");   // channel by name
-        long from = ParamUtil.getLong(resourceRequest, "from");                     // begin of selected interval
-        int limit = ParamUtil.getInteger(resourceRequest, "limit", 1000);           // maximum number of data points
-        long until = ParamUtil.getLong(resourceRequest, "until");                   // end of selected interval
+        String channelId = ParamUtil.getString(resourceRequest, "channelId"); // channel
+                                                                              // by
+                                                                              // id
+        String channelName = ParamUtil
+                .getString(resourceRequest, "channelName"); // channel by name
+        long from = ParamUtil.getLong(resourceRequest, "from"); // begin of
+                                                                // selected
+                                                                // interval
+        int limit = ParamUtil.getInteger(resourceRequest, "limit", 1000); // maximum
+                                                                          // number
+                                                                          // of
+                                                                          // data
+                                                                          // points
+        long until = ParamUtil.getLong(resourceRequest, "until"); // end of
+                                                                  // selected
+                                                                  // interval
 
         Hits hits = MeasurementLocalServiceUtil.search(
                 themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),

@@ -49,8 +49,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-04-02 23:36
- * @version 1.0.6
+ * @modified 2017-04-05 12:30
+ * @version 1.0.7
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -100,12 +100,33 @@ public class MeasurementLocalServiceImpl extends
     }
 
     @Override
+    public List<Measurement> deleteGroupMeasurements(long groupId)
+            throws PortalException, SystemException {
+
+        List<Measurement> measurements = measurementPersistence
+                .findByGroupId(groupId);
+
+        for (Measurement measurement : measurements) {
+            deleteMeasurement(measurement);
+        }
+
+        return measurements;
+
+    }
+
+    @Override
     public Measurement deleteMeasurement(Measurement measurement)
-            throws SystemException {
+            throws PortalException, SystemException {
 
         // Measurement
 
         measurementPersistence.remove(measurement);
+
+        // Indexer
+
+        Indexer indexer = IndexerRegistryUtil
+                .nullSafeGetIndexer(Measurement.class);
+        indexer.delete(measurement);
 
         return measurement;
     }
@@ -116,12 +137,6 @@ public class MeasurementLocalServiceImpl extends
 
         Measurement measurement = measurementPersistence
                 .findByPrimaryKey(measurementId);
-
-        // Indexer
-
-        Indexer indexer = IndexerRegistryUtil
-                .nullSafeGetIndexer(Measurement.class);
-        indexer.delete(measurement);
 
         return measurementLocalService.deleteMeasurement(measurement);
     }

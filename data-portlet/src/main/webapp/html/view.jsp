@@ -80,6 +80,7 @@
     <c:when test='<%=tabs1.equals("import-export")%>'>
             
         <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/import.jsp" />   
+        <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/delete_measurements.jsp" />   
         
     </c:when>
 
