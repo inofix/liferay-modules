@@ -2,8 +2,8 @@
  * main.css: css specific to the data-portlet.
  *
  * Created:     2017-03-24 15:46 by Christian Berndt
- * Modified:    2017-04-05 12:54 by Christian Berndt
- * Version:     1.0.3
+ * Modified:    2017-04-11 19:09 by Christian Berndt
+ * Version:     1.0.4
  * 
  */
 @import "compass";
@@ -72,6 +72,57 @@
             }
         }
         
+        .display {
+        
+            background-color: #d3d3d3;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            
+            a {
+                color: #555;           
+                text-decoration: none;
+                
+                &:hover {
+                    color: #555;
+                    text-decoration: none;
+                }
+            }
+            
+            .caption {
+                padding: 15px;
+            }
+    
+            .face {
+            
+                background: #fcfcfc;
+                border-radius: 50%;
+                display: table; 
+                height: 170px; 
+                margin: 0 auto;
+                width: 170px; 
+                
+                .unit,
+                .value {
+                    display: table-cell; 
+                    font-size: 48.5px; 
+                    font-weight: 600;
+                    text-decoration: none; 
+                    vertical-align: middle;             
+                }
+                
+                &:hover {
+                    background: white;           
+                }
+            }
+                  
+            .name {
+                font-weight: 600; 
+                padding: 15px;
+            }
+            
+        }
+        
                 
         dl.build-info dfn, 
         dl.build-info dt {
@@ -98,8 +149,22 @@
             } 
         }  
         
-        .navbar-inner {
-            padding: 0; 
+        .toolbar {
+        
+            text-align: center; 
+            
+            .control-group-inline {
+                float: left;
+            }
+            
+            .prev-next {
+                display: inline-block;
+            }
+            
+            .navbar-inner {
+/*                 padding: 0;  */
+            }
         }
+
     }
 }

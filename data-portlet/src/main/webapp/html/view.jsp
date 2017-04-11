@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-04-05 12:48 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-04-11 22:59 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -15,8 +15,6 @@
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
-    String channelId = ParamUtil.getString(request, "channelId");
-    String channelName = ParamUtil.getString(request, "channelName");
     int delta = ParamUtil.getInteger(request, "delta", 20);
 
     int idx = ParamUtil.getInteger(request, "cur");
@@ -28,19 +26,8 @@
     portletURL.setParameter("backURL", backURL);
     portletURL.setParameter("channelId", channelId);
     portletURL.setParameter("channelName", channelName);
-    portletURL.setParameter("fromDateDay", String.valueOf(fromDateDay));
-    portletURL.setParameter("fromDateMonth",
-            String.valueOf(fromDateMonth));
-    portletURL.setParameter("fromDateYear",
-            String.valueOf(fromDateYear));
-    portletURL.setParameter("mvcPath", "/html/view.jsp");
-    portletURL.setParameter("tabs1", tabs1);
-    portletURL.setParameter("untilDateDay",
-            String.valueOf(untilDateDay));
-    portletURL.setParameter("untilDateMonth",
-            String.valueOf(untilDateMonth));
-    portletURL.setParameter("untilDateYear",
-            String.valueOf(untilDateYear));
+    portletURL.setParameter("from", String.valueOf(from));
+    portletURL.setParameter("until", String.valueOf(until));
 
     if (idx > 0) {
         idx = idx - 1;
@@ -66,10 +53,16 @@
 <liferay-ui:error exception="<%=PrincipalException.class%>"
     message="you-dont-have-the-required-permissions" />
 
-<liferay-ui:tabs names="chart,list,import-export" param="tabs1"
+<liferay-ui:tabs names="latest,chart,list,import-export" param="tabs1"
     url="<%=portletURL.toString()%>" />
 
 <c:choose>
+
+    <c:when test='<%=tabs1.equals("latest")%>'>
+            
+        <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/latest.jsp" />   
+        
+    </c:when>
 
     <c:when test='<%=tabs1.equals("chart")%>'>
             
@@ -126,4 +119,4 @@
 
 <hr>
 
-<ifx-util:build-info />
+<%-- <ifx-util:build-info /> --%>
