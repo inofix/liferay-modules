@@ -2,11 +2,10 @@
     latest.jsp: Display the latest state of the configured channels
     
     Created:    2017-04-11 17:45 by Christian Berndt
-    Modified:   2017-04-11 17:45 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-04-11 23:52 by Christian Berndt
+    Version:    1.0.1
  --%>
  
- <%@page import="ch.inofix.portlet.data.service.MeasurementServiceUtil"%>
 <%@ include file="/html/init.jsp"%>
 
  <%
@@ -25,6 +24,8 @@
     // remove facet attributes from context, since we need the field's index here
     searchContext.setAttribute("channelId", null); 
     searchContext.setAttribute("channelName", null);
+    searchContext.setAttribute("from", 0);
+    searchContext.setAttribute("until", 0);
 
     Indexer indexer = IndexerRegistryUtil.getIndexer(Measurement.class);
     indexer.search(searchContext);
