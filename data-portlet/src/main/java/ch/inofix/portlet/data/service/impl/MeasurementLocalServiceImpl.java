@@ -49,8 +49,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-04-05 12:30
- * @version 1.0.7
+ * @modified 2017-04-11 23:44
+ * @version 1.0.8
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -382,6 +382,10 @@ public class MeasurementLocalServiceImpl extends
             boolean andSearch, int start, int end, Sort sort)
             throws SystemException {
 
+        if (Validator.isNull(sort)) {
+            sort = new Sort("timestamp", true);
+        }
+
         try {
 
             SearchContext searchContext = new SearchContext();
@@ -405,6 +409,9 @@ public class MeasurementLocalServiceImpl extends
 
             searchContext.setAttributes(attributes);
 
+            // Always add facets as late as possible so that the search context
+            // fields can be considered by the facets
+
             List<Facet> facets = new ArrayList<Facet>();
 
             if (Validator.isNotNull(channelId)) {
@@ -426,10 +433,7 @@ public class MeasurementLocalServiceImpl extends
             }
 
             searchContext.setFacets(facets);
-
-            if (Validator.isNotNull(sort)) {
-                searchContext.setSorts(sort);
-            }
+            searchContext.setSorts(sort);
 
             Indexer indexer = IndexerRegistryUtil
                     .nullSafeGetIndexer(Measurement.class);
