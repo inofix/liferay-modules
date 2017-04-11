@@ -2,17 +2,11 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-04-04 11:30 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-04-11 23:26 by Christian Berndt
+    Version:    1.0.7
  --%>
 
 <%@ include file="/html/init.jsp"%>
-
-<%@page import="java.util.Collections"%>
-
-<%@page import="com.liferay.portal.kernel.search.facet.collector.TermCollector"%>
-<%@page import="com.liferay.portal.kernel.search.facet.collector.FacetCollector"%>
-<%@page import="com.liferay.util.PropertyComparator"%>
 
 <%
     SearchContext searchContext = SearchContextFactory
@@ -45,12 +39,40 @@
             .getTermCollectors();
     
     PropertyComparator termComparator = new PropertyComparator("term");
-    Collections.sort(channelNameTermCollectors, termComparator); 
+    Collections.sort(channelNameTermCollectors, termComparator);
+    
+    Calendar cal = Calendar.getInstance();
+    
+    cal.setTime(new Date(from)); 
+
+    int fromDay = cal.get(Calendar.DAY_OF_MONTH); 
+    int fromMonth = cal.get(Calendar.MONTH); 
+    int fromYear = cal.get(Calendar.YEAR);   
+    
+    cal.setTime(new Date(until)); 
+    
+    int untilDay = cal.get(Calendar.DAY_OF_MONTH); 
+    int untilMonth = cal.get(Calendar.MONTH); 
+    int untilYear = cal.get(Calendar.YEAR); 
 %>
 
-<aui:nav-bar>
+<portlet:renderURL var="nextDayURL">
+    <portlet:param name="channelName" value="<%= channelName %>"/>
+    <portlet:param name="tabs1" value="<%= tabs1 %>"/>
+    <portlet:param name="from" value="<%= String.valueOf(until) %>"/>
+    <portlet:param name="until" value="<%= String.valueOf(until + oneDay) %>"/>    
+</portlet:renderURL>
 
-    <aui:nav id="toolbarContainer" cssClass="nav-display-style-buttons">
+<portlet:renderURL var="previousDayURL">
+    <portlet:param name="channelName" value="<%= channelName %>"/>
+    <portlet:param name="tabs1" value="<%= tabs1 %>"/>
+    <portlet:param name="from" value="<%= String.valueOf(from - oneDay) %>"/>
+    <portlet:param name="until" value="<%= String.valueOf(from) %>"/>
+</portlet:renderURL>
+
+<aui:nav-bar cssClass="toolbar">
+
+<%--     <aui:nav id="toolbarContainer" cssClass="nav-display-style-buttons"> --%>
     
         <liferay-portlet:renderURL varImpl="searchURL" />
     
@@ -58,7 +80,7 @@
         
             <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/>
             
-            <aui:select label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
+            <aui:select cssClass="pull-left" label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
                 <aui:option value="" label="select-channel"/>
                 <c:forEach items="<%=channelNameTermCollectors%>" var="termCollector">
                     <aui:option value="${termCollector.term}"
@@ -66,36 +88,30 @@
                 </c:forEach>
             </aui:select>
             
-            <aui:field-wrapper inlineField="<%= true %>" inlineLabel="true" name="from">
-            
-                <liferay-ui:input-date name="from"          
-                    nullable="<%= fromDate == null %>" 
-                    dayParam="fromDateDay"
-                    dayValue="<%=fromDateDay%>"
-                    monthParam="fromDateMonth"
-                    monthValue="<%=fromDateMonth%>"
-                    yearParam="fromDateYear"
-                    yearValue="<%=fromDateYear%>" />
-
-            </aui:field-wrapper>
-            
-            <aui:field-wrapper inlineField="<%= true %>" inlineLabel="true" name="until" >
-            
-                <liferay-ui:input-date name="until"                
-                    disabled="<%= true %>"
-                    nullable="<%= untilDate == null %>" 
-                    dayParam="untilDateDay"
-                    dayValue="<%=untilDateDay%>"
-                    monthParam="untilDateMonth"
-                    monthValue="<%=untilDateMonth%>"
-                    yearParam="untilDateYear"
-                    yearValue="<%=untilDateYear%>" />
+            <aui:button-row cssClass="prev-next">
+                <aui:a href="<%= previousDayURL %>" cssClass="btn btn-default" label="previous"/>
+                <liferay-ui:input-date 
+                    disabled="<%= true %>"         
+                    dayParam="fromDay"
+                    dayValue="<%=fromDay%>"
+                    monthParam="fromMonth"
+                    monthValue="<%=fromMonth%>"
+                    yearParam="fromYear"
+                    yearValue="<%=fromYear%>" />
                     
-                <aui:input name="untilDateDay" type="hidden" value="<%= untilDateDay %>"/>
-                <aui:input name="untilDateMonth" type="hidden" value="<%= untilDateMonth %>"/>
-                <aui:input name="untilDateYear" type="hidden" value="<%= untilDateYear %>"/>
-
-            </aui:field-wrapper>
+                <liferay-ui:input-date               
+                    disabled="<%= true %>"
+                    dayParam="untilDay"
+                    dayValue="<%=untilDay%>"
+                    monthParam="untilMonth"
+                    monthValue="<%=untilMonth%>"
+                    yearParam="untilYear"
+                    yearValue="<%=untilYear%>" />
+                <aui:a href="<%= nextDayURL %>" cssClass="btn btn-default" label="next"/>
+            </aui:button-row> 
+            
+            <aui:input name="from" type="hidden" value="<%= from %>"/>
+            <aui:input name="until" type="hidden" value="<%= until %>"/>
                         
             <portlet:renderURL var="clearURL" />
             
@@ -106,7 +122,7 @@
             
         </aui:form>
         
-    </aui:nav>
+<%--     </aui:nav> --%>
     
 </aui:nav-bar>
 
@@ -116,6 +132,7 @@
     }
 </aui:script>
 
+<%-- 
 <aui:script use="aui-base">
 
     // Because hidden fields don't fire a change event, we have to 
@@ -140,3 +157,4 @@
     });
     
 </aui:script>
+--%>

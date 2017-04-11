@@ -2,12 +2,13 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-04-05 12:49 by Christian Berndt
-    Version:    1.2.4
+    Modified:   2017-04-11 17:47 by Christian Berndt
+    Version:    1.2.5
 --%>
 
-<%@page import="java.util.Calendar"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="java.util.Collections"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.List"%>
 
@@ -16,8 +17,10 @@
 <%@page import="ch.inofix.portlet.data.model.Measurement"%>
 <%@page import="ch.inofix.portlet.data.service.MeasurementLocalServiceUtil"%>
 
-<%@page import="com.liferay.portal.kernel.search.facet.MultiValueFacet"%>
+<%@page import="com.liferay.portal.kernel.search.facet.collector.TermCollector"%>
+<%@page import="com.liferay.portal.kernel.search.facet.collector.FacetCollector"%>
 <%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
+<%@page import="com.liferay.portal.kernel.search.facet.MultiValueFacet"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Field"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
@@ -31,6 +34,7 @@
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
+<%@page import="com.liferay.util.PropertyComparator"%>
 
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -48,6 +52,9 @@
 <theme:defineObjects />
 
 <%
+    String channelId = ParamUtil.getString(request, "channelId"); 
+    String channelName = ParamUtil.getString(request, "channelName");
+    
     String[] columns = portletPreferences.getValue("columns",
             "channelName,value,channelUnit,timestamp").split(
             StringPool.COMMA);
@@ -55,36 +62,14 @@
     String dataURL = portletPreferences.getValue("dataURL", "");
     
     int limit = GetterUtil.getInteger(portletPreferences.getValue("limit", "1000"));
-    if (limit > 10000) limit = 10000; // maximumn number of hits returned by indexer
+    if (limit > 10000) limit = 10000; // maximum number of hits returned by indexer
     
     long interval = GetterUtil.getLong(portletPreferences.getValue("interval", "0"), 1000 * 60 * 60 * 24); // 24 h
         
     Date now = new Date(); 
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(now); 
+    long oneDay = 1000 * 60 * 60 * 24;  
     
-    int nowDay = cal.get(Calendar.DAY_OF_MONTH); 
-    int nowMonth = cal.get(Calendar.MONTH); 
-    int nowYear = cal.get(Calendar.YEAR); 
-    
-    Date yesterday = new Date(now.getTime() - interval); 
-    cal.setTime(yesterday); 
-    int yesterdayDay = cal.get(Calendar.DAY_OF_MONTH); 
-    int yesterdayMonth = cal.get(Calendar.MONTH); 
-    int yesterdayYear = cal.get(Calendar.YEAR); 
-    
-    long from = 0;
-    int fromDateDay = ParamUtil.getInteger(request, "fromDateDay", yesterdayDay);  
-    int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth", yesterdayMonth); 
-    int fromDateYear = ParamUtil.getInteger(request, "fromDateYear", yesterdayYear);
-    Date fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear);
-    
-    if (fromDate != null) {
-        from = fromDate.getTime();
-    } else {
-        fromDate = yesterday;
-        from = fromDate.getTime();
-    }
+    long from = ParamUtil.getLong(request, "from", now.getTime() - oneDay);
 
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "channelId,channelName,value,channelUnit,createDate,modifiedDate")
@@ -94,20 +79,9 @@
     
     String password = portletPreferences.getValue("password", "");
     
-    String tabs1 = ParamUtil.getString(request, "tabs1", "chart");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "latest");
     
-    long until = 0;
-    int untilDateDay = ParamUtil.getInteger(request, "untilDateDay", nowDay);  
-    int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth", nowMonth); 
-    int untilDateYear = ParamUtil.getInteger(request, "untilDateYear", nowYear); 
-    Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
-    
-    if (untilDate != null) {
-        until = untilDate.getTime();
-    } else {
-        untilDate = now; 
-        until = now.getTime();
-    }
+    long until = ParamUtil.getLong(request, "until", now.getTime());
     
     long userId = GetterUtil.getLong(portletPreferences.getValue("userId", "0"));
     

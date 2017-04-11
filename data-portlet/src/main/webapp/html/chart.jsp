@@ -2,34 +2,19 @@
     chart.jsp: a d3 driven chart panel for the data-portlet
     
     Created:    2017-04-01 23:15 by Christian Berndt
-    Modified:   2017-04-04 13:06 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-04-11 23:47 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
 <%
-    String channelId = ParamUtil.getString(request, "channelId"); 
-    String channelName = ParamUtil.getString(request, "channelName");
-    
     Sort sort = new Sort("date_sortable", true);
-    
-    Hits hits = MeasurementLocalServiceUtil.search(
-            themeDisplay.getCompanyId(), scopeGroupId, channelId,
-            channelName, from, until, false, 0, Integer.MAX_VALUE,
-            sort);
-    
-    Date previousDate = new Date(fromDate.getTime() - interval); 
-    cal.setTime(previousDate); 
-    int previousDateDay = cal.get(Calendar.DAY_OF_MONTH); 
-    int previousDateMonth = cal.get(Calendar.MONTH); 
-    int previousDateYear = cal.get(Calendar.YEAR); 
-    
-    Date nextDate = new Date(untilDate.getTime() + interval); 
-    cal.setTime(nextDate); 
-    int nextDateDay = cal.get(Calendar.DAY_OF_MONTH); 
-    int nextDateMonth = cal.get(Calendar.MONTH); 
-    int nextDateYear = cal.get(Calendar.YEAR);    
+
+    Hits hits = MeasurementLocalServiceUtil
+            .search(themeDisplay.getCompanyId(), scopeGroupId,
+                    channelId, channelName, from, until, false, 0,
+                    Integer.MAX_VALUE, sort);
 %>
 
 <liferay-ui:app-view-toolbar               
@@ -38,31 +23,6 @@
     <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/toolbar.jsp" />   
                 
 </liferay-ui:app-view-toolbar> 
-
-<portlet:renderURL var="nextDayURL">
-    <portlet:param name="channelName" value="<%= channelName %>"/>
-    <portlet:param name="fromDateDay" value="<%= String.valueOf(untilDateDay) %>"/>
-    <portlet:param name="fromDateMonth" value="<%= String.valueOf(untilDateMonth) %>"/>
-    <portlet:param name="fromDateYear" value="<%= String.valueOf(untilDateYear) %>"/>
-    <portlet:param name="untilDateDay" value="<%= String.valueOf(nextDateDay) %>"/>
-    <portlet:param name="untilDateMonth" value="<%= String.valueOf(nextDateMonth) %>"/>
-    <portlet:param name="untilDateYear" value="<%= String.valueOf(nextDateYear) %>"/>    
-</portlet:renderURL>
-
-<portlet:renderURL var="previousDayURL">
-    <portlet:param name="channelName" value="<%= channelName %>"/>
-    <portlet:param name="fromDateDay" value="<%= String.valueOf(previousDateDay) %>"/>
-    <portlet:param name="fromDateMonth" value="<%= String.valueOf(previousDateMonth) %>"/>
-    <portlet:param name="fromDateYear" value="<%= String.valueOf(previousDateYear) %>"/> 
-    <portlet:param name="untilDateDay" value="<%= String.valueOf(fromDateDay) %>"/>
-    <portlet:param name="untilDateMonth" value="<%= String.valueOf(fromDateMonth) %>"/>
-    <portlet:param name="untilDateYear" value="<%= String.valueOf(fromDateYear) %>"/>        
-</portlet:renderURL>
-
-<div class="chart-browser">
-    <aui:a href="<%= previousDayURL %>" cssClass="btn btn-default" label="previous"/>
-    <aui:a href="<%= nextDayURL %>" cssClass="btn btn-default" label="next"/>
-</div>
 
 <c:if test="<%= hits.getLength() == 0 %>">
     <div class="alert alert-info">
