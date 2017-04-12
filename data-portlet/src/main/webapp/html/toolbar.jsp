@@ -24,6 +24,8 @@
     // remove facet attributes from context, since we need the field's index here
     searchContext.setAttribute("channelId", null); 
     searchContext.setAttribute("channelName", null);
+    searchContext.setAttribute("from", 0);
+    searchContext.setAttribute("until", 0);
 
     Indexer indexer = IndexerRegistryUtil.getIndexer(Measurement.class);
     indexer.search(searchContext);
@@ -70,14 +72,14 @@
     <portlet:param name="until" value="<%= String.valueOf(from) %>"/>
 </portlet:renderURL>
 
-<aui:nav-bar cssClass="toolbar">
+<liferay-portlet:renderURL varImpl="searchURL" />
 
-<%--     <aui:nav id="toolbarContainer" cssClass="nav-display-style-buttons"> --%>
+<aui:form action="<%= searchURL %>" name="fm1">
+
+    <aui:nav-bar cssClass="toolbar">
     
-        <liferay-portlet:renderURL varImpl="searchURL" />
-    
-        <aui:form action="<%= searchURL %>" name="fm1">
-        
+        <aui:nav cssClass="pull-left">
+       
             <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/>
             
             <aui:select cssClass="pull-left" label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
@@ -87,6 +89,10 @@
                         label="${termCollector.term} (${termCollector.frequency})" />
                 </c:forEach>
             </aui:select>
+            
+        </aui:nav>
+        
+        <aui:nav>
             
             <aui:button-row cssClass="prev-next">
                 <aui:a href="<%= previousDayURL %>" cssClass="btn btn-default" label="previous"/>
@@ -113,18 +119,25 @@
             <aui:input name="from" type="hidden" value="<%= from %>"/>
             <aui:input name="until" type="hidden" value="<%= until %>"/>
                         
+        </aui:nav>
+        
+        <%-- 
+        <aui:nav cssClass="pull-right">  
+         
             <portlet:renderURL var="clearURL" />
             
-            <aui:button-row cssClass="pull-right">
+            <aui:button-row >
                 <aui:button type="submit" value="search"/>
                 <aui:button value="reset" href="<%=clearURL%>" cssClass="clear-btn" />
             </aui:button-row>
             
-        </aui:form>
+        </aui:nav>
+        --%>
         
-<%--     </aui:nav> --%>
-    
-</aui:nav-bar>
+    </aui:nav-bar>
+
+</aui:form>
+
 
 <aui:script>
     function <portlet:namespace />select() {

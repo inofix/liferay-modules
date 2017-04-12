@@ -153,17 +153,21 @@
         
             text-align: center; 
             
-            .control-group-inline {
-                float: left;
-            }
-            
             .prev-next {
-                display: inline-block;
-            }
             
-            .navbar-inner {
-/*                 padding: 0;  */
+                margin-top: 10px;
+                
+                .btn {
+                    margin-left: 10px;
+                    margin-top: 0; 
+                    min-width: 70px;
+                }
+                
+                input {
+                    margin-bottom: 0; 
+                }
             }
+
         }
 
     }

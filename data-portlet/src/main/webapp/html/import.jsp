@@ -2,11 +2,16 @@
     import.jsp: The import panel of the data-portlet
     
     Created:    2017-03-13 12:46 by Christian Berndt
-    Modified:   2017-04-02 23:37 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-04-11 00:33 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
+
+<%
+    // TODO: add proper permission checks
+    boolean hasImportPermission = themeDisplay.isSignedIn(); 
+%>
 
 <portlet:actionURL var="importMeasurementsURL" name="importMeasurements">
     <portlet:param name="mvcPath" value="/html/import_processes.jsp" />
@@ -32,7 +37,7 @@
         <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
     
     
-        <aui:input name="file" type="file" inlineField="true" label="" />
+        <aui:input name="file" disabled="<%= !hasImportPermission %>" type="file" inlineField="true" label="" />
     
         <aui:button name="import" type="submit" value="import"
             disabled="true" />
@@ -67,7 +72,7 @@
         %>
     
         <aui:button name="import" type="submit" value="import"
-            disabled="<%=!isConfigured%>" />
+            disabled="<%=!isConfigured || !hasImportPermission %>" />
         <aui:button href="<%=browseURL%>" type="cancel" />
     
 </aui:form>
