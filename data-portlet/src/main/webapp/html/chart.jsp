@@ -2,8 +2,8 @@
     chart.jsp: a d3 driven chart panel for the data-portlet
     
     Created:    2017-04-01 23:15 by Christian Berndt
-    Modified:   2017-04-11 23:47 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-04-12 09:36 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -32,6 +32,11 @@
 
 <c:if test="<%= hits.getLength() > 0 %>">
     <style>
+        
+        .axis--x path {
+            display: none;
+        }
+        
         .bar {
             fill: steelblue;
         }
@@ -39,13 +44,8 @@
         .bar:hover {
             fill: brown;
         }
-        
-        .axis--x path {
-            display: none;
-        }
-    </style>
 
-    <svg width="960" height="500"></svg>
+    </style>
 
     <portlet:resourceURL id="getJSON" var="getJSONURL">
         <portlet:param name="channelName" value="<%=channelName%>" />
@@ -54,7 +54,11 @@
         <portlet:param name="limit" value="<%=String.valueOf(limit)%>" />
         <portlet:param name="until" value="<%=String.valueOf(until)%>" />
     </portlet:resourceURL>
-
+        
+    <svg width="960" height="500"></svg>
+    
+    <a href="<%= getJSONURL %>" target="_blank" class="pull-right">Download JSON</a>
+    
     <script>
     var svg = d3.select("svg"),
         margin = {top: 20, right: 20, bottom: 30, left: 40},
