@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE resource-action-mapping PUBLIC "-//Liferay//DTD Resource Action Mapping 6.2.0//EN"
+    "http://www.liferay.com/dtd/liferay-resource-action- mapping_6_2_0.dtd">
+<!--  
+    default.xml: The data manager's permission configuration.
+    
+    Created:    2017-04-12 00:14 by Christian Berndt
+    Modified:   2017-04-12 00:14 by Christian Berndt
+    Version:    1.0.0
+-->
+<resource-action-mapping>
+
+    <portlet-resource>
+        <portlet-name>data-portlet</portlet-name>
+        <permissions>
+            <supports>
+                <action-key>ACCESS_IN_CONTROL_PANEL</action-key>
+                <action-key>ADD_TO_PAGE</action-key>
+                <action-key>CONFIGURATION</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>VIEW</action-key>
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>ACCESS_IN_CONTROL_PANEL</action-key>
+                <action-key>ADD_TO_PAGE</action-key>
+                <action-key>CONFIGURATION</action-key>
+            </guest-unsupported>
+        </permissions>
+    </portlet-resource>
+
+    <model-resource>
+        <model-name>ch.inofix.portlet.data</model-name>
+        <portlet-ref>
+            <portlet-name>data-portlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>ADD_MEASUREMENT</action-key>
+                <action-key>DELETE_MEASUREMENTS</action-key>
+                <action-key>IMPORT_MEASUREMENTS</action-key>
+                <action-key>PERMISSIONS</action-key>
+            </supports>
+            <site-member-defaults/>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>ADD_MEASUREMENT</action-key>
+                <action-key>DELETE_MEASUREMENTS</action-key>
+                <action-key>IMPORT_MEASUREMENTS</action-key>
+                <action-key>PERMISSIONS</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+
+    <!-- Permission configuration for -->
+    <!-- a single contact object.     -->
+    <model-resource>
+        <model-name>ch.inofix.portlet.data.model.Measurement</model-name>
+        <portlet-ref>
+            <portlet-name>data-portlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>VIEW</action-key> 
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+
+</resource-action-mapping>
