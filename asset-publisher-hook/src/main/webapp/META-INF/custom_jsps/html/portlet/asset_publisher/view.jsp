@@ -3,8 +3,8 @@
     portlet which adds dynamic loading of pages to the asset-publisher.
         
     Created:    2017-01-24 17:42 by Christian Berndt
-    Modified:   2017-03-06 18:52 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-04-16 14:04 by Christian Berndt
+    Version:    1.0.2
 --%>
 <%--
 /**
@@ -215,12 +215,12 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
                 
                 <aui:script use="aui-base,aui-io-request-deprecated,aui-parse-content,liferay-so-scroll">
                 
-                    var activities = A.one('#p_p_id<portlet:namespace />');
+                    var assetPublisher = A.one('#p_p_id<portlet:namespace />');
                     var body = A.getBody();
-                    var footer = A.one('#footer');                
-                
-                    var loadingBar = activities.one('.loading-bar');
-                    var moreAssets = activities.one('.more-assets');
+                    var footer = A.one('#footer');   
+                                    
+                    var loadingBar = assetPublisher.one('.loading-bar');
+                    var moreAssets = assetPublisher.one('.more-assets');
                 
                     moreAssets.plug(A.Plugin.ParseContent);
                 
@@ -235,10 +235,6 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
                     ); 
                 
                     var loading = false;
-                    
-                    // console.log('cur = ' + <portlet:namespace />cur); 
-                    // console.log('total = ' + <portlet:namespace />total); 
-                    // console.log('delta = ' + <portlet:namespace />delta); 
                     
                     function loadNewContent(page) {
                     
@@ -263,6 +259,7 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
                                     {
                                         after: {
                                             success: function(event, id, obj) {
+                                            
                                                 var responseData = this.get('responseData');
                 
                                                 moreAssets.append(responseData);
@@ -270,23 +267,21 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
                                                 loadingBar.removeClass('loading-animation');
                 
                                                 loading = false;
-                                                
-                                                // console.log('loading = ' + loading);      
-                                                                                            
-                                                if (!activities.one('.no-assets')) {
+                                                                                                                                            
+                                                if (!assetPublisher.one('.no-assets')) {
                                                     if (body.height() < win.height()) {
                                                         loadNewContent();
                                                     }
-                                                    
-                                                    // else if (win.width() < 768) {
-                                                    //    loading = true;
-                                                    //
-                                                    //    var manualLoaderTemplate =
-                                                    //        '<div class="manual-loader">' +
-                                                    //            '<button href="javascript:;"><liferay-ui:message key="load-more-activities" /></button>' +
-                                                    //        '</div>';                
-                                                    //    moreAssets.append(manualLoaderTemplate);
-                                                    // }
+                                                }
+                                                
+                                                
+                                                // initialize .shariff elements
+                                                if (typeof jQuery != 'undefined') {  
+                                                    $('.shariff').each(function() {
+                                                        if (!this.hasOwnProperty('shariff')) {
+                                                            this.shariff = new Shariff(this);
+                                                        }
+                                                    });
                                                 }
                                             }
                                         }
@@ -316,8 +311,8 @@ contextObjects.put(PortletDisplayTemplateConstants.ASSET_PUBLISHER_HELPER, Asset
                 win.scroll.on(
                     'bottom-edge',
                     function(event) {
-                                    
-                        if (activities.one('.no-assets')) {
+                                                        
+                        if (assetPublisher.one('.no-assets')) {
                             loading = true;
                         }
             
