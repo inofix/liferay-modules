@@ -10,7 +10,7 @@
 	<artifactId>asset-publisher-hook</artifactId>
 	<packaging>war</packaging>
 	<name>Asset Publisher Hook</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<build>
 		<plugins>
             <!-- Read properties from dev.properties in -->
