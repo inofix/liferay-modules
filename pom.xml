@@ -3,15 +3,16 @@
     pom.xml: Parent pom to Inofix' Liferay Modules
     
     Created:    2015-05-06 19:32 by Christian Berndt
-    Modified:   2017-03-08 19:10 by Christian Berndt
-    Version:    1.1.8
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    Modified:   2017-04-26 16:33 by Christian Berndt
+    Version:    1.1.9
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ch.inofix</groupId>
     <artifactId>liferay-modules</artifactId>
-    <version>1.0.9</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
 
     <name>Liferay Modules by Inofix GmbH, Luzern</name>
@@ -122,6 +123,7 @@
         <module>inofix-theme</module>
 	    <module>map-portlet</module>
         <module>map-search-portlet</module>
+        <module>my-sites-directory-portlet</module>
         <module>my-sites-hook</module>
         <module>newsletter-portlet</module>
         <module>payment-portlet</module>
@@ -133,7 +135,7 @@
         <module>taglib-util</module>
         <module>timetracker-portlet</module>        
         <module>url-title-hook</module>
-  </modules>
+    </modules>
     
     <issueManagement>
         <url>https://github.com/inofix/liferay-modules/issues</url>
