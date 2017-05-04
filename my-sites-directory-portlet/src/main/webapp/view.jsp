@@ -2,8 +2,8 @@
     view.jsp: Default view of the my-sites-directory-portlet.
     
     Created:    2017-04-26 16:54 by Christian Berndt
-    Modified:   2017-04-26 16:54 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-05-04 15:23 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp" %>
@@ -24,7 +24,6 @@
     String currentURL = PortalUtil.getCurrentURL(request);
 
     LinkedHashMap<String, Object> groupParams = new LinkedHashMap<String, Object>();
-//     groupParams.put("site", Boolean.TRUE);
     groupParams.put("usersGroups", new Long(user.getUserId()));
     groupParams.put("active", Boolean.TRUE);
 
@@ -41,9 +40,13 @@
             .get("layout.friendly.url.public.servlet.mapping");
 %>
 
-<div class="nav-menu sites-directory-taglib">
+<div class="panel panel-default sites-directory-taglib">
+
+    <div class="panel-heading">
+        <liferay-ui:message key="my-sites"/>
+    </div>
     
-    <ul>
+    <ul class="list-group">
         <% 
             for (Group group : groups) {
                 
@@ -59,7 +62,7 @@
                 
         %>
         <c:if test="<%= Validator.isNotNull(href) %>">
-            <li>
+            <li class="list-group-item">
                 <a href="<%= href %>"><%= group.getDescriptiveName(locale) %></a>
             </li>
         </c:if>
