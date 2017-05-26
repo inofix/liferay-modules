@@ -2,8 +2,8 @@
     view.jsp: Default view of the my-sites-directory-portlet.
     
     Created:    2017-04-26 16:54 by Christian Berndt
-    Modified:   2017-05-04 15:23 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-05-26 15:19 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/html/init.jsp" %>
@@ -50,22 +50,41 @@
         <% 
             for (Group group : groups) {
                 
-                String href = ""; 
-                
-                if (group.hasPublicLayouts()) {
-                    href = publicServletMapping + group.getFriendlyURL(); 
-                } 
-                
-                if (group.hasPrivateLayouts()) {
-                    href = privateServletMapping + group.getFriendlyURL();                     
-                }
+            String href = "";
                 
         %>
-        <c:if test="<%= Validator.isNotNull(href) %>">
-            <li class="list-group-item">
-                <a href="<%= href %>"><%= group.getDescriptiveName(locale) %></a>
-            </li>
-        </c:if>
+        <c:choose>
+            <c:when test="<%= group.hasPublicLayouts() && group.hasPrivateLayouts()  %>">
+                <li class="list-group-item">
+                    <a href="<%= publicServletMapping + group.getFriendlyURL()  %>">
+                        <span class="site-name"><%= group.getDescriptiveName(locale) %></span>
+                        <span class="site-type badge"><liferay-ui:message key="public"/></span>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="<%= privateServletMapping + group.getFriendlyURL() %>">
+                        <span class="site-name"><%= group.getDescriptiveName(locale) %></span>
+                        <span class="site-type badge"><liferay-ui:message key="private"/></span>
+                    </a>
+                </li>                                 
+            </c:when>  
+            <c:otherwise>
+                <% 
+                    if (group.hasPublicLayouts()) {
+                        href = publicServletMapping + group.getFriendlyURL(); 
+                    } 
+                    
+                    if (group.hasPrivateLayouts()) {
+                        href = privateServletMapping + group.getFriendlyURL();                     
+                    }                        
+                %>
+                <li class="list-group-item">                   
+                    <a href="<%= href %>">
+                        <span class="site-name"><%= group.getDescriptiveName(locale) %></span>
+                    </a>
+                </li>               
+            </c:otherwise>                                   
+        </c:choose>
         <% } %>
     </ul>
 

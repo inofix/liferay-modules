@@ -1,0 +1,21 @@
+/**
+ * main.css: css configuration of the my-sites-directory portlet.
+ *
+ * Created: 2016-05-26 15:22 by Christian Berndt
+ * Modified: 2016-05-26 15:22 by Christian Berndt
+ * Version: 1.0.0
+ * 
+ */
+@import "compass";
+
+@import "mixins";
+
+.aui {
+    
+    .portlet-my-sites-directory {
+    
+        .site-name {
+            margin-right: 5px; 
+        }
+    }   
+}
