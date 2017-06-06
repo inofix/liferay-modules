@@ -35,10 +35,6 @@ public class GroupLocalServiceWrapper extends
             LinkedHashMap<String, Object> params, boolean andOperator,
             int start, int end, OrderByComparator obc) throws SystemException {
 
-        _log.info("search(advanced)");
-
-        _log.info(obc);
-
         List<Group> groups = super.search(companyId, name, description, params,
                 andOperator, start, end, obc);
 
@@ -50,8 +46,6 @@ public class GroupLocalServiceWrapper extends
     public List<Group> search(long companyId, String keywords,
             LinkedHashMap<String, Object> params, int start, int end,
             OrderByComparator obc) throws SystemException {
-
-        _log.info("search(keywords)");
 
         List<Group> groups = super.search(companyId, keywords, params, start,
                 end, obc);
@@ -78,8 +72,6 @@ public class GroupLocalServiceWrapper extends
             obc = new GroupDescriptiveNameComparator(ascending);
         }
 
-        _log.info(obc);
-
         List<Group> sortableGroups = new ArrayList<Group>(groups);
 
         Collections.sort(sortableGroups, obc);
@@ -100,8 +92,6 @@ public class GroupLocalServiceWrapper extends
         }
 
         public GroupDescriptiveNameComparator(boolean ascending) {
-
-            _log.info("init GroupDescriptiveNameComparator");
             _ascending = ascending;
         }
 
