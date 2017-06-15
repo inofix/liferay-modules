@@ -5,13 +5,13 @@
     service.xml: model and service configuration of the data portlet. 
 
     Created:    2017-03-08 19:28 by Christian Berndt 
-    Modified:   2017-03-08 19:28 by Christian Berndt 
-    Version:    1.0.0
+    Modified:   2017-06-15 13:13 by Christian Berndt 
+    Version:    1.0.1
 -->
 
 <service-builder package-path="ch.inofix.portlet.data">
     <author>Christian Berndt</author>    
-    <namespace>Inofix</namespace>
+    <namespace>inofix_data</namespace>
     <entity name="Measurement" uuid="true" local-service="true"
         remote-service="true">
 

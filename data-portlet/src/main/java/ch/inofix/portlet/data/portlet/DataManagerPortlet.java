@@ -64,8 +64,8 @@ public class DataManagerPortlet extends MVCPortlet {
      */
     public void deleteGroupMeasurements(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
-
-        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+        
+        _log.info("deleteGroupMeasurements");
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(
                 Measurement.class.getName(), actionRequest);
@@ -76,6 +76,8 @@ public class DataManagerPortlet extends MVCPortlet {
         SessionMessages.add(actionRequest, "request_processed", PortletUtil
                 .translate("successfully-deleted-x-measurements",
                         measurements.size()));
+
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
