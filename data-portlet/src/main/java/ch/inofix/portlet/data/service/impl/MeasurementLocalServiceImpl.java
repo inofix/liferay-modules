@@ -58,7 +58,7 @@ public class MeasurementLocalServiceImpl extends
         MeasurementLocalServiceBaseImpl {
     /*
      * NOTE FOR DEVELOPERS:
-     *
+     * 
      * Never reference this interface directly. Always use {@link
      * ch.inofix.portlet.data.service.MeasurementLocalServiceUtil} to access the
      * measurement local service.
@@ -103,11 +103,18 @@ public class MeasurementLocalServiceImpl extends
     public List<Measurement> deleteGroupMeasurements(long groupId)
             throws PortalException, SystemException {
 
+        _log.info("deleteGroupMeasurements");
+
         List<Measurement> measurements = measurementPersistence
                 .findByGroupId(groupId);
 
+        _log.info("measurements.size() = " + measurements.size());
+
         for (Measurement measurement : measurements) {
             deleteMeasurement(measurement);
+
+            _log.info("delete  " + measurement);
+
         }
 
         return measurements;
