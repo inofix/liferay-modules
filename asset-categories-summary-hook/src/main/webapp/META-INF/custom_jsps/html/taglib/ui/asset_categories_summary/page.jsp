@@ -4,8 +4,8 @@
     and makes css customization more easy.
             
     Created:    2015-09-14 13:55 by Christian Berndt
-    Modified:   2015-10-12 23:08 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-18 10:46 by Christian Berndt
+    Version:    1.0.2
 --%>
 <%--
 /**
@@ -80,6 +80,10 @@ for (AssetVocabulary vocabulary : vocabularies) {
 					    }
 
                         portletURL.setParameter("categoryId", String.valueOf(category.getCategoryId()));
+                        
+                        // required for ajaxed asset-publisher
+                        portletURL.setWindowState(WindowState.NORMAL);                       
+
                     %>
 
                         <a class="asset-category <%= cssClass %>" href="<%= HtmlUtil.escape(portletURL.toString()) %>"><%= _buildCategoryPath(category, themeDisplay) %></a>
