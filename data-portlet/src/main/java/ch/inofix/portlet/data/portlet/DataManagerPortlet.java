@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 
+import ch.inofix.portlet.data.FileFormatException;
+import ch.inofix.portlet.data.MeasurementXMLException;
 import ch.inofix.portlet.data.model.Measurement;
 import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 import ch.inofix.portlet.data.service.MeasurementServiceUtil;
@@ -31,11 +33,13 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.xml.DocumentException;
 //import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -50,8 +54,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-04-05 14:58
- * @version 1.0.8
+ * @modified 2017-06-20 15.43
+ * @version 1.0.9
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -64,7 +68,7 @@ public class DataManagerPortlet extends MVCPortlet {
      */
     public void deleteGroupMeasurements(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
-        
+
         _log.info("deleteGroupMeasurements");
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(
@@ -101,7 +105,8 @@ public class DataManagerPortlet extends MVCPortlet {
         String channelId = ParamUtil.getString(resourceRequest, "channelId");
 
         // channel by name
-        String channelName = ParamUtil.getString(resourceRequest, "channelName");
+        String channelName = ParamUtil
+                .getString(resourceRequest, "channelName");
 
         // begin of selected interval
         long from = ParamUtil.getLong(resourceRequest, "from");
@@ -163,67 +168,116 @@ public class DataManagerPortlet extends MVCPortlet {
         UploadPortletRequest uploadPortletRequest = PortalUtil
                 .getUploadPortletRequest(actionRequest);
 
+        String mvcPath = ParamUtil.getString(uploadPortletRequest, "mvcPath");
+        String redirect = ParamUtil.getString(uploadPortletRequest, "redirect");
+
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("redirect", redirect);
+
         String dataURL = ParamUtil.getString(uploadPortletRequest, "dataURL");
 
         File file = uploadPortletRequest.getFile("file");
 
-        if (Validator.isNotNull(dataURL)) {
+        _log.info(file.getName());
 
-            String tmpDir = SystemProperties.get(SystemProperties.TMP_DIR)
-                    + StringPool.SLASH + Time.getTimestamp();
+        String extension = FileUtil.getExtension(file.getName());
 
-            URL url = new URL(dataURL);
-            file = new File(tmpDir + "/data.xml");
-            FileUtils.copyURLToFile(url, file);
+        _log.info(extension);
 
-        }
+        if ("xml".equals(extension) || "xls".equals(extension)) {
 
-        long userId = themeDisplay.getUserId();
-        long groupId = themeDisplay.getScopeGroupId();
-        boolean privateLayout = themeDisplay.getLayout().isPrivateLayout();
+            if (Validator.isNotNull(dataURL)) {
 
-        String servletContextName = request.getSession().getServletContext()
-                .getServletContextName();
+                String tmpDir = SystemProperties.get(SystemProperties.TMP_DIR)
+                        + StringPool.SLASH + Time.getTimestamp();
 
-        String[] servletContextNames = new String[] { servletContextName };
+                URL url = new URL(dataURL);
+                file = new File(tmpDir + "/data." + extension);
+                FileUtils.copyURLToFile(url, file);
 
-        Map<String, String[]> parameterMap = new HashMap<String, String[]>(
-                actionRequest.getParameterMap());
-        parameterMap.put("servletContextNames", servletContextNames);
-
-        if (Validator.isNotNull(file)) {
-
-            String fileName = file.getName();
-
-            com.liferay.portal.kernel.xml.Document document = SAXReaderUtil
-                    .read(file);
-            List<Node> nodes = document.selectNodes("/");
-
-            String message = PortletUtil
-                    .translate("no-measurements-were-found");
-
-            if (nodes.size() > 0) {
-
-                message = PortletUtil
-                        .translate(
-                                "found-x-measurements-the-import-will-finish-in-separate-thread",
-                                nodes.size());
-
-                MeasurementServiceUtil.importMeasurementsInBackground(userId,
-                        fileName, groupId, privateLayout, parameterMap, file);
             }
 
-            SessionMessages.add(actionRequest, "request_processed", message);
+            long userId = themeDisplay.getUserId();
+            long groupId = themeDisplay.getScopeGroupId();
+            boolean privateLayout = themeDisplay.getLayout().isPrivateLayout();
 
-            String mvcPath = ParamUtil.getString(uploadPortletRequest,
-                    "mvcPath");
+            String servletContextName = request.getSession()
+                    .getServletContext().getServletContextName();
 
-            actionResponse.setRenderParameter("mvcPath", mvcPath);
+            String[] servletContextNames = new String[] { servletContextName };
+
+            Map<String, String[]> parameterMap = new HashMap<String, String[]>(
+                    actionRequest.getParameterMap());
+
+            parameterMap.put("servletContextNames", servletContextNames);
+
+            if (Validator.isNotNull(file)) {
+
+                String fileName = file.getName();
+
+                String message = PortletUtil
+                        .translate("no-measurements-were-found");
+
+                if ("xml".equals(extension)) {
+
+                    try {
+
+                        com.liferay.portal.kernel.xml.Document document = SAXReaderUtil
+                                .read(file);
+
+                        // TODO: read xPath selector from configuration
+                        String selector = "//ChannelData";
+                        List<Node> nodes = document.selectNodes(selector);
+
+                        if (nodes.size() > 0) {
+
+                            message = PortletUtil
+                                    .translate(
+                                            "found-x-measurements-the-import-will-finish-in-separate-thread",
+                                            nodes.size());
+
+                            MeasurementServiceUtil
+                                    .importMeasurementsInBackground(userId,
+                                            fileName, groupId, privateLayout,
+                                            parameterMap, file);
+                        } else {
+                            SessionMessages.clear(actionRequest);
+                        }
+                    } catch (DocumentException de) {
+
+                        actionResponse.setRenderParameter("mvcPath",
+                                "/html/import.jsp");
+
+                        _log.error(de);
+
+                        throw new MeasurementXMLException();
+                    }
+                } else if ("xls".equals(extension)) {
+                    
+                    _log.error("TODO: process xls import");
+                    
+                    throw new UnsupportedOperationException(); 
+                    
+                }
+
+                SessionMessages
+                        .add(actionRequest, "request_processed", message);
+
+            } else {
+
+                actionResponse
+                        .setRenderParameter("mvcPath", "/html/import.jsp");
+                SessionErrors.add(actionRequest, "file-not-found");
+
+            }
 
         } else {
 
-            SessionErrors.add(actionRequest, "file-not-found");
+            _log.error("unsupported format: " + extension);
 
+            actionResponse.setRenderParameter("mvcPath", "/html/import.jsp");
+
+            throw new FileFormatException();
         }
 
     }
@@ -246,6 +300,16 @@ public class DataManagerPortlet extends MVCPortlet {
         } catch (Exception e) {
             _log.error(e);
         }
+    }
+
+    /**
+     * Disable the get- / sendRedirect feature of LiferayPortlet.
+     */
+    @Override
+    protected String getRedirect(ActionRequest actionRequest,
+            ActionResponse actionResponse) {
+
+        return null;
     }
 
     private static Log _log = LogFactoryUtil.getLog(DataManagerPortlet.class

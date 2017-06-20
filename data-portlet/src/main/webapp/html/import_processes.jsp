@@ -2,8 +2,8 @@
     import_processes.jsp: View of the data portlet's import processes.
     
     Created:    2017-03-13 12:46 by Christian Berndt
-    Modified:   2017-03-13 12:46 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-20 15:42 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -13,18 +13,15 @@
 <%@page import="com.liferay.portal.service.BackgroundTaskLocalServiceUtil"%>
 
 <%
-    String backURL = ParamUtil.getString(request, "backURL");
-    long groupId = scopeGroupId; 
+    PortletURL backURL = renderResponse.createRenderURL();
+    backURL.setParameter("mvcPath", "/html/view.jsp");
+    backURL.setParameter("tabs1", "import-export");
+
+    long groupId = scopeGroupId;
 %>
 
-<liferay-ui:header backURL="<%=backURL%>" title="data-manager" />
+<liferay-ui:header backURL="<%=backURL.toString()%>"
+    title="data-manager" />
 
-<%-- <liferay-ui:section> --%>
-    <div id="<portlet:namespace />exportImportOptions">
-        <%
-            int incompleteBackgroundTaskCount = 0; 
-            incompleteBackgroundTaskCount = BackgroundTaskLocalServiceUtil.getBackgroundTasksCount(groupId, MeasurementImportBackgroundTaskExecutor.class.getName(), false);
-        %>
-        incompleteBackgroundTaskCount = <%= incompleteBackgroundTaskCount %>
-    </div>
-<%-- </liferay-ui:section> --%>
+<aui:a href="<%=backURL.toString()%>" cssClass="btn btn-primary"
+    label="back" />
