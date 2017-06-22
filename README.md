@@ -18,6 +18,10 @@ please use the upcoming releases of the modules from the liferay marketplace.
 1. (if necessary) run the service-builder goal (mvn liferay:build-service install)
 1. install or auto-deploy the module to your liferay-installation (mvn package liferay:deploy)
 
+If you encounter permGen issues during the build, you should adjust the default settings of your build:
+
+-Xms256M -Xmx1024M -XX:PermSize=512m -XX:MaxPermSize=1024m
+
 ## Module Description
 
 ### Asset Categories Summary Hook
