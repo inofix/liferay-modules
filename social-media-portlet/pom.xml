@@ -4,7 +4,7 @@
 	<parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>1.0.7</version>
+        <version>1.2.0</version>
     </parent>
 	<artifactId>social-media-portlet</artifactId>
 	<packaging>war</packaging>
