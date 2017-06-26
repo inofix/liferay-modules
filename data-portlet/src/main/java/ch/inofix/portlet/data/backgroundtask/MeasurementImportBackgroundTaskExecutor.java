@@ -15,8 +15,8 @@ import com.liferay.portal.model.BackgroundTask;
 /**
  * @author Christian Berndt
  * @created 2017-03-09 17:43
- * @modified 2017-03-09 17:43
- * @version 1.0.0
+ * @modified 2017-06-26 11:55
+ * @version 1.0.1
  */
 public class MeasurementImportBackgroundTaskExecutor extends
         BaseBackgroundTaskExecutor {
@@ -32,6 +32,7 @@ public class MeasurementImportBackgroundTaskExecutor extends
         long groupId = MapUtil.getLong(taskContextMap, "groupId");
         boolean privateLayout = MapUtil.getBoolean(taskContextMap,
                 "privateLayout");
+        String extension = MapUtil.getString(taskContextMap, "extension"); 
         @SuppressWarnings("unchecked")
         Map<String, String[]> parameterMap = (Map<String, String[]>) taskContextMap
                 .get("parameterMap");
@@ -43,7 +44,7 @@ public class MeasurementImportBackgroundTaskExecutor extends
 
             MeasurementLocalServiceUtil.importMeasurements(userId, groupId,
                     privateLayout, parameterMap,
-                    attachmentsFileEntry.getContentStream());
+                    attachmentsFileEntry.getContentStream(), extension);
         }
 
         return BackgroundTaskResult.SUCCESS;

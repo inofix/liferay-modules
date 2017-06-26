@@ -54,8 +54,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-06-20 15.43
- * @version 1.0.9
+ * @modified 2017-06-26 11:56
+ * @version 1.1.0
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -226,7 +226,7 @@ public class DataManagerPortlet extends MVCPortlet {
                                 .read(file);
 
                         // TODO: read xPath selector from configuration
-                        String selector = "//ChannelData";
+                        String selector = "//VT";
                         List<Node> nodes = document.selectNodes(selector);
 
                         if (nodes.size() > 0) {
@@ -254,10 +254,17 @@ public class DataManagerPortlet extends MVCPortlet {
                     }
                 } else if ("xls".equals(extension)) {
                     
-                    _log.error("TODO: process xls import");
-                    
-                    throw new UnsupportedOperationException(); 
-                    
+                    // TODO: preprocess upload: 
+                    // -- check readability
+                    // -- count measurements
+
+                    message = PortletUtil
+                            .translate("importing-measurements-from-xls-the-import-will-finish-in-a-separate-thread");
+
+                    MeasurementServiceUtil.importMeasurementsInBackground(
+                            userId, fileName, groupId, privateLayout,
+                            parameterMap, file);
+
                 }
 
                 SessionMessages

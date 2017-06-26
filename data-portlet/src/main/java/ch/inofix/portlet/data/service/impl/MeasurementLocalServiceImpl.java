@@ -49,8 +49,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-04-11 23:44
- * @version 1.0.8
+ * @modified 2017-06-26 10:56
+ * @version 1.0.9
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -234,12 +234,13 @@ public class MeasurementLocalServiceImpl extends
     @Override
     public void importMeasurements(long userId, long groupId,
             boolean privateLayout, Map<String, String[]> parameterMap,
-            InputStream is) throws PortalException, SystemException {
+            InputStream is, String extension) throws PortalException,
+            SystemException {
 
         File file = null;
 
         try {
-            file = FileUtil.createTempFile("vcf");
+            file = FileUtil.createTempFile(extension);
 
             FileUtil.write(file, is);
 
@@ -274,11 +275,14 @@ public class MeasurementLocalServiceImpl extends
             Map<String, String[]> parameterMap, File file)
             throws PortalException, SystemException {
 
+        String extension = FileUtil.getExtension(file.getName());
+
         Map<String, Serializable> taskContextMap = new HashMap<String, Serializable>();
         taskContextMap.put("userId", userId);
         taskContextMap.put("groupId", groupId);
         taskContextMap.put("parameterMap", (Serializable) parameterMap);
         taskContextMap.put("privateLayout", privateLayout);
+        taskContextMap.put("extension", extension);
 
         String[] servletContextNames = parameterMap.get("servletContextNames");
 
