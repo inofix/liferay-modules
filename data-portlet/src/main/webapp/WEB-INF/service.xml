@@ -5,8 +5,8 @@
     service.xml: model and service configuration of the data portlet. 
 
     Created:    2017-03-08 19:28 by Christian Berndt 
-    Modified:   2017-06-20 15:56 by Christian Berndt 
-    Version:    1.0.2
+    Modified:   2017-06-26 12:30 by Christian Berndt 
+    Version:    1.0.3
 -->
 
 <service-builder package-path="ch.inofix.portlet.data">
@@ -59,6 +59,7 @@
 
     <exceptions>
         <exception>FileFormat</exception>
+        <exception>MeasurementXLS</exception>
         <exception>MeasurementXML</exception>
     </exceptions>
     
