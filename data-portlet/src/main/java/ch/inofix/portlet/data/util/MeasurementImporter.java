@@ -2,14 +2,16 @@ package ch.inofix.portlet.data.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
 
 import ch.inofix.portlet.data.FileFormatException;
 import ch.inofix.portlet.data.MeasurementXLSException;
@@ -36,8 +38,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-09 17:53
- * @modified 2017-06-26 10:39
- * @version 1.0.4
+ * @modified 2017-06-30 14:29
+ * @version 1.0.5
  *
  */
 public class MeasurementImporter {
@@ -96,13 +98,8 @@ public class MeasurementImporter {
                         String timestamp = valueElement.attributeValue("t");
                         String val = valueElement.getText();
 
-                        JSONObject jsonObject = JSONFactoryUtil
-                                .createJSONObject();
-                        jsonObject.put("channelId", channelId);
-                        jsonObject.put("channelName", channelName);
-                        jsonObject.put("channelUnit", channelUnit);
-                        jsonObject.put("timestamp", timestamp);
-                        jsonObject.put("value", val);
+                        JSONObject jsonObject = createJSONObject(channelId,
+                                channelName, channelUnit, timestamp, val);
 
                         Hits hits = MeasurementLocalServiceUtil.search(
                                 serviceContext.getCompanyId(),
@@ -152,23 +149,34 @@ public class MeasurementImporter {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
                 HSSFSheet worksheet = workbook.getSheetAt(0);
-                HSSFRow row1 = worksheet.getRow(0);
-                HSSFCell cellA1 = row1.getCell((short) 0);
-                String a1Val = cellA1.getStringCellValue();
-                HSSFCell cellB1 = row1.getCell((short) 1);
-                String b1Val = cellB1.getStringCellValue();
-                HSSFCell cellC1 = row1.getCell((short) 2);
-//                boolean c1Val = cellC1.getBooleanCellValue();
-                HSSFCell cellD1 = row1.getCell((short) 3);
-//                Date d1Val = cellD1.getDateCellValue();
 
-                System.out.println("A1: " + a1Val);
-                System.out.println("B1: " + b1Val);
+                int i = 0;
 
-                
+                for (Row row : worksheet) {
+
+                    if (i > 0) {
+
+                        String channelId = getCellValue(row.getCell(3));
+                        String channelName = getCellValue(row.getCell(1));
+                        String channelUnit = getCellValue(row.getCell(2));
+                        String timestamp = getCellValue(row.getCell(0));
+                        String value = getCellValue(row.getCell(4));
+
+                        _log.info("channelId = " + channelId);
+                        _log.info("channelName = " + channelName);
+                        _log.info("channelUnit = " + channelUnit);
+                        _log.info("timestampDate = " + timestamp);
+                        _log.info("value = " + value);
+
+                    }
+
+                    i++;
+
+                }
+
                 workbook.close();
                 fileInputStream.close();
-                
+
             } catch (Exception e) {
                 _log.error(e.getMessage());
                 throw new MeasurementXLSException();
@@ -185,6 +193,41 @@ public class MeasurementImporter {
         _log.info("Imported " + numImported + " measurements.");
         _log.info("Ignored " + numIgnored + " measurements.");
         _log.info("Updated " + numUpdated + " measurements.");
+
+    }
+
+    private static JSONObject createJSONObject(String channelId,
+            String channelName, String channelUnit, String timestamp,
+            String value) {
+
+        JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+        jsonObject.put("channelId", channelId);
+        jsonObject.put("channelName", channelName);
+        jsonObject.put("channelUnit", channelUnit);
+        jsonObject.put("timestamp", timestamp);
+        jsonObject.put("value", value);
+
+        return jsonObject;
+
+    }
+
+    private String getCellValue(Cell cell) {
+
+        String value = null;
+
+        CellType cellType = cell.getCellTypeEnum();
+
+        if (cellType.equals(CellType.STRING)) {
+            value = cell.getStringCellValue();
+        } else if (cellType.equals(CellType.NUMERIC)) {
+            value = String.valueOf(cell.getNumericCellValue());
+        } else if (cellType.equals(CellType.BOOLEAN)) {
+            value = String.valueOf(cell.getBooleanCellValue());
+        } else {
+            value = "Unsupported Celltype";
+        }
+
+        return value;
 
     }
 
