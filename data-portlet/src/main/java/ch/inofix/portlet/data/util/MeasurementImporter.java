@@ -2,6 +2,10 @@ package ch.inofix.portlet.data.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +42,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-09 17:53
- * @modified 2017-06-30 14:29
- * @version 1.0.5
+ * @modified 2017-07-04 14:48
+ * @version 1.0.6
  *
  */
 public class MeasurementImporter {
@@ -52,22 +56,18 @@ public class MeasurementImporter {
         serviceContext.setScopeGroupId(groupId);
         serviceContext.setUserId(userId);
 
-        User user = UserLocalServiceUtil.getUser(userId);
-        serviceContext.setCompanyId(user.getCompanyId());
-
         int numProcessed = 0;
         int numImported = 0;
         int numIgnored = 0;
-        int numUpdated = 0;
+
+        User user = UserLocalServiceUtil.getUser(userId);
+        serviceContext.setCompanyId(user.getCompanyId());
 
         StopWatch stopWatch = new StopWatch();
 
         stopWatch.start();
 
         String extension = FileUtil.getExtension(file.getName());
-
-        _log.info(file.getName());
-        _log.info("extension = " + extension);
 
         // import from xml
 
@@ -101,21 +101,15 @@ public class MeasurementImporter {
                         JSONObject jsonObject = createJSONObject(channelId,
                                 channelName, channelUnit, timestamp, val);
 
-                        Hits hits = MeasurementLocalServiceUtil.search(
-                                serviceContext.getCompanyId(),
-                                serviceContext.getScopeGroupId(), channelId,
-                                channelName, timestamp, true, 0,
-                                Integer.MAX_VALUE, null);
+                        int status = addMeasurement(serviceContext, userId,
+                                jsonObject);
 
-                        if (hits.getLength() == 0) {
-
-                            MeasurementLocalServiceUtil.addMeasurement(userId,
-                                    jsonObject.toString(), serviceContext);
-
-                            numImported++;
-
-                        } else {
+                        if (status == IGNORED) {
                             numIgnored++;
+                        }
+
+                        if (status == IMPORTED) {
+                            numImported++;
                         }
 
                         if (numProcessed % 100 == 0 && numProcessed > 0) {
@@ -144,6 +138,9 @@ public class MeasurementImporter {
 
             _log.info("process xls");
 
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
             try {
 
                 FileInputStream fileInputStream = new FileInputStream(file);
@@ -156,17 +153,30 @@ public class MeasurementImporter {
 
                     if (i > 0) {
 
-                        String channelId = getCellValue(row.getCell(3));
+                        String channelId = getCellValue(row.getCell(3), true);
                         String channelName = getCellValue(row.getCell(1));
                         String channelUnit = getCellValue(row.getCell(2));
-                        String timestamp = getCellValue(row.getCell(0));
+                        Date timestampDate = row.getCell(0).getDateCellValue();
+                        String timestamp = dateFormat.format(timestampDate)
+                                + "T" + timeFormat.format(timestampDate);
                         String value = getCellValue(row.getCell(4));
 
-                        _log.info("channelId = " + channelId);
-                        _log.info("channelName = " + channelName);
-                        _log.info("channelUnit = " + channelUnit);
-                        _log.info("timestampDate = " + timestamp);
-                        _log.info("value = " + value);
+
+                        JSONObject jsonObject = createJSONObject(channelId,
+                                channelName, channelUnit, timestamp, value);
+
+                        int status = addMeasurement(serviceContext, userId,
+                                jsonObject);
+
+                        if (status == IGNORED) {
+                            numIgnored++;
+                        }
+
+                        if (status == IMPORTED) {
+                            numImported++;
+                        }
+
+                        numProcessed++;
 
                     }
 
@@ -192,8 +202,32 @@ public class MeasurementImporter {
         _log.info("Processed " + numProcessed + " measurements.");
         _log.info("Imported " + numImported + " measurements.");
         _log.info("Ignored " + numIgnored + " measurements.");
-        _log.info("Updated " + numUpdated + " measurements.");
 
+    }
+
+    private int addMeasurement(ServiceContext serviceContext, long userId,
+            JSONObject jsonObject) throws SystemException, PortalException {
+
+        String channelId = jsonObject.getString("channelId");
+        String channelName = jsonObject.getString("channelName");
+        String timestamp = jsonObject.getString("timestamp");
+
+        Hits hits = MeasurementLocalServiceUtil.search(
+                serviceContext.getCompanyId(),
+                serviceContext.getScopeGroupId(), channelId, channelName,
+                timestamp, true, 0, 1, null);
+
+        if (hits.getLength() == 0) {
+
+            MeasurementLocalServiceUtil.addMeasurement(userId,
+                    jsonObject.toString(), serviceContext);
+
+            return IMPORTED;
+
+        } else {
+
+            return IGNORED;
+        }
     }
 
     private static JSONObject createJSONObject(String channelId,
@@ -213,6 +247,14 @@ public class MeasurementImporter {
 
     private String getCellValue(Cell cell) {
 
+        return getCellValue(cell, false);
+
+    }
+
+    private String getCellValue(Cell cell, boolean useInt) {
+
+        NumberFormat numberFormat = new DecimalFormat("0"); // omit
+
         String value = null;
 
         CellType cellType = cell.getCellTypeEnum();
@@ -220,7 +262,12 @@ public class MeasurementImporter {
         if (cellType.equals(CellType.STRING)) {
             value = cell.getStringCellValue();
         } else if (cellType.equals(CellType.NUMERIC)) {
-            value = String.valueOf(cell.getNumericCellValue());
+            double val = cell.getNumericCellValue();
+            if (useInt) {
+                value = String.valueOf(numberFormat.format(val));
+            } else {
+                value = String.valueOf(val);
+            }
         } else if (cellType.equals(CellType.BOOLEAN)) {
             value = String.valueOf(cell.getBooleanCellValue());
         } else {
@@ -228,8 +275,10 @@ public class MeasurementImporter {
         }
 
         return value;
-
     }
+
+    private static int IGNORED = 0;
+    private static int IMPORTED = 1;
 
     private static Log _log = LogFactoryUtil.getLog(MeasurementImporter.class
             .getName());
