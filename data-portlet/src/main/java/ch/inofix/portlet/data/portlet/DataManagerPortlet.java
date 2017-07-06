@@ -54,8 +54,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-06-26 11:56
- * @version 1.1.0
+ * @modified 2017-07-06 14:04
+ * @version 1.1.1
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -178,11 +178,19 @@ public class DataManagerPortlet extends MVCPortlet {
 
         File file = uploadPortletRequest.getFile("file");
 
-        _log.info(file.getName());
+        if (file == null && Validator.isNotNull(dataURL)) {
+
+            String extension = dataURL.substring(dataURL.lastIndexOf(".") + 1,
+                    dataURL.length());
+
+            file = FileUtil.createTempFile(extension);
+            URL url = new URL(dataURL);
+
+            FileUtils.copyURLToFile(url, file);
+
+        }
 
         String extension = FileUtil.getExtension(file.getName());
-
-        _log.info(extension);
 
         if ("xml".equals(extension) || "xls".equals(extension)) {
 
@@ -253,8 +261,8 @@ public class DataManagerPortlet extends MVCPortlet {
                         throw new MeasurementXMLException();
                     }
                 } else if ("xls".equals(extension)) {
-                    
-                    // TODO: preprocess upload: 
+
+                    // TODO: preprocess upload:
                     // -- check readability
                     // -- count measurements
 
