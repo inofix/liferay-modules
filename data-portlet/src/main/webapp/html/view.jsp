@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-04-11 22:59 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-07-06 14:10 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -27,6 +27,7 @@
     portletURL.setParameter("channelId", channelId);
     portletURL.setParameter("channelName", channelName);
     portletURL.setParameter("from", String.valueOf(from));
+    portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("until", String.valueOf(until));
 
     if (idx > 0) {
