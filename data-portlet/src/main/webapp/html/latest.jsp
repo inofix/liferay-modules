@@ -2,8 +2,8 @@
     latest.jsp: Display the latest state of the configured channels
     
     Created:    2017-04-11 17:45 by Christian Berndt
-    Modified:   2017-06-13 12:09 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-08-06 16:03 by Christian Berndt
+    Version:    1.0.3
  --%>
  
 <%@ include file="/html/init.jsp"%>
@@ -82,8 +82,10 @@
                         </div> 
                         <a href="<%= graphURL.toString() %>">          
                             <span class="face">
-                                <span class="value"><%= document.get("value") %></span>
-                                <span class="unit"><%= document.get("unit") %></span> 
+                                <span class="value-wrapper">
+                                    <span class="value"><%= document.get("value") %></span><br/>
+                                    <span class="unit"><%= document.get("channelUnit") %></span> 
+                                </span>
                             </span>
                         </a> 
                         <div class="caption">
