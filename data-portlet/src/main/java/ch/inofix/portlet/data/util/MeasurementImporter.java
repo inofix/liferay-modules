@@ -42,8 +42,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-09 17:53
- * @modified 2017-07-04 14:48
- * @version 1.0.6
+ * @modified 2017-10-24 17:55
+ * @version 1.0.7
  *
  */
 public class MeasurementImporter {
@@ -85,10 +85,10 @@ public class MeasurementImporter {
 
                     Element channelElement = (Element) channel;
 
-                    String channelId = channelElement
+                    String id = channelElement
                             .attributeValue("channelId");
-                    String channelName = channelElement.attributeValue("name");
-                    String channelUnit = channelElement.attributeValue("unit");
+                    String name = channelElement.attributeValue("name");
+                    String unit = channelElement.attributeValue("unit");
 
                     List<Node> values = channel.selectNodes("descendant::VT");
 
@@ -98,8 +98,8 @@ public class MeasurementImporter {
                         String timestamp = valueElement.attributeValue("t");
                         String val = valueElement.getText();
 
-                        JSONObject jsonObject = createJSONObject(channelId,
-                                channelName, channelUnit, timestamp, val);
+                        JSONObject jsonObject = createJSONObject(id,
+                                name, unit, timestamp, val);
 
                         int status = addMeasurement(serviceContext, userId,
                                 jsonObject);
@@ -146,24 +146,23 @@ public class MeasurementImporter {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
                 HSSFSheet worksheet = workbook.getSheetAt(0);
-
+                
                 int i = 0;
 
                 for (Row row : worksheet) {
-
+                    
                     if (i > 0) {
 
-                        String channelId = getCellValue(row.getCell(3), true);
-                        String channelName = getCellValue(row.getCell(1));
-                        String channelUnit = getCellValue(row.getCell(2));
+                        String id = getCellValue(row.getCell(3), true);
+                        String name = getCellValue(row.getCell(1));
+                        String unit = getCellValue(row.getCell(2));
                         Date timestampDate = row.getCell(0).getDateCellValue();
                         String timestamp = dateFormat.format(timestampDate)
                                 + "T" + timeFormat.format(timestampDate);
                         String value = getCellValue(row.getCell(4));
-
-
-                        JSONObject jsonObject = createJSONObject(channelId,
-                                channelName, channelUnit, timestamp, value);
+                        
+                        JSONObject jsonObject = createJSONObject(id,
+                                name, unit, timestamp, value);
 
                         int status = addMeasurement(serviceContext, userId,
                                 jsonObject);
@@ -208,15 +207,15 @@ public class MeasurementImporter {
     private int addMeasurement(ServiceContext serviceContext, long userId,
             JSONObject jsonObject) throws SystemException, PortalException {
 
-        String channelId = jsonObject.getString("channelId");
-        String channelName = jsonObject.getString("channelName");
+        String id = jsonObject.getString("id");
+        String name = jsonObject.getString("channelName");
         String timestamp = jsonObject.getString("timestamp");
-
+        
         Hits hits = MeasurementLocalServiceUtil.search(
                 serviceContext.getCompanyId(),
-                serviceContext.getScopeGroupId(), channelId, channelName,
+                serviceContext.getScopeGroupId(), id, name,
                 timestamp, true, 0, 1, null);
-
+        
         if (hits.getLength() == 0) {
 
             MeasurementLocalServiceUtil.addMeasurement(userId,
@@ -230,14 +229,14 @@ public class MeasurementImporter {
         }
     }
 
-    private static JSONObject createJSONObject(String channelId,
-            String channelName, String channelUnit, String timestamp,
+    private static JSONObject createJSONObject(String id,
+            String name, String unit, String timestamp,
             String value) {
 
         JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-        jsonObject.put("channelId", channelId);
-        jsonObject.put("channelName", channelName);
-        jsonObject.put("channelUnit", channelUnit);
+        jsonObject.put("channelId", id);
+        jsonObject.put("channelName", name);
+        jsonObject.put("channelUnit", unit);
         jsonObject.put("timestamp", timestamp);
         jsonObject.put("value", value);
 
@@ -257,21 +256,26 @@ public class MeasurementImporter {
 
         String value = null;
 
-        CellType cellType = cell.getCellTypeEnum();
+        if (cell != null) {
 
-        if (cellType.equals(CellType.STRING)) {
-            value = cell.getStringCellValue();
-        } else if (cellType.equals(CellType.NUMERIC)) {
-            double val = cell.getNumericCellValue();
-            if (useInt) {
-                value = String.valueOf(numberFormat.format(val));
+            CellType cellType = cell.getCellTypeEnum();
+
+            if (cellType.equals(CellType.STRING)) {
+                value = cell.getStringCellValue();
+            } else if (cellType.equals(CellType.NUMERIC)) {
+                double val = cell.getNumericCellValue();
+
+                if (useInt) {
+                    value = String.valueOf(numberFormat.format(val));
+                } else {
+                    value = String.valueOf(val);
+                }
+            } else if (cellType.equals(CellType.BOOLEAN)) {
+                value = String.valueOf(cell.getBooleanCellValue());
             } else {
-                value = String.valueOf(val);
+                value = "Unsupported Celltype";
             }
-        } else if (cellType.equals(CellType.BOOLEAN)) {
-            value = String.valueOf(cell.getBooleanCellValue());
-        } else {
-            value = "Unsupported Celltype";
+
         }
 
         return value;
