@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.search.facet.MultiValueFacet;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BackgroundTask;
 import com.liferay.portal.model.User;
@@ -49,8 +51,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-06-26 10:56
- * @version 1.0.9
+ * @modified 2017-10-25 22:02
+ * @version 1.1.0
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -103,18 +105,11 @@ public class MeasurementLocalServiceImpl extends
     public List<Measurement> deleteGroupMeasurements(long groupId)
             throws PortalException, SystemException {
 
-        _log.info("deleteGroupMeasurements");
-
         List<Measurement> measurements = measurementPersistence
                 .findByGroupId(groupId);
 
-        _log.info("measurements.size() = " + measurements.size());
-
         for (Measurement measurement : measurements) {
             deleteMeasurement(measurement);
-
-            _log.info("delete  " + measurement);
-
         }
 
         return measurements;
@@ -124,6 +119,8 @@ public class MeasurementLocalServiceImpl extends
     @Override
     public Measurement deleteMeasurement(Measurement measurement)
             throws PortalException, SystemException {
+        
+        _log.info("deleteMeasurement(measurement)"); 
 
         // Measurement
 
@@ -146,6 +143,28 @@ public class MeasurementLocalServiceImpl extends
                 .findByPrimaryKey(measurementId);
 
         return measurementLocalService.deleteMeasurement(measurement);
+    }
+    
+    public List<Measurement> deleteMeasurementsByChannelName(long companyId, long groupId, String channelName) throws PortalException, SystemException {
+        
+        _log.info("deleteMeasurementsByChannelName");
+        
+        Hits hits = search(companyId, groupId, null, channelName, Long.MIN_VALUE, Long.MAX_VALUE, true, 0, Integer.MAX_VALUE, null);
+        
+        List<Document> documents = hits.toList();
+        
+        List<Measurement> measurements = new ArrayList<Measurement>(); 
+        
+        for (Document document : documents) {
+            
+            long classPK = GetterUtil.getLong(document.get("entryClassPK")); 
+            
+            deleteMeasurement(classPK);
+           
+        }
+        
+        return measurements; 
+        
     }
 
     @Override

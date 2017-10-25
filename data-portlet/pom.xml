@@ -10,7 +10,7 @@
     <artifactId>data-portlet</artifactId>
     <packaging>war</packaging>
     <name>Data Portlet</name>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <build>
         <plugins>
             <!-- Read properties from dev.properties in -->

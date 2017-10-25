@@ -2,47 +2,13 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-04-11 23:26 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-10-25 22:03 by Christian Berndt
+    Version:    1.0.8
  --%>
 
 <%@ include file="/html/init.jsp"%>
 
-<%
-    SearchContext searchContext = SearchContextFactory
-            .getInstance(request);
-
-    Facet channelIdFacet = new MultiValueFacet(searchContext);
-    channelIdFacet.setFieldName("channelId");
-
-    Facet channelNameFacet = new MultiValueFacet(searchContext);
-    channelNameFacet.setFieldName("channelName");
-
-    searchContext.addFacet(channelIdFacet);
-    searchContext.addFacet(channelNameFacet);
-    
-    // remove facet attributes from context, since we need the field's index here
-    searchContext.setAttribute("channelId", null); 
-    searchContext.setAttribute("channelName", null);
-    searchContext.setAttribute("from", 0);
-    searchContext.setAttribute("until", 0);
-
-    Indexer indexer = IndexerRegistryUtil.getIndexer(Measurement.class);
-    indexer.search(searchContext);
-
-    FacetCollector channelIdFacetCollector = channelIdFacet
-            .getFacetCollector();
-    List<TermCollector> channelIdTermCollectors = channelIdFacetCollector
-            .getTermCollectors();
-    
-    FacetCollector channelNameFacetCollector = channelNameFacet
-            .getFacetCollector();
-    List<TermCollector> channelNameTermCollectors = channelNameFacetCollector
-            .getTermCollectors();
-    
-    PropertyComparator termComparator = new PropertyComparator("term");
-    Collections.sort(channelNameTermCollectors, termComparator);
-    
+<%   
     Calendar cal = Calendar.getInstance();
     
     cal.setTime(new Date(from)); 

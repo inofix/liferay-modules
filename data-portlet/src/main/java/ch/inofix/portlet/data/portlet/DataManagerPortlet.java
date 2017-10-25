@@ -54,8 +54,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-07-06 14:04
- * @version 1.1.1
+ * @modified 2017-20-25 00:35
+ * @version 1.1.2
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -69,8 +69,6 @@ public class DataManagerPortlet extends MVCPortlet {
     public void deleteGroupMeasurements(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
 
-        _log.info("deleteGroupMeasurements");
-
         ServiceContext serviceContext = ServiceContextFactory.getInstance(
                 Measurement.class.getName(), actionRequest);
 
@@ -80,6 +78,35 @@ public class DataManagerPortlet extends MVCPortlet {
         SessionMessages.add(actionRequest, "request_processed", PortletUtil
                 .translate("successfully-deleted-x-measurements",
                         measurements.size()));
+
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+
+        actionResponse.setRenderParameter("tabs1", tabs1);
+    }
+    
+    public void deleteMeasurementsByChannelName(ActionRequest actionRequest,
+            ActionResponse actionResponse) throws Exception {
+
+        String channelName = ParamUtil.getString(actionRequest, "channelName");
+        
+        if (Validator.isNotNull(channelName)) {
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+                Measurement.class.getName(), actionRequest);
+
+        List<Measurement> measurements = MeasurementServiceUtil
+                .deleteMeasurementsByChannelName(serviceContext.getCompanyId(),
+                        serviceContext.getScopeGroupId(), channelName);
+
+        SessionMessages.add(actionRequest, "request_processed", PortletUtil
+                .translate("successfully-deleted-x-measurements",
+                        measurements.size()));
+        
+        } else {
+            
+            SessionErrors.add(actionRequest, "you-must-select-a-channel-name");
+            
+        }
 
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
