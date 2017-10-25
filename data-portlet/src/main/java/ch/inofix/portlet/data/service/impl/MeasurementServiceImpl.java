@@ -27,8 +27,8 @@ import com.liferay.portal.kernel.exception.SystemException;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-04-05 12:32
- * @version 1.0.2
+ * @modified 2017-10-25 00:29
+ * @version 1.0.3
  * @see ch.inofix.portlet.data.service.base.MeasurementServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementServiceUtil
  */
@@ -50,6 +50,19 @@ public class MeasurementServiceImpl extends MeasurementServiceBaseImpl {
         // ActionKeys.DELETE_GROUP_MEASUREMENTS);
 
         return MeasurementLocalServiceUtil.deleteGroupMeasurements(groupId);
+    }
+    
+    @Override
+    public List<Measurement> deleteMeasurementsByChannelName(long companyId,
+            long groupId, String channelName) throws PortalException,
+            SystemException {
+
+        // TODO: enable permission checks
+        // DataPortletPermission.check(getPermissionChecker(), groupId,
+        // ActionKeys.DELETE_MEASUREMENTS_BY_CHANNEL_NAME);
+
+        return MeasurementLocalServiceUtil.deleteMeasurementsByChannelName(
+                companyId, groupId, channelName);
     }
 
     @Override

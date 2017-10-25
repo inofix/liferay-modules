@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-04-11 17:47 by Christian Berndt
-    Version:    1.2.5
+    Modified:   2017-10-25 15:50 by Christian Berndt
+    Version:    1.2.6
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -86,5 +86,41 @@
     long userId = GetterUtil.getLong(portletPreferences.getValue("userId", "0"));
     
     String userName = portletPreferences.getValue("userName", "");
+    
+    // The list of availabe channels
+    
+    SearchContext searchContext = SearchContextFactory
+            .getInstance(request);
+
+    Facet channelIdFacet = new MultiValueFacet(searchContext);
+    channelIdFacet.setFieldName("channelId");
+
+    Facet channelNameFacet = new MultiValueFacet(searchContext);
+    channelNameFacet.setFieldName("channelName");
+
+    searchContext.addFacet(channelIdFacet);
+    searchContext.addFacet(channelNameFacet);
+    
+    // remove facet attributes from context, since we need the field's index here
+    searchContext.setAttribute("channelId", null); 
+    searchContext.setAttribute("channelName", null);
+    searchContext.setAttribute("from", 0);
+    searchContext.setAttribute("until", 0);
+
+    Indexer indexer = IndexerRegistryUtil.getIndexer(Measurement.class);
+    indexer.search(searchContext);
+
+    FacetCollector channelIdFacetCollector = channelIdFacet
+            .getFacetCollector();
+    List<TermCollector> channelIdTermCollectors = channelIdFacetCollector
+            .getTermCollectors();
+    
+    FacetCollector channelNameFacetCollector = channelNameFacet
+            .getFacetCollector();
+    List<TermCollector> channelNameTermCollectors = channelNameFacetCollector
+            .getTermCollectors();
+    
+    PropertyComparator termComparator = new PropertyComparator("term");
+    Collections.sort(channelNameTermCollectors, termComparator);
 
 %>
