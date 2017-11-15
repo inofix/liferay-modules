@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -31,8 +32,8 @@ import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-27 23:53
- * @modified 2017-03-28 17:10
- * @version 1.0.1
+ * @modified 2017-11-15 15:29
+ * @version 1.0.2
  *
  */
 public class SyncDataMessageListener extends BaseMessageListener {
@@ -85,7 +86,12 @@ public class SyncDataMessageListener extends BaseMessageListener {
                             + Time.getTimestamp();
 
                     URL url = new URL(dataURL);
-                    file = new File(tmpDir + "/data.xml");
+                    
+                    String fileName = url.getFile(); 
+                                        
+                    String extension = FileUtil.getExtension(fileName); 
+                                        
+                    file = new File(tmpDir + "/data." + extension);
                     FileUtils.copyURLToFile(url, file);
 
                     long userId = PrefsPropsUtil.getLong(prefs, companyId,
