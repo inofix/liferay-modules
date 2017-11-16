@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-11-15 16:00 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-11-16 19:43 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -60,53 +60,87 @@
         <liferay-ui:panel id="datamanagerDataSourcesPanel"
             title="data-sources" extended="true">
 
-            <aui:fieldset>
+            <aui:fieldset cssClass="data-source" id="dataSource">
 
-                <aui:input name="preferences--dataURL--"
-                    helpMessage="data-url-help" inlineField="<%=true%>"
-                    value="<%=dataURL%>" />
+                <% for (int i=0; i<dataURLs.length; i++) { 
                     
-                <aui:input name="preferences--userName--"
-                    helpMessage="user-name-help" inlineField="<%=true%>"
-                    value="<%=userName%>" />
+                    dataURL = StringPool.BLANK;
+                    idField = StringPool.BLANK; 
+                    password = StringPool.BLANK; 
+                    timestampField = StringPool.BLANK; 
+                    userId = "0"; 
+                    userName = StringPool.BLANK; 
                     
-                <aui:input name="preferences--password--"
-                    helpMessage="password-help" inlineField="<%=true%>"
-                    type="password"
-                    value="<%=password%>" />
+                    if (dataURLs.length > i) {
+                        dataURL = dataURLs[i];
+                    }
+                    
+                    if (idFields.length > i) {
+                        idField = idFields[i]; 
+                    }
+                    
+                    if (passwords.length > i) {
+                        password = passwords[i].trim(); 
+                    }
+                    
+                    if (timestampFields.length > i) {
+                        timestampField = timestampFields[i];
+                    }
+                    
+                    if (userIds.length > i) {
+                        userId = String.valueOf(userIds[i]);
+                    }
+                    
+                    if (userNames.length > i) {
+                        userName = userNames[i];
+                    }                 
+                %>
+                <div class="lfr-form-row">
 
-                <aui:select name="preferences--userId--"
-                    helpMessage="user-id-help" inlineField="<%=true%>">
-                    <%
-                        for (User user1 : users) {
-                    %>
-                    <aui:option value="<%=user1.getUserId()%>"
-                        label="<%=user1.getFullName()%>"
-                        selected="<%=user1.getUserId() == userId%>" />
-                    <%
-                        }
-                    %>
-                </aui:select>
+                    <aui:input name="dataURL"
+                        helpMessage="data-url-help" inlineField="<%=true%>"
+                        value="<%= dataURL %>" />
+                    
+                    <aui:input name="userName"
+                        helpMessage="user-name-help" inlineField="<%=true%>"
+                        value="<%=userName%>" />
+                        
+                    <aui:input name="password"
+                        helpMessage="password-help" inlineField="<%=true%>"
+                        type="password"
+                        value="<%=password%>" />
 
-                <aui:input name="preferences--groupId--" type="hidden"
-                    value="<%=scopeGroupId%>" />
+                    <aui:select name="userId"
+                        helpMessage="user-id-help" inlineField="<%=true%>">
+                        <%
+                            for (User user1 : users) {
+                        %>
+                        <aui:option value="<%=user1.getUserId()%>"
+                            label="<%=user1.getFullName()%>"
+                            selected="<%=user1.getUserId() == Long.valueOf(userId)%>" />
+                        <%
+                            }
+                        %>
+                    </aui:select>
 
-                <aui:input name="preferences--groupId--"
-                    disabled="<%=true%>" helpMessage="group-id-help"
-                    inlineField="<%= true %>" value="<%=scopeGroupId%>" />
-
-            </aui:fieldset>
-
-            <aui:fieldset>
-
-                <aui:input name="preferences--idField--"
-                    helpMessage="id-field-help"
-                    inlineField="<%=true%>" value="<%=idField%>" />
-
-                <aui:input name="preferences--timestampField--"
-                    helpMessage="timestamp-field-help"
-                    inlineField="<%=true%>"
-                    value="<%=timestampField%>" />
+                    <aui:input name="groupId" type="hidden"
+                        value="<%=scopeGroupId%>" />
+    
+                    <aui:input name="groupId"
+                        disabled="<%=true%>" helpMessage="group-id-help"
+                        inlineField="<%= true %>" value="<%=scopeGroupId%>" />
+    
+                    <aui:input name="idField"
+                        helpMessage="id-field-help"
+                        inlineField="<%=true%>" value="<%= idField %>" />
+    
+                    <aui:input name="timestampField"
+                        helpMessage="timestamp-field-help"
+                        inlineField="<%=true%>"
+                        value="<%=timestampField %>" />
+                                            
+                </div>
+                <% } %>
 
             </aui:fieldset>
 
@@ -194,4 +228,19 @@
             submitForm(document.<portlet:namespace />fm);
         }, ['liferay-util-list-fields']
     );
+</aui:script>
+
+<%-- Configure auto-fields --%>
+<aui:script use="liferay-auto-fields">
+
+    var dataSourceAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />dataSource',
+        namespace : '<portlet:namespace />',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+    
 </aui:script>

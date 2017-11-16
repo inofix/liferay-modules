@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-15 16:04 by Christian Berndt
-    Version:    1.2.7
+    Modified:   2017-11-16 20:50 by Christian Berndt
+    Version:    1.2.8
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -59,8 +59,23 @@
             "channelName,value,channelUnit,timestamp").split(
             StringPool.COMMA);
 
-    String dataURL = portletPreferences.getValue("dataURL", "");
+    String dataURL = portletPreferences.getValue("dataURL", "");       
+    String[] dataURLs = null; 
+    
+    if (dataURL.endsWith(StringPool.COMMA)) {
+        dataURLs = (dataURL + StringPool.SPACE).split(StringPool.COMMA);
+    } else {
+        dataURLs = dataURL.split(StringPool.COMMA);        
+    }
+     
     String idField = portletPreferences.getValue("idField", "id");
+    String[] idFields = null; 
+    
+    if (idField.endsWith(StringPool.COMMA)) {
+        idFields = (idField + StringPool.SPACE).split(StringPool.COMMA);
+    } else {
+        idFields = idField.split(StringPool.COMMA);        
+    }
     
     int limit = GetterUtil.getInteger(portletPreferences.getValue("limit", "1000"));
     if (limit > 10000) limit = 10000; // maximum number of hits returned by indexer
@@ -71,6 +86,15 @@
     long oneDay = 1000 * 60 * 60 * 24;  
     
     long from = ParamUtil.getLong(request, "from", now.getTime() - oneDay);
+    
+//     String groupId = portletPreferences.getValue("groupId", "0");    
+//     long[] groupIds = null; 
+    
+//     if (groupId.endsWith(StringPool.COMMA)) {
+//         groupIds = GetterUtil.getLongValues((groupId + StringPool.SPACE).split(StringPool.COMMA));
+//     } else {
+//         groupIds = GetterUtil.getLongValues(groupId.split(StringPool.COMMA));        
+//     }
 
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "channelId,channelName,value,channelUnit,createDate,modifiedDate")
@@ -79,16 +103,44 @@
     String paginationType = portletPreferences.getValue("paginationType", "regular");
     
     String password = portletPreferences.getValue("password", "");
+    String[] passwords = null; 
+    
+    if (password.endsWith(StringPool.COMMA)) {
+        passwords = (password + StringPool.SPACE).split(StringPool.COMMA);
+    } else {
+        passwords = password.split(StringPool.COMMA);        
+    }
     
     String tabs1 = ParamUtil.getString(request, "tabs1", "latest");
     
-    String timestampField = portletPreferences.getValue("timestampField", "timestamp");
+    String timestampField = portletPreferences.getValue("timestampField", "");
+    String[] timestampFields = null; 
+    
+    if (timestampField.endsWith(StringPool.COMMA)) {
+        timestampFields = (timestampField + StringPool.SPACE).split(StringPool.COMMA);
+    } else {
+        timestampFields = timestampField.split(StringPool.COMMA);        
+    }
     
     long until = ParamUtil.getLong(request, "until", now.getTime());
     
-    long userId = GetterUtil.getLong(portletPreferences.getValue("userId", "0"));
+    String userId = portletPreferences.getValue("userId", "0");    
+    long[] userIds = null; 
+    
+    if (userId.endsWith(StringPool.COMMA)) {
+        userIds = GetterUtil.getLongValues((userId + "0").split(StringPool.COMMA));
+    } else {
+        userIds = GetterUtil.getLongValues(userId.split(StringPool.COMMA));        
+    }
     
     String userName = portletPreferences.getValue("userName", "");
+    String[] userNames = null; 
+    
+    if (userName.endsWith(StringPool.COMMA)) {
+        userNames = (userName + StringPool.SPACE).split(StringPool.COMMA);
+    } else {
+        userNames = userName.split(StringPool.COMMA);        
+    }
     
     // The list of availabe channels
     
@@ -125,5 +177,4 @@
     
     PropertyComparator termComparator = new PropertyComparator("term");
     Collections.sort(channelNameTermCollectors, termComparator);
-
 %>
