@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.PortletPreferences;
 import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
+import com.liferay.portal.util.PortletKeys;
+import com.liferay.portlet.PortletPreferencesFactoryUtil;
 
 /**
  *
@@ -32,8 +34,8 @@ import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-27 23:53
- * @modified 2017-11-15 15:29
- * @version 1.0.2
+ * @modified 2017-11-16 19:56
+ * @version 1.0.3
  *
  */
 public class SyncDataMessageListener extends BaseMessageListener {
@@ -41,75 +43,70 @@ public class SyncDataMessageListener extends BaseMessageListener {
     @Override
     protected void doReceive(Message message) throws Exception {
 
+        // Read preferences of all deployed data-manager portlets
+        
         String portletId = (String) message.get("PORTLET_ID");
         long companyId = GetterUtil.getLong(message.get("companyId"));
+        int ownerType = PortletKeys.PREFS_OWNER_TYPE_GROUP;
+        long plid = 0;
 
-        List<PortletPreferences> portletPreferences = PortletPreferencesLocalServiceUtil
-                .getPortletPreferences();
+        List<PortletPreferences> portletPreferencesList = PortletPreferencesLocalServiceUtil
+                .getPortletPreferences(ownerType, plid, portletId);
 
-        // Loop over the preferences of all deployed portlets
+        for (PortletPreferences portletPreferences : portletPreferencesList) {
 
-        for (PortletPreferences preferences : portletPreferences) {
+            long groupId = portletPreferences.getOwnerId();
+            
+            _log.info("groupId = " + groupId);
 
-            // Only consider data-portlets.
+            javax.portlet.PortletPreferences preferences = PortletPreferencesFactoryUtil
+                    .fromDefaultXML(portletPreferences.getPreferences());
 
-            if (portletId.equals(preferences.getPortletId())) {
+            // Retrieve the configuration parameter
+            String dataURL = PrefsPropsUtil.getString(preferences, companyId,
+                    "dataURL");
+            final String password = PrefsPropsUtil.getString(preferences,
+                    companyId, "password");
+            final String userName = PrefsPropsUtil.getString(preferences,
+                    companyId, "userName");
 
-                javax.portlet.PortletPreferences prefs = PortletPreferencesLocalServiceUtil
-                        .getPreferences(companyId, preferences.getOwnerId(),
-                                preferences.getOwnerType(),
-                                preferences.getPlid(), portletId);
-
-                // Retrieve the configuration parameter
-                String dataURL = PrefsPropsUtil.getString(prefs, companyId,
-                        "dataURL");
-                final String password = PrefsPropsUtil.getString(prefs,
-                        companyId, "password");
-                final String userName = PrefsPropsUtil.getString(prefs,
-                        companyId, "userName");
-
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(userName, password
-                                .toCharArray());
-                    }
-                });
-
-                File file = null;
-
-                if (Validator.isNotNull(dataURL)) {
-
-                    String tmpDir = SystemProperties
-                            .get(SystemProperties.TMP_DIR)
-                            + StringPool.SLASH
-                            + Time.getTimestamp();
-
-                    URL url = new URL(dataURL);
-                    
-                    String fileName = url.getFile(); 
-                                        
-                    String extension = FileUtil.getExtension(fileName); 
-                                        
-                    file = new File(tmpDir + "/data." + extension);
-                    FileUtils.copyURLToFile(url, file);
-
-                    long userId = PrefsPropsUtil.getLong(prefs, companyId,
-                            "userId");
-                    String taskName = file.getName();
-                    long groupId = PrefsPropsUtil.getLong(prefs, companyId,
-                            "groupId");
-                    boolean privateLayout = true;
-                    Map<String, String[]> parameterMap = new HashMap<String, String[]>();
-
-                    _log.info("taskName = " + taskName);
-//                    _log.info("userId = " + userId);
-//                    _log.info("groupId = " + groupId);
-
-                    MeasurementLocalServiceUtil.importMeasurements(userId,
-                            groupId, privateLayout, parameterMap, file);
-
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(userName, password
+                            .toCharArray());
                 }
+            });
+
+            File file = null;
+
+            if (Validator.isNotNull(dataURL)) {
+
+                String tmpDir = SystemProperties.get(SystemProperties.TMP_DIR)
+                        + StringPool.SLASH + Time.getTimestamp();
+
+                URL url = new URL(dataURL);
+
+                String fileName = url.getFile();
+
+                String extension = FileUtil.getExtension(fileName);
+
+                file = new File(tmpDir + "/data." + extension);
+                FileUtils.copyURLToFile(url, file);
+
+                long userId = PrefsPropsUtil.getLong(preferences, companyId,
+                        "userId");
+                String taskName = file.getName();
+
+                boolean privateLayout = true;
+                Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+
+                _log.info("taskName = " + taskName);
+                // _log.info("userId = " + userId);
+
+                MeasurementLocalServiceUtil.importMeasurements(userId, groupId,
+                        privateLayout, parameterMap, file);
+
             }
         }
     }
