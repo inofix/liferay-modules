@@ -2,8 +2,8 @@
     import.jsp: The import panel of the data-portlet
     
     Created:    2017-03-13 12:46 by Christian Berndt
-    Modified:   2017-06-20 12:53 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-11-16 20:57 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -48,24 +48,28 @@
 
 <div class="separator"></div>
 
-<aui:form action="<%=importMeasurementsURL%>" name="fm1"
-    cssClass="import-form">
+<% for (int i=0; i<dataURLs.length; i++) { %>
 
-    <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
+    <aui:form action="<%=importMeasurementsURL%>" name='<%= "fm" + (i+2) %>'
+        cssClass="import-form">
+    
+        <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
+    
+        <aui:input name="dataURL" type="hidden" value="<%=dataURLs[i]%>" />
+        <aui:input name="dataURL" disabled="<%=true%>" inlineField="true"
+            value="<%=dataURLs[i]%>" />
+    
+        <%
+            boolean isConfigured = Validator.isNotNull(dataURLs[i]);
+        %>
+    
+        <aui:button name="import" type="submit" value="import"
+            disabled="<%=!isConfigured || !hasImportPermission%>" />
+        <aui:button href="<%=browseURL%>" type="cancel" />
+    
+    </aui:form>
 
-    <aui:input name="dataURL" type="hidden" value="<%=dataURL%>" />
-    <aui:input name="dataURL" disabled="<%=true%>" inlineField="true"
-        value="<%=dataURL%>" />
-
-    <%
-        boolean isConfigured = Validator.isNotNull(dataURL);
-    %>
-
-    <aui:button name="import" type="submit" value="import"
-        disabled="<%=!isConfigured || !hasImportPermission%>" />
-    <aui:button href="<%=browseURL%>" type="cancel" />
-
-</aui:form>
+<% } %>
 
 <aui:script use="aui-base">
 	var input = A.one('#<portlet:namespace />file');

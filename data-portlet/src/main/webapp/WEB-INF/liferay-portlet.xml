@@ -6,14 +6,14 @@
     data-portlet.
     
     Created:    2017-03-27 23:58 by Christian Berndt
-    Modified:   2017-11-15 17:01 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-16 20:43 by Christian Berndt
+    Version:    1.0.6
  -->
 <liferay-portlet-app>
     <portlet>
         <portlet-name>data-portlet</portlet-name>
         <icon>/icon.png</icon>
-        <configuration-action-class>com.liferay.portal.kernel.portlet.DefaultConfigurationAction</configuration-action-class>
+        <configuration-action-class>ch.inofix.portlet.data.action.ConfigurationActionImpl</configuration-action-class>       
         <indexer-class>ch.inofix.portlet.data.search.MeasurementIndexer</indexer-class>
         <scheduler-entry>
             <scheduler-event-listener-class>ch.inofix.portlet.data.messaging.SyncDataMessageListener</scheduler-event-listener-class>
