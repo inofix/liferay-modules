@@ -2,6 +2,8 @@ package ch.inofix.portlet.data.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -10,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -23,27 +26,33 @@ import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.model.PortletPreferences;
 import com.liferay.portal.model.User;
+import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.util.PortletKeys;
+import com.liferay.portlet.PortletPreferencesFactoryUtil;
 
 /**
  *
  * @author Christian Berndt
  * @created 2017-03-09 17:53
- * @modified 2017-10-24 17:55
- * @version 1.0.7
+ * @modified 2017-11-15 15:09
+ * @version 1.0.8
  *
  */
 public class MeasurementImporter {
@@ -73,6 +82,8 @@ public class MeasurementImporter {
 
         if ("xml".equalsIgnoreCase(extension)) {
 
+            _log.info("process xml");
+
             try {
                 Document document = SAXReaderUtil.read(file);
 
@@ -85,8 +96,7 @@ public class MeasurementImporter {
 
                     Element channelElement = (Element) channel;
 
-                    String id = channelElement
-                            .attributeValue("channelId");
+                    String id = channelElement.attributeValue("channelId");
                     String name = channelElement.attributeValue("name");
                     String unit = channelElement.attributeValue("unit");
 
@@ -98,8 +108,8 @@ public class MeasurementImporter {
                         String timestamp = valueElement.attributeValue("t");
                         String val = valueElement.getText();
 
-                        JSONObject jsonObject = createJSONObject(id,
-                                name, unit, timestamp, val);
+                        JSONObject jsonObject = createJSONObject(id, name,
+                                unit, timestamp, val);
 
                         int status = addMeasurement(serviceContext, userId,
                                 jsonObject);
@@ -146,11 +156,11 @@ public class MeasurementImporter {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
                 HSSFSheet worksheet = workbook.getSheetAt(0);
-                
+
                 int i = 0;
 
                 for (Row row : worksheet) {
-                    
+
                     if (i > 0) {
 
                         String id = getCellValue(row.getCell(3), true);
@@ -160,9 +170,9 @@ public class MeasurementImporter {
                         String timestamp = dateFormat.format(timestampDate)
                                 + "T" + timeFormat.format(timestampDate);
                         String value = getCellValue(row.getCell(4));
-                        
-                        JSONObject jsonObject = createJSONObject(id,
-                                name, unit, timestamp, value);
+
+                        JSONObject jsonObject = createJSONObject(id, name,
+                                unit, timestamp, value);
 
                         int status = addMeasurement(serviceContext, userId,
                                 jsonObject);
@@ -191,6 +201,74 @@ public class MeasurementImporter {
                 throw new MeasurementXLSException();
             }
 
+        } else if ("json".equalsIgnoreCase(extension)) {
+
+            _log.info("process json");
+
+            try {
+                String json = FileUtils.readFileToString(file,
+                        Charset.defaultCharset());
+
+                if (Validator.isNotNull(json)) {
+                    
+                    // Read preferences
+                    
+                    long ownerId = groupId;
+                    int ownerType = PortletKeys.PREFS_OWNER_TYPE_GROUP;
+                    long plid = 0;
+                    
+                    PortletPreferences portletPreferences = PortletPreferencesLocalServiceUtil.getPortletPreferences(ownerId,
+                            ownerType, plid, "dataportlet_WAR_dataportlet");
+
+                    javax.portlet.PortletPreferences preferences = PortletPreferencesFactoryUtil
+                            .fromDefaultXML(portletPreferences.getPreferences());
+
+                    String idFieldName = preferences.getValue("idField", "id");
+                    String timestampFieldName = preferences.getValue("timestampField", "timestamp");
+
+                    // Remove start and end quotes added by python's dump method
+                    
+                    if (json.startsWith("'") && json.endsWith("'")) {
+                        
+                        json = json.substring(1,json.length() - 1); 
+                                                
+                    }
+                    
+                    JSONArray jsonArray = JSONFactoryUtil.createJSONArray(json); 
+                    
+                    for (int i=0; i<jsonArray.length(); i++) {
+                        
+                        JSONObject inObject = jsonArray.getJSONObject(i);
+                                                
+                        String id = inObject.getString(idFieldName); 
+                        String name = inObject.getString("id"); 
+                        String unit = inObject.getString("unit"); 
+                        String timestamp = inObject.getString(timestampFieldName); 
+                        String value = inObject.getString("value"); 
+                        
+                        JSONObject jsonObject = createJSONObject(id, name,
+                                unit, timestamp, value);
+
+                        int status = addMeasurement(serviceContext, userId,
+                                jsonObject);
+
+                        if (status == IGNORED) {
+                            numIgnored++;
+                        }
+
+                        if (status == IMPORTED) {
+                            numImported++;
+                        }
+
+                        numProcessed++;
+                        
+                    }      
+                }
+
+            } catch (IOException e) {
+                _log.error(e.getMessage());
+            }
+
         } else {
 
             throw new FileFormatException();
@@ -210,12 +288,12 @@ public class MeasurementImporter {
         String id = jsonObject.getString("id");
         String name = jsonObject.getString("channelName");
         String timestamp = jsonObject.getString("timestamp");
-        
+
         Hits hits = MeasurementLocalServiceUtil.search(
                 serviceContext.getCompanyId(),
-                serviceContext.getScopeGroupId(), id, name,
-                timestamp, true, 0, 1, null);
-        
+                serviceContext.getScopeGroupId(), id, name, timestamp, true, 0,
+                1, null);
+
         if (hits.getLength() == 0) {
 
             MeasurementLocalServiceUtil.addMeasurement(userId,
@@ -229,9 +307,8 @@ public class MeasurementImporter {
         }
     }
 
-    private static JSONObject createJSONObject(String id,
-            String name, String unit, String timestamp,
-            String value) {
+    private static JSONObject createJSONObject(String id, String name,
+            String unit, String timestamp, String value) {
 
         JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
         jsonObject.put("channelId", id);
