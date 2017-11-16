@@ -54,8 +54,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-20-25 00:35
- * @version 1.1.2
+ * @modified 2017-11-15 14:27
+ * @version 1.1.3
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -219,7 +219,7 @@ public class DataManagerPortlet extends MVCPortlet {
 
         String extension = FileUtil.getExtension(file.getName());
 
-        if ("xml".equals(extension) || "xls".equals(extension)) {
+        if ("xml".equals(extension) || "xls".equals(extension) || "json".equals(extension)) {
 
             if (Validator.isNotNull(dataURL)) {
 
@@ -300,6 +300,15 @@ public class DataManagerPortlet extends MVCPortlet {
                             userId, fileName, groupId, privateLayout,
                             parameterMap, file);
 
+                } else if ("json".equals(extension)) {
+                    
+                    MeasurementServiceUtil.importMeasurementsInBackground(
+                            userId, fileName, groupId, privateLayout,
+                            parameterMap, file);
+                    
+                    message = PortletUtil
+                            .translate("importing-measurements-from-json-the-import-will-finish-in-a-separate-thread");                    
+                    
                 }
 
                 SessionMessages

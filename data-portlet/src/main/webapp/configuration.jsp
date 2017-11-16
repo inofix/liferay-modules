@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-04-04 13:06 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-11-15 16:00 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -57,8 +57,8 @@
         id="datamanagerSettingsPanelContainer"
         persistState="<%=true%>">
         
-        <liferay-ui:panel id="datamanagerDataPanel"
-            title="data" extended="true">
+        <liferay-ui:panel id="datamanagerDataSourcesPanel"
+            title="data-sources" extended="true">
 
             <aui:fieldset>
 
@@ -93,11 +93,24 @@
 
                 <aui:input name="preferences--groupId--"
                     disabled="<%=true%>" helpMessage="group-id-help"
-                    inlineField="true" value="<%=scopeGroupId%>" />
+                    inlineField="<%= true %>" value="<%=scopeGroupId%>" />
 
             </aui:fieldset>
 
-        </liferay-ui:panel> 
+            <aui:fieldset>
+
+                <aui:input name="preferences--idField--"
+                    helpMessage="id-field-help"
+                    inlineField="<%=true%>" value="<%=idField%>" />
+
+                <aui:input name="preferences--timestampField--"
+                    helpMessage="timestamp-field-help"
+                    inlineField="<%=true%>"
+                    value="<%=timestampField%>" />
+
+            </aui:fieldset>
+
+        </liferay-ui:panel>
         
         <liferay-ui:panel id="datamanagerChartPanel"
             title="chart" extended="true">

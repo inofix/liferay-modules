@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-10-25 15:50 by Christian Berndt
-    Version:    1.2.6
+    Modified:   2017-11-15 16:04 by Christian Berndt
+    Version:    1.2.7
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -60,6 +60,7 @@
             StringPool.COMMA);
 
     String dataURL = portletPreferences.getValue("dataURL", "");
+    String idField = portletPreferences.getValue("idField", "id");
     
     int limit = GetterUtil.getInteger(portletPreferences.getValue("limit", "1000"));
     if (limit > 10000) limit = 10000; // maximum number of hits returned by indexer
@@ -80,6 +81,8 @@
     String password = portletPreferences.getValue("password", "");
     
     String tabs1 = ParamUtil.getString(request, "tabs1", "latest");
+    
+    String timestampField = portletPreferences.getValue("timestampField", "timestamp");
     
     long until = ParamUtil.getLong(request, "until", now.getTime());
     
