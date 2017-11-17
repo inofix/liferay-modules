@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-16 20:50 by Christian Berndt
-    Version:    1.2.8
+    Modified:   2017-11-17 14:28 by Christian Berndt
+    Version:    1.2.9
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -87,15 +87,6 @@
     
     long from = ParamUtil.getLong(request, "from", now.getTime() - oneDay);
     
-//     String groupId = portletPreferences.getValue("groupId", "0");    
-//     long[] groupIds = null; 
-    
-//     if (groupId.endsWith(StringPool.COMMA)) {
-//         groupIds = GetterUtil.getLongValues((groupId + StringPool.SPACE).split(StringPool.COMMA));
-//     } else {
-//         groupIds = GetterUtil.getLongValues(groupId.split(StringPool.COMMA));        
-//     }
-
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "channelId,channelName,value,channelUnit,createDate,modifiedDate")
             .split(StringPool.COMMA);
