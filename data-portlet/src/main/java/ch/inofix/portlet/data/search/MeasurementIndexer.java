@@ -32,12 +32,13 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Christian Berndt
  * @created 2017-03-13 15:52
- * @modified 2017-04-01 00:35
- * @version 1.0.3
+ * @modified 2017-11-17 14:14
+ * @version 1.0.4
  */
 public class MeasurementIndexer extends BaseIndexer {
 
@@ -96,11 +97,12 @@ public class MeasurementIndexer extends BaseIndexer {
 
             if ("timestamp".equals(name)) {
 
-                Date date = format.parse(value);
-
-                document.addDate("date", date);
+                if (Validator.isNotNull(value)) {
+                    Date date = format.parse(value);
+    
+                    document.addDate("date", date);
+                }
             }
-
         }
 
         return document;
