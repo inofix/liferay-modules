@@ -34,8 +34,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-27 23:53
- * @modified 2017-11-16 19:56
- * @version 1.0.3
+ * @modified 2017-11-17 14:27
+ * @version 1.0.4
  *
  */
 public class SyncDataMessageListener extends BaseMessageListener {
@@ -56,7 +56,7 @@ public class SyncDataMessageListener extends BaseMessageListener {
         for (PortletPreferences portletPreferences : portletPreferencesList) {
 
             long groupId = portletPreferences.getOwnerId();
-            
+
             _log.info("groupId = " + groupId);
 
             javax.portlet.PortletPreferences preferences = PortletPreferencesFactoryUtil
@@ -65,48 +65,86 @@ public class SyncDataMessageListener extends BaseMessageListener {
             // Retrieve the configuration parameter
             String dataURL = PrefsPropsUtil.getString(preferences, companyId,
                     "dataURL");
-            final String password = PrefsPropsUtil.getString(preferences,
-                    companyId, "password");
-            final String userName = PrefsPropsUtil.getString(preferences,
-                    companyId, "userName");
+            String password = PrefsPropsUtil.getString(preferences, companyId,
+                    "password");
+            String userId = PrefsPropsUtil.getString(preferences, companyId,
+                    "userId");
+            String userName = PrefsPropsUtil.getString(preferences, companyId,
+                    "userName");
 
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(userName, password
-                            .toCharArray());
+            String[] dataURLs = null;
+
+            if (dataURL.endsWith(StringPool.COMMA)) {
+                dataURLs = (dataURL + StringPool.SPACE).split(StringPool.COMMA);
+            } else {
+                dataURLs = dataURL.split(StringPool.COMMA);
+            }
+            
+            String[] passwords = null;
+
+            if (password.endsWith(StringPool.COMMA)) {
+                passwords = (password + StringPool.SPACE).split(StringPool.COMMA);
+            } else {
+                passwords = password.split(StringPool.COMMA);
+            }
+
+            String[] userIds = null;
+
+            if (userId.endsWith(StringPool.COMMA)) {
+                userIds = (userId + "0").split(StringPool.COMMA);
+            } else {
+                userIds = userId.split(StringPool.COMMA);
+            }
+            
+            String[] userNames = null;
+
+            if (userName.endsWith(StringPool.COMMA)) {
+                userNames = (userName + StringPool.SPACE).split(StringPool.COMMA);
+            } else {
+                userNames = userName.split(StringPool.COMMA);
+            }
+
+            // loop over configured data sources
+
+            for (int i = 0; i < dataURLs.length; i++) {
+
+                final String user = userNames[i];
+                final String pw = passwords[i];
+
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(user, pw
+                                .toCharArray());
+                    }
+                });
+
+                File file = null;
+
+                if (Validator.isNotNull(dataURLs[i])) {
+
+                    String tmpDir = SystemProperties
+                            .get(SystemProperties.TMP_DIR)
+                            + StringPool.SLASH
+                            + Time.getTimestamp();
+
+                    URL url = new URL(dataURLs[i]);
+
+                    String fileName = url.getFile();
+
+                    String extension = FileUtil.getExtension(fileName);
+
+                    file = new File(tmpDir + "/data." + extension);
+                    FileUtils.copyURLToFile(url, file);
+
+                    boolean privateLayout = true;
+                    Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+
+                    MeasurementLocalServiceUtil.importMeasurements(
+                            Long.valueOf(userIds[i]), groupId, privateLayout,
+                            parameterMap, file);
+
                 }
-            });
-
-            File file = null;
-
-            if (Validator.isNotNull(dataURL)) {
-
-                String tmpDir = SystemProperties.get(SystemProperties.TMP_DIR)
-                        + StringPool.SLASH + Time.getTimestamp();
-
-                URL url = new URL(dataURL);
-
-                String fileName = url.getFile();
-
-                String extension = FileUtil.getExtension(fileName);
-
-                file = new File(tmpDir + "/data." + extension);
-                FileUtils.copyURLToFile(url, file);
-
-                long userId = PrefsPropsUtil.getLong(preferences, companyId,
-                        "userId");
-                String taskName = file.getName();
-
-                boolean privateLayout = true;
-                Map<String, String[]> parameterMap = new HashMap<String, String[]>();
-
-                _log.info("taskName = " + taskName);
-                // _log.info("userId = " + userId);
-
-                MeasurementLocalServiceUtil.importMeasurements(userId, groupId,
-                        privateLayout, parameterMap, file);
-
             }
         }
     }
