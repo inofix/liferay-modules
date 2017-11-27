@@ -34,8 +34,8 @@ import com.liferay.portlet.PortletPreferencesFactoryUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-27 23:53
- * @modified 2017-11-17 14:27
- * @version 1.0.4
+ * @modified 2017-11-20 17:43
+ * @version 1.0.5
  *
  */
 public class SyncDataMessageListener extends BaseMessageListener {
@@ -57,14 +57,18 @@ public class SyncDataMessageListener extends BaseMessageListener {
 
             long groupId = portletPreferences.getOwnerId();
 
-            _log.info("groupId = " + groupId);
-
             javax.portlet.PortletPreferences preferences = PortletPreferencesFactoryUtil
                     .fromDefaultXML(portletPreferences.getPreferences());
 
             // Retrieve the configuration parameter
             String dataURL = PrefsPropsUtil.getString(preferences, companyId,
                     "dataURL");
+            String idField = PrefsPropsUtil.getString(preferences, companyId,
+                    "idField");
+            String nameField = PrefsPropsUtil.getString(preferences, companyId,
+                    "nameField");
+            String timestampField = PrefsPropsUtil.getString(preferences, companyId,
+                    "timestampField");
             String password = PrefsPropsUtil.getString(preferences, companyId,
                     "password");
             String userId = PrefsPropsUtil.getString(preferences, companyId,
@@ -78,6 +82,30 @@ public class SyncDataMessageListener extends BaseMessageListener {
                 dataURLs = (dataURL + StringPool.SPACE).split(StringPool.COMMA);
             } else {
                 dataURLs = dataURL.split(StringPool.COMMA);
+            }
+            
+            String[] idFields = null;
+
+            if (idField.endsWith(StringPool.COMMA)) {
+                idFields = (idField + StringPool.SPACE).split(StringPool.COMMA);
+            } else {
+                idFields = idField.split(StringPool.COMMA);
+            }
+            
+            String[] nameFields = null;
+
+            if (nameField.endsWith(StringPool.COMMA)) {
+                nameFields = (nameField + StringPool.SPACE).split(StringPool.COMMA);
+            } else {
+                nameFields = nameField.split(StringPool.COMMA);
+            }
+            
+            String[] timestampFields = null;
+
+            if (timestampField.endsWith(StringPool.COMMA)) {
+                timestampFields = (timestampField + StringPool.SPACE).split(StringPool.COMMA);
+            } else {
+                timestampFields = timestampField.split(StringPool.COMMA);
             }
             
             String[] passwords = null;
@@ -137,11 +165,13 @@ public class SyncDataMessageListener extends BaseMessageListener {
                     file = new File(tmpDir + "/data." + extension);
                     FileUtils.copyURLToFile(url, file);
 
-                    boolean privateLayout = true;
                     Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+                    parameterMap.put("idField", new String[] {idFields[i]}); 
+                    parameterMap.put("nameField", new String[] {nameFields[i]}); 
+                    parameterMap.put("timestampField", new String[] {timestampFields[i]}); 
 
                     MeasurementLocalServiceUtil.importMeasurements(
-                            Long.valueOf(userIds[i]), groupId, privateLayout,
+                            Long.valueOf(userIds[i]), groupId,
                             parameterMap, file);
 
                 }

@@ -13,5 +13,10 @@
 		<field name="data" type="String">
 			<hint name="max-length">5000</hint>
 		</field>
+		<field name="id" type="String" />
+		<field name="name" type="String" />
+		<field name="timestamp" type="Date" />
+		<field name="unit" type="String" />
+		<field name="value" type="String" />
 	</model>
 </model-hints>

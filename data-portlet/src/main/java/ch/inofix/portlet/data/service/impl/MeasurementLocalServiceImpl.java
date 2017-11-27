@@ -4,19 +4,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.StopWatch;
+
+import ch.inofix.portlet.data.MeasurementIdException;
+import ch.inofix.portlet.data.MeasurementNameException;
+import ch.inofix.portlet.data.MeasurementTimestampException;
+import ch.inofix.portlet.data.MeasurementUnitException;
+import ch.inofix.portlet.data.MeasurementValueException;
 import ch.inofix.portlet.data.backgroundtask.MeasurementImportBackgroundTaskExecutor;
 import ch.inofix.portlet.data.model.Measurement;
 import ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl;
+import ch.inofix.portlet.data.util.DataManagerFields;
 import ch.inofix.portlet.data.util.MeasurementImporter;
 
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -27,6 +41,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.search.facet.MultiValueFacet;
+import com.liferay.portal.kernel.search.facet.SimpleFacet;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -51,8 +66,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-10-25 22:02
- * @version 1.1.0
+ * @modified 2017-11-20 15:19
+ * @version 1.1.1
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -67,13 +82,17 @@ public class MeasurementLocalServiceImpl extends
      */
 
     @Override
-    public Measurement addMeasurement(long userId, String data,
+    public Measurement addMeasurement(long userId, String data, String id,
+            String name, Date timestamp, String unit, String value,
             ServiceContext serviceContext) throws PortalException,
             SystemException {
 
         // Measurement
 
         User user = userPersistence.findByPrimaryKey(userId);
+
+        validate(id, name, timestamp, unit, value);
+
         long groupId = serviceContext.getScopeGroupId();
 
         long measurementId = counterLocalService.increment();
@@ -88,8 +107,19 @@ public class MeasurementLocalServiceImpl extends
         measurement.setExpandoBridgeAttributes(serviceContext);
 
         measurement.setData(data);
+        measurement.setId(id);
+        measurement.setName(name);
+        measurement.setTimestamp(timestamp);
+        measurement.setUnit(unit);
+        measurement.setValue(value);
 
         measurementPersistence.update(measurement);
+
+        // Asset
+
+        updateAsset(userId, measurement, serviceContext.getAssetCategoryIds(),
+                serviceContext.getAssetTagNames(),
+                serviceContext.getAssetLinkEntryIds());
 
         // Indexing
 
@@ -119,8 +149,8 @@ public class MeasurementLocalServiceImpl extends
     @Override
     public Measurement deleteMeasurement(Measurement measurement)
             throws PortalException, SystemException {
-        
-        _log.info("deleteMeasurement(measurement)"); 
+
+        _log.info("deleteMeasurement(measurement)");
 
         // Measurement
 
@@ -144,27 +174,29 @@ public class MeasurementLocalServiceImpl extends
 
         return measurementLocalService.deleteMeasurement(measurement);
     }
-    
-    public List<Measurement> deleteMeasurementsByChannelName(long companyId, long groupId, String channelName) throws PortalException, SystemException {
-        
-        _log.info("deleteMeasurementsByChannelName");
-        
-        Hits hits = search(companyId, groupId, null, channelName, Long.MIN_VALUE, Long.MAX_VALUE, true, 0, Integer.MAX_VALUE, null);
-        
+
+    public List<Measurement> deleteMeasurementsById(long companyId,
+            long groupId, String id) throws PortalException, SystemException {
+
+        _log.info("deleteMeasurementsById");
+
+        Hits hits = search(companyId, groupId, id, Long.MIN_VALUE,
+                Long.MAX_VALUE, true, 0, Integer.MAX_VALUE, null);
+
         List<Document> documents = hits.toList();
-        
-        List<Measurement> measurements = new ArrayList<Measurement>(); 
-        
+
+        List<Measurement> measurements = new ArrayList<Measurement>();
+
         for (Document document : documents) {
-            
-            long classPK = GetterUtil.getLong(document.get("entryClassPK")); 
-            
+
+            long classPK = GetterUtil.getLong(document.get("entryClassPK"));
+
             deleteMeasurement(classPK);
-           
+
         }
-        
-        return measurements; 
-        
+
+        return measurements;
+
     }
 
     @Override
@@ -197,14 +229,14 @@ public class MeasurementLocalServiceImpl extends
      */
     @Override
     public void importMeasurements(long userId, long groupId,
-            boolean privateLayout, Map<String, String[]> parameterMap, File file)
+            Map<String, String[]> parameterMap, File file)
             throws PortalException, SystemException {
 
         try {
             MeasurementImporter measurementImporter = new MeasurementImporter();
 
             measurementImporter.importMeasurements(userId, groupId,
-                    privateLayout, parameterMap, file);
+                    parameterMap, file);
 
         } catch (PortalException pe) {
             Throwable cause = pe.getCause();
@@ -236,8 +268,6 @@ public class MeasurementLocalServiceImpl extends
      *            the primary key of the user
      * @param groupId
      *            the primary key of the group
-     * @param privateLayout
-     *            whether the layout is private to the group
      * @param parameterMap
      *            the mapping of parameters indicating which information will be
      *            imported.
@@ -252,9 +282,8 @@ public class MeasurementLocalServiceImpl extends
      */
     @Override
     public void importMeasurements(long userId, long groupId,
-            boolean privateLayout, Map<String, String[]> parameterMap,
-            InputStream is, String extension) throws PortalException,
-            SystemException {
+            Map<String, String[]> parameterMap, InputStream is, String extension)
+            throws PortalException, SystemException {
 
         File file = null;
 
@@ -263,8 +292,7 @@ public class MeasurementLocalServiceImpl extends
 
             FileUtil.write(file, is);
 
-            importMeasurements(userId, groupId, privateLayout, parameterMap,
-                    file);
+            importMeasurements(userId, groupId, parameterMap, file);
 
         } catch (IOException ioe) {
 
@@ -290,8 +318,7 @@ public class MeasurementLocalServiceImpl extends
      */
     @Override
     public long importMeasurementsInBackground(long userId, String taskName,
-            long groupId, boolean privateLayout,
-            Map<String, String[]> parameterMap, File file)
+            long groupId, Map<String, String[]> parameterMap, File file)
             throws PortalException, SystemException {
 
         String extension = FileUtil.getExtension(file.getName());
@@ -300,7 +327,6 @@ public class MeasurementLocalServiceImpl extends
         taskContextMap.put("userId", userId);
         taskContextMap.put("groupId", groupId);
         taskContextMap.put("parameterMap", (Serializable) parameterMap);
-        taskContextMap.put("privateLayout", privateLayout);
         taskContextMap.put("extension", extension);
 
         String[] servletContextNames = parameterMap.get("servletContextNames");
@@ -319,9 +345,8 @@ public class MeasurementLocalServiceImpl extends
     }
 
     /**
-     * Returns an ordered range of all the measurements whose channelId, or
-     * timestamp fields match the keywords specified for them, using the
-     * indexer.
+     * Returns an ordered range of all the measurements whose id, or timestamp
+     * fields match the keywords specified for them, using the indexer.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end -
@@ -335,7 +360,7 @@ public class MeasurementLocalServiceImpl extends
      *
      *
      * @param companyId
-     * @param channelId
+     * @param id
      * @param timestamp
      * @param andSearch
      * @param start
@@ -345,12 +370,12 @@ public class MeasurementLocalServiceImpl extends
      * @throws SystemException
      */
     @Override
-    public Hits search(long companyId, long groupId, String channelId,
-            String channelName, String timestamp, boolean andSearch, int start,
-            int end, Sort sort) throws SystemException {
+    public Hits search(long companyId, long groupId, String id, Date timestamp,
+            boolean andSearch, int start, int end, Sort sort)
+            throws SystemException {
 
-        return search(companyId, groupId, channelId, channelName, timestamp, 0,
-                0, andSearch, start, end, sort);
+        return search(companyId, groupId, id, timestamp, Long.MIN_VALUE,
+                Long.MAX_VALUE, andSearch, start, end, sort);
 
     }
 
@@ -358,8 +383,7 @@ public class MeasurementLocalServiceImpl extends
      *
      * @param companyId
      * @param groupId
-     * @param channelId
-     * @param channelName
+     * @param id
      * @param from
      * @param until
      * @param andSearch
@@ -370,18 +394,17 @@ public class MeasurementLocalServiceImpl extends
      * @throws SystemException
      */
     @Override
-    public Hits search(long companyId, long groupId, String channelId,
-            String channelName, long from, long until, boolean andSearch,
-            int start, int end, Sort sort) throws SystemException {
+    public Hits search(long companyId, long groupId, String id, long from,
+            long until, boolean andSearch, int start, int end, Sort sort)
+            throws SystemException {
 
-        return search(companyId, groupId, channelId, channelName, null, from,
-                until, andSearch, start, end, sort);
+        return search(companyId, groupId, id, null, from, until, andSearch,
+                start, end, sort);
     }
 
     /**
-     * Returns an ordered range of all the measurements whose channelId, or
-     * timestamp fields match the keywords specified for them, using the
-     * indexer.
+     * Returns an ordered range of all the measurements whose id, or timestamp
+     * fields match the keywords specified for them, using the indexer.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end -
@@ -395,7 +418,7 @@ public class MeasurementLocalServiceImpl extends
      *
      *
      * @param companyId
-     * @param channelId
+     * @param id
      * @param timestamp
      * @param from
      * @param until
@@ -407,10 +430,9 @@ public class MeasurementLocalServiceImpl extends
      * @throws SystemException
      */
     @Override
-    public Hits search(long companyId, long groupId, String channelId,
-            String channelName, String timestamp, long from, long until,
-            boolean andSearch, int start, int end, Sort sort)
-            throws SystemException {
+    public Hits search(long companyId, long groupId, String id, Date timestamp,
+            long from, long until, boolean andSearch, int start, int end,
+            Sort sort) throws SystemException {
 
         if (Validator.isNull(sort)) {
             sort = new Sort("timestamp", true);
@@ -431,9 +453,15 @@ public class MeasurementLocalServiceImpl extends
 
             Map<String, Serializable> attributes = new HashMap<String, Serializable>();
 
-            attributes.put("channelId", channelId);
-            attributes.put("channelName", channelName);
-            attributes.put("timestamp", timestamp);
+            if (Validator.isNotNull(id)) {
+                attributes.put(DataManagerFields.ID, id);
+
+            }
+
+            if (timestamp != null) {
+                attributes.put(DataManagerFields.TIMESTAMP,
+                        String.valueOf(timestamp.getTime()));
+            }
             attributes.put("from", from);
             attributes.put("until", until);
 
@@ -444,21 +472,15 @@ public class MeasurementLocalServiceImpl extends
 
             List<Facet> facets = new ArrayList<Facet>();
 
-            if (Validator.isNotNull(channelId)) {
-                Facet facet = new MultiValueFacet(searchContext);
-                facet.setFieldName("channelId");
-                facets.add(facet);
-            }
-
-            if (Validator.isNotNull(channelName)) {
-                Facet facet = new MultiValueFacet(searchContext);
-                facet.setFieldName("channelName");
+            if (Validator.isNotNull(id)) {
+                Facet facet = new SimpleFacet(searchContext);
+                facet.setFieldName(DataManagerFields.ID);
                 facets.add(facet);
             }
 
             if (Validator.isNotNull(timestamp)) {
                 Facet facet = new MultiValueFacet(searchContext);
-                facet.setFieldName("timestamp");
+                facet.setFieldName(DataManagerFields.TIMESTAMP);
                 facets.add(facet);
             }
 
@@ -477,13 +499,56 @@ public class MeasurementLocalServiceImpl extends
     }
 
     @Override
+    public void updateAsset(long userId, Measurement measurement,
+            long[] assetCategoryIds, String[] assetTagNames,
+            long[] assetLinkEntryIds) throws PortalException, SystemException {
+
+        boolean visible = true;
+        // boolean visible = false;
+
+        // if (measurement.isApproved()) {
+        // visible = true;
+        // }
+
+        // TODO: What's the classTypeId?
+        long classTypeId = 0;
+        Date startDate = null;
+        Date endDate = null;
+        Date expirationDate = null;
+        String mimeType = "text/x-vcard";
+        String title = String.valueOf(measurement.getMeasurementId());
+        String description = null;
+        String summary = null;
+        // TODO: What does url mean in this context?
+        String url = null;
+        // TODO: What does layoutUuid mean in this context?
+        String layoutUuid = null;
+        int height = 0;
+        int width = 0;
+        Integer priority = null;
+        boolean sync = false;
+
+        assetEntryLocalService.updateEntry(userId, measurement.getGroupId(),
+                measurement.getCreateDate(), measurement.getModifiedDate(),
+                Measurement.class.getName(), measurement.getMeasurementId(),
+                measurement.getUuid(), classTypeId, assetCategoryIds,
+                assetTagNames, visible, startDate, endDate, expirationDate,
+                mimeType, title, description, summary, url, layoutUuid, height,
+                width, priority, sync);
+
+    }
+
+    @Override
     public Measurement updateMeasurement(long measurementId, long userId,
-            String data, ServiceContext serviceContext) throws PortalException,
-            SystemException {
+            String data, String id, String name, Date timestamp, String unit,
+            String value, ServiceContext serviceContext)
+            throws PortalException, SystemException {
 
         // Measurement
 
         User user = userPersistence.findByPrimaryKey(userId);
+
+        validate(id, name, timestamp, unit, value);
 
         Measurement measurement = measurementPersistence
                 .findByPrimaryKey(measurementId);
@@ -498,8 +563,19 @@ public class MeasurementLocalServiceImpl extends
         measurement.setExpandoBridgeAttributes(serviceContext);
 
         measurement.setData(data);
+        measurement.setId(id);
+        measurement.setName(name);
+        measurement.setTimestamp(timestamp);
+        measurement.setUnit(unit);
+        measurement.setValue(value);
 
         measurementPersistence.update(measurement);
+
+        // Asset
+
+        updateAsset(userId, measurement, serviceContext.getAssetCategoryIds(),
+                serviceContext.getAssetTagNames(),
+                serviceContext.getAssetLinkEntryIds());
 
         // Indexing
 
@@ -509,6 +585,84 @@ public class MeasurementLocalServiceImpl extends
 
         return measurement;
 
+    }
+    
+//    public void upgradeMeasurements(ServiceContext serviceContext)
+//            throws PortalException, SystemException {
+//
+//        _log.info("upgradeMeasurements()");
+//
+//        List<Measurement> measurements = getMeasurements(0, Integer.MAX_VALUE);
+//
+//        int numProcessed = 0;
+//        int numValues = measurements.size();
+//
+//        _log.info("numValues = " + numValues);
+//
+//        StopWatch stopWatch = new StopWatch();
+//
+//        stopWatch.start();
+//
+//        for (Measurement measurement : measurements) {
+//
+//            String json = measurement.getData();
+//            JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
+//
+//            String id = jsonObject.getString("channelId");
+//            String name = jsonObject.getString("channelName");
+//            String timestamp = jsonObject.getString("timestamp");
+//            String unit = jsonObject.getString("channelUnit");
+//            String value = jsonObject.getString("value");
+//
+//            JSONObject dataObject = JSONFactoryUtil.createJSONObject();
+//            dataObject.put(DataManagerFields.ID, id);
+//            dataObject.put(DataManagerFields.NAME, name);
+//            dataObject.put(DataManagerFields.TIMESTAMP, timestamp);
+//            dataObject.put(DataManagerFields.UNIT, unit);
+//            dataObject.put(DataManagerFields.VALUE, value);
+//
+//            Date date = getDate(timestamp);
+//
+//            updateMeasurement(measurement.getMeasurementId(),
+//                    measurement.getUserId(), dataObject.toString(), id, name,
+//                    date, unit, value, serviceContext);
+//
+////            if (numProcessed % 100 == 0 && numProcessed > 0) {
+////
+////                float completed = ((Integer) numProcessed).floatValue()
+////                        / numValues * 100;
+////
+////                _log.info("Processed " + numProcessed + " of " + numValues
+////                        + " measurements in " + stopWatch.getTime() + " ms ("
+////                        + completed + "%).");
+////            }
+//
+//        }
+//
+//    }
+
+    protected void validate(String id, String name, Date timestamp,
+            String unit, String value) throws PortalException {
+
+        if (Validator.isNull(id)) {
+            throw new MeasurementIdException();
+        }
+
+        if (Validator.isNull(name)) {
+            throw new MeasurementNameException();
+        }
+
+        if (Validator.isNull(timestamp)) {
+            throw new MeasurementTimestampException();
+        }
+
+        if (Validator.isNull(unit)) {
+            throw new MeasurementUnitException();
+        }
+
+        if (Validator.isNull(value)) {
+            throw new MeasurementValueException();
+        }
     }
 
     private static final Log _log = LogFactoryUtil

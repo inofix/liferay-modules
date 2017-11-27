@@ -1,6 +1,7 @@
 package ch.inofix.portlet.data.search;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import javax.portlet.PortletURL;
 import ch.inofix.portlet.data.model.Measurement;
 import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 import ch.inofix.portlet.data.service.persistence.MeasurementActionableDynamicQuery;
+import ch.inofix.portlet.data.util.DataManagerFields;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -32,18 +34,18 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.service.ServiceContext;
 
 /**
  * @author Christian Berndt
  * @created 2017-03-13 15:52
- * @modified 2017-11-17 14:14
- * @version 1.0.4
+ * @modified 2017-11-20 15:17
+ * @version 1.0.5
  */
 public class MeasurementIndexer extends BaseIndexer {
 
     public static final String[] CLASS_NAMES = { Measurement.class.getName() };
-    public static final String PORTLET_ID = "datamanager";
+    public static final String PORTLET_ID = "datamanager_WAR_datamanager";
 
     @Override
     public String[] getClassNames() {
@@ -80,7 +82,15 @@ public class MeasurementIndexer extends BaseIndexer {
         document.addKeyword("measurementId", measurement.getMeasurementId());
         document.addKeyword(Field.USER_ID, measurement.getUserId());
 
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        document.addKeywordSortable(DataManagerFields.ID, measurement.getId());
+
+        document.addKeyword(DataManagerFields.NAME, measurement.getName());
+        if (measurement.getTimestamp() != null) {
+            document.addNumber(DataManagerFields.TIMESTAMP, measurement
+                    .getTimestamp().getTime());
+        }
+        document.addKeyword(DataManagerFields.UNIT, measurement.getUnit());
+        document.addKeyword(DataManagerFields.VALUE, measurement.getValue());
 
         // Store the jsonObject's properties
         JSONObject jsonObject = JSONFactoryUtil.createJSONObject(measurement
@@ -93,16 +103,8 @@ public class MeasurementIndexer extends BaseIndexer {
             String name = names.getString(i);
             String value = jsonObject.getString(name);
 
-            document.addKeyword(name, value);
+            document.addKeyword("json_" + name, value);
 
-            if ("timestamp".equals(name)) {
-
-                if (Validator.isNotNull(value)) {
-                    Date date = format.parse(value);
-    
-                    document.addDate("date", date);
-                }
-            }
         }
 
         return document;
@@ -121,6 +123,7 @@ public class MeasurementIndexer extends BaseIndexer {
 
     @Override
     protected void doReindex(Object obj) throws Exception {
+                
         Measurement measurement = (Measurement) obj;
 
         Document document = getDocument(measurement);
@@ -149,7 +152,6 @@ public class MeasurementIndexer extends BaseIndexer {
     @Override
     protected String getPortletId(SearchContext searchContext) {
         return PORTLET_ID;
-
     }
 
     @Override
@@ -166,7 +168,7 @@ public class MeasurementIndexer extends BaseIndexer {
         BooleanQuery booleanQuery = BooleanQueryFactoryUtil
                 .create(searchContext);
 
-        booleanQuery.addNumericRangeTerm("date_sortable", from, until);
+        booleanQuery.addNumericRangeTerm("timestamp_sortable", from, until);
         fullQuery.add(booleanQuery, BooleanClauseOccur.MUST);
 
     };
@@ -188,6 +190,44 @@ public class MeasurementIndexer extends BaseIndexer {
 
                 Measurement measurement = (Measurement) object;
 
+//                _log.info("measurementId = " + measurement.getMeasurementId());
+//                _log.info("data = " + measurement.getData());
+//
+//                ServiceContext serviceContext = new ServiceContext();
+//                serviceContext.setCompanyId(measurement.getCompanyId());
+//                serviceContext.setScopeGroupId(measurement.getGroupId());
+//                serviceContext.setUserId(measurement.getUserId());
+//
+//                String json = measurement.getData();
+//                JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
+//
+//                String id = jsonObject.getString("channelId");
+//                String name = jsonObject.getString("channelName");
+//                String timestamp = jsonObject.getString("timestamp");
+//                String unit = jsonObject.getString("channelUnit");
+//                String value = jsonObject.getString("value");
+//
+//                JSONObject dataObject = JSONFactoryUtil.createJSONObject();
+//                dataObject.put(DataManagerFields.ID, id);
+//                dataObject.put(DataManagerFields.NAME, name);
+//                dataObject.put(DataManagerFields.TIMESTAMP, timestamp);
+//                dataObject.put(DataManagerFields.UNIT, unit);
+//                dataObject.put(DataManagerFields.VALUE, value);
+//
+//                Date date = getDate(timestamp);
+//
+//                try {
+//                    MeasurementLocalServiceUtil.updateMeasurement(
+//                            measurement.getMeasurementId(),
+//                            measurement.getUserId(), dataObject.toString(), id,
+//                            name, date, unit, value, serviceContext);
+//                } catch (PortalException e) {
+//                    _log.error(e.getMessage());
+//                    
+//                } catch (SystemException e) {
+//                    _log.error(e.getMessage());
+//                }
+
                 Document document = getDocument(measurement);
 
                 documents.add(document);
@@ -204,8 +244,23 @@ public class MeasurementIndexer extends BaseIndexer {
                 documents);
 
     }
+    
+    
+    private Date getDate(String str) {
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        Date date = null;
+
+        try {
+            date = dateFormat.parse(str);
+        } catch (ParseException e) {
+            _log.error(e.getMessage());
+        }
+
+        return date;
+    }
+    
     private static final Log _log = LogFactoryUtil
-            .getLog(MeasurementIndexer.class.getName());
+            .getLog(MeasurementIndexer.class);
 
 }
