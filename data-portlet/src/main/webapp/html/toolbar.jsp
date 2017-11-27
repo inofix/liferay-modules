@@ -25,14 +25,14 @@
 %>
 
 <portlet:renderURL var="nextDayURL">
-    <portlet:param name="channelName" value="<%= channelName %>"/>
+    <portlet:param name="id" value="<%= id %>"/>
     <portlet:param name="tabs1" value="<%= tabs1 %>"/>
     <portlet:param name="from" value="<%= String.valueOf(until) %>"/>
     <portlet:param name="until" value="<%= String.valueOf(until + oneDay) %>"/>    
 </portlet:renderURL>
 
 <portlet:renderURL var="previousDayURL">
-    <portlet:param name="channelName" value="<%= channelName %>"/>
+    <portlet:param name="id" value="<%= id %>"/>
     <portlet:param name="tabs1" value="<%= tabs1 %>"/>
     <portlet:param name="from" value="<%= String.valueOf(from - oneDay) %>"/>
     <portlet:param name="until" value="<%= String.valueOf(from) %>"/>
@@ -48,9 +48,9 @@
        
             <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/>
             
-            <aui:select cssClass="pull-left" label="" name="channelName" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
+            <aui:select cssClass="pull-left" label="" name="id" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
                 <aui:option value="" label="select-channel"/>
-                <c:forEach items="<%=channelNameTermCollectors%>" var="termCollector">
+                <c:forEach items="<%=channelIdTermCollectors%>" var="termCollector">
                     <aui:option value="${termCollector.term}"
                         label="${termCollector.term} (${termCollector.frequency})" />
                 </c:forEach>

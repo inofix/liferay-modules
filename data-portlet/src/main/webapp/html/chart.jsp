@@ -2,8 +2,8 @@
     chart.jsp: a d3 driven chart panel for the data-portlet
     
     Created:    2017-04-01 23:15 by Christian Berndt
-    Modified:   2017-04-12 09:36 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-20 15:44 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -13,7 +13,7 @@
 
     Hits hits = MeasurementLocalServiceUtil
             .search(themeDisplay.getCompanyId(), scopeGroupId,
-                    channelId, channelName, from, until, false, 0,
+                    id, from, until, false, 0,
                     Integer.MAX_VALUE, sort);
 %>
 
@@ -48,7 +48,7 @@
     </style>
 
     <portlet:resourceURL id="getJSON" var="getJSONURL">
-        <portlet:param name="channelName" value="<%=channelName%>" />
+        <portlet:param name="id" value="<%=id%>" />
         <portlet:param name="from" value="<%=String.valueOf(from)%>" />
         <portlet:param name="interval" value="<%=String.valueOf(interval)%>" />
         <portlet:param name="limit" value="<%=String.valueOf(limit)%>" />

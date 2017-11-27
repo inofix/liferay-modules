@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-17 14:28 by Christian Berndt
-    Version:    1.2.9
+    Modified:   2017-11-20 15:45 by Christian Berndt
+    Version:    1.3.0
 --%>
 
 <%@page import="java.util.ArrayList"%>
@@ -17,6 +17,9 @@
 <%@page import="ch.inofix.portlet.data.model.Measurement"%>
 <%@page import="ch.inofix.portlet.data.service.MeasurementLocalServiceUtil"%>
 
+<%@page import="com.liferay.portal.kernel.json.JSONFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.json.JSONObject"%>
+<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.search.facet.collector.TermCollector"%>
 <%@page import="com.liferay.portal.kernel.search.facet.collector.FacetCollector"%>
 <%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
@@ -29,10 +32,11 @@
 <%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
-<%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@page import="com.liferay.portal.kernel.util.CamelCaseUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
+<%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 <%@page import="com.liferay.util.PropertyComparator"%>
 
@@ -52,11 +56,10 @@
 <theme:defineObjects />
 
 <%
-    String channelId = ParamUtil.getString(request, "channelId"); 
-    String channelName = ParamUtil.getString(request, "channelName");
+    String id = ParamUtil.getString(request, "id"); 
     
     String[] columns = portletPreferences.getValue("columns",
-            "channelName,value,channelUnit,timestamp").split(
+            "id,value,unit,timestamp").split(
             StringPool.COMMA);
 
     String dataURL = portletPreferences.getValue("dataURL", "");       
@@ -88,10 +91,19 @@
     long from = ParamUtil.getLong(request, "from", now.getTime() - oneDay);
     
     String[] headerNames = portletPreferences.getValue("headerNames",
-                    "channelId,channelName,value,channelUnit,createDate,modifiedDate")
+                    "id,value,unit,createDate,modifiedDate")
             .split(StringPool.COMMA);
         
     String paginationType = portletPreferences.getValue("paginationType", "regular");
+    
+    String nameField = portletPreferences.getValue("nameField", "");
+    String[] nameFields = null; 
+    
+    if (nameField.endsWith(StringPool.COMMA)) {
+        nameFields = (nameField + StringPool.SPACE).split(StringPool.COMMA);
+    } else {
+        nameFields = nameField.split(StringPool.COMMA);        
+    }
     
     String password = portletPreferences.getValue("password", "");
     String[] passwords = null; 
@@ -139,17 +151,12 @@
             .getInstance(request);
 
     Facet channelIdFacet = new MultiValueFacet(searchContext);
-    channelIdFacet.setFieldName("channelId");
-
-    Facet channelNameFacet = new MultiValueFacet(searchContext);
-    channelNameFacet.setFieldName("channelName");
+    channelIdFacet.setFieldName("id");
 
     searchContext.addFacet(channelIdFacet);
-    searchContext.addFacet(channelNameFacet);
     
     // remove facet attributes from context, since we need the field's index here
-    searchContext.setAttribute("channelId", null); 
-    searchContext.setAttribute("channelName", null);
+    searchContext.setAttribute("id", null); 
     searchContext.setAttribute("from", 0);
     searchContext.setAttribute("until", 0);
 
@@ -161,11 +168,6 @@
     List<TermCollector> channelIdTermCollectors = channelIdFacetCollector
             .getTermCollectors();
     
-    FacetCollector channelNameFacetCollector = channelNameFacet
-            .getFacetCollector();
-    List<TermCollector> channelNameTermCollectors = channelNameFacetCollector
-            .getTermCollectors();
-    
     PropertyComparator termComparator = new PropertyComparator("term");
-    Collections.sort(channelNameTermCollectors, termComparator);
+    Collections.sort(channelIdTermCollectors, termComparator);
 %>
