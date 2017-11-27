@@ -60,6 +60,8 @@ public class MeasurementIndexer extends BaseIndexer {
     @Override
     protected void doDelete(Object obj) throws Exception {
         Measurement measurement = (Measurement) obj;
+        
+        _log.info("doDelete()");
 
         deleteDocument(measurement.getCompanyId(),
                 measurement.getMeasurementId());
@@ -201,25 +203,28 @@ public class MeasurementIndexer extends BaseIndexer {
 //                String json = measurement.getData();
 //                JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
 //
-//                String id = jsonObject.getString("channelId");
-//                String name = jsonObject.getString("channelName");
-//                String timestamp = jsonObject.getString("timestamp");
-//                String unit = jsonObject.getString("channelUnit");
-//                String value = jsonObject.getString("value");
+//                String id = jsonObject.getString(DataManagerFields.ID);
+//                String name = jsonObject.getString(DataManagerFields.NAME);
+//                String timestamp = jsonObject.getString(DataManagerFields.TIMESTAMP);
+//                String unit = jsonObject.getString(DataManagerFields.UNIT);
+//                String value = jsonObject.getString(DataManagerFields.VALUE);
 //
-//                JSONObject dataObject = JSONFactoryUtil.createJSONObject();
-//                dataObject.put(DataManagerFields.ID, id);
-//                dataObject.put(DataManagerFields.NAME, name);
-//                dataObject.put(DataManagerFields.TIMESTAMP, timestamp);
-//                dataObject.put(DataManagerFields.UNIT, unit);
-//                dataObject.put(DataManagerFields.VALUE, value);
+////                JSONObject dataObject = JSONFactoryUtil.createJSONObject();
+////                dataObject.put(DataManagerFields.ID, id);
+////                dataObject.put(DataManagerFields.NAME, name);
+////                dataObject.put(DataManagerFields.TIMESTAMP, timestamp);
+////                dataObject.put(DataManagerFields.UNIT, unit);
+////                dataObject.put(DataManagerFields.VALUE, value);
 //
 //                Date date = getDate(timestamp);
+//                
+//                _log.info("timestamp = " + timestamp);
+//                _log.info("date = " + date);
 //
 //                try {
 //                    MeasurementLocalServiceUtil.updateMeasurement(
 //                            measurement.getMeasurementId(),
-//                            measurement.getUserId(), dataObject.toString(), id,
+//                            measurement.getUserId(), jsonObject.toString(), id,
 //                            name, date, unit, value, serviceContext);
 //                } catch (PortalException e) {
 //                    _log.error(e.getMessage());
@@ -231,6 +236,12 @@ public class MeasurementIndexer extends BaseIndexer {
                 Document document = getDocument(measurement);
 
                 documents.add(document);
+                
+//                try {
+//                    doDelete(measurement);
+//                } catch (Exception e) {
+//                    _log.error(e.getMessage());
+//                }
 
             }
 
