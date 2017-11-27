@@ -2,8 +2,8 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-11-16 19:43 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-11-20 18:04 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -66,6 +66,7 @@
                     
                     dataURL = StringPool.BLANK;
                     idField = StringPool.BLANK; 
+                    nameField = StringPool.BLANK; 
                     password = StringPool.BLANK; 
                     timestampField = StringPool.BLANK; 
                     userId = "0"; 
@@ -77,6 +78,10 @@
                     
                     if (idFields.length > i) {
                         idField = idFields[i]; 
+                    }
+                    
+                    if (nameFields.length > i) {
+                        nameField = nameFields[i]; 
                     }
                     
                     if (passwords.length > i) {
@@ -133,6 +138,10 @@
                     <aui:input name="idField"
                         helpMessage="id-field-help"
                         inlineField="<%=true%>" value="<%= idField %>" />
+    
+                    <aui:input name="nameField"
+                        helpMessage="name-field-help"
+                        inlineField="<%=true%>" value="<%= nameField %>" />
     
                     <aui:input name="timestampField"
                         helpMessage="timestamp-field-help"
