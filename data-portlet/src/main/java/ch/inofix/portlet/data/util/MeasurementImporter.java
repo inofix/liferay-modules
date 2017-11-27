@@ -40,8 +40,8 @@ import com.liferay.portal.service.UserLocalServiceUtil;
  *
  * @author Christian Berndt
  * @created 2017-03-09 17:53
- * @modified 2017-11-15 15:09
- * @version 1.0.8
+ * @modified 2017-11-27 18:03
+ * @version 1.0.9
  *
  */
 public class MeasurementImporter {
@@ -98,18 +98,17 @@ public class MeasurementImporter {
 
                     String id = channelElement.attributeValue(idField);
                     String name = channelElement.attributeValue(nameField);
-                    String timestampStr = channelElement.attributeValue(timestampField);
                     String unit = channelElement.attributeValue("unit");
-
+                    
                     List<Node> values = channel.selectNodes("descendant::VT");
 
                     for (Node node : values) {
 
                         Element valueElement = (Element) node;
-                        Date timestamp = getDate(valueElement
-                                .attributeValue(timestampField));
+                        String timestampStr = valueElement.attributeValue(timestampField);
+                        Date timestamp = getDate(timestampStr);
                         String value = valueElement.getText();
-
+                        
                         JSONObject jsonObject = JSONFactoryUtil.createJSONObject(); 
                         jsonObject.put(DataManagerFields.ID, id);
                         jsonObject.put(DataManagerFields.NAME, name);
@@ -177,9 +176,9 @@ public class MeasurementImporter {
 
                         String id = inObject.getString(idField);
                         String name = inObject.getString(nameField);
-                        String unit = inObject.getString("unit");
                         Date timestamp = getDate(inObject.getString(timestampField));
-                        String value = inObject.getString("value");
+                        String unit = inObject.getString(DataManagerFields.UNIT);
+                        String value = inObject.getString(DataManagerFields.VALUE);
 
                         if (Validator.isNotNull(value)) {
 

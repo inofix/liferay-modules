@@ -2,9 +2,12 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-20 15:45 by Christian Berndt
-    Version:    1.3.0
+    Modified:   2017-11-27 16:49 by Christian Berndt
+    Version:    1.3.1
 --%>
+
+<%@page import="java.text.DateFormat"%>
+<%@page import="java.text.Format"%>
 
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Calendar"%>
@@ -16,6 +19,7 @@
 
 <%@page import="ch.inofix.portlet.data.model.Measurement"%>
 <%@page import="ch.inofix.portlet.data.service.MeasurementLocalServiceUtil"%>
+<%@page import="ch.inofix.portlet.data.util.DataManagerFields"%>
 
 <%@page import="com.liferay.portal.kernel.json.JSONFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.json.JSONObject"%>
@@ -34,6 +38,7 @@
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.util.CamelCaseUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
