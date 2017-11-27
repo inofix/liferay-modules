@@ -2,30 +2,25 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-07-06 14:10 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-27 16:10 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
-
-<%@page import="com.liferay.portal.kernel.util.CamelCaseUtil"%>
-<%@page import="com.liferay.portal.kernel.json.JSONFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.json.JSONObject"%>
-<%@page import="com.liferay.portal.security.auth.PrincipalException"%>
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
     int delta = ParamUtil.getInteger(request, "delta", 20);
 
     int idx = ParamUtil.getInteger(request, "cur");
-    String orderByCol = ParamUtil.getString(request, "orderByCol","date_sortable");
+    String orderByCol = ParamUtil.getString(request, "orderByCol",
+            "timestamp_sortable");
     //     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 
     PortletURL portletURL = renderResponse.createRenderURL();
 
     portletURL.setParameter("backURL", backURL);
-    portletURL.setParameter("channelId", channelId);
-    portletURL.setParameter("channelName", channelName);
+    portletURL.setParameter("id", id);
     portletURL.setParameter("from", String.valueOf(from));
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("until", String.valueOf(until));
@@ -43,8 +38,8 @@
     Sort sort = new Sort(orderByCol, reverse);
 
     Hits hits = MeasurementLocalServiceUtil.search(
-            themeDisplay.getCompanyId(), scopeGroupId, channelId,
-            channelName, from, until, false, start, end, sort);
+            themeDisplay.getCompanyId(), scopeGroupId, id, from, until,
+            false, start, end, sort);
 
     List<Document> documents = hits.toList();
 %>
@@ -60,7 +55,7 @@
 <c:choose>
 
     <c:when test='<%=tabs1.equals("latest")%>'>
-            
+                
         <liferay-util:include servletContext="<%= session.getServletContext() %>" page="/html/latest.jsp" />   
         
     </c:when>

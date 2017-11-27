@@ -54,8 +54,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-11-15 14:27
- * @version 1.1.3
+ * @modified 2017-11-20 15:41
+ * @version 1.1.4
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -83,29 +83,29 @@ public class DataManagerPortlet extends MVCPortlet {
 
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
-    
+
     public void deleteMeasurementsByChannelName(ActionRequest actionRequest,
             ActionResponse actionResponse) throws Exception {
 
-        String channelName = ParamUtil.getString(actionRequest, "channelName");
-        
-        if (Validator.isNotNull(channelName)) {
+        String id = ParamUtil.getString(actionRequest, "id");
 
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(
-                Measurement.class.getName(), actionRequest);
+        if (Validator.isNotNull(id)) {
 
-        List<Measurement> measurements = MeasurementServiceUtil
-                .deleteMeasurementsByChannelName(serviceContext.getCompanyId(),
-                        serviceContext.getScopeGroupId(), channelName);
+            ServiceContext serviceContext = ServiceContextFactory.getInstance(
+                    Measurement.class.getName(), actionRequest);
 
-        SessionMessages.add(actionRequest, "request_processed", PortletUtil
-                .translate("successfully-deleted-x-measurements",
-                        measurements.size()));
-        
+            List<Measurement> measurements = MeasurementServiceUtil
+                    .deleteMeasurementsById(serviceContext.getCompanyId(),
+                            serviceContext.getScopeGroupId(), id);
+
+            SessionMessages.add(actionRequest, "request_processed", PortletUtil
+                    .translate("successfully-deleted-x-measurements",
+                            measurements.size()));
+
         } else {
-            
+
             SessionErrors.add(actionRequest, "you-must-select-a-channel-name");
-            
+
         }
 
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
@@ -129,11 +129,7 @@ public class DataManagerPortlet extends MVCPortlet {
                 .getAttribute(WebKeys.THEME_DISPLAY);
 
         // channel by id
-        String channelId = ParamUtil.getString(resourceRequest, "channelId");
-
-        // channel by name
-        String channelName = ParamUtil
-                .getString(resourceRequest, "channelName");
+        String id = ParamUtil.getString(resourceRequest, "id");
 
         // begin of selected interval
         long from = ParamUtil.getLong(resourceRequest, "from");
@@ -146,7 +142,7 @@ public class DataManagerPortlet extends MVCPortlet {
 
         Hits hits = MeasurementLocalServiceUtil.search(
                 themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-                channelId, channelName, from, until, true, 0, limit, null);
+                id, from, until, true, 0, limit, null);
 
         List<Document> documents = hits.toList();
         Iterator<Document> iterator = documents.iterator();
@@ -219,7 +215,8 @@ public class DataManagerPortlet extends MVCPortlet {
 
         String extension = FileUtil.getExtension(file.getName());
 
-        if ("xml".equals(extension) || "xls".equals(extension) || "json".equals(extension)) {
+        if ("xml".equals(extension) || "xls".equals(extension)
+                || "json".equals(extension)) {
 
             if (Validator.isNotNull(dataURL)) {
 
@@ -234,7 +231,8 @@ public class DataManagerPortlet extends MVCPortlet {
 
             long userId = themeDisplay.getUserId();
             long groupId = themeDisplay.getScopeGroupId();
-            boolean privateLayout = themeDisplay.getLayout().isPrivateLayout();
+            // boolean privateLayout =
+            // themeDisplay.getLayout().isPrivateLayout();
 
             String servletContextName = request.getSession()
                     .getServletContext().getServletContextName();
@@ -273,8 +271,8 @@ public class DataManagerPortlet extends MVCPortlet {
 
                             MeasurementServiceUtil
                                     .importMeasurementsInBackground(userId,
-                                            fileName, groupId, privateLayout,
-                                            parameterMap, file);
+                                            fileName, groupId, parameterMap,
+                                            file);
                         } else {
                             SessionMessages.clear(actionRequest);
                         }
@@ -297,18 +295,16 @@ public class DataManagerPortlet extends MVCPortlet {
                             .translate("importing-measurements-from-xls-the-import-will-finish-in-a-separate-thread");
 
                     MeasurementServiceUtil.importMeasurementsInBackground(
-                            userId, fileName, groupId, privateLayout,
-                            parameterMap, file);
+                            userId, fileName, groupId, parameterMap, file);
 
                 } else if ("json".equals(extension)) {
-                    
+
                     MeasurementServiceUtil.importMeasurementsInBackground(
-                            userId, fileName, groupId, privateLayout,
-                            parameterMap, file);
-                    
+                            userId, fileName, groupId, parameterMap, file);
+
                     message = PortletUtil
-                            .translate("importing-measurements-from-json-the-import-will-finish-in-a-separate-thread");                    
-                    
+                            .translate("importing-measurements-from-json-the-import-will-finish-in-a-separate-thread");
+
                 }
 
                 SessionMessages
@@ -352,6 +348,21 @@ public class DataManagerPortlet extends MVCPortlet {
             _log.error(e);
         }
     }
+//
+//    public void upgradeMeasurements(ActionRequest actionRequest,
+//            ActionResponse actionResponse) throws Exception {
+//        
+//        _log.info("upgradeMeasurements()"); 
+//
+//        ServiceContext serviceContext = ServiceContextFactory.getInstance(
+//                Measurement.class.getName(), actionRequest);
+//        
+//        MeasurementLocalServiceUtil.upgradeMeasurements(serviceContext);
+//
+//        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+//
+//        actionResponse.setRenderParameter("tabs1", tabs1);
+//    }
 
     /**
      * Disable the get- / sendRedirect feature of LiferayPortlet.

@@ -2,8 +2,8 @@
     import.jsp: The import panel of the data-portlet
     
     Created:    2017-03-13 12:46 by Christian Berndt
-    Modified:   2017-11-16 20:57 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-20 18:00 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -58,6 +58,19 @@
         <aui:input name="dataURL" type="hidden" value="<%=dataURLs[i]%>" />
         <aui:input name="dataURL" disabled="<%=true%>" inlineField="true"
             value="<%=dataURLs[i]%>" />
+ 
+        <aui:input name="idField" type="hidden" value="<%=idFields[i]%>" />
+        <aui:input name="idField" disabled="<%=true%>" inlineField="true"
+            value="<%=idFields[i]%>" />
+    
+        <aui:input name="nameField" type="hidden" value="<%=nameFields[i]%>" />
+        <aui:input name="nameField" disabled="<%=true%>" inlineField="true"
+            value="<%=nameFields[i]%>" />
+    
+        <aui:input name="timestampField" type="hidden" value="<%=timestampFields[i]%>" />
+        <aui:input name="timestampField" disabled="<%=true%>" inlineField="true"
+            value="<%=timestampFields[i]%>" />
+    
     
         <%
             boolean isConfigured = Validator.isNotNull(dataURLs[i]);

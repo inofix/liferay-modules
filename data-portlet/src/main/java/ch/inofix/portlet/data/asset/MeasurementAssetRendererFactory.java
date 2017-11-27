@@ -1,6 +1,7 @@
 package ch.inofix.portlet.data.asset;
 
 import ch.inofix.portlet.data.model.Measurement;
+import ch.inofix.portlet.data.service.MeasurementLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -13,8 +14,8 @@ import com.liferay.portlet.asset.model.BaseAssetRendererFactory;
  *
  * @author Christian Berndt
  * @created 2017-03-28 17:17
- * @modified 2017-03-28 17:17
- * @version 1.0.0
+ * @modified 2017-11-20 15:15
+ * @version 1.0.1
  *
  */
 public class MeasurementAssetRendererFactory extends BaseAssetRendererFactory {
@@ -25,8 +26,14 @@ public class MeasurementAssetRendererFactory extends BaseAssetRendererFactory {
     public AssetRenderer getAssetRenderer(long classPK, int type)
             throws PortalException, SystemException {
 
-        return null;
+        Measurement measurement = MeasurementLocalServiceUtil.getMeasurement(classPK);
 
+        MeasurementAssetRenderer measurementAssetRenderer = new MeasurementAssetRenderer(
+                measurement);
+
+        measurementAssetRenderer.setAssetRendererType(type);
+
+        return measurementAssetRenderer;
     }
 
     @Override

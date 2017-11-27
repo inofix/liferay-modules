@@ -27,8 +27,8 @@ import com.liferay.portal.kernel.exception.SystemException;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-10-25 00:29
- * @version 1.0.3
+ * @modified 2017-11-20 18:13
+ * @version 1.0.4
  * @see ch.inofix.portlet.data.service.base.MeasurementServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementServiceUtil
  */
@@ -53,22 +53,21 @@ public class MeasurementServiceImpl extends MeasurementServiceBaseImpl {
     }
     
     @Override
-    public List<Measurement> deleteMeasurementsByChannelName(long companyId,
-            long groupId, String channelName) throws PortalException,
+    public List<Measurement> deleteMeasurementsById(long companyId,
+            long groupId, String id) throws PortalException,
             SystemException {
 
         // TODO: enable permission checks
         // DataPortletPermission.check(getPermissionChecker(), groupId,
         // ActionKeys.DELETE_MEASUREMENTS_BY_CHANNEL_NAME);
 
-        return MeasurementLocalServiceUtil.deleteMeasurementsByChannelName(
-                companyId, groupId, channelName);
+        return MeasurementLocalServiceUtil.deleteMeasurementsById(
+                companyId, groupId, id);
     }
 
     @Override
     public long importMeasurementsInBackground(long userId, String taskName,
-            long groupId, boolean privateLayout,
-            Map<String, String[]> parameterMap, File file)
+            long groupId, Map<String, String[]> parameterMap, File file)
             throws PortalException, SystemException {
 
         // TODO: enable permission check
@@ -76,7 +75,7 @@ public class MeasurementServiceImpl extends MeasurementServiceBaseImpl {
         // ActionKeys.IMPORT_MEASUREMENTS);
 
         return MeasurementLocalServiceUtil.importMeasurementsInBackground(
-                userId, taskName, groupId, privateLayout, parameterMap, file);
+                userId, taskName, groupId, parameterMap, file);
 
     }
 }
