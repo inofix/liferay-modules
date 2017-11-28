@@ -67,7 +67,6 @@
         <exception>MeasurementId</exception>
         <exception>MeasurementName</exception>
         <exception>MeasurementTimestamp</exception>
-        <exception>MeasurementUnit</exception>
         <exception>MeasurementValue</exception>
         <exception>MeasurementXLS</exception>
         <exception>MeasurementXML</exception>
