@@ -4,21 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.time.StopWatch;
-
 import ch.inofix.portlet.data.MeasurementIdException;
 import ch.inofix.portlet.data.MeasurementNameException;
 import ch.inofix.portlet.data.MeasurementTimestampException;
-import ch.inofix.portlet.data.MeasurementUnitException;
 import ch.inofix.portlet.data.MeasurementValueException;
 import ch.inofix.portlet.data.backgroundtask.MeasurementImportBackgroundTaskExecutor;
 import ch.inofix.portlet.data.model.Measurement;
@@ -29,8 +23,6 @@ import ch.inofix.portlet.data.util.MeasurementImporter;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -66,8 +58,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-11-20 15:19
- * @version 1.1.1
+ * @modified 2017-11-28 11:45
+ * @version 1.1.2
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -91,7 +83,7 @@ public class MeasurementLocalServiceImpl extends
 
         User user = userPersistence.findByPrimaryKey(userId);
 
-        validate(id, name, timestamp, unit, value);
+        validate(id, name, timestamp, value);
 
         long groupId = serviceContext.getScopeGroupId();
 
@@ -548,7 +540,7 @@ public class MeasurementLocalServiceImpl extends
 
         User user = userPersistence.findByPrimaryKey(userId);
 
-        validate(id, name, timestamp, unit, value);
+        validate(id, name, timestamp, value);
 
         Measurement measurement = measurementPersistence
                 .findByPrimaryKey(measurementId);
@@ -586,63 +578,9 @@ public class MeasurementLocalServiceImpl extends
         return measurement;
 
     }
-    
-//    public void upgradeMeasurements(ServiceContext serviceContext)
-//            throws PortalException, SystemException {
-//
-//        _log.info("upgradeMeasurements()");
-//
-//        List<Measurement> measurements = getMeasurements(0, Integer.MAX_VALUE);
-//
-//        int numProcessed = 0;
-//        int numValues = measurements.size();
-//
-//        _log.info("numValues = " + numValues);
-//
-//        StopWatch stopWatch = new StopWatch();
-//
-//        stopWatch.start();
-//
-//        for (Measurement measurement : measurements) {
-//
-//            String json = measurement.getData();
-//            JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
-//
-//            String id = jsonObject.getString("channelId");
-//            String name = jsonObject.getString("channelName");
-//            String timestamp = jsonObject.getString("timestamp");
-//            String unit = jsonObject.getString("channelUnit");
-//            String value = jsonObject.getString("value");
-//
-//            JSONObject dataObject = JSONFactoryUtil.createJSONObject();
-//            dataObject.put(DataManagerFields.ID, id);
-//            dataObject.put(DataManagerFields.NAME, name);
-//            dataObject.put(DataManagerFields.TIMESTAMP, timestamp);
-//            dataObject.put(DataManagerFields.UNIT, unit);
-//            dataObject.put(DataManagerFields.VALUE, value);
-//
-//            Date date = getDate(timestamp);
-//
-//            updateMeasurement(measurement.getMeasurementId(),
-//                    measurement.getUserId(), dataObject.toString(), id, name,
-//                    date, unit, value, serviceContext);
-//
-////            if (numProcessed % 100 == 0 && numProcessed > 0) {
-////
-////                float completed = ((Integer) numProcessed).floatValue()
-////                        / numValues * 100;
-////
-////                _log.info("Processed " + numProcessed + " of " + numValues
-////                        + " measurements in " + stopWatch.getTime() + " ms ("
-////                        + completed + "%).");
-////            }
-//
-//        }
-//
-//    }
 
-    protected void validate(String id, String name, Date timestamp,
-            String unit, String value) throws PortalException {
+    protected void validate(String id, String name, Date timestamp, String value)
+            throws PortalException {
 
         if (Validator.isNull(id)) {
             throw new MeasurementIdException();
@@ -654,10 +592,6 @@ public class MeasurementLocalServiceImpl extends
 
         if (Validator.isNull(timestamp)) {
             throw new MeasurementTimestampException();
-        }
-
-        if (Validator.isNull(unit)) {
-            throw new MeasurementUnitException();
         }
 
         if (Validator.isNull(value)) {
