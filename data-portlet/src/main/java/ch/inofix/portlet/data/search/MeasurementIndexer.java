@@ -166,6 +166,9 @@ public class MeasurementIndexer extends BaseIndexer {
         if (until == 0) {
             until = Long.MAX_VALUE;
         }
+        
+//        _log.info("from = " + new Date(from));
+//        _log.info("until = " + new Date(until));      
 
         BooleanQuery booleanQuery = BooleanQueryFactoryUtil
                 .create(searchContext);

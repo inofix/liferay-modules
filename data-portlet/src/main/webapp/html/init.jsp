@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-28 15:14 by Christian Berndt
-    Version:    1.3.3
+    Modified:   2017-11-28 23:16 by Christian Berndt
+    Version:    1.3.4
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -95,7 +95,8 @@
     long interval = GetterUtil.getLong(portletPreferences.getValue("interval", "0"), 1000 * 60 * 60 * 24); // 24 h
         
     Date now = new Date(); 
-    long oneWeek = 1000 * 60 * 60 * 24 * 7;
+    long oneDay = 1000 * 60 * 60 * 24;
+    long oneWeek = oneDay * 7;
 
     cal.setTimeInMillis(now.getTime() - oneWeek); 
 
@@ -140,14 +141,13 @@
         timestampFields = timestampField.split(StringPool.COMMA);        
     }
   
-    cal.setTime(new Date(now.getTime())); 
+    cal.setTime(new Date(now.getTime() + (oneDay - 1))); 
 
-    int untilDay = cal.get(Calendar.DAY_OF_MONTH); 
-    int untilMonth = cal.get(Calendar.MONTH); 
-    int untilYear = cal.get(Calendar.YEAR); 
+    int untilDay = ParamUtil.getInteger(request, "untilDay", cal.get(Calendar.DAY_OF_MONTH)); 
+    int untilMonth = ParamUtil.getInteger(request, "untilMonth", cal.get(Calendar.MONTH)); 
+    int untilYear = ParamUtil.getInteger(request, "untilYear", cal.get(Calendar.YEAR)); 
     
     long until = PortalUtil.getDate(untilMonth, untilDay, untilYear).getTime(); 
-
     
     String userId = portletPreferences.getValue("userId", "0");    
     long[] userIds = null; 

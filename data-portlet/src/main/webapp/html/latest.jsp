@@ -39,17 +39,13 @@
         
                         id = termCollector.getTerm();
                         long timestamp = GetterUtil.getLong(document.get(DataManagerFields.TIMESTAMP));
-                        until = GetterUtil.getLong(document
-                                .get("timestamp_sortable"));
-                        from = until - 1000 * 60 * 60 * 24;
         
                         PortletURL graphURL = renderResponse
                                 .createRenderURL();
                         graphURL.setParameter("tabs1", "chart");
                         graphURL.setParameter("id", id);
                         graphURL.setParameter("from", String.valueOf(from));
-                        graphURL.setParameter("until",
-                                String.valueOf(until));
+                        graphURL.setParameter("until", String.valueOf(until));
             %>
                 <aui:col span="3">
                     <div class="display">

@@ -425,9 +425,13 @@ public class MeasurementLocalServiceImpl extends
     public Hits search(long companyId, long groupId, String id, Date timestamp,
             long from, long until, boolean andSearch, int start, int end,
             Sort sort) throws SystemException {
-
+        
+//        _log.info("search()"); 
+//        _log.info("from = " + new Date(from)); 
+//        _log.info("until = " + new Date(until)); 
+        
         if (Validator.isNull(sort)) {
-            sort = new Sort("timestamp", true);
+            sort = new Sort("timestamp_sortable", true);
         }
 
         try {
