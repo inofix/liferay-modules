@@ -234,6 +234,8 @@ public class MeasurementIndexer extends BaseIndexer {
 //                }
 
                 Document document = getDocument(measurement);
+                
+                _log.info("document = " + document);
 
                 documents.add(document);
                 
