@@ -2,8 +2,8 @@
     view.jsp: Default view of the data portlet.
     
     Created:    2017-03-09 19:59 by Christian Berndt
-    Modified:   2017-11-27 16:10 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-11-28 15:15 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -15,7 +15,6 @@
     int idx = ParamUtil.getInteger(request, "cur");
     String orderByCol = ParamUtil.getString(request, "orderByCol",
             "timestamp_sortable");
-    //     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 
     PortletURL portletURL = renderResponse.createRenderURL();
 

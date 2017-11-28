@@ -2,8 +2,8 @@
  * main.css: css specific to the data-portlet.
  *
  * Created:     2017-03-24 15:46 by Christian Berndt
- * Modified:    2017-11-26 17:02 by Christian Berndt
- * Version:     1.0.6
+ * Modified:    2017-11-28 15:16 by Christian Berndt
+ * Version:     1.0.7
  * 
  */
 @import "compass";
@@ -171,6 +171,9 @@
             
             .prev-next {
             
+                display: inline-block;
+                margin-left: auto;
+                margin-right: auto;
                 margin-top: 10px;
                 
                 .btn {
