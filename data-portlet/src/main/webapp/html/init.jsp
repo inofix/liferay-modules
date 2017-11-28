@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-27 16:49 by Christian Berndt
-    Version:    1.3.1
+    Modified:   2017-11-28 12:04 by Christian Berndt
+    Version:    1.3.2
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -17,6 +17,8 @@
 
 <%@page import="javax.portlet.PortletURL"%>
 
+<%@page import="ch.inofix.portlet.data.FileFormatException"%>
+<%@page import="ch.inofix.portlet.data.MeasurementXMLException"%>
 <%@page import="ch.inofix.portlet.data.model.Measurement"%>
 <%@page import="ch.inofix.portlet.data.service.MeasurementLocalServiceUtil"%>
 <%@page import="ch.inofix.portlet.data.util.DataManagerFields"%>
