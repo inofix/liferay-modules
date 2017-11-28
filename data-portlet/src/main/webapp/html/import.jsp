@@ -2,14 +2,11 @@
     import.jsp: The import panel of the data-portlet
     
     Created:    2017-03-13 12:46 by Christian Berndt
-    Modified:   2017-11-20 18:00 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-11-28 12:04 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
-
-<%@page import="ch.inofix.portlet.data.FileFormatException"%>
-<%@page import="ch.inofix.portlet.data.MeasurementXMLException"%>
 
 <%
     // TODO: add proper permission checks
@@ -29,15 +26,22 @@
 
 <portlet:renderURL var="browseURL" />
 
-<aui:form action="<%=importMeasurementsURL%>" enctype="multipart/form-data"
-    method="post" name="fm" cssClass="import-form">
+<aui:form action="<%=importMeasurementsURL%>"
+    enctype="multipart/form-data" method="post" name="fm"
+    cssClass="import-form">
 
     <aui:fieldset label="import">
-    
+
         <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
-    
-        <aui:input name="file" disabled="<%= !hasImportPermission %>" type="file" inlineField="true" label="" />
-    
+
+        <aui:input name="file" disabled="<%=!hasImportPermission%>"
+            type="file" inlineField="true" label="" />
+        <br />
+
+        <aui:input inlineField="<%=true%>" name="idField" />
+        <aui:input inlineField="<%=true%>" name="nameField" />
+        <aui:input inlineField="<%=true%>" name="timestampField" />
+
         <aui:button name="import" type="submit" value="import"
             disabled="true" />
         <aui:button href="<%=browseURL%>" type="cancel" />

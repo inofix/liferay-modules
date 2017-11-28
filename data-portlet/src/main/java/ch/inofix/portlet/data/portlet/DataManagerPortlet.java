@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.DocumentException;
-//import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.service.ServiceContext;
@@ -54,8 +53,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:58
- * @modified 2017-11-20 15:41
- * @version 1.1.4
+ * @modified 2017-11-28 12:24
+ * @version 1.1.5
  *
  */
 public class DataManagerPortlet extends MVCPortlet {
@@ -191,8 +190,11 @@ public class DataManagerPortlet extends MVCPortlet {
         UploadPortletRequest uploadPortletRequest = PortalUtil
                 .getUploadPortletRequest(actionRequest);
 
+        String idField = ParamUtil.getString(uploadPortletRequest, "idField");
         String mvcPath = ParamUtil.getString(uploadPortletRequest, "mvcPath");
+        String nameField = ParamUtil.getString(uploadPortletRequest, "nameField");
         String redirect = ParamUtil.getString(uploadPortletRequest, "redirect");
+        String timestampField = ParamUtil.getString(uploadPortletRequest, "timestampField");
 
         actionResponse.setRenderParameter("mvcPath", mvcPath);
         actionResponse.setRenderParameter("redirect", redirect);
@@ -231,8 +233,6 @@ public class DataManagerPortlet extends MVCPortlet {
 
             long userId = themeDisplay.getUserId();
             long groupId = themeDisplay.getScopeGroupId();
-            // boolean privateLayout =
-            // themeDisplay.getLayout().isPrivateLayout();
 
             String servletContextName = request.getSession()
                     .getServletContext().getServletContextName();
@@ -242,7 +242,10 @@ public class DataManagerPortlet extends MVCPortlet {
             Map<String, String[]> parameterMap = new HashMap<String, String[]>(
                     actionRequest.getParameterMap());
 
+            parameterMap.put("idField", new String[] {idField});
+            parameterMap.put("nameField", new String[] {nameField});
             parameterMap.put("servletContextNames", servletContextNames);
+            parameterMap.put("timestampField", new String[] {timestampField});            
 
             if (Validator.isNotNull(file)) {
 
@@ -348,21 +351,6 @@ public class DataManagerPortlet extends MVCPortlet {
             _log.error(e);
         }
     }
-//
-//    public void upgradeMeasurements(ActionRequest actionRequest,
-//            ActionResponse actionResponse) throws Exception {
-//        
-//        _log.info("upgradeMeasurements()"); 
-//
-//        ServiceContext serviceContext = ServiceContextFactory.getInstance(
-//                Measurement.class.getName(), actionRequest);
-//        
-//        MeasurementLocalServiceUtil.upgradeMeasurements(serviceContext);
-//
-//        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-//
-//        actionResponse.setRenderParameter("tabs1", tabs1);
-//    }
 
     /**
      * Disable the get- / sendRedirect feature of LiferayPortlet.
