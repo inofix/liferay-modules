@@ -2,41 +2,11 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-10-25 22:03 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-11-28 12:54 by Christian Berndt
+    Version:    1.0.9
  --%>
 
 <%@ include file="/html/init.jsp"%>
-
-<%   
-    Calendar cal = Calendar.getInstance();
-    
-    cal.setTime(new Date(from)); 
-
-    int fromDay = cal.get(Calendar.DAY_OF_MONTH); 
-    int fromMonth = cal.get(Calendar.MONTH); 
-    int fromYear = cal.get(Calendar.YEAR);   
-    
-    cal.setTime(new Date(until)); 
-    
-    int untilDay = cal.get(Calendar.DAY_OF_MONTH); 
-    int untilMonth = cal.get(Calendar.MONTH); 
-    int untilYear = cal.get(Calendar.YEAR); 
-%>
-
-<portlet:renderURL var="nextDayURL">
-    <portlet:param name="id" value="<%= id %>"/>
-    <portlet:param name="tabs1" value="<%= tabs1 %>"/>
-    <portlet:param name="from" value="<%= String.valueOf(until) %>"/>
-    <portlet:param name="until" value="<%= String.valueOf(until + oneDay) %>"/>    
-</portlet:renderURL>
-
-<portlet:renderURL var="previousDayURL">
-    <portlet:param name="id" value="<%= id %>"/>
-    <portlet:param name="tabs1" value="<%= tabs1 %>"/>
-    <portlet:param name="from" value="<%= String.valueOf(from - oneDay) %>"/>
-    <portlet:param name="until" value="<%= String.valueOf(from) %>"/>
-</portlet:renderURL>
 
 <liferay-portlet:renderURL varImpl="searchURL" />
 
@@ -58,37 +28,33 @@
             
         </aui:nav>
         
-        <aui:nav>
             
-            <aui:button-row cssClass="prev-next">
-                <aui:a href="<%= previousDayURL %>" cssClass="btn btn-default" label="previous"/>
-                <liferay-ui:input-date 
-                    disabled="<%= true %>"         
-                    dayParam="fromDay"
-                    dayValue="<%=fromDay%>"
-                    monthParam="fromMonth"
-                    monthValue="<%=fromMonth%>"
-                    yearParam="fromYear"
-                    yearValue="<%=fromYear%>" />
-                    
-                <liferay-ui:input-date               
-                    disabled="<%= true %>"
-                    dayParam="untilDay"
-                    dayValue="<%=untilDay%>"
-                    monthParam="untilMonth"
-                    monthValue="<%=untilMonth%>"
-                    yearParam="untilYear"
-                    yearValue="<%=untilYear%>" />
-                <aui:a href="<%= nextDayURL %>" cssClass="btn btn-default" label="next"/>
-            </aui:button-row> 
-            
-            <aui:input name="from" type="hidden" value="<%= from %>"/>
-            <aui:input name="until" type="hidden" value="<%= until %>"/>
-                        
-        </aui:nav>
+        <aui:button-row cssClass="prev-next">
         
-        <%-- 
-        <aui:nav cssClass="pull-right">  
+            <liferay-ui:input-date 
+                dayParam="fromDay"
+                dayValue="<%=fromDay%>"
+                monthParam="fromMonth"
+                monthValue="<%=fromMonth%>"
+                name="fromDate"
+                yearParam="fromYear"
+                yearValue="<%=fromYear%>" />
+                
+            <liferay-ui:input-date               
+                dayParam="untilDay"
+                dayValue="<%=untilDay%>"   
+                monthParam="untilMonth"
+                monthValue="<%=untilMonth%>"
+                name="untilDate"                   
+                yearParam="untilYear"
+                yearValue="<%=untilYear%>" />
+                
+        </aui:button-row> 
+        
+        <aui:input name="from" type="hidden" value="<%= from %>"/>
+        <aui:input name="until" type="hidden" value="<%= until %>"/>                    
+
+        <aui:nav cssClass="pull-right" collapsible="<%= false %>">  
          
             <portlet:renderURL var="clearURL" />
             
@@ -98,7 +64,6 @@
             </aui:button-row>
             
         </aui:nav>
-        --%>
         
     </aui:nav-bar>
 
@@ -111,24 +76,41 @@
     }
 </aui:script>
 
-<%-- 
 <aui:script use="aui-base">
 
     // Because hidden fields don't fire a change event, we have to 
     // observe it's value manually.
     
-    var fromDateDayInput = A.one('#<portlet:namespace />fromDateDay');
-    var fromDateDay = fromDateDayInput.get('value');
+    var fromDayInput = A.one('#<portlet:namespace />fromDay');
+    var fromDay = fromDayInput.get('value');
     
-    var fromDatePicker = A.one('#<portlet:namespace />from');
+    var fromDatePicker = A.one('#<portlet:namespace />fromDate');
     
     fromDatePicker.after('click', function(e) {
-        
-        datepickerPopover = A.one('.datepicker-popover');
+    	        
+        var datepickerPopover = A.one('.datepicker-popover');
         
         datepickerPopover.after('click', function(e) {
             
-            if (fromDateDay != fromDateDayInput.get('value')) {
+            if (fromDay != fromDayInput.get('value')) {
+                submitForm(document.<portlet:namespace />fm1);                
+            }
+            
+        }); 
+    });
+    
+    var untilDayInput = A.one('#<portlet:namespace />untilDay');
+    var untilDay = untilDayInput.get('value');
+    
+    var untilDatePicker = A.one('#<portlet:namespace />untilDate');
+    
+    untilDatePicker.after('click', function(e) {
+                
+        var datepickerPopover = A.one('.datepicker-popover');
+        
+        datepickerPopover.after('click', function(e) {
+            
+            if (untilDay != untilDayInput.get('value')) {
                 submitForm(document.<portlet:namespace />fm1);                
             }
             
@@ -136,4 +118,3 @@
     });
     
 </aui:script>
---%>

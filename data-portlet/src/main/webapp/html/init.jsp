@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-28 12:04 by Christian Berndt
-    Version:    1.3.2
+    Modified:   2017-11-28 15:14 by Christian Berndt
+    Version:    1.3.3
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -64,6 +64,8 @@
 
 <%
     String id = ParamUtil.getString(request, "id"); 
+
+    Calendar cal = Calendar.getInstance();
     
     String[] columns = portletPreferences.getValue("columns",
             "id,value,unit,timestamp").split(
@@ -93,9 +95,15 @@
     long interval = GetterUtil.getLong(portletPreferences.getValue("interval", "0"), 1000 * 60 * 60 * 24); // 24 h
         
     Date now = new Date(); 
-    long oneDay = 1000 * 60 * 60 * 24;  
+    long oneWeek = 1000 * 60 * 60 * 24 * 7;
+
+    cal.setTimeInMillis(now.getTime() - oneWeek); 
+
+    int fromDay = ParamUtil.getInteger(request, "fromDay", cal.get(Calendar.DAY_OF_MONTH)); 
+    int fromMonth = ParamUtil.getInteger(request, "fromMonth", cal.get(Calendar.MONTH)); 
+    int fromYear = ParamUtil.getInteger(request, "fromYear", cal.get(Calendar.YEAR)); 
     
-    long from = ParamUtil.getLong(request, "from", now.getTime() - oneDay);
+    long from = PortalUtil.getDate(fromMonth, fromDay, fromYear).getTime(); 
     
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "id,value,unit,createDate,modifiedDate")
@@ -131,8 +139,15 @@
     } else {
         timestampFields = timestampField.split(StringPool.COMMA);        
     }
+  
+    cal.setTime(new Date(now.getTime())); 
+
+    int untilDay = cal.get(Calendar.DAY_OF_MONTH); 
+    int untilMonth = cal.get(Calendar.MONTH); 
+    int untilYear = cal.get(Calendar.YEAR); 
     
-    long until = ParamUtil.getLong(request, "until", now.getTime());
+    long until = PortalUtil.getDate(untilMonth, untilDay, untilYear).getTime(); 
+
     
     String userId = portletPreferences.getValue("userId", "0");    
     long[] userIds = null; 
