@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-11-28 12:54 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-11-29 20:59 by Christian Berndt
+    Version:    1.1.0 
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -76,6 +76,7 @@
     }
 </aui:script>
 
+<%-- 
 <aui:script use="aui-base">
 
     // Because hidden fields don't fire a change event, we have to 
@@ -118,3 +119,4 @@
     });
     
 </aui:script>
+--%>
