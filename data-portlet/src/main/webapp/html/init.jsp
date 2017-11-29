@@ -2,8 +2,8 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-28 23:16 by Christian Berndt
-    Version:    1.3.4
+    Modified:   2017-11-29 20:58 by Christian Berndt
+    Version:    1.3.5
 --%>
 
 <%@page import="java.text.DateFormat"%>
@@ -104,7 +104,16 @@
     int fromMonth = ParamUtil.getInteger(request, "fromMonth", cal.get(Calendar.MONTH)); 
     int fromYear = ParamUtil.getInteger(request, "fromYear", cal.get(Calendar.YEAR)); 
     
-    long from = PortalUtil.getDate(fromMonth, fromDay, fromYear).getTime(); 
+    long from = ParamUtil.getLong(request, "from", 0); 
+    
+    if (from == 0) {
+        from = PortalUtil.getDate(fromMonth, fromDay, fromYear).getTime();
+    } else {
+        cal.setTimeInMillis(from); 
+        fromDay = cal.get(Calendar.DAY_OF_MONTH); 
+        fromMonth = cal.get(Calendar.MONTH); 
+        fromYear = cal.get(Calendar.YEAR);       
+    }
     
     String[] headerNames = portletPreferences.getValue("headerNames",
                     "id,value,unit,createDate,modifiedDate")
@@ -147,7 +156,16 @@
     int untilMonth = ParamUtil.getInteger(request, "untilMonth", cal.get(Calendar.MONTH)); 
     int untilYear = ParamUtil.getInteger(request, "untilYear", cal.get(Calendar.YEAR)); 
     
-    long until = PortalUtil.getDate(untilMonth, untilDay, untilYear).getTime(); 
+    long until = ParamUtil.getLong(request, "until", 0); 
+    
+    if (until == 0) {
+        until = PortalUtil.getDate(untilMonth, untilDay, untilYear).getTime();
+    } else {
+        cal.setTimeInMillis(until); 
+        untilDay = cal.get(Calendar.DAY_OF_MONTH); 
+        untilMonth = cal.get(Calendar.MONTH); 
+        untilYear = cal.get(Calendar.YEAR);       
+    }
     
     String userId = portletPreferences.getValue("userId", "0");    
     long[] userIds = null; 

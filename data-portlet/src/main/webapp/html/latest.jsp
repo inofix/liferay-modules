@@ -2,8 +2,8 @@
     latest.jsp: Display the latest state of the configured channels
     
     Created:    2017-04-11 17:45 by Christian Berndt
-    Modified:   2017-11-27 16:55 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-11-29 20:58 by Christian Berndt
+    Version:    1.0.7
  --%>
 
 
@@ -44,8 +44,8 @@
                                 .createRenderURL();
                         graphURL.setParameter("tabs1", "chart");
                         graphURL.setParameter("id", id);
-                        graphURL.setParameter("from", String.valueOf(from));
-                        graphURL.setParameter("until", String.valueOf(until));
+                        graphURL.setParameter("from", String.valueOf(timestamp + 1 - oneWeek));
+                        graphURL.setParameter("until", String.valueOf(timestamp + 1));
             %>
                 <aui:col span="3">
                     <div class="display">
