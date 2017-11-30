@@ -2,13 +2,14 @@
     init.jsp: Common imports and setup code of the data manager.
     
     Created:    2017-03-09 20:00 by Christian Berndt
-    Modified:   2017-11-29 20:58 by Christian Berndt
-    Version:    1.3.5
+    Modified:   2017-11-30 18:36 by Christian Berndt
+    Version:    1.3.6
 --%>
 
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.Format"%>
 
+<%@page import="java.util.Arrays"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.util.Collections"%>
@@ -39,11 +40,16 @@
 <%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.util.CamelCaseUtil"%>
-<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
+<%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
+<%@page import="com.liferay.portal.model.User"%>
 <%@page import="com.liferay.portal.security.auth.PrincipalException"%>
+<%@page import="com.liferay.portal.service.UserServiceUtil"%>
 <%@page import="com.liferay.portal.util.PortalUtil"%>
 <%@page import="com.liferay.util.PropertyComparator"%>
 
@@ -56,8 +62,6 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="theme" %>
-
-<%-- Common setup code, required by any jsp --%>
 
 <portlet:defineObjects />
 <theme:defineObjects />
@@ -79,6 +83,10 @@
     } else {
         dataURLs = dataURL.split(StringPool.COMMA);        
     }
+    
+    String[] headerNames = portletPreferences.getValue("headerNames",
+            "id,value,unit,createDate,modifiedDate")
+    .split(StringPool.COMMA);
      
     String idField = portletPreferences.getValue("idField", "id");
     String[] idFields = null; 
@@ -88,6 +96,8 @@
     } else {
         idFields = idField.split(StringPool.COMMA);        
     }
+    
+    String idFieldLabel = portletPreferences.getValue("idFieldLabel", "id");
     
     int limit = GetterUtil.getInteger(portletPreferences.getValue("limit", "1000"));
     if (limit > 10000) limit = 10000; // maximum number of hits returned by indexer
@@ -114,11 +124,7 @@
         fromMonth = cal.get(Calendar.MONTH); 
         fromYear = cal.get(Calendar.YEAR);       
     }
-    
-    String[] headerNames = portletPreferences.getValue("headerNames",
-                    "id,value,unit,createDate,modifiedDate")
-            .split(StringPool.COMMA);
-        
+            
     String paginationType = portletPreferences.getValue("paginationType", "regular");
     
     String nameField = portletPreferences.getValue("nameField", "");

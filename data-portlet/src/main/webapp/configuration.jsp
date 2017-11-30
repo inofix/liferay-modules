@@ -2,19 +2,11 @@
     configuration.jsp: Configure the data-manager's preferences.
     
     Created:    2017-03-13 16:32 by Christian Berndt
-    Modified:   2017-11-20 18:04 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2017-11-30 18:37 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
-
-<%@page import="java.util.Arrays"%>
-
-<%@page import="com.liferay.portal.kernel.util.Constants"%>
-<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
-<%@page import="com.liferay.portal.kernel.util.StringUtil"%>
-<%@page import="com.liferay.portal.model.User"%>
-<%@page import="com.liferay.portal.service.UserServiceUtil"%>
 
 <%
     PortletURL portletURL = renderResponse.createRenderURL();
@@ -202,6 +194,10 @@
             title="miscellaneous" extended="true">
 
             <aui:fieldset>
+            
+                <aui:input name="preferences--idFieldLabel--"
+                    helpMessage="id-field-label-help" inlineField="<%=true%>"
+                    value="<%=idFieldLabel%>" />
                 
                 <aui:select name="preferences--paginationType--"
                     inlineField="<%=true%>">
