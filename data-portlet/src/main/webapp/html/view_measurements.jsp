@@ -2,8 +2,8 @@
     view_measurements.jsp: the list view of the data-portlet
     
     Created:    2017-11-28 19:47 by Christian Berndt
-    Modified:   2017-11-28 19:47 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-11-30 13:06 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -15,7 +15,7 @@
     
     int idx = ParamUtil.getInteger(request, "cur");
     String orderByCol = ParamUtil.getString(request, "orderByCol",
-            "timestamp_sortable");
+            "timestamp");
     
     PortletURL portletURL = renderResponse.createRenderURL();
     
