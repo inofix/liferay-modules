@@ -2,8 +2,8 @@
     latest.jsp: Display the latest state of the configured channels
     
     Created:    2017-04-11 17:45 by Christian Berndt
-    Modified:   2017-11-30 15:46 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-11-30 18:55 by Christian Berndt
+    Version:    1.0.9
  --%>
 
 
@@ -15,7 +15,7 @@
 %>
 
 <c:choose>
-    <c:when test="<%= channelIdTermCollectors.size() == 0 %>">
+    <c:when test="<%= idTermCollectors.size() == 0 %>">
         <div class="alert alert-info">
             <liferay-ui:message key="no-channel-data-found"/>
         </div>
@@ -25,7 +25,7 @@
             <%
                 int i = 0;
             
-                for (TermCollector termCollector : channelIdTermCollectors) {
+                for (TermCollector termCollector : idTermCollectors) {
                     
                     Sort sort = new Sort(DataManagerFields.TIMESTAMP, true); 
                     
@@ -48,10 +48,27 @@
                         graphURL.setParameter("id", id);
                         graphURL.setParameter("from", String.valueOf(timestamp + 1 - oneWeek));
                         graphURL.setParameter("until", String.valueOf(timestamp + 1));
+                        
+                        String name = id; 
+                        
+                        boolean hasNumericId = GetterUtil.getInteger(id) > 0; 
+                        
+                        if (hasNumericId) {
+                            
+                            StringBuilder sb = new StringBuilder(); 
+                            sb.append(id); 
+                            sb.append(StringPool.SPACE);
+                            sb.append(StringPool.OPEN_PARENTHESIS);
+                            sb.append(document.get(DataManagerFields.NAME));
+                            sb.append(StringPool.CLOSE_PARENTHESIS);
+                            
+                            name = sb.toString();
+                            
+                        }
             %>
                 <aui:col span="3">
                     <div class="display">
-                        <div class="name"><%= id %></div> 
+                        <div class="name"><%= name %></div> 
                         <a href="<%= graphURL.toString() %>">          
                             <span class="face">
                                 <span class="value-wrapper">

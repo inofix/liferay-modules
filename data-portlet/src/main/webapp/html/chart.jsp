@@ -2,19 +2,17 @@
     chart.jsp: a d3 driven chart panel for the data-portlet
     
     Created:    2017-04-01 23:15 by Christian Berndt
-    Modified:   2017-11-30 13:05 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-12-01 00:09 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
 <%
-    Sort sort = new Sort(DataManagerFields.TIMESTAMP, true); 
-
     Hits hits = MeasurementLocalServiceUtil
             .search(themeDisplay.getCompanyId(), scopeGroupId,
                     id, null, from, until, false, 0,
-                    Integer.MAX_VALUE, sort);
+                    Integer.MAX_VALUE, null);
 %>
 
 <liferay-ui:app-view-toolbar               

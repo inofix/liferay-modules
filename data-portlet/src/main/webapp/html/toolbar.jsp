@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-11-30 15:44 by Christian Berndt
-    Version:    1.1.1 
+    Modified:   2017-12-01 00:11 by Christian Berndt
+    Version:    1.1.2
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -20,10 +20,54 @@
             
             <aui:select cssClass="pull-left" label="" name="id" inlineField="true" onChange='<%= renderResponse.getNamespace() + "select();" %>'>
                 <aui:option value="" label="select-channel"/>
-                <c:forEach items="<%=channelIdTermCollectors%>" var="termCollector">
-                    <aui:option value="${termCollector.term}"
-                        label="${termCollector.term} (${termCollector.frequency})" />
-                </c:forEach>
+                
+            <%            
+                for (TermCollector termCollector : idTermCollectors) {
+                    
+                    Sort sort = new Sort(DataManagerFields.TIMESTAMP, true); 
+                    
+                    Hits hits = MeasurementLocalServiceUtil.search(
+                            themeDisplay.getCompanyId(),
+                            themeDisplay.getScopeGroupId(),
+                            termCollector.getTerm(), 0,
+                            new Date().getTime(), true, 0, 1, sort);
+    
+                    if (hits.getLength() > 0) {
+                        
+                        Document document = hits.toList().get(0);
+        
+                        id = termCollector.getTerm();
+                        String label = id; 
+                        
+                        boolean hasNumericId = GetterUtil.getInteger(id) > 0; 
+                        
+                        StringBuilder sb = new StringBuilder(); 
+                        
+                        if (hasNumericId) {
+                            
+                            sb.append(id); 
+                            sb.append(StringPool.SPACE);
+                            sb.append(StringPool.OPEN_PARENTHESIS);
+                            sb.append(document.get(DataManagerFields.NAME));
+                            sb.append(StringPool.CLOSE_PARENTHESIS);
+                                                        
+                        } else {
+                            sb.append(id);
+                        }
+                        
+                        sb.append(StringPool.SPACE);
+                        sb.append(StringPool.OPEN_BRACKET);
+                        sb.append(termCollector.getFrequency());
+                        sb.append(StringPool.CLOSE_BRACKET);
+                        
+                        label = sb.toString();
+
+            %>
+                    <aui:option value="<%= id %>" label="<%= label %>" />
+            <%  
+                    }
+                }
+            %>
             </aui:select>
             
         </aui:nav>

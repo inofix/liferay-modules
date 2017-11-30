@@ -58,8 +58,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-11-30 15:33
- * @version 1.1.3
+ * @modified 2017-11-30 23:13
+ * @version 1.1.4
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -179,7 +179,7 @@ public class MeasurementLocalServiceImpl extends
 
             long classPK = GetterUtil.getLong(document.get("entryClassPK"));
 
-            deleteMeasurement(classPK);
+            measurements.add(deleteMeasurement(classPK));
 
         }
 
@@ -422,13 +422,13 @@ public class MeasurementLocalServiceImpl extends
             long from, long until, boolean andSearch, int start, int end,
             Sort sort) throws SystemException {
         
+        if (Validator.isNull(sort)) {
+            sort = new Sort(DataManagerFields.TIMESTAMP, true);
+        }
+        
         if (_log.isDebugEnabled()) {
             _log.debug("search()");
             _log.debug("sort = " + sort); 
-        }
-        
-        if (Validator.isNull(sort)) {
-            sort = new Sort(DataManagerFields.TIMESTAMP, true);
         }
               
         try {
