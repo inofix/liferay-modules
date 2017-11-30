@@ -2,8 +2,8 @@
     delete_measurements.jsp: Delete all measurements of this group
     
     Created:    2017-04-05 12:16 by Christian Berndt
-    Modified:   2017-10-25 15:50 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-11-30 23:14 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -11,6 +11,8 @@
 <%
     // TODO: add proper permission checks
     boolean hasDeletePermission = themeDisplay.isSignedIn();
+
+    String namespace = liferayPortletResponse.getNamespace();
 %>
 
 <portlet:actionURL name="deleteMeasurementsByChannelName" var="deleteMeasurementsByChannelNameURL">
@@ -23,7 +25,7 @@
 
 <c:if test="<%= hasDeletePermission %>">
     
-    <aui:form action="<%= deleteMeasurementsByChannelNameURL %>">
+    <aui:form action="<%= deleteMeasurementsByChannelNameURL %>" name="fm1" onSubmit='<%= "event.preventDefault();" + namespace + "deleteMeasurements();" %>'>
         <aui:fieldset label="delete-channel">
         
             <liferay-ui:error key="you-must-select-a-channel-name">
@@ -32,10 +34,53 @@
         
             <aui:select cssClass="pull-left" label="" name="id" inlineField="true">
                 <aui:option value="" label="select-channel"/>
-                <c:forEach items="<%=channelIdTermCollectors%>" var="termCollector">
-                    <aui:option value="${termCollector.term}"
-                        label="${termCollector.term} (${termCollector.frequency})" />
-                </c:forEach>
+            <%            
+                for (TermCollector termCollector : idTermCollectors) {
+                    
+                    Sort sort = new Sort(DataManagerFields.TIMESTAMP, true); 
+                    
+                    Hits hits = MeasurementLocalServiceUtil.search(
+                            themeDisplay.getCompanyId(),
+                            themeDisplay.getScopeGroupId(),
+                            termCollector.getTerm(), 0,
+                            new Date().getTime(), true, 0, 1, sort);
+    
+                    if (hits.getLength() > 0) {
+                        
+                        Document document = hits.toList().get(0);
+        
+                        id = termCollector.getTerm();
+                        String label = id; 
+                        
+                        boolean hasNumericId = GetterUtil.getInteger(id) > 0; 
+                        
+                        StringBuilder sb = new StringBuilder(); 
+                        
+                        if (hasNumericId) {
+                            
+                            sb.append(id); 
+                            sb.append(StringPool.SPACE);
+                            sb.append(StringPool.OPEN_PARENTHESIS);
+                            sb.append(document.get(DataManagerFields.NAME));
+                            sb.append(StringPool.CLOSE_PARENTHESIS);
+                                                        
+                        } else {
+                            sb.append(id);
+                        }
+                        
+                        sb.append(StringPool.SPACE);
+                        sb.append(StringPool.OPEN_BRACKET);
+                        sb.append(termCollector.getFrequency());
+                        sb.append(StringPool.CLOSE_BRACKET);
+                        
+                        label = sb.toString();
+
+            %>
+                    <aui:option value="<%= id %>" label="<%= label %>" />
+            <%  
+                    }
+                }
+            %>
             </aui:select>
             <aui:button-row>
                 <aui:button cssClass="btn btn-danger delete" value="delete" name="delete" type="submit"/>
@@ -61,3 +106,15 @@
     </aui:fieldset>
 
 </c:if>
+
+<aui:script>
+    Liferay.provide(
+        window,
+        '<portlet:namespace />deleteMeasurements',
+        function() {
+            if (confirm('<%= UnicodeLanguageUtil.get(pageContext, "are-you-sure-you-want-to-delete-this") %>')) {
+                submitForm(document.<portlet:namespace />fm1);
+            }
+        }
+    );
+</aui:script>
