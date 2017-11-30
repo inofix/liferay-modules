@@ -39,8 +39,8 @@ import com.liferay.portal.service.ServiceContext;
 /**
  * @author Christian Berndt
  * @created 2017-03-13 15:52
- * @modified 2017-11-20 15:17
- * @version 1.0.5
+ * @modified 2017-11-30 15:32
+ * @version 1.0.6
  */
 public class MeasurementIndexer extends BaseIndexer {
 
@@ -60,8 +60,6 @@ public class MeasurementIndexer extends BaseIndexer {
     @Override
     protected void doDelete(Object obj) throws Exception {
         Measurement measurement = (Measurement) obj;
-        
-        _log.info("doDelete()");
 
         deleteDocument(measurement.getCompanyId(),
                 measurement.getMeasurementId());
@@ -165,10 +163,7 @@ public class MeasurementIndexer extends BaseIndexer {
 
         if (until == 0) {
             until = Long.MAX_VALUE;
-        }
-        
-//        _log.info("from = " + new Date(from));
-//        _log.info("until = " + new Date(until));      
+        }     
 
         BooleanQuery booleanQuery = BooleanQueryFactoryUtil
                 .create(searchContext);
@@ -237,8 +232,6 @@ public class MeasurementIndexer extends BaseIndexer {
 //                }
 
                 Document document = getDocument(measurement);
-                
-                _log.info("document = " + document);
 
                 documents.add(document);
                 
@@ -255,9 +248,9 @@ public class MeasurementIndexer extends BaseIndexer {
         actionableDynamicQuery.setCompanyId(companyId);
 
         actionableDynamicQuery.performActions();
-
+                
         SearchEngineUtil.updateDocuments(getSearchEngineId(), companyId,
-                documents);
+                documents, isCommitImmediately());
 
     }
     
