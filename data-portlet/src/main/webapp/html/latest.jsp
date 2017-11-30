@@ -2,8 +2,8 @@
     latest.jsp: Display the latest state of the configured channels
     
     Created:    2017-04-11 17:45 by Christian Berndt
-    Modified:   2017-11-29 20:58 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-11-30 15:46 by Christian Berndt
+    Version:    1.0.8
  --%>
 
 
@@ -27,11 +27,13 @@
             
                 for (TermCollector termCollector : channelIdTermCollectors) {
                     
+                    Sort sort = new Sort(DataManagerFields.TIMESTAMP, true); 
+                    
                     Hits hits = MeasurementLocalServiceUtil.search(
                             themeDisplay.getCompanyId(),
                             themeDisplay.getScopeGroupId(),
                             termCollector.getTerm(), 0,
-                            new Date().getTime(), true, 0, 1, null);
+                            new Date().getTime(), true, 0, 1, sort);
     
                     if (hits.getLength() > 0) {
                         

@@ -2,14 +2,14 @@
     chart.jsp: a d3 driven chart panel for the data-portlet
     
     Created:    2017-04-01 23:15 by Christian Berndt
-    Modified:   2017-11-28 20:24 by Christian Berndt
+    Modified:   2017-11-30 13:05 by Christian Berndt
     Version:    1.0.7
 --%>
 
 <%@ include file="/html/init.jsp"%>
 
 <%
-    Sort sort = new Sort("timestamp_sortable", true);
+    Sort sort = new Sort(DataManagerFields.TIMESTAMP, true); 
 
     Hits hits = MeasurementLocalServiceUtil
             .search(themeDisplay.getCompanyId(), scopeGroupId,

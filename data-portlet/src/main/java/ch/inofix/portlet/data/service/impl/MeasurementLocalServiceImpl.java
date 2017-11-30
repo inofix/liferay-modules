@@ -58,8 +58,8 @@ import com.liferay.portal.service.ServiceContext;
  *
  * @author Christian Berndt
  * @created 2017-03-08 19:46
- * @modified 2017-11-28 11:45
- * @version 1.1.2
+ * @modified 2017-11-30 15:33
+ * @version 1.1.3
  * @see ch.inofix.portlet.data.service.base.MeasurementLocalServiceBaseImpl
  * @see ch.inofix.portlet.data.service.MeasurementLocalServiceUtil
  */
@@ -142,8 +142,6 @@ public class MeasurementLocalServiceImpl extends
     public Measurement deleteMeasurement(Measurement measurement)
             throws PortalException, SystemException {
 
-        _log.info("deleteMeasurement(measurement)");
-
         // Measurement
 
         measurementPersistence.remove(measurement);
@@ -169,8 +167,6 @@ public class MeasurementLocalServiceImpl extends
 
     public List<Measurement> deleteMeasurementsById(long companyId,
             long groupId, String id) throws PortalException, SystemException {
-
-        _log.info("deleteMeasurementsById");
 
         Hits hits = search(companyId, groupId, id, Long.MIN_VALUE,
                 Long.MAX_VALUE, true, 0, Integer.MAX_VALUE, null);
@@ -426,14 +422,15 @@ public class MeasurementLocalServiceImpl extends
             long from, long until, boolean andSearch, int start, int end,
             Sort sort) throws SystemException {
         
-//        _log.info("search()"); 
-//        _log.info("from = " + new Date(from)); 
-//        _log.info("until = " + new Date(until)); 
+        if (_log.isDebugEnabled()) {
+            _log.debug("search()");
+            _log.debug("sort = " + sort); 
+        }
         
         if (Validator.isNull(sort)) {
-            sort = new Sort("timestamp_sortable", true);
+            sort = new Sort(DataManagerFields.TIMESTAMP, true);
         }
-
+              
         try {
 
             SearchContext searchContext = new SearchContext();

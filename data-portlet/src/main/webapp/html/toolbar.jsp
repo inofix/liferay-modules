@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the data portlet
     
     Created:    2017-03-23 15:18 by Christian Berndt
-    Modified:   2017-11-29 20:59 by Christian Berndt
-    Version:    1.1.0 
+    Modified:   2017-11-30 15:44 by Christian Berndt
+    Version:    1.1.1 
  --%>
 
 <%@ include file="/html/init.jsp"%>
@@ -50,9 +50,6 @@
                 yearValue="<%=untilYear%>" />
                 
         </aui:button-row> 
-        
-        <aui:input name="from" type="hidden" value="<%= from %>"/>
-        <aui:input name="until" type="hidden" value="<%= until %>"/>                    
 
         <aui:nav cssClass="pull-right" collapsible="<%= false %>">  
          
