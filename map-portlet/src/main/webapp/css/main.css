@@ -19,6 +19,11 @@
             }
         }
 
+        .table-wrapper {
+            position: relative;
+            z-index: 100;
+        }
+
         input.full-width {
             width: 100%;
             box-sizing: border-box;
