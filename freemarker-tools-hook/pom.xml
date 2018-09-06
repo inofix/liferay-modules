@@ -5,7 +5,7 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>freemarker-tools-hook</artifactId>
     <packaging>war</packaging>
@@ -99,6 +99,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>3.2.2.RELEASE</version>
-        </dependency>        
+        </dependency>
     </dependencies>
 </project>

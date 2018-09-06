@@ -5,7 +5,7 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>1.0.8</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>payment-portlet</artifactId>
     <packaging>war</packaging>
@@ -70,7 +70,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            
+
             <!-- Create an automatic build-number -->
             <!-- every time a build is made. -->
             <plugin>
@@ -170,8 +170,8 @@
             <artifactId>jsp-api</artifactId>
             <version>2.0</version>
             <scope>provided</scope>
-        </dependency> 
-              
+        </dependency>
+
         <!-- Enable jstl -->
         <dependency>
             <groupId>taglibs</groupId>
@@ -182,21 +182,21 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
-        </dependency> 
-        
+        </dependency>
+
         <!-- inofix-util support -->
         <dependency>
             <groupId>ch.inofix</groupId>
             <artifactId>taglib-util</artifactId>
             <version>0.0.2-SNAPSHOT</version>
-        </dependency> 
-        
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
         </dependency>
-        
+
     </dependencies>
 </project>

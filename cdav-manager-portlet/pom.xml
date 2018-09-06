@@ -5,7 +5,7 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>cdav-manager-portlet</artifactId>
     <packaging>war</packaging>
@@ -14,8 +14,8 @@
     <build>
 
         <plugins>
-			<!-- Read properties from dev.properties in -->
-			<!-- the parent project directory.          -->
+            <!-- Read properties from dev.properties in -->
+            <!-- the parent project directory.          -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
@@ -129,41 +129,41 @@
             </plugin>
         </plugins>
         <pluginManagement>
-        	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        		<plugin>
-        			<groupId>org.eclipse.m2e</groupId>
-        			<artifactId>lifecycle-mapping</artifactId>
-        			<version>1.0.0</version>
-        			<configuration>
-        				<lifecycleMappingMetadata>
-        					<pluginExecutions>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>
-        									org.codehaus.mojo
-        								</groupId>
-        								<artifactId>
-        									properties-maven-plugin
-        								</artifactId>
-        								<versionRange>
-        									[1.0-alpha-2,)
-        								</versionRange>
-        								<goals>
-        									<goal>
-        										read-project-properties
-        									</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-        								<ignore></ignore>
-        							</action>
-        						</pluginExecution>
-        					</pluginExecutions>
-        				</lifecycleMappingMetadata>
-        			</configuration>
-        		</plugin>
-        	</plugins>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.codehaus.mojo
+                                        </groupId>
+                                        <artifactId>
+                                            properties-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.0-alpha-2,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>
+                                                read-project-properties
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
         </pluginManagement>
     </build>
     <dependencies>
@@ -219,16 +219,16 @@
         </dependency>
 
         <!-- liferay calendar -->
-        <!-- use 
-         
-         mvn install:install-file 
-        -Dfile=calendar-portlet-service.jar 
-        -DgroupId=com.liferay 
-        -DartifactId=liferay-calendar 
-        -Dversion=6.2.0.11 -Dpackaging=jar 
-        
-            in order to install the calendar service 
-            into your local repo. 
+        <!-- use
+
+         mvn install:install-file
+        -Dfile=calendar-portlet-service.jar
+        -DgroupId=com.liferay
+        -DartifactId=liferay-calendar
+        -Dversion=6.2.0.11 -Dpackaging=jar
+
+            in order to install the calendar service
+            into your local repo.
         -->
         <dependency>
             <groupId>com.liferay</groupId>
@@ -254,12 +254,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
-        
+
         <!-- inofix-util support -->
         <dependency>
             <groupId>ch.inofix</groupId>
             <artifactId>taglib-util</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
     </dependencies>

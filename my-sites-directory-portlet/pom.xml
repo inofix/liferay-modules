@@ -5,7 +5,7 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>my-sites-directory-portlet</artifactId>
     <packaging>war</packaging>
@@ -32,7 +32,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>        
+            </plugin>
             <plugin>
                 <groupId>com.liferay.maven.plugins</groupId>
                 <artifactId>liferay-maven-plugin</artifactId>
@@ -115,7 +115,7 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- jstl support -->
         <dependency>
             <groupId>taglibs</groupId>

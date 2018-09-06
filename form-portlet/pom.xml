@@ -5,7 +5,7 @@
     <parent>
         <artifactId>liferay-modules</artifactId>
         <groupId>ch.inofix</groupId>
-        <version>1.0.8</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>form-portlet</artifactId>
     <packaging>war</packaging>
@@ -32,7 +32,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>        
+            </plugin>
             <plugin>
                 <groupId>com.liferay.maven.plugins</groupId>
                 <artifactId>liferay-maven-plugin</artifactId>
@@ -124,7 +124,7 @@
                         </manifestEntries>
                     </archive>
                 </configuration>
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -170,7 +170,7 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- Enable jstl -->
         <dependency>
             <groupId>taglibs</groupId>
@@ -181,13 +181,13 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
-        </dependency> 
-        
+        </dependency>
+
         <!-- inofix-util support -->
         <dependency>
             <groupId>ch.inofix</groupId>
             <artifactId>taglib-util</artifactId>
             <version>0.0.2-SNAPSHOT</version>
-        </dependency> 
+        </dependency>
     </dependencies>
 </project>

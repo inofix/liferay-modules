@@ -203,7 +203,7 @@
         <dependency>
             <groupId>ch.inofix</groupId>
             <artifactId>taglib-util</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
     </dependencies>

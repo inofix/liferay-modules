@@ -113,7 +113,8 @@
         <module>asset-links-hook</module>
         <module>asset-publisher-hook</module>
         <module>asset-search-portlet</module>
-        <module>cdav-manager-portlet</module>
+<!-- disabled due to very strange liferay-calendar import... where should this file come from??? -->
+<!--        <module>cdav-manager-portlet</module> -->
         <module>ckeditor-hook</module>
         <module>contact-manager-portlet</module>
         <module>data-portlet</module>
